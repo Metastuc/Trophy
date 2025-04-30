@@ -1,4 +1,4 @@
-import { createPublicClient, createWalletClient, http, custom, type WalletClient } from "viem";
+import { createPublicClient, createWalletClient, http, custom, type PublicClient, type WalletClient } from "viem";
 import { useWallets } from "@privy-io/react-auth";
 import { network } from "@/lib/constants";
 
@@ -12,7 +12,7 @@ export const getPublicClient = () => {
   return createPublicClient({
     chain: network,
     transport: http(),
-  });
+  }) as PublicClient;
 }
 
 export const getWalletClient = () => {
