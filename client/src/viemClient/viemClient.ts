@@ -1,10 +1,6 @@
 import { createPublicClient, createWalletClient, http, custom, type PublicClient, type WalletClient } from "viem";
-import { useWallets } from "@privy-io/react-auth";
+import { ConnectedWallet } from "@privy-io/react-auth";
 import { network } from "@/lib/constants";
-
-const { wallets } = useWallets();
-const privyWallet = wallets.find((w) => w.walletClientType === "privy");
-const provider = await privyWallet?.getEthereumProvider();
 
 let walletClient: WalletClient | undefined;
 
@@ -15,8 +11,9 @@ export const getPublicClient = () => {
   }) as PublicClient;
 }
 
-export const getWalletClient = () => {
+export const getWalletClient = async (wallet: ConnectedWallet) => {
   if (!walletClient) {
+    const provider = await wallet.getEthereumProvider();
     walletClient = createWalletClient({
       chain: network,
       transport: custom(provider!),

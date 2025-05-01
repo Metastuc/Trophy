@@ -3,38 +3,53 @@ import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
 import { createDrift } from "@delvtech/drift";
 import { viemAdapter } from "@delvtech/drift-viem";
 import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
-import { useSignTypedData } from "@privy-io/react-auth";
+import { ConnectedWallet, useSignTypedData } from "@privy-io/react-auth";
 import { parseEther } from "viem";
+import { getSmartAccount } from "@/biconomy/smartAccount"
+
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
 const publicClient = getPublicClient();
-const walletClient = getWalletClient();
 
-const flaunchClient = () => {
+const flaunchClient = async (wallet: ConnectedWallet) => {
   if (!fClient) {
+    const walletClient = await getWalletClient(wallet);
     const drift = createDrift({
       adapter: viemAdapter({ publicClient, walletClient }),
     });
 
     fClient = new ReadWriteFlaunchSDK(network.id, drift);
-    return fClient;
   }
 
   return fClient;
 };
 
-const flaunch = flaunchClient();
+// The sFlaunch means sponsored flaunch (We're sponsoring deployment gas for creator tokens)
+const sFlaunchClient = async (wallet: ConnectedWallet) => {
+  const walletClient = await getSmartAccount(wallet);
+  const drift = createDrift({
+    adapter: viemAdapter({ publicClient, walletClient }),
+  });
+
+  const sClient = new ReadWriteFlaunchSDK(network.id, drift);
+
+  return sClient;
+};
 
 export const createCreatorToken = async (
   name: string,
   symbol: string,
   address: `0x${string}`,
   image: string,
+  wallet: ConnectedWallet,
   twitter?: string,
   telegram?: string,
 ): Promise<`0x${string}`> => {
-  return await flaunch.fastFlaunchIPFS({
+
+  const sFlaunch = await sFlaunchClient(wallet);
+
+  return await sFlaunch.fastFlaunchIPFS({
     name,
     symbol,
     creator: address,
@@ -50,8 +65,8 @@ export const createCreatorToken = async (
   });
 };
 
-const checkTx = async (hash: `0x${string}`) => {
-  const txReceipt = await flaunch.drift.waitForTransaction({ hash });
+const checkTx = async (hash: `0x${string}`, flaunch = fClient) => {
+  const txReceipt = await flaunch?.drift.waitForTransaction({ hash });
 
   if (txReceipt?.status !== "success") {
     throw new Error("Transaction failed");
@@ -61,6 +76,7 @@ const checkTx = async (hash: `0x${string}`) => {
 };
 
 export const buyCreatorToken = async (coinAddress: `0x${string}`, amount: string) => {
+  const flaunch = await flaunchClient();
   const hash = await flaunch.buyCoin({
     coinAddress,
     slippagePercent: 4,
@@ -72,6 +88,7 @@ export const buyCreatorToken = async (coinAddress: `0x${string}`, amount: string
 };
 
 export const sellCreatorToken = async (coinAddress: `0x${string}`, amount: string) => {
+  const flaunch = await flaunchClient();
   const { signTypedData } = useSignTypedData();
   const amountInWei = parseEther(amount);
 
