@@ -37,10 +37,10 @@ export default function RootLayout({ children }: iProps) {
 
 function App({ children }: iProps) {
     return (
-        <React.Fragment>
+        <div className="relative min-h-screen">
             <TopNavigationBar />
             <main>{children}</main>
             <BottomNavigationBar />
-        </React.Fragment>
+        </div>
     );
 }

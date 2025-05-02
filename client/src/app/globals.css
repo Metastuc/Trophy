@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+    /* custom */
+    --color-black100: #060606;
+}
+
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -123,6 +128,7 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }
