@@ -3,7 +3,6 @@
     "bracketSpacing": true,
     "endOfLine": "lf",
     "importOrder": ["^@?\\w", "^#", "^components/(.*)$", "^[./]"],
-    "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
     "plugins": ["@trivago/prettier-plugin-sort-imports"],
     "printWidth": 100,
