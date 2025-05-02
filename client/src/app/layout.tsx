@@ -1,4 +1,5 @@
 import BottomNavigationBar from "@/components/bottom-navigation-bar";
+import MobileOnly from "@/components/mobile-restrict";
 import ProtectedRoutes from "@/components/protected";
 import TopNavigationBar from "@/components/top-navigation-bar";
 import { AuthenticationContextProvider } from "@/context/authentication";
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: iProps) {
             <body>
                 <PrivyProvider>
                     <AuthenticationContextProvider>
-                        <ProtectedRoutes>{App({ children })}</ProtectedRoutes>
+                        <ProtectedRoutes>
+                            <MobileOnly>{App({ children })}</MobileOnly>
+                        </ProtectedRoutes>
                     </AuthenticationContextProvider>
                 </PrivyProvider>
             </body>
