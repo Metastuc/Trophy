@@ -1,8 +1,11 @@
+import BottomNavigationBar from "@/components/bottom-navigation-bar";
 import ProtectedRoutes from "@/components/protected";
+import TopNavigationBar from "@/components/top-navigation-bar";
 import { AuthenticationContextProvider } from "@/context/authentication";
 import PrivyProvider from "@/context/privy";
 
 import type { Metadata } from "next";
+import React from "react";
 
 import "./globals.css";
 
@@ -18,19 +21,23 @@ interface iProps {
 export default function RootLayout({ children }: iProps) {
     return (
         <html lang="en">
-            <body>{App({ children })}</body>
+            <body>
+                <PrivyProvider>
+                    <AuthenticationContextProvider>
+                        <ProtectedRoutes>{App({ children })}</ProtectedRoutes>
+                    </AuthenticationContextProvider>
+                </PrivyProvider>
+            </body>
         </html>
     );
 }
 
 function App({ children }: iProps) {
     return (
-        <PrivyProvider>
-            <AuthenticationContextProvider>
-                <ProtectedRoutes>
-                    <>{children}</>
-                </ProtectedRoutes>
-            </AuthenticationContextProvider>
-        </PrivyProvider>
+        <React.Fragment>
+            <TopNavigationBar />
+            <main>{children}</main>
+            <BottomNavigationBar />
+        </React.Fragment>
     );
 }
