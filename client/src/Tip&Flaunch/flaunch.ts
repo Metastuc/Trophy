@@ -1,20 +1,20 @@
+import { getSmartAccount } from "@/biconomy/smartAccount";
 import { ENV_SCHEMA, network } from "@/lib/constants";
 import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
 import { createDrift } from "@delvtech/drift";
 import { viemAdapter } from "@delvtech/drift-viem";
 import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
-import { ConnectedWallet, useSignTypedData } from "@privy-io/react-auth";
+import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
-import { getSmartAccount } from "@/biconomy/smartAccount"
-
+import { SignTypedData } from "@/lib/types";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
 const publicClient = getPublicClient();
 
-const flaunchClient = async (wallet: ConnectedWallet) => {
+const flaunchClient = async (provider: EIP1193Provider) => {
   if (!fClient) {
-    const walletClient = await getWalletClient(wallet);
+    const walletClient = await getWalletClient(provider);
     const drift = createDrift({
       adapter: viemAdapter({ publicClient, walletClient }),
     });
@@ -26,8 +26,8 @@ const flaunchClient = async (wallet: ConnectedWallet) => {
 };
 
 // The sFlaunch means sponsored flaunch (We're sponsoring deployment gas for creator tokens)
-const sFlaunchClient = async (wallet: ConnectedWallet) => {
-  const walletClient = await getSmartAccount(wallet);
+const sFlaunchClient = async (provider: EIP1193Provider) => {
+  const walletClient = await getSmartAccount(provider);
   const drift = createDrift({
     adapter: viemAdapter({ publicClient, walletClient }),
   });
@@ -42,12 +42,11 @@ export const createCreatorToken = async (
   symbol: string,
   address: `0x${string}`,
   image: string,
-  wallet: ConnectedWallet,
+  provider: EIP1193Provider,
   twitter?: string,
   telegram?: string,
 ): Promise<`0x${string}`> => {
-
-  const sFlaunch = await sFlaunchClient(wallet);
+  const sFlaunch = await sFlaunchClient(provider);
 
   return await sFlaunch.fastFlaunchIPFS({
     name,
@@ -75,8 +74,12 @@ const checkTx = async (hash: `0x${string}`, flaunch = fClient) => {
   return hash;
 };
 
-export const buyCreatorToken = async (coinAddress: `0x${string}`, amount: string) => {
-  const flaunch = await flaunchClient();
+export const buyCreatorToken = async (
+  coinAddress: `0x${string}`,
+  amount: string,
+  provider: EIP1193Provider,
+) => {
+  const flaunch = await flaunchClient(provider);
   const hash = await flaunch.buyCoin({
     coinAddress,
     slippagePercent: 4,
@@ -87,16 +90,20 @@ export const buyCreatorToken = async (coinAddress: `0x${string}`, amount: string
   return await checkTx(hash);
 };
 
-export const sellCreatorToken = async (coinAddress: `0x${string}`, amount: string) => {
-  const flaunch = await flaunchClient();
-  const { signTypedData } = useSignTypedData();
+export const sellCreatorToken = async (
+  coinAddress: `0x${string}`,
+  amount: string,
+  provider: EIP1193Provider,
+  signTypedData: SignTypedData
+) => {
+  const flaunch = await flaunchClient(provider);
   const amountInWei = parseEther(amount);
 
   const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
   if (allowance < amountInWei) {
     const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-    const signature = await signTypedData(typedData);
+    const { signature } = await signTypedData(typedData);
 
     const hash = await flaunch.sellCoin({
       coinAddress,
