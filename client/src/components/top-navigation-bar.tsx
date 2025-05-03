@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
+import AuthenticationDrawer from "./authentication-drawer";
 import { LOGO } from "./icons";
-import { Button } from "./ui/button";
 
 export default function Component() {
     return (
@@ -14,10 +14,7 @@ export default function Component() {
 
             <aside className="flex items-center gap-3.5">
                 <div>search</div>
-
-                <Button className="rounded-sm h-6 w-15 bg-blue100">
-                    <span className="text-xs">login</span>
-                </Button>
+                <AuthenticationDrawer />
             </aside>
         </section>
     );
