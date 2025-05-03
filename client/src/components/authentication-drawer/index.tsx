@@ -1,7 +1,4 @@
-import React from "react";
-
-import { EMAIL, FARCASTER, WALLET } from "./icons";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Drawer,
     DrawerClose,
@@ -11,30 +8,26 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerTrigger,
-} from "./ui/drawer";
+} from "@/components/ui/drawer";
 
-interface iAuthenticationButton {
-    label: string;
-    icon: () => React.ReactNode;
-}
+import React from "react";
 
-const BUTTONS: Array<iAuthenticationButton> = [
-    {
-        icon: FARCASTER,
-        label: "Continue with farcaster",
-    },
-    {
-        icon: WALLET,
-        label: "Login with wallet",
-    },
-    {
-        icon: EMAIL,
-        label: "Continue with email",
-    },
-];
+import DefaultButtons from "./components/buttons";
+import { AuthenticationReducer } from "./utils";
 
 export default function Component() {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
+    const [state, dispatch] = React.useReducer(AuthenticationReducer, { authOption: "default" });
+
+    function render() {
+        switch (state.authOption) {
+            case "default":
+                return <DefaultButtons dispatch={dispatch} />;
+
+            default:
+                return null;
+        }
+    }
 
     return (
         <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -56,11 +49,7 @@ export default function Component() {
                     </DrawerDescription>
                 </DrawerHeader>
 
-                <section className="flex flex-col gap-5 p-4">
-                    {BUTTONS.map((button, index) => (
-                        <AuthenticationButton key={index} {...button} />
-                    ))}
-                </section>
+                {render()}
 
                 <DrawerFooter>
                     <DrawerClose onClick={() => setIsDrawerOpen(false)}>
@@ -71,17 +60,5 @@ export default function Component() {
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>
-    );
-}
-
-function AuthenticationButton({ icon, label }: iAuthenticationButton) {
-    return (
-        <Button
-            variant="outline"
-            className="border-blue100/30 border h-15 flex justify-start items-center"
-        >
-            <i className="size-7">{icon()}</i>
-            <span className="text-sm tracking-wide text-black100">{label}</span>
-        </Button>
     );
 }
