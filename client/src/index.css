@@ -4,6 +4,7 @@
 @theme {
     /* custom */
     --color-black100: #060606;
+    --color-black200: #000000b2;
     --color-blue100: #204ce1;
 
     --font-oxanium: "Oxanium", sans-serif;
@@ -126,5 +127,14 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+
+    svg,
+    img {
+        @apply !size-full;
+    }
+
+    i {
+        @apply flex items-center justify-center;
     }
 }
