@@ -1,0 +1,27 @@
+import { Button } from "@/components/ui/button";
+
+import React from "react";
+
+import { AUTHENTICATION_BUTTONS } from "../constants";
+
+interface iProps {
+    dispatch: React.ActionDispatch<[action: tAction]>;
+}
+
+export default function Component({ dispatch }: iProps) {
+    return (
+        <section className="flex flex-col gap-5 p-4">
+            {AUTHENTICATION_BUTTONS.map((props: iAuthenticationButton, index) => (
+                <Button
+                    className="border-blue100/30 border h-15 flex justify-start items-center"
+                    key={index}
+                    onClick={() => dispatch(props.action)}
+                    variant="outline"
+                >
+                    <i className="size-7">{props.icon()}</i>
+                    <span className="text-sm tracking-wide text-black100">{props.label}</span>
+                </Button>
+            ))}
+        </section>
+    );
+}
