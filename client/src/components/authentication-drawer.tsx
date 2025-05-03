@@ -34,7 +34,7 @@ const BUTTONS: Array<iAuthenticationButton> = [
 ];
 
 export default function Component() {
-    const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
 
     return (
         <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -43,9 +43,11 @@ export default function Component() {
                     <span className="text-xs">login</span>
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="h-[]">
+
+            <DrawerContent>
                 <DrawerHeader>
                     <DrawerTitle className="text-center font-normal">Log in or sign up</DrawerTitle>
+
                     <DrawerDescription className="text-center mt-7.5 font-light text-black200">
                         welcome to <span className="font-normal text-black100">trophy</span>.
                         Continue with <span className="font-normal text-black100">farcaster</span>,
@@ -62,7 +64,9 @@ export default function Component() {
 
                 <DrawerFooter>
                     <DrawerClose onClick={() => setIsDrawerOpen(false)}>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="default" className="w-1/2 bg-blue100">
+                            Cancel
+                        </Button>
                     </DrawerClose>
                 </DrawerFooter>
             </DrawerContent>
@@ -77,7 +81,7 @@ function AuthenticationButton({ icon, label }: iAuthenticationButton) {
             className="border-blue100/30 border h-15 flex justify-start items-center"
         >
             <i className="size-7">{icon()}</i>
-            <span className="text-sm">{label}</span>
+            <span className="text-sm tracking-wide text-black100">{label}</span>
         </Button>
     );
 }
