@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-    component: RouteComponent,
-});
+    beforeLoad({ context, location }) {
+        if (!context.authentication.isAuthenticated) {
+            console.log(context, location);
+        }
+    },
 
-function RouteComponent() {
-    return <div>Hello "/"!</div>;
-}
+    component() {
+        return <div>Index</div>;
+    },
+});

@@ -3,6 +3,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
+import { useAuthenticationContext } from "./contexts/authentication.tsx";
 import "./index.css";
 import { routeTree } from "./routeTree.gen.ts";
 
@@ -15,8 +16,14 @@ declare module "@tanstack/react-router" {
     }
 }
 
+function App() {
+    return (
+        <RouterProvider router={router} context={{ authentication: useAuthenticationContext() }} />
+    );
+}
+
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <RouterProvider router={router} />
+        <App />
     </StrictMode>,
 );
