@@ -13,19 +13,59 @@ import {
 import React from "react";
 
 import DefaultButtons from "./components/buttons";
+import EmailAuthentication from "./components/email";
 import { AuthenticationReducer } from "./utils";
 
 export default function Component() {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
-    const [state, dispatch] = React.useReducer(AuthenticationReducer, { authOption: "default" });
+    const [state, dispatch] = React.useReducer(AuthenticationReducer, { authOption: "email" });
 
-    function render() {
+    function renderHeader() {
+        switch (state.authOption) {
+            case "default":
+                return (
+                    <DrawerTitle className="text-center font-normal">Log in or sign up</DrawerTitle>
+                );
+
+            case "email":
+                return (
+                    <DrawerTitle className="text-center font-normal">
+                        Log in or sign up with email
+                    </DrawerTitle>
+                );
+
+            default:
+                break;
+        }
+    }
+
+    function renderDescription() {
+        switch (state.authOption) {
+            case "default":
+                return (
+                    <DrawerDescription className="text-center mt-7.5 font-light text-black200">
+                        welcome to <span className="font-normal text-black100">trophy</span>.
+                        Continue with <span className="font-normal text-black100">farcaster</span>,
+                        your <span className="font-normal text-black100">wallet</span> or sign up
+                        with your <span className="font-normal text-black100">email</span>
+                    </DrawerDescription>
+                );
+
+            default:
+                break;
+        }
+    }
+
+    function renderBody() {
         switch (state.authOption) {
             case "default":
                 return <DefaultButtons dispatch={dispatch} />;
 
+            case "email":
+                return <EmailAuthentication />;
+
             default:
-                return null;
+                break;
         }
     }
 
@@ -39,17 +79,11 @@ export default function Component() {
 
             <DrawerContent>
                 <DrawerHeader>
-                    <DrawerTitle className="text-center font-normal">Log in or sign up</DrawerTitle>
-
-                    <DrawerDescription className="text-center mt-7.5 font-light text-black200">
-                        welcome to <span className="font-normal text-black100">trophy</span>.
-                        Continue with <span className="font-normal text-black100">farcaster</span>,
-                        your <span className="font-normal text-black100">wallet</span> or sign up
-                        with your <span className="font-normal text-black100">email</span>
-                    </DrawerDescription>
+                    {renderHeader()}
+                    {renderDescription()}
                 </DrawerHeader>
 
-                {render()}
+                <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
 
                 <DrawerFooter>
                     <DrawerClose onClick={() => setIsDrawerOpen(false)}>
