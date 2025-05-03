@@ -10,7 +10,7 @@ interface iProps {
 
 export default function Component({ dispatch }: iProps) {
     return (
-        <section className="flex flex-col gap-5 p-4">
+        <React.Fragment>
             {AUTHENTICATION_BUTTONS.map((props: iAuthenticationButton, index) => (
                 <Button
                     className="border-blue100/30 border h-15 flex justify-start items-center"
@@ -22,6 +22,6 @@ export default function Component({ dispatch }: iProps) {
                     <span className="text-sm tracking-wide text-black100">{props.label}</span>
                 </Button>
             ))}
-        </section>
+        </React.Fragment>
     );
 }
