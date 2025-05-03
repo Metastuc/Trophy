@@ -1,3 +1,4 @@
+import BottomNavigationBar from "@/components/bottom-navigation-bar";
 import TopNavigationBar from "@/components/top-navigation-bar";
 
 import { Outlet, createFileRoute } from "@tanstack/react-router";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/")({
                 <main>
                     <Outlet />
                 </main>
+                <BottomNavigationBar />
             </div>
         );
     },

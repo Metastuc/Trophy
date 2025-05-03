@@ -4,6 +4,9 @@
 @theme {
     /* custom */
     --color-black100: #060606;
+    --color-blue100: #204ce1;
+
+    --font-oxanium: "Oxanium", sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -118,6 +121,7 @@
 @layer base {
     * {
         @apply border-border outline-ring/50;
+        font-family: var(--font-oxanium);
     }
 
     body {
