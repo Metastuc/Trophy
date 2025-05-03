@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import TopNavigationBar from "@/components/top-navigation-bar";
+
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
     beforeLoad({ context, location }) {
@@ -8,6 +10,13 @@ export const Route = createFileRoute("/")({
     },
 
     component() {
-        return <div>Index</div>;
+        return (
+            <div className="relative min-h-screen">
+                <TopNavigationBar />
+                <main>
+                    <Outlet />
+                </main>
+            </div>
+        );
     },
 });

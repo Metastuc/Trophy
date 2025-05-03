@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+    /* custom */
+    --color-black100: #060606;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -114,6 +119,7 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }

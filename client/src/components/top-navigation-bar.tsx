@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import { LOGO } from "./icons";
 import { Button } from "./ui/button";
 
 export default function Component() {
@@ -7,7 +8,7 @@ export default function Component() {
         <section className="border border-red-500 py-7 px-5 flex justify-between items-center absolute top-0 w-full">
             <aside>
                 <Link to={"/"}>
-                    <img src="/logo.svg" alt="trophy_logo" />
+                    <LOGO />
                 </Link>
             </aside>
 
