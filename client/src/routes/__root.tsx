@@ -3,8 +3,9 @@ import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 
 type RouterContext = {
     queryClient: QueryClient;
+    authentication: iAuthenticationContext;
 };
 
-export const route = createRootRouteWithContext<RouterContext>()({
+export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => <Outlet />,
 });
