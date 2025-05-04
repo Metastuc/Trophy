@@ -2,6 +2,7 @@ import { EMAIL } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 import React from "react";
+import { toast } from "sonner";
 
 export default function Component({ dispatch, sendCode }: iEmailAuthentication) {
     const [email, setEmail] = React.useState<string | null>(null);
@@ -14,7 +15,12 @@ export default function Component({ dispatch, sendCode }: iEmailAuthentication) 
             await sendCode({ email });
             dispatch({ type: "GO_TO_OTP", email });
         } catch (error) {
-            console.error(error);
+            if (
+                error instanceof Error &&
+                error.message.toLowerCase().includes("invalid email address")
+            ) {
+                toast.error("Invalid email address");
+            }
         }
     }
 
