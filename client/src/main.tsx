@@ -4,6 +4,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { useAuthenticationContext } from "./contexts/authentication.tsx";
+import { PrivyContextProvider } from "./contexts/privy.tsx";
 import "./index.css";
 import { routeTree } from "./routeTree.gen.ts";
 
@@ -24,6 +25,8 @@ function App() {
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <App />
+        <PrivyContextProvider>
+            <App />
+        </PrivyContextProvider>
     </StrictMode>,
 );
