@@ -1,31 +1,17 @@
 import { EMAIL } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-import { useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
-interface iProps {
-    dispatch: React.ActionDispatch<[action: tAuthAction]>;
-}
-
-export default function Component({ dispatch }: iProps) {
+export default function Component({ dispatch, sendCode }: iEmailAuthentication) {
     const [email, setEmail] = React.useState<string | null>(null);
-
-    const { sendCode } = useLoginWithEmail({
-        onComplete({ user, isNewUser }) {
-            console.log("Login successful:", { user, isNewUser });
-        },
-        onError(error) {
-            console.error("Login error:", error);
-        },
-    });
 
     async function handleEmailSubmit(event: React.FormEvent) {
         event.preventDefault();
         if (!email) return;
 
         try {
-            // await sendCode({ email });
+            await sendCode({ email });
             dispatch({ type: "GO_TO_OTP", email });
         } catch (error) {
             console.error(error);

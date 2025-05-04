@@ -1,27 +1,17 @@
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
-import { useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
-export default function Component({ email, isSubmitting }: iOtpScreen) {
+export default function Component({ email, isSubmitting, onResend, onSubmit }: iOtpAuthentication) {
     const [code, setCode] = React.useState<string | null>(null);
     const hasSubmittedRef = React.useRef<boolean>(false);
-
-    const { loginWithCode, sendCode } = useLoginWithEmail({
-        onComplete({ user, isNewUser }) {
-            console.log("Login successful:", { user, isNewUser });
-        },
-        onError(error) {
-            console.error("Login error:", error);
-        },
-    });
 
     React.useEffect(() => {
         if (code?.length === 6 && !hasSubmittedRef.current && !isSubmitting) {
             hasSubmittedRef.current = true;
-            // loginWithCode({ code });
+            onSubmit(code);
         }
-    }, [code, isSubmitting, email, loginWithCode]);
+    }, [code, isSubmitting, email, onSubmit]);
     return (
         <section>
             <div className="">
@@ -52,9 +42,9 @@ export default function Component({ email, isSubmitting }: iOtpScreen) {
                 <p>Didn't receive an email?</p>{" "}
                 <button
                     type="button"
-                    onClick={async function () {
+                    onClick={() => {
                         try {
-                            // await sendCode({ email });
+                            onResend();
                             console.log("OTP resent successfully");
                         } catch (error) {
                             console.error("Error resending OTP:", error);

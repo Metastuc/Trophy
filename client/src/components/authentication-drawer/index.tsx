@@ -10,6 +10,7 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 
+import { useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
 import { EMAIL } from "../icons";
@@ -23,6 +24,19 @@ export default function Component() {
     const [state, dispatch] = React.useReducer(AuthenticationReducer, {
         type: "default",
         screenStack: ["default"],
+    });
+
+    const {
+        loginWithCode,
+        sendCode,
+        state: otpFlow,
+    } = useLoginWithEmail({
+        onComplete({ user, isNewUser }) {
+            console.log("Login successful:", { user, isNewUser });
+        },
+        onError(error) {
+            console.error("Login error:", error);
+        },
     });
 
     function renderHeader() {
@@ -87,11 +101,20 @@ export default function Component() {
                 return <DefaultButtons dispatch={dispatch} />;
 
             case "email":
-                return <EmailAuthentication dispatch={dispatch} />;
+                return <EmailAuthentication dispatch={dispatch} sendCode={sendCode} />;
 
             case "farcaster":
             case "otp":
-                return <OtpAuthentication email={state.email as string} isSubmitting />;
+                return (
+                    <OtpAuthentication
+                        email={state.email as string}
+                        isSubmitting={otpFlow.status === "submitting-code"}
+                        onSubmit={(code: string) => {
+                            loginWithCode({ code });
+                        }}
+                        onResend={() => sendCode({ email: state.email as string })}
+                    />
+                );
 
             case "wallet":
         }
