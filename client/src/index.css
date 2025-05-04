@@ -12,6 +12,7 @@
     --animate-caret-blink: caret-blink 1.25s ease-out infinite;
 
     @keyframes caret-blink {
+
         0%,
         70%,
         100% {
@@ -151,5 +152,11 @@
 
     i {
         @apply flex items-center justify-center;
+    }
+
+    :is(#privy-modal-content) {
+        img {
+            @apply !size-6;
+        }
     }
 }
