@@ -37,11 +37,28 @@ export default function Component() {
             console.log("Login successful:", { user, isNewUser });
         },
         onError(error) {
-            console.error("Login error:", error);
+            console.error("Email error:", error);
+
+            if (error.includes("exited")) {
+                dispatch({ type: "GO_TO_DEFAULT" });
+            }
         },
     });
 
-    const { login } = useLogin();
+    const { login } = useLogin({
+        onComplete({ user, isNewUser }) {
+            console.log("Login successful:", { user, isNewUser });
+            setIsDrawerOpen(false);
+            dispatch({ type: "GO_TO_DEFAULT" });
+        },
+        onError(error) {
+            console.error("Wallet error:", error);
+
+            if (error.includes("exited")) {
+                dispatch({ type: "GO_TO_DEFAULT" });
+            }
+        },
+    });
 
     React.useEffect(() => {
         if (state.type === "wallet" && !hasLoggedInRef.current) {
@@ -81,7 +98,7 @@ export default function Component() {
                 );
 
             case "wallet":
-                break;
+                return;
         }
     }
 
@@ -111,7 +128,7 @@ export default function Component() {
                 );
 
             case "wallet":
-                break;
+                return;
         }
     }
 
@@ -137,7 +154,7 @@ export default function Component() {
                 );
 
             case "wallet":
-                return null;
+                return;
         }
     }
 
@@ -151,7 +168,7 @@ export default function Component() {
 
             <DrawerContent>
                 <DrawerFooter className="flex items-center justify-between flex-row">
-                    {state.type !== "default" ? (
+                    {state.type !== "default" && state.type !== "wallet" ? (
                         <Button
                             variant="ghost"
                             className="border border-blue100 text-blue100 hover:bg-blue100/10"
