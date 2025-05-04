@@ -1,28 +1,29 @@
-import { EMAIL } from "@/components/icons";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
+import { useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
-export default function Component({ email, isSubmitting, onSubmit }: iOtpScreen) {
+export default function Component({ email, isSubmitting }: iOtpScreen) {
     const [code, setCode] = React.useState<string | null>(null);
     const hasSubmittedRef = React.useRef<boolean>(false);
+
+    const { loginWithCode, sendCode } = useLoginWithEmail({
+        onComplete({ user, isNewUser }) {
+            console.log("Login successful:", { user, isNewUser });
+        },
+        onError(error) {
+            console.error("Login error:", error);
+        },
+    });
 
     React.useEffect(() => {
         if (code?.length === 6 && !hasSubmittedRef.current && !isSubmitting) {
             hasSubmittedRef.current = true;
-            onSubmit(code);
+            // loginWithCode({ code });
         }
-    }, [code, isSubmitting, onSubmit]);
+    }, [code, isSubmitting, email, loginWithCode]);
     return (
         <section>
-            <div className="flex flex-col items-center">
-                <i className="text-black size-10">{EMAIL()}</i>
-                <p className="text-center font-light text-black200">
-                    Please check <span className="font-normal text-black100">{email}</span> for an
-                    email from privy.io and enter your code below.
-                </p>
-            </div>
-
             <div className="">
                 <InputOTP
                     maxLength={6}
@@ -48,7 +49,20 @@ export default function Component({ email, isSubmitting, onSubmit }: iOtpScreen)
             </div>
 
             <div className="flex items-center justify-center gap-1">
-                <p>Didn't receive an email?</p> <button type="button">Resend code</button>
+                <p>Didn't receive an email?</p>{" "}
+                <button
+                    type="button"
+                    onClick={async function () {
+                        try {
+                            await sendCode({ email });
+                            console.log("OTP resent successfully");
+                        } catch (error) {
+                            console.error("Error resending OTP:", error);
+                        }
+                    }}
+                >
+                    Resend code
+                </button>
             </div>
         </section>
     );

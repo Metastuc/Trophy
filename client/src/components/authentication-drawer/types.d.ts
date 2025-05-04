@@ -64,5 +64,4 @@ interface iEmailAuthState {
 interface iOtpScreen {
     email: string;
     isSubmitting: boolean;
-    onSubmit: (code: string) => void;
 }

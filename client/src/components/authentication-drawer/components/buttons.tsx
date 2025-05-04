@@ -5,7 +5,7 @@ import React from "react";
 import { AUTHENTICATION_BUTTONS } from "../constants";
 
 interface iProps {
-    dispatch: React.ActionDispatch<[action: tAction]>;
+    dispatch: React.ActionDispatch<[action: tAuthAction]>;
 }
 
 export default function Component({ dispatch }: iProps) {
