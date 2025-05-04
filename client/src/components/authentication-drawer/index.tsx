@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/drawer";
 
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
-import { Link } from "@tanstack/react-router";
 import React from "react";
 
 import { EMAIL, PRIVY } from "../icons";
@@ -160,7 +159,7 @@ export default function Component() {
     }
 
     return (
-        <Drawer dismissible={false} open={!isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger asChild>
                 <Button className="rounded-sm h-6 w-15 bg-blue100">
                     <span className="text-xs">login</span>
@@ -192,8 +191,9 @@ export default function Component() {
                 </DrawerHeader>
 
                 <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
+
                 <i className="my-4">
-                    <a href="https://privy.io/" target="_blank" className="h-2">
+                    <a href="https://privy.io/" target="_blank">
                         {PRIVY()}
                     </a>
                 </i>
