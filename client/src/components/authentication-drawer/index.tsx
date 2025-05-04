@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/drawer";
 
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
+import { Link } from "@tanstack/react-router";
 import React from "react";
 
-import { EMAIL } from "../icons";
+import { EMAIL, PRIVY } from "../icons";
 import DefaultButtons from "./components/buttons";
 import EmailAuthentication from "./components/email";
 import OtpAuthentication from "./components/otp";
@@ -191,6 +192,11 @@ export default function Component() {
                 </DrawerHeader>
 
                 <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
+                <i className="my-4">
+                    <a href="https://privy.io/" target="_blank" className="h-2">
+                        {PRIVY()}
+                    </a>
+                </i>
             </DrawerContent>
         </Drawer>
     );
