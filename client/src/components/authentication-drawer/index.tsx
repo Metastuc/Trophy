@@ -106,18 +106,11 @@ export default function Component() {
             </DrawerTrigger>
 
             <DrawerContent>
-                <DrawerHeader>
-                    {renderHeader()}
-                    {renderDescription()}
-                </DrawerHeader>
-
-                <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
-
-                <DrawerFooter className="flex items-center justify-center flex-row">
+                <DrawerFooter className="flex items-center justify-between flex-row">
                     {state.type !== "default" ? (
                         <Button
                             variant="ghost"
-                            className="w-1/2 border border-blue100 text-blue100 hover:bg-blue100/10"
+                            className="border border-blue100 text-blue100 hover:bg-blue100/10"
                             onClick={() => dispatch({ type: "BACK" })}
                         >
                             Back
@@ -125,11 +118,18 @@ export default function Component() {
                     ) : null}
 
                     <DrawerClose asChild onClick={() => setIsDrawerOpen(false)}>
-                        <Button variant="default" className="w-1/2 bg-blue100">
+                        <Button variant="default" className=" bg-blue100 ml-auto">
                             Cancel
                         </Button>
                     </DrawerClose>
                 </DrawerFooter>
+
+                <DrawerHeader>
+                    {renderHeader()}
+                    {renderDescription()}
+                </DrawerHeader>
+
+                <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
             </DrawerContent>
         </Drawer>
     );
