@@ -113,7 +113,17 @@ export default function Component() {
 
                 <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
 
-                <DrawerFooter className="flex items-center justify-center">
+                <DrawerFooter className="flex items-center justify-center flex-row">
+                    {state.type !== "default" ? (
+                        <Button
+                            variant="ghost"
+                            className="w-1/2 border border-blue100 text-blue100 hover:bg-blue100/10"
+                            onClick={() => dispatch({ type: "BACK" })}
+                        >
+                            Back
+                        </Button>
+                    ) : null}
+
                     <DrawerClose asChild onClick={() => setIsDrawerOpen(false)}>
                         <Button variant="default" className="w-1/2 bg-blue100">
                             Cancel

@@ -54,7 +54,7 @@ export default function Component({ email, isSubmitting }: iOtpScreen) {
                     type="button"
                     onClick={async function () {
                         try {
-                            await sendCode({ email });
+                            // await sendCode({ email });
                             console.log("OTP resent successfully");
                         } catch (error) {
                             console.error("Error resending OTP:", error);
