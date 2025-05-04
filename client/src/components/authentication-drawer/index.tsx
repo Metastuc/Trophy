@@ -12,8 +12,10 @@ import {
 
 import React from "react";
 
+import { EMAIL } from "../icons";
 import DefaultButtons from "./components/buttons";
 import EmailAuthentication from "./components/email";
+import OtpAuthentication from "./components/otp";
 import { AuthenticationReducer } from "./utils";
 
 export default function Component() {
@@ -36,6 +38,17 @@ export default function Component() {
                         Log in or sign up with email
                     </DrawerTitle>
                 );
+
+            case "farcaster":
+
+            case "otp":
+                return (
+                    <DrawerTitle className="text-center font-normal">
+                        <i className="text-black size-10">{EMAIL()}</i>
+                    </DrawerTitle>
+                );
+
+            case "wallet":
         }
     }
 
@@ -50,6 +63,21 @@ export default function Component() {
                         with your <span className="font-normal text-black100">email</span>
                     </DrawerDescription>
                 );
+
+            case "email":
+            case "farcaster":
+
+            case "otp":
+                return (
+                    <DrawerDescription className="text-center font-light text-black200">
+                        Please check{" "}
+                        <span className="font-normal text-black100">{state.email}</span> for an
+                        email from <span className="font-normal text-black100">privy.io</span> and
+                        enter your code below.
+                    </DrawerDescription>
+                );
+
+            case "wallet":
         }
     }
 
@@ -59,7 +87,13 @@ export default function Component() {
                 return <DefaultButtons dispatch={dispatch} />;
 
             case "email":
-                return <EmailAuthentication />;
+                return <EmailAuthentication dispatch={dispatch} />;
+
+            case "farcaster":
+            case "otp":
+                return <OtpAuthentication email={state.email as string} isSubmitting />;
+
+            case "wallet":
         }
     }
 
@@ -79,8 +113,8 @@ export default function Component() {
 
                 <section className="flex flex-col gap-5 p-4">{renderBody()}</section>
 
-                <DrawerFooter>
-                    <DrawerClose onClick={() => setIsDrawerOpen(false)}>
+                <DrawerFooter className="flex items-center justify-center">
+                    <DrawerClose asChild onClick={() => setIsDrawerOpen(false)}>
                         <Button variant="default" className="w-1/2 bg-blue100">
                             Cancel
                         </Button>
