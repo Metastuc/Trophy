@@ -10,7 +10,7 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 
-import { useLoginWithEmail } from "@privy-io/react-auth";
+import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
 import { EMAIL } from "../icons";
@@ -21,6 +21,8 @@ import { AuthenticationReducer } from "./utils";
 
 export default function Component() {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
+    const hasLoggedInRef = React.useRef<boolean>(false);
+
     const [state, dispatch] = React.useReducer(AuthenticationReducer, {
         type: "default",
         screenStack: ["default"],
@@ -38,6 +40,22 @@ export default function Component() {
             console.error("Login error:", error);
         },
     });
+
+    const { login } = useLogin();
+
+    React.useEffect(() => {
+        if (state.type === "wallet" && !hasLoggedInRef.current) {
+            hasLoggedInRef.current = true;
+            login({
+                loginMethods: ["wallet"],
+                walletChainType: "ethereum-only",
+            });
+        }
+
+        if (state.type !== "wallet") {
+            hasLoggedInRef.current = false;
+        }
+    }, [state.type, login]);
 
     function renderHeader() {
         switch (state.type) {
@@ -63,6 +81,7 @@ export default function Component() {
                 );
 
             case "wallet":
+                break;
         }
     }
 
@@ -92,6 +111,7 @@ export default function Component() {
                 );
 
             case "wallet":
+                break;
         }
     }
 
@@ -117,6 +137,7 @@ export default function Component() {
                 );
 
             case "wallet":
+                return null;
         }
     }
 
