@@ -38,30 +38,19 @@ type tEmailAction =
     | { type: "SUBMIT_CODE" }
     | { type: "SUBMIT_EMAIL" };
 
-// type tEmailState =
-//     | { status: "awaiting-code-input"; email: string; code: string }
-//     | { status: "done"; email: string }
-//     | { status: "error"; error: Error | null }
-//     | { status: "initial"; email: string }
-//     | { status: "sending-code"; email: string }
-//     | { status: "submitting-code"; email: string; code: string };
-
-// type tEmailAction =
-//     | { type: "CODE_SENT" }
-//     | { type: "ERROR"; payload: Error | null }
-//     | { type: "LOGIN_SUCCESS" }
-//     | { type: "RESET" }
-//     | { type: "SET_CODE"; payload: string }
-//     | { type: "SET_EMAIL"; payload: string }
-//     | { type: "SUBMIT_CODE" }
-//     | { type: "SUBMIT_EMAIL" };
-
 interface iEmailAuthState {
     code: string | null;
     email: string | null;
 }
 
-interface iOtpScreen {
+interface iEmailAuthentication {
+    dispatch: React.ActionDispatch<[action: tAuthAction]>;
+    sendCode: ({ email, disableSignup }: SendCodeToEmail) => Promise<void>;
+}
+
+interface iOtpAuthentication {
     email: string;
     isSubmitting: boolean;
+    onResend: () => void;
+    onSubmit: (code: string) => void;
 }
