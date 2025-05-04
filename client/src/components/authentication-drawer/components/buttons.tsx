@@ -13,7 +13,7 @@ export default function Component({ dispatch }: iProps) {
         <React.Fragment>
             {AUTHENTICATION_BUTTONS.map((props: iAuthenticationButton, index) => (
                 <Button
-                    className="border-blue100/30 border h-15 flex justify-start items-center"
+                    className="border-blue-100 border h-15 flex justify-start items-center"
                     key={index}
                     onClick={() => dispatch(props.action)}
                     variant="outline"

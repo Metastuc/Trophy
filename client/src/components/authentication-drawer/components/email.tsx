@@ -1,46 +1,104 @@
 import { EMAIL } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
+import { useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
+
+import OtpScreen from "./otp";
 
 export default function Component() {
     const [email, setEmail] = React.useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Email submitted:", email);
-        // Add your authentication logic here
-    };
+    const { loginWithCode, sendCode, state } = useLoginWithEmail({
+        onComplete({ user, isNewUser }) {
+            console.log("Login successful:", { user, isNewUser });
+        },
+        onError(error) {
+            console.error("Login error:", error);
+        },
+    });
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <div className="relative w-full mb-4">
-                <div
-                    className={`flex items-center w-full overflow-hidden rounded-xl border ${email ? "bg-blue-600 border-blue-600" : "bg-white border-gray-200"}`}
-                >
-                    <div className="p-4">
-                        <i className={cn("size-5", email ? "text-white/70" : "text-black100/70")}>
-                            {EMAIL()}
-                        </i>
+    async function handleEmailSubmit(event: React.FormEvent) {
+        event.preventDefault();
+        if (!email) return;
+
+        try {
+            await sendCode({ email });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    switch ("awaiting-code-input") {
+        // switch (state.status) {
+        case "initial":
+        case "error":
+            return (
+                <form onSubmit={handleEmailSubmit}>
+                    <div className="relative w-full mb-4">
+                        <div
+                            className={`flex items-center w-full overflow-hidden rounded-xl border ${email ? "bg-blue-600 border-blue-600" : "bg-white border-blue-100"}`}
+                        >
+                            <div className="p-4">
+                                <i
+                                    className={cn(
+                                        "size-5",
+                                        email ? "text-white/70" : "text-black100/70",
+                                    )}
+                                >
+                                    {EMAIL()}
+                                </i>
+                            </div>
+                            <input
+                                type="email"
+                                value={email || ""}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                                    setEmail(event.target.value)
+                                }
+                                placeholder="your@email.com"
+                                className={`flex-grow py-4 outline-none font-normal text-sm ${email ? "bg-blue-600 text-white placeholder-blue-300" : "bg-white"}`}
+                                required
+                            />
+                            <button
+                                type="submit"
+                                className={`px-4 py-4 font-normal text-sm ${email ? "text-green-400" : "text-gray-400"}`}
+                                disabled={!email}
+                            >
+                                Submit
+                            </button>
+                        </div>
                     </div>
-                    <input
-                        type="email"
-                        value={email as string}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@email.com"
-                        className={`flex-grow py-4 outline-none ${email ? "bg-blue-600 text-white placeholder-blue-300" : "bg-white"}`}
-                        required
-                    />
-                    <button
-                        type="submit"
-                        className={`px-4 py-4 font-medium ${email ? "text-green-400" : "text-gray-400"}`}
-                    >
-                        Submit
-                    </button>
-                </div>
-            </div>
+                </form>
+            );
 
-            {/* <div className="text-center text-sm text-gray-500 mt-6">
+        case "awaiting-code-input":
+        case "submitting-code":
+            return (
+                <OtpScreen
+                    email={email as string}
+                    isSubmitting={state.status === "submitting-code"}
+                    onSubmit={(code) => loginWithCode({ code })}
+                />
+            );
+
+        case "sending-code":
+            return (
+                <div className="flex items-center justify-center p-4">
+                    <p>Sending verification code...</p>
+                </div>
+            );
+
+        case "done":
+            return (
+                <div className="flex items-center justify-center p-4">
+                    <p>Login successful!</p>
+                </div>
+            );
+    }
+}
+
+{
+    /* <div className="text-center text-sm text-gray-500 mt-6">
                     By logging in I agree to the{" "}
                     <Link href="#" className="text-gray-700 font-medium">
                         Terms
@@ -49,11 +107,11 @@ export default function Component() {
                     <Link href="#" className="text-gray-700 font-medium">
                         Privacy policy
                     </Link>
-                </div> */}
+                </div> */
+}
 
-            {/* <div className="text-center text-sm font-medium mt-6">
+{
+    /* <div className="text-center text-sm font-medium mt-6">
                     Protected by <span className="font-bold">privy</span>
-                </div> */}
-        </form>
-    );
+                </div> */
 }

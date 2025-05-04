@@ -18,10 +18,13 @@ import { AuthenticationReducer } from "./utils";
 
 export default function Component() {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
-    const [state, dispatch] = React.useReducer(AuthenticationReducer, { authOption: "email" });
+    const [state, dispatch] = React.useReducer(AuthenticationReducer, {
+        type: "default",
+        screenStack: ["default"],
+    });
 
     function renderHeader() {
-        switch (state.authOption) {
+        switch (state.type) {
             case "default":
                 return (
                     <DrawerTitle className="text-center font-normal">Log in or sign up</DrawerTitle>
@@ -33,14 +36,11 @@ export default function Component() {
                         Log in or sign up with email
                     </DrawerTitle>
                 );
-
-            default:
-                break;
         }
     }
 
     function renderDescription() {
-        switch (state.authOption) {
+        switch (state.type) {
             case "default":
                 return (
                     <DrawerDescription className="text-center mt-7.5 font-light text-black200">
@@ -50,27 +50,21 @@ export default function Component() {
                         with your <span className="font-normal text-black100">email</span>
                     </DrawerDescription>
                 );
-
-            default:
-                break;
         }
     }
 
     function renderBody() {
-        switch (state.authOption) {
+        switch (state.type) {
             case "default":
                 return <DefaultButtons dispatch={dispatch} />;
 
             case "email":
                 return <EmailAuthentication />;
-
-            default:
-                break;
         }
     }
 
     return (
-        <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <Drawer dismissible={false} open={!isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger asChild>
                 <Button className="rounded-sm h-6 w-15 bg-blue100">
                     <span className="text-xs">login</span>
