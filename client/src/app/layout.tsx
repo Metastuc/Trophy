@@ -1,15 +1,27 @@
+"use client"
+
 import ProtectedRoutes from "@/components/protected";
 import { AuthenticationContextProvider } from "@/context/authentication";
 import PrivyProvider from "@/context/privy";
-
+import { HuddleClient, HuddleProvider } from "@huddle01/react";
 import type { Metadata } from "next";
 
 import "./globals.css";
 
-export const metadata: Metadata = {
-    title: "Trophy",
-    description: "onChain",
-};
+// Initialize HuddleClient
+const huddleClient = new HuddleClient({
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  options: {
+    activeSpeakers: {
+      size: 12,
+    },
+  },
+});
+
+// export const metadata: Metadata = {
+//     title: "Trophy",
+//     description: "onChain",
+// };
 
 interface iProps {
     children: React.ReactNode;
@@ -28,7 +40,9 @@ function App({ children }: iProps) {
         <PrivyProvider>
             <AuthenticationContextProvider>
                 <ProtectedRoutes>
-                    <>{children}</>
+                    <HuddleProvider client={huddleClient}>
+                        {children}
+                    </HuddleProvider>
                 </ProtectedRoutes>
             </AuthenticationContextProvider>
         </PrivyProvider>
