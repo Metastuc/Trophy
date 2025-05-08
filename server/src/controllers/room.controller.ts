@@ -1,13 +1,13 @@
-// src/controllers/room.controller.ts
 import { type Request, type Response } from "express";
 import { type TypedResponse } from "../type/response";
 import { API } from '@huddle01/server-sdk/api';
 import { HUDDLE_KEY } from '../utils/env.js';
 import { db } from '../utils/firebase.js';
+import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 
 export const createStream = async (
     req: Request,
-    res: Response<TypedResponse<{ roomId?: string }>>
+    res: Response<TypedResponse<{ roomId?: string, token?: string }>>
   ): Promise<void> => {
     try {
       const { title, startTime, address } = req.body;
@@ -37,9 +37,16 @@ export const createStream = async (
       console.log("Livestream saved:", streamData);
   
       if (isLive) {
+        const accessToken = new AccessToken({
+            apiKey: HUDDLE_KEY,
+            roomId,
+            role: Role.HOST,
+            permissions: { admin: true, canConsume: true, canProduce: true },
+        });
+        const token = await accessToken.toJwt();
         res.status(201).json({
           status: "success",
-          data: { roomId },
+          data: { roomId, token }
         });
       } else {
         res.status(201).json({
