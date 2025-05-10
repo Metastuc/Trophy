@@ -1,1 +1,3 @@
-interface iTradeCreatorTokenContext {}
+interface iTradeCreatorTokenContext {
+    setIsOpen?: (open: boolean) => void;
+}
