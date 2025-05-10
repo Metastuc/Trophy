@@ -20,7 +20,7 @@ const LINKS: Array<iNavigationButton> = [
 export default function Component() {
     return (
         <section className="bg-accent fixed bottom-0 z-50 flex w-full items-center justify-center border-t border-t-black/5 py-3.5">
-            <ul className="flex w-80 items-center justify-between">
+            <ul className="flex w-80 items-center justify-between px-4">
                 {LINKS.map((link, index) => (
                     <NavigationButton key={index} {...link} />
                 ))}
