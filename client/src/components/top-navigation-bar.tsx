@@ -5,8 +5,8 @@ import AuthenticationDrawer from "./authentication-drawer";
 import { LOGO, SEARCH } from "./icons";
 
 export default function Component() {
-    const routeMatch = useMatchRoute();
-    const isDiscoverPage = routeMatch({ to: "/discover" });
+    const checkRoute = useMatchRoute();
+    const isDiscoverPage = checkRoute({ to: "/discover" });
     const { toggleIsVisible } = useDiscoverSearchStore();
 
     return (
