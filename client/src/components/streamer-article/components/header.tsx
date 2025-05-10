@@ -23,7 +23,7 @@ export default function Component() {
             </aside>
 
             <aside>
-                <Button variant="default" className="bg-green100 h-6 w-15">
+                <Button variant="default" className="bg-green100 h-6 w-15 rounded-[.125rem]">
                     <span className="text-green200 capitalize">trade</span>
                 </Button>
             </aside>

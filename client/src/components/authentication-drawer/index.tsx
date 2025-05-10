@@ -173,7 +173,7 @@ export default function Component() {
     return (
         <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger asChild>
-                <Button className="bg-blue100 h-6 w-15 rounded-sm">
+                <Button className="bg-blue100 h-6 w-15 rounded-[.125rem]">
                     <span className="text-xs">login</span>
                 </Button>
             </DrawerTrigger>
