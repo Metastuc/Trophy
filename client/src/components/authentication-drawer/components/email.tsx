@@ -26,9 +26,9 @@ export default function Component({ dispatch, sendCode }: iEmailAuthentication) 
 
     return (
         <form onSubmit={handleEmailSubmit}>
-            <div className="relative w-full mb-4">
+            <div className="relative mb-4 w-full">
                 <div
-                    className={`flex items-center w-full overflow-hidden rounded-xl border ${email ? "bg-blue-600 border-blue-600" : "bg-white border-blue-100"}`}
+                    className={`flex w-full items-center overflow-hidden rounded-xl border ${email ? "border-blue-600 bg-blue-600" : "border-blue-100 bg-white"}`}
                 >
                     <div className="p-4">
                         <i className={cn("size-5", email ? "text-white/70" : "text-black100/70")}>
@@ -42,12 +42,12 @@ export default function Component({ dispatch, sendCode }: iEmailAuthentication) 
                             setEmail(event.target.value)
                         }
                         placeholder="your@email.com"
-                        className={`flex-grow py-4 outline-none font-normal text-sm ${email ? "bg-blue-600 text-white placeholder-blue-300" : "bg-white"}`}
+                        className={`flex-grow py-4 text-sm font-normal outline-none ${email ? "bg-blue-600 text-white placeholder-blue-300" : "bg-white"}`}
                         required
                     />
                     <button
                         type="submit"
-                        className={`px-4 py-4 font-normal text-sm ${email ? "text-green-400" : "text-gray-400"}`}
+                        className={`px-4 py-4 text-sm font-normal ${email ? "text-green-400" : "text-gray-400"}`}
                         disabled={!email}
                     >
                         Submit
