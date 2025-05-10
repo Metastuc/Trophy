@@ -1,7 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import React from "react";
 
-import { NAV_DISCOVER, NAV_HOME, NAV_NOTIFICATIONS, NAV_PROFILE, NAV_STREAM } from "./icons";
+import { NAV_DISCOVER, NAV_HOME, NAV_NOTIFICATIONS, NAV_PROFILE, NAV_STREAM } from "@/assets/icons";
+import { resetScroll } from "@/lib/utils";
 
 interface iNavigationButton {
     href: string;
@@ -29,13 +30,30 @@ export default function Component() {
     );
 }
 
+// resetScroll()
+
 function NavigationButton({ href, icon, title }: iNavigationButton) {
+    const navigate = useNavigate();
+    const routerState = useRouterState();
+
+    const linkIsActive = routerState.location.pathname === href;
+
+    function handleClick(event: React.MouseEvent) {
+        if (linkIsActive) {
+            event.preventDefault();
+            resetScroll();
+            navigate({ to: href, replace: true });
+        }
+    }
+
     return (
         <li>
             <Link
                 to={href}
+                onClick={handleClick}
                 className="flex flex-col items-center justify-center gap-0.5"
                 activeProps={{ className: "text-blue100" }}
+                resetScroll
             >
                 <i className="size-6">{icon()}</i>
                 <span className="text-[.5rem] capitalize">{title}</span>

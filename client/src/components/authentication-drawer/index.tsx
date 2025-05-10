@@ -1,6 +1,7 @@
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
+import { EMAIL, PRIVY } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/drawer";
 import { sleep } from "@/lib/utils";
 
-import { EMAIL, PRIVY } from "../icons";
 import DefaultButtons from "./components/buttons";
 import EmailAuthentication from "./components/email";
 import OtpAuthentication from "./components/otp";

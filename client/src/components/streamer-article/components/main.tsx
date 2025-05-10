@@ -1,4 +1,4 @@
-import { LIVE } from "@/components/icons";
+import { LIVE } from "@/assets/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useStreamArticleContext } from "../hook";

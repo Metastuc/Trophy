@@ -12,7 +12,17 @@ import { PrivyContextProvider } from "@/contexts/privy.tsx";
 import { routeTree } from "./routeTree.gen.ts";
 
 const queryClient = new QueryClient();
-const router = createRouter({ routeTree, context: { queryClient, authentication: undefined! } });
+const router = createRouter({
+    routeTree,
+    context: { queryClient, authentication: undefined! },
+    scrollRestoration: true,
+    getScrollRestorationKey(location) {
+        const paths = ["/"];
+        return paths.includes(location.pathname)
+            ? location.pathname
+            : (location.state.key as string);
+    },
+});
 
 declare module "@tanstack/react-router" {
     interface Register {
