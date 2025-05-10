@@ -1,10 +1,11 @@
-import StreamerBoard from "@/components/streamer-board";
-import { useDiscoverSearchStore } from "@/store/discover-search";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 
+import StreamerBoard from "@/components/streamer-board";
+import { useDiscoverSearchStore } from "@/store/discover-search";
+
 export const Route = createFileRoute("/discover")({
-    component() {
+    component: function Page() {
         const { isVisible } = useDiscoverSearchStore();
 
         return (
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/discover")({
 
                 <motion.footer layout className="space-y-5">
                     {[...Array(10)].map((_, index) => (
-                        <StreamerBoard key={index} counter={index} />
+                        <StreamerBoard key={index} counter={index + 1} />
                     ))}
                 </motion.footer>
             </section>

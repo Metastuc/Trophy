@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import React from "react";
 
 import HomeDropdown from "@/components/home-dropdown";
 import StreamArticle from "@/components/streamer-article";
-import React from "react";
 
 export const Route = createFileRoute("/")({
     beforeLoad({ context, location }) {
@@ -11,11 +11,11 @@ export const Route = createFileRoute("/")({
         }
     },
 
-    component() {
+    component: function Page() {
         const [content, setContent] = React.useState<tContent>("trending");
 
         return (
-            <section className="space-y-10.5 px-4 my-2">
+            <section className="my-2 space-y-10.5 px-4">
                 <HomeDropdown content={content} setContent={setContent} />
 
                 <footer className="space-y-6.5">

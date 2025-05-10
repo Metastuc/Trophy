@@ -1,6 +1,7 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 
 import { useDiscoverSearchStore } from "@/store/discover-search";
+
 import AuthenticationDrawer from "./authentication-drawer";
 import { LOGO, SEARCH } from "./icons";
 
