@@ -251,3 +251,22 @@ export function WATCHING() {
         </svg>
     );
 }
+
+export function ARROW_DOWN() {
+    return (
+        <svg
+            width={11}
+            height={6}
+            viewBox="0 0 11 6"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M10 1L5.5 5 1 1"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
