@@ -10,7 +10,7 @@ export default function Component() {
                 <span>title</span>
             </aside>
 
-            <aside className="bg-black100 flex gap-2 rounded-sm p-2">
+            <aside className="bg-black100 flex gap-2 rounded-[.125rem] p-2">
                 <i className="size-2.5">{WATCHING()}</i>
                 <span className="text-[.5rem] text-white">watching</span>
             </aside>
