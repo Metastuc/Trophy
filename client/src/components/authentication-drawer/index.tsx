@@ -9,6 +9,7 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer";
+import { sleep } from "@/lib/utils";
 
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
@@ -73,6 +74,17 @@ export default function Component() {
             hasLoggedInRef.current = false;
         }
     }, [state.type, login]);
+
+    async function handleDrawerState() {
+        if (isDrawerOpen) {
+            setIsDrawerOpen(false);
+
+            await sleep(150);
+            dispatch({ type: "GO_TO_DEFAULT" });
+        } else {
+            setIsDrawerOpen(true);
+        }
+    }
 
     function renderHeader() {
         switch (state.type) {
@@ -178,7 +190,7 @@ export default function Component() {
                         </Button>
                     ) : null}
 
-                    <DrawerClose asChild onClick={() => setIsDrawerOpen(false)}>
+                    <DrawerClose asChild onClick={handleDrawerState}>
                         <Button variant="default" className=" bg-blue100 ml-auto">
                             Cancel
                         </Button>
