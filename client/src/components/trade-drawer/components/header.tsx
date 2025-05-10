@@ -7,7 +7,7 @@ export default function Component() {
 
     return (
         <header className="relative flex h-18 items-center justify-between">
-            <figure className="absolute -top-0.25 right-5.5 -z-10 size-full">{icon}</figure>
+            <figure className="absolute -z-10 -left-0.5 -top-0.5">{icon}</figure>
 
             <div className="flex w-full items-center justify-between pr-4 pl-6">
                 <aside className="flex items-center gap-0.5">
@@ -20,6 +20,8 @@ export default function Component() {
 
                         {/* <Skeleton className={cn("user-pfp", "rounded-full")} /> */}
                     </i>
+
+                    <span className="text-base text-white font-normal">@username</span>
                 </aside>
 
                 <aside className="flex items-center justify-center">
