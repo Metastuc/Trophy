@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import TradeDrawer from "@/components/trade-drawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useStreamArticleContext } from "../hook";
@@ -22,11 +22,7 @@ export default function Component() {
                 <span className="text-xs">@username</span>
             </aside>
 
-            <aside>
-                <Button variant="default" className="bg-green100 h-6 w-15 rounded-[.125rem]">
-                    <span className="text-green200 capitalize">trade</span>
-                </Button>
-            </aside>
+            <TradeDrawer />
         </header>
     );
 }
