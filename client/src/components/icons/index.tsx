@@ -39,11 +39,19 @@ export function NAV_HOME() {
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                d="M2.364 12.958c-.38-2.637-.57-3.956-.029-5.083.54-1.127 1.691-1.812 3.992-3.183l1.385-.825C9.8 2.622 10.846 2 12 2c1.154 0 2.199.622 4.288 1.867l1.385.825c2.3 1.37 3.451 2.056 3.992 3.183.54 1.127.35 2.446-.03 5.083l-.278 1.937c-.487 3.388-.731 5.082-1.906 6.093C18.276 22 16.552 22 13.106 22h-2.212c-3.447 0-5.17 0-6.345-1.012-1.175-1.011-1.419-2.705-1.906-6.093l-.279-1.937z"
-                stroke="#204CE1"
-                strokeWidth={1.5}
+                d="M15 21v-8a1 1 0 00-1-1h-4a1 1 0 00-1 1v8"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
-            <path d="M15 18H9" stroke="#204CE1" strokeWidth={1.5} strokeLinecap="round" />
+            <path
+                d="M3 10a2 2 0 01.709-1.528l7-5.999a2 2 0 012.582 0l7 5.999A2 2 0 0121 10v9a2 2 0 01-2 2H5a2 2 0 01-2-2v-9z"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
         </svg>
     );
 }
@@ -58,10 +66,11 @@ export function NAV_DISCOVER() {
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                d="M14 22c0-3.771 0-5.657 1.172-6.828C16.343 14 18.229 14 22 14M2 14c3.771 0 5.657 0 6.828 1.172C10 16.343 10 18.229 10 22M2 10c3.771 0 5.657 0 6.828-1.172C10 7.657 10 5.771 10 2M22 10c-3.771 0-5.657 0-6.828-1.172C14 7.657 14 5.771 14 2"
-                stroke="#204CE1"
-                strokeWidth={1.5}
+                d="M18.2 12.27L20 6H4l1.8 6.27a1 1 0 00.95.73h10.5a1 1 0 00.96-.73h-.01zM8 13v9M16 22v-9M9 6l1 7M15 6l-1 7M12 6V2M13 2h-2"
+                stroke="currentColor"
+                strokeWidth={2}
                 strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
@@ -77,15 +86,18 @@ export function NAV_STREAM() {
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                d="M12 5c0-1.414 0-2.121.44-2.56C12.878 2 13.585 2 15 2h1c1.414 0 2.121 0 2.56.44C19 2.878 19 3.585 19 5c0 1.414 0 2.121-.44 2.56C18.122 8 17.415 8 16 8h-1c-1.414 0-2.121 0-2.56-.44C12 7.122 12 6.415 12 5zM19 3.75l1.615-.673c.627-.261.94-.391 1.162-.243C22 2.982 22 3.322 22 4v2c0 .678 0 1.018-.223 1.166-.222.148-.535.018-1.162-.243L19 6.25v-2.5z"
-                stroke="#204CE1"
-                strokeWidth={1.5}
+                d="M10 7.75a.75.75 0 011.142-.638l3.664 2.249a.75.75 0 010 1.278l-3.664 2.25a.751.751 0 01-1.142-.64V7.75zM7 21h10"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
             <path
-                d="M16 22H8M12 17v5M22 13H2M22 10v1c0 2.828 0 4.243-.879 5.121C20.243 17 18.828 17 16 17H8c-2.828 0-4.243 0-5.121-.879C2 15.243 2 13.828 2 11V9.5c0-3.287 0-4.931.908-6.038a4 4 0 01.554-.554C4.57 2 6.212 2 9.5 2"
-                stroke="#204CE1"
-                strokeWidth={1.5}
+                d="M20 3H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2z"
+                stroke="currentColor"
+                strokeWidth={2}
                 strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
@@ -101,15 +113,11 @@ export function NAV_NOTIFICATIONS() {
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                d="M18.75 9.71v-.705C18.75 5.136 15.726 2 12 2S5.25 5.136 5.25 9.005v.705a4.4 4.4 0 01-.692 2.375L3.45 13.81c-1.011 1.575-.239 3.716 1.52 4.214a25.775 25.775 0 0014.06 0c1.759-.498 2.531-2.639 1.52-4.213l-1.108-1.725a4.4 4.4 0 01-.693-2.375z"
-                stroke="#204CE1"
-                strokeWidth={1.5}
-            />
-            <path
-                d="M7.5 19c.655 1.748 2.422 3 4.5 3s3.845-1.252 4.5-3M12 6v4"
-                stroke="#204CE1"
-                strokeWidth={1.5}
+                d="M10.268 21a2 2 0 003.464 0M22 8c0-2.3-.8-4.3-2-6M3.262 15.326A1 1 0 004 17h16a1 1 0 00.74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 106 8c0 4.499-1.411 5.956-2.738 7.326zM4 2C2.8 3.7 2 5.7 2 8"
+                stroke="currentColor"
+                strokeWidth={2}
                 strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
@@ -124,11 +132,12 @@ export function NAV_PROFILE() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <circle cx={12} cy={6} r={4} stroke="#204CE1" strokeWidth={1.5} />
             <path
-                d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5z"
-                stroke="#204CE1"
-                strokeWidth={1.5}
+                d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
