@@ -1,8 +1,8 @@
+import { type QueryClient } from "@tanstack/react-query";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+
 import BottomNavigationBar from "@/components/bottom-navigation-bar";
 import TopNavigationBar from "@/components/top-navigation-bar";
-
-import { type QueryClient } from "@tanstack/react-query";
-import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 
 type RouterContext = {
     queryClient: QueryClient;
@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <div className="relative min-h-screen">
             <TopNavigationBar />
-            <main>
+            <main className="mb-20 border border-red-700">
                 <Outlet />
             </main>
             <BottomNavigationBar />

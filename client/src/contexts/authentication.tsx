@@ -1,4 +1,4 @@
-import { usePrivy,type User } from "@privy-io/react-auth";
+import { usePrivy, type User } from "@privy-io/react-auth";
 import React from "react";
 
 export const AuthenticationContext: React.Context<iAuthenticationContext> =

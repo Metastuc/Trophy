@@ -29,7 +29,7 @@ export default function Component({ email, isSubmitting, onResend, onSubmit }: i
                     <InputOTPGroup className="flex w-full items-center justify-center gap-2">
                         {[...Array(6)].map((_, index) => (
                             <InputOTPSlot
-                                className="border h-15 w-12 rounded-md"
+                                className="h-15 w-12 rounded-md border"
                                 index={index}
                                 key={index}
                             />

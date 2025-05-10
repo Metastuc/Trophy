@@ -105,7 +105,7 @@ export default function Component() {
             case "otp":
                 return (
                     <DrawerTitle className="text-center font-normal">
-                        <i className="text-black size-10">{EMAIL()}</i>
+                        <i className="size-10 text-black">{EMAIL()}</i>
                     </DrawerTitle>
                 );
 
@@ -118,11 +118,11 @@ export default function Component() {
         switch (state.type) {
             case "default":
                 return (
-                    <DrawerDescription className="text-center mt-7.5 font-light text-black200">
-                        welcome to <span className="font-normal text-black100">trophy</span>.
-                        Continue with <span className="font-normal text-black100">farcaster</span>,
-                        your <span className="font-normal text-black100">wallet</span> or sign up
-                        with your <span className="font-normal text-black100">email</span>
+                    <DrawerDescription className="text-black200 mt-7.5 text-center font-light">
+                        welcome to <span className="text-black100 font-normal">trophy</span>.
+                        Continue with <span className="text-black100 font-normal">farcaster</span>,
+                        your <span className="text-black100 font-normal">wallet</span> or sign up
+                        with your <span className="text-black100 font-normal">email</span>
                     </DrawerDescription>
                 );
 
@@ -131,10 +131,10 @@ export default function Component() {
 
             case "otp":
                 return (
-                    <DrawerDescription className="text-center font-light text-black200">
+                    <DrawerDescription className="text-black200 text-center font-light">
                         Please check{" "}
-                        <span className="font-normal text-black100">{state.email}</span> for an
-                        email from <span className="font-normal text-black100">privy.io</span> and
+                        <span className="text-black100 font-normal">{state.email}</span> for an
+                        email from <span className="text-black100 font-normal">privy.io</span> and
                         enter your code below.
                     </DrawerDescription>
                 );
@@ -173,17 +173,17 @@ export default function Component() {
     return (
         <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger asChild>
-                <Button className="rounded-sm h-6 w-15 bg-blue100">
+                <Button className="bg-blue100 h-6 w-15 rounded-sm">
                     <span className="text-xs">login</span>
                 </Button>
             </DrawerTrigger>
 
             <DrawerContent>
-                <DrawerFooter className="flex items-center justify-between flex-row">
+                <DrawerFooter className="flex flex-row items-center justify-between">
                     {state.type !== "default" && state.type !== "wallet" ? (
                         <Button
                             variant="ghost"
-                            className="border border-blue100 text-blue100 hover:bg-blue100/10"
+                            className="border-blue100 text-blue100 hover:bg-blue100/10 border"
                             onClick={() => dispatch({ type: "BACK" })}
                         >
                             Back
@@ -191,7 +191,7 @@ export default function Component() {
                     ) : null}
 
                     <DrawerClose asChild onClick={handleDrawerState}>
-                        <Button variant="default" className=" bg-blue100 ml-auto">
+                        <Button variant="default" className="bg-blue100 ml-auto">
                             Cancel
                         </Button>
                     </DrawerClose>
