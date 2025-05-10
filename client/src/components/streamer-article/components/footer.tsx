@@ -1,17 +1,18 @@
+import { WATCHING } from "@/components/icons";
 import { useStreamArticleContext } from "../hook";
 
 export default function Component() {
     const {} = useStreamArticleContext();
 
     return (
-        <footer>
+        <footer className="flex items-center justify-between">
             <aside>
                 <span>title</span>
             </aside>
 
-            <aside>
-                <i>icon</i>
-                <span>watching</span>
+            <aside className="bg-black100 flex gap-2 rounded-sm p-2">
+                <i className="size-2.5">{WATCHING()}</i>
+                <span className="text-[.5rem] text-white">watching</span>
             </aside>
         </footer>
     );

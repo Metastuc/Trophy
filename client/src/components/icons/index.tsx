@@ -201,3 +201,44 @@ export function PRIVY() {
         </svg>
     );
 }
+
+export function LIVE() {
+    return (
+        <svg
+            width={10}
+            height={10}
+            viewBox="0 0 10 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <circle cx={5.00001} cy={5} r={4.66667} fill="#F32828" />
+        </svg>
+    );
+}
+
+export function WATCHING() {
+    return (
+        <svg
+            width={11}
+            height={11}
+            viewBox="0 0 11 11"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <g
+                clipPath="url(#clip0_216_1520)"
+                stroke="#204CE1"
+                strokeWidth={0.916667}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <path d="M7.333 9.625v-.917A1.833 1.833 0 005.5 6.875H2.75A1.833 1.833 0 00.917 8.708v.917M7.333 1.434a1.833 1.833 0 010 3.549M10.083 9.625v-.917a1.833 1.833 0 00-1.375-1.773M4.125 5.042a1.833 1.833 0 100-3.667 1.833 1.833 0 000 3.667z" />
+            </g>
+            <defs>
+                <clipPath id="clip0_216_1520">
+                    <path fill="#fff" d="M0 0H11V11H0z" />
+                </clipPath>
+            </defs>
+        </svg>
+    );
+}

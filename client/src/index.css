@@ -6,12 +6,17 @@
     --color-black100: #060606;
     --color-black200: #000000b2;
     --color-blue100: #204ce1;
+    --color-green100: #DDFFD8;
+    --color-green200: #137C00;
+
+
 
     --font-oxanium: "Oxanium", sans-serif;
 
     --animate-caret-blink: caret-blink 1.25s ease-out infinite;
 
     @keyframes caret-blink {
+
         0%,
         70%,
         100% {
@@ -157,5 +162,9 @@
         img {
             @apply !size-6;
         }
+    }
+
+    :is(.user-pfp) {
+        @apply !size-7;
     }
 }

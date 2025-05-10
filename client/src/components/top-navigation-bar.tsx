@@ -5,7 +5,7 @@ import { LOGO } from "./icons";
 
 export default function Component() {
     return (
-        <section className="sticky top-0 flex w-full items-center justify-between px-5 py-7">
+        <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white px-5 py-7">
             <aside>
                 <Link to={"/"}>
                     <LOGO />

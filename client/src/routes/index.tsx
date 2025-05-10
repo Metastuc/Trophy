@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
             <section className="space-y-10.5 px-4">
                 <header>dropdown</header>
 
-                <footer>
+                <footer className="space-y-6.5">
                     {[...Array(10)].map((_, index) => (
                         <StreamArticle key={index} />
                     ))}

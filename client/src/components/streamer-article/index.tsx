@@ -12,7 +12,7 @@ export default function Component({}: iStreamArticle) {
 
     return (
         <StreamArticleContext.Provider value={contextValue}>
-            <article className={`h-72 border border-green-700`}>
+            <article className={`h-72 space-y-2`}>
                 <Header />
                 <Main />
                 <Footer />
