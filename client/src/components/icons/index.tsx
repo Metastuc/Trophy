@@ -270,3 +270,23 @@ export function ARROW_DOWN() {
         </svg>
     );
 }
+
+export function SEARCH() {
+    return (
+        <svg
+            width={12}
+            height={12}
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M10 10l1 1m-.5-5.25a4.75 4.75 0 11-9.5 0 4.75 4.75 0 019.5 0z"
+                stroke="#060606"
+                strokeOpacity={0.8}
+                strokeWidth={0.8}
+                strokeLinecap="round"
+            />
+        </svg>
+    );
+}
