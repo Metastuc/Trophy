@@ -1,13 +1,14 @@
+import "./index.css";
+
+import { QueryClient } from "@tanstack/react-query";
+import { createRouter,RouterProvider } from "@tanstack/react-router";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+
 import { Toaster } from "@/components/ui/sonner";
 import { useAuthenticationContext } from "@/contexts/authentication.tsx";
 import { PrivyContextProvider } from "@/contexts/privy.tsx";
 
-import { QueryClient } from "@tanstack/react-query";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-
-import "./index.css";
 import { routeTree } from "./routeTree.gen.ts";
 
 const queryClient = new QueryClient();

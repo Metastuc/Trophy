@@ -1,6 +1,6 @@
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-
 import React from "react";
+
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export default function Component({ email, isSubmitting, onResend, onSubmit }: iOtpAuthentication) {
     const [code, setCode] = React.useState<string | null>(null);
