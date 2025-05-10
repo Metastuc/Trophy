@@ -10,85 +10,85 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as DiscoverImport } from './routes/discover'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as DiscoverImport } from "./routes/discover";
+import { Route as IndexImport } from "./routes/index";
 
 // Create/Update Routes
 
 const DiscoverRoute = DiscoverImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: "/discover",
+    path: "/discover",
+    getParentRoute: () => rootRoute,
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: "/",
+    path: "/",
+    getParentRoute: () => rootRoute,
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+declare module "@tanstack/react-router" {
+    interface FileRoutesByPath {
+        "/": {
+            id: "/";
+            path: "/";
+            fullPath: "/";
+            preLoaderRoute: typeof IndexImport;
+            parentRoute: typeof rootRoute;
+        };
+        "/discover": {
+            id: "/discover";
+            path: "/discover";
+            fullPath: "/discover";
+            preLoaderRoute: typeof DiscoverImport;
+            parentRoute: typeof rootRoute;
+        };
     }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverImport
-      parentRoute: typeof rootRoute
-    }
-  }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
+    "/": typeof IndexRoute;
+    "/discover": typeof DiscoverRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
+    "/": typeof IndexRoute;
+    "/discover": typeof DiscoverRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
+    __root__: typeof rootRoute;
+    "/": typeof IndexRoute;
+    "/discover": typeof DiscoverRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover'
-  id: '__root__' | '/' | '/discover'
-  fileRoutesById: FileRoutesById
+    fileRoutesByFullPath: FileRoutesByFullPath;
+    fullPaths: "/" | "/discover";
+    fileRoutesByTo: FileRoutesByTo;
+    to: "/" | "/discover";
+    id: "__root__" | "/" | "/discover";
+    fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DiscoverRoute: typeof DiscoverRoute
+    IndexRoute: typeof IndexRoute;
+    DiscoverRoute: typeof DiscoverRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DiscoverRoute: DiscoverRoute,
-}
+    IndexRoute: IndexRoute,
+    DiscoverRoute: DiscoverRoute,
+};
 
 export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+    ._addFileChildren(rootRouteChildren)
+    ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
