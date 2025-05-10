@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import { ARROW_DOWN } from "./icons";
 import { Button } from "./ui/button";
@@ -27,14 +27,32 @@ export default function Component({ content, setContent }: iHomeDropdown) {
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
     const headerRef = React.useRef<HTMLDivElement>(null);
 
+    const listVariants = {
+        open: {
+            transition: {
+                staggerChildren: 0.1,
+                staggerDirection: 1,
+            },
+        },
+        closed: {
+            transition: {
+                staggerChildren: 0.1,
+                staggerDirection: -1,
+            },
+        },
+    };
+
     const itemVariants = {
-        hidden: { x: 50, opacity: 0 },
-        visible: (i: number) => ({
-            x: 0,
+        open: {
             opacity: 1,
-            transition: { delay: i * 0.5 },
-        }),
-        exit: { x: -50, opacity: 0 },
+            y: 0,
+            transition: { duration: 0.3 },
+        },
+        closed: {
+            opacity: 0,
+            y: -30,
+            transition: { duration: 0.2 },
+        },
     };
 
     function handleSelect(value: string) {
@@ -66,36 +84,35 @@ export default function Component({ content, setContent }: iHomeDropdown) {
                 <i>{ARROW_DOWN()}</i>
             </Button>
 
-            {isOpen ? (
-                <motion.ul
-                    className="bg-accent absolute top-[105%] z-5 w-full"
-                    key={"home-dropdown"}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    {DROPDOWN_BUTTONS.map((item, index) => (
-                        <motion.li
-                            key={index}
-                            // initial={{ x: 300, opacity: 0 }}
-                            // animate={{ x: 0, opacity: 1 }}
-                            // exit={{ x: -300, opacity: 0 }}
-                            variants={itemVariants}
-                            // initial="hidden"
-                            animate="animate"
-                            exit="exit"
-                            className="bg-black100 flex h-7 items-center justify-start"
-                        >
-                            <button onClick={() => handleSelect(item.value)} className="size-full">
-                                <span className="ml-5 flex items-center justify-start text-xs text-white capitalize">
-                                    {item.title}
-                                </span>
-                            </button>
-                        </motion.li>
-                    ))}
-                </motion.ul>
-            ) : null}
+            <AnimatePresence>
+                {isOpen ? (
+                    <motion.ul
+                        className="absolute top-[105%] z-5 w-full"
+                        key={"home-dropdown"}
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        variants={listVariants}
+                    >
+                        {DROPDOWN_BUTTONS.map((item, index) => (
+                            <motion.li
+                                key={index}
+                                variants={itemVariants}
+                                className="bg-black100 flex h-7 items-center justify-start"
+                            >
+                                <button
+                                    onClick={() => handleSelect(item.value)}
+                                    className="size-full"
+                                >
+                                    <span className="ml-5 flex items-center justify-start text-xs text-white capitalize">
+                                        {item.title}
+                                    </span>
+                                </button>
+                            </motion.li>
+                        ))}
+                    </motion.ul>
+                ) : null}
+            </AnimatePresence>
         </header>
     );
 }
