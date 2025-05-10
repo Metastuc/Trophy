@@ -11,10 +11,14 @@ export const Route = createFileRoute("/")({
 
     component() {
         return (
-            <section>
-                {[...Array(10)].map((_, index) => (
-                    <StreamArticle key={index} />
-                ))}
+            <section className="space-y-10.5 px-4">
+                <header>dropdown</header>
+
+                <footer>
+                    {[...Array(10)].map((_, index) => (
+                        <StreamArticle key={index} />
+                    ))}
+                </footer>
             </section>
         );
     },
