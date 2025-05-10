@@ -87,7 +87,9 @@ export default function Component({ content, setContent }: iHomeDropdown) {
                 )}
             >
                 <span className="text-xs capitalize">{content}</span>
-                <i>{ARROW_DOWN()}</i>
+                <i className={cn("transition-transform duration-150", isOpen ? "rotate-180" : "")}>
+                    {ARROW_DOWN()}
+                </i>
             </Button>
 
             <AnimatePresence>

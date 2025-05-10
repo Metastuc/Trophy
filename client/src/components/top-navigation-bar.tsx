@@ -13,7 +13,6 @@ export default function Component() {
             </aside>
 
             <aside className="flex items-center gap-3.5">
-                <div>search</div>
                 <AuthenticationDrawer />
             </aside>
         </section>
