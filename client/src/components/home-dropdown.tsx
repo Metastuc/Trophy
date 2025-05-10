@@ -29,29 +29,31 @@ export default function Component({ content, setContent }: iHomeDropdown) {
 
     const listVariants = {
         open: {
+            opacity: 1,
             transition: {
                 staggerChildren: 0.1,
                 staggerDirection: 1,
             },
         },
         closed: {
+            opacity: 0,
             transition: {
                 staggerChildren: 0.1,
-                staggerDirection: -1,
+                staggerDirection: 0,
             },
         },
     };
 
     const itemVariants = {
         open: {
-            opacity: 1,
             y: 0,
-            transition: { duration: 0.3 },
+            opacity: 1,
+            transition: { duration: 0.25, ease: "easeOut" },
         },
         closed: {
+            y: -15,
             opacity: 0,
-            y: -30,
-            transition: { duration: 0.2 },
+            transition: { duration: 0.25, ease: "easeIn" },
         },
     };
 
