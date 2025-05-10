@@ -19,8 +19,8 @@ const LINKS: Array<iNavigationButton> = [
 
 export default function Component() {
     return (
-        <section className="absolute bottom-0 border border-green-500 w-full">
-            <ul className="flex justify-between items-center">
+        <section className="fixed bottom-0 w-full flex justify-center items-center py-3.5 shadow-accent-foreground">
+            <ul className="flex justify-between items-center w-80">
                 {LINKS.map((link, index) => (
                     <NavigationButton key={index} {...link} />
                 ))}
@@ -32,9 +32,9 @@ export default function Component() {
 function NavigationButton({ href, icon, title }: iNavigationButton) {
     return (
         <li>
-            <Link to={href}>
-                <i>{icon()}</i>
-                <span className="capitalize">{title}</span>
+            <Link to={href} className="flex flex-col items-center justify-center gap-1.5">
+                <i className="size-6">{icon()}</i>
+                <span className="capitalize text-[.5rem]">{title}</span>
             </Link>
         </li>
     );
