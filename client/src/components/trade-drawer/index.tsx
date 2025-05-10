@@ -11,26 +11,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import React from "react";
 import Header from "./components/header";
 import { TradeCreatorTokenContext } from "./hook";
 
 export default function Component() {
+    const [isOpen, setIsOpen] = React.useState<boolean>(false);
+
     const contextValue: iTradeCreatorTokenContext = {
-        username: "@defaultUser",
-        title: "Default Stream",
-        watching: 0,
+        setIsOpen,
     };
 
     return (
         <TradeCreatorTokenContext.Provider value={contextValue}>
-            <AlertDialog>
+            <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
                 <AlertDialogTrigger asChild>
                     <Button variant="default" className="bg-green100 h-6 w-15 rounded-[.125rem]">
                         <span className="text-green200 capitalize">trade</span>
                     </Button>
                 </AlertDialogTrigger>
 
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-none p-0">
                     <Header />
                 </AlertDialogContent>
             </AlertDialog>
