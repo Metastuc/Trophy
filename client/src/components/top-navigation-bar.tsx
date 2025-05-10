@@ -11,7 +11,7 @@ export default function Component() {
     const { toggleIsVisible } = useDiscoverSearchStore();
 
     return (
-        <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white px-5 py-7">
+        <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white/85 px-5 py-7 backdrop-blur-sm">
             <aside>
                 <Link to={"/"}>
                     <LOGO />
