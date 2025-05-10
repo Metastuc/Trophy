@@ -1,4 +1,4 @@
-import { WATCHING } from "@/components/icons";
+import { WATCHING } from "@/assets/icons";
 
 import { useStreamArticleContext } from "../hook";
 

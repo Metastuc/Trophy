@@ -1,4 +1,4 @@
-import { EMAIL, FARCASTER, WALLET } from "@/components/icons";
+import { EMAIL, FARCASTER, WALLET } from "@/assets/icons";
 
 export const AUTHENTICATION_BUTTONS: Array<iAuthenticationButton> = [
     {

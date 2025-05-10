@@ -1,7 +1,7 @@
 import React from "react";
 import { toast } from "sonner";
 
-import { EMAIL } from "@/components/icons";
+import { EMAIL } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
 export default function Component({ dispatch, sendCode }: iEmailAuthentication) {

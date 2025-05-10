@@ -1,17 +1,24 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 
+import { LOGO, SEARCH } from "@/assets/icons";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 
+import { resetScroll, sleep } from "@/lib/utils";
 import AuthenticationDrawer from "./authentication-drawer";
-import { LOGO, SEARCH } from "./icons";
 
 export default function Component() {
     const checkRoute = useMatchRoute();
-    const isDiscoverPage = checkRoute({ to: "/discover" });
     const { toggleIsVisible } = useDiscoverSearchStore();
 
+    async function handleButtonClick() {
+        toggleIsVisible();
+
+        await sleep(250);
+        resetScroll();
+    }
+
     return (
-        <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white/85 px-5 py-7 backdrop-blur-sm">
+        <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white/85 p-5 backdrop-blur-sm">
             <aside>
                 <Link to={"/"}>
                     <LOGO />
@@ -19,8 +26,8 @@ export default function Component() {
             </aside>
 
             <aside className="flex items-center gap-3.5">
-                {isDiscoverPage ? (
-                    <button onClick={() => toggleIsVisible()}>
+                {checkRoute({ to: "/discover" }) ? (
+                    <button onClick={handleButtonClick}>
                         <i className="size-6">{SEARCH()}</i>
                     </button>
                 ) : null}
