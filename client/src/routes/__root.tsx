@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <div className="relative min-h-screen">
             <TopNavigationBar />
-            <main className="mb-20 border border-red-700">
+            <main className="mb-20">
                 <Outlet />
             </main>
             <BottomNavigationBar />
