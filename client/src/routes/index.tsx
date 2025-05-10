@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
         const [content, setContent] = React.useState<tContent>("trending");
 
         return (
-            <section className="space-y-10.5 px-4">
+            <section className="space-y-10.5 px-4 my-2">
                 <HomeDropdown content={content} setContent={setContent} />
 
                 <footer className="space-y-6.5">

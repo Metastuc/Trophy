@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import { ARROW_DOWN } from "./icons";
@@ -80,7 +81,10 @@ export default function Component({ content, setContent }: iHomeDropdown) {
             <Button
                 variant={"default"}
                 onClick={() => setIsOpen(!isOpen)}
-                className="h-7 w-28 rounded-[.125rem] text-white"
+                className={cn(
+                    "h-7 w-28 rounded-[.125rem] text-white",
+                    isOpen ? "bg-primary/90" : "",
+                )}
             >
                 <span className="text-xs capitalize">{content}</span>
                 <i>{ARROW_DOWN()}</i>
