@@ -1,7 +1,6 @@
-import { createFileRoute,Outlet } from "@tanstack/react-router";
+import StreamArticle from "@/components/stream-article";
 
-import BottomNavigationBar from "@/components/bottom-navigation-bar";
-import TopNavigationBar from "@/components/top-navigation-bar";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
     beforeLoad({ context, location }) {
@@ -12,13 +11,11 @@ export const Route = createFileRoute("/")({
 
     component() {
         return (
-            <div className="relative min-h-screen">
-                <TopNavigationBar />
-                <main>
-                    <Outlet />
-                </main>
-                <BottomNavigationBar />
-            </div>
+            <section>
+                {[...Array(10)].map((_, index) => (
+                    <StreamArticle key={index} />
+                ))}
+            </section>
         );
     },
 });
