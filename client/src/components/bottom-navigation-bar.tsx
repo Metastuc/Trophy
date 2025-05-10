@@ -20,7 +20,7 @@ const LINKS: Array<iNavigationButton> = [
 
 export default function Component() {
     return (
-        <section className="bg-accent fixed bottom-0 z-50 flex w-full items-center justify-center border-t border-t-black/5 py-3.5">
+        <section className="bg-accent/85 fixed bottom-0 z-50 flex w-full items-center justify-center border-t border-t-black/5 py-3.5 backdrop-blur-[.125rem] backdrop-grayscale">
             <ul className="flex w-80 items-center justify-between px-4">
                 {LINKS.map((link, index) => (
                     <NavigationButton key={index} {...link} />
@@ -29,8 +29,6 @@ export default function Component() {
         </section>
     );
 }
-
-// resetScroll()
 
 function NavigationButton({ href, icon, title }: iNavigationButton) {
     const navigate = useNavigate();
