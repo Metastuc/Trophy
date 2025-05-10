@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import StreamArticle from "@/components/stream-article";
+import StreamArticle from "@/components/streamer-article";
 
 export const Route = createFileRoute("/")({
     beforeLoad({ context, location }) {
