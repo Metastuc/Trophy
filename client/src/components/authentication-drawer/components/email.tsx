@@ -1,8 +1,8 @@
-import { EMAIL } from "@/components/icons";
-import { cn } from "@/lib/utils";
-
 import React from "react";
 import { toast } from "sonner";
+
+import { EMAIL } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 export default function Component({ dispatch, sendCode }: iEmailAuthentication) {
     const [email, setEmail] = React.useState<string | null>(null);
