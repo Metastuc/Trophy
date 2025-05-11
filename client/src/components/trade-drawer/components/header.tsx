@@ -6,10 +6,10 @@ export default function Component() {
     const { setIsOpen } = useTradeCreatorTokenContext();
 
     return (
-        <header className="relative flex h-18 items-center justify-between">
-            <figure className="absolute -z-10 -left-0.5 -top-0.5">{icon}</figure>
+        <header className="relative flex items-center justify-between">
+            <figure className="relative top-0 left-0">{icon}</figure>
 
-            <div className="flex w-full items-center justify-between pr-4 pl-6">
+            <div className="absolute flex w-full items-center justify-between pr-4 pl-6">
                 <aside className="flex items-center gap-0.5">
                     <i className="size-8 rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399]">
                         <img
@@ -21,7 +21,7 @@ export default function Component() {
                         {/* <Skeleton className={cn("user-pfp", "rounded-full")} /> */}
                     </i>
 
-                    <span className="text-base text-white font-normal">@username</span>
+                    <span className="text-base font-normal text-white">@username</span>
                 </aside>
 
                 <aside className="flex items-center justify-center">

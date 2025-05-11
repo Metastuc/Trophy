@@ -1,9 +1,9 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 
 import { LOGO, SEARCH } from "@/assets/icons";
+import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 
-import { resetScroll, sleep } from "@/lib/utils";
 import AuthenticationDrawer from "./authentication-drawer";
 
 export default function Component() {
