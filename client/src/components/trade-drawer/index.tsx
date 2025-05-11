@@ -18,7 +18,7 @@ export default function Component() {
 
     return (
         <TradeCreatorTokenContext.Provider value={contextValue}>
-            <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+            <AlertDialog open={!isOpen} onOpenChange={setIsOpen}>
                 <AlertDialogTrigger asChild>
                     <Button variant="default" className="bg-green100 h-6 w-15 rounded-[.125rem]">
                         <span className="text-green200 capitalize">trade</span>
