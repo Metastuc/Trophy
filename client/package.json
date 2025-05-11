@@ -29,6 +29,7 @@
         "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-tailwindcss": "^0.6.11",
         "react": "^19.0.0",
+        "react-countup": "^6.5.3",
         "react-dom": "^19.0.0",
         "react-lazy-load-image-component": "^1.6.3",
         "sonner": "^2.0.3",

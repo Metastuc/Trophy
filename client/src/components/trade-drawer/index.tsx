@@ -1,18 +1,11 @@
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import React from "react";
+
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-import React from "react";
+import Footer from "./components/footer";
 import Header from "./components/header";
+import Main from "./components/main";
 import { TradeCreatorTokenContext } from "./hook";
 
 export default function Component() {
@@ -20,6 +13,7 @@ export default function Component() {
 
     const contextValue: iTradeCreatorTokenContext = {
         setIsOpen,
+        token: "token",
     };
 
     return (
@@ -31,28 +25,12 @@ export default function Component() {
                     </Button>
                 </AlertDialogTrigger>
 
-                <AlertDialogContent className="rounded-none p-0">
+                <AlertDialogContent className="gap-8 rounded-none border-none p-0">
                     <Header />
+                    <Main />
+                    <Footer />
                 </AlertDialogContent>
             </AlertDialog>
         </TradeCreatorTokenContext.Provider>
-    );
-}
-
-function _() {
-    return (
-        <>
-            <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account and
-                    remove your data from our servers.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-        </>
     );
 }
