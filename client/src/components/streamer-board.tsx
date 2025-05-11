@@ -1,4 +1,4 @@
-import TradeDrawer from "@/components/trade-drawer";
+import TradeDrawer from "@/components/trade-modal";
 import { cn } from "@/lib/utils";
 
 interface iStreamerBoard {
