@@ -6,11 +6,6 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "./ui/button";
 
-type tDROPDOWN_BUTTON = {
-    title: string;
-    value: string;
-};
-
 const DROPDOWN_BUTTONS: Array<tDROPDOWN_BUTTON> = [
     {
         title: "Trending",
@@ -65,7 +60,7 @@ export default function Component({ content, setContent }: iHomeDropdown) {
         setIsOpen(false);
     }
 
-    React.useEffect(() => {
+    React.useEffect(function () {
         function handleClickOutside(event: MouseEvent) {
             if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -73,7 +68,7 @@ export default function Component({ content, setContent }: iHomeDropdown) {
         }
 
         document.addEventListener("click", handleClickOutside);
-        return () => {
+        return function () {
             document.removeEventListener("click", handleClickOutside);
         };
     }, []);

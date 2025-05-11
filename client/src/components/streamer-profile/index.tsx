@@ -1,4 +1,4 @@
-import { CreatorProfileContext } from "./hook";
+import { CreatorProfileContext } from "./hooks";
 
 export default function Component({ isButton }: iStreamerProfile) {
     const contextValue: iCreatorProfileContext = {

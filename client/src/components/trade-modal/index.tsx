@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import Main from "./components/main";
-import { TradeCreatorTokenContext } from "./hook";
+import { TradeCreatorTokenContext } from "./hooks";
 
 export default function Component() {
     const [isOpen, setIsOpen] = React.useState<boolean>(false);

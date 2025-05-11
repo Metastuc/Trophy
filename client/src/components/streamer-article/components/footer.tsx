@@ -1,6 +1,6 @@
 import { WATCHING } from "@/assets/icons";
 
-import { useStreamArticleContext } from "../hook";
+import { useStreamArticleContext } from "../hooks";
 
 export default function Component() {
     const {} = useStreamArticleContext();

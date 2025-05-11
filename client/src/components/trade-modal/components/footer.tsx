@@ -1,5 +1,5 @@
 import { AlertDialogDescription, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { useTradeCreatorTokenContext } from "../hook";
+import { useTradeCreatorTokenContext } from "../hooks";
 
 export default function Component() {
     const { token } = useTradeCreatorTokenContext();
