@@ -1,6 +1,6 @@
 import { truncateWalletAddress } from "@/lib/truncate";
 import CountUp from "react-countup";
-import { useTradeCreatorTokenContext } from "../hook";
+import { useTradeCreatorTokenContext } from "../hooks";
 
 export default function Component() {
     const { token } = useTradeCreatorTokenContext();

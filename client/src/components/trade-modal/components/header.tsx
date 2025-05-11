@@ -1,6 +1,6 @@
 import { CLOSE } from "@/assets/icons";
 import { cn } from "@/lib/utils";
-import { useTradeCreatorTokenContext } from "../hook";
+import { useTradeCreatorTokenContext } from "../hooks";
 
 export default function Component() {
     const { setIsOpen } = useTradeCreatorTokenContext();

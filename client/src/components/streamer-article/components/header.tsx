@@ -2,7 +2,7 @@ import TradeDrawer from "@/components/trade-modal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-import { useStreamArticleContext } from "../hook";
+import { useStreamArticleContext } from "../hooks";
 
 export default function Component() {
     const {} = useStreamArticleContext();
