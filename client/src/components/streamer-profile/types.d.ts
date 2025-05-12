@@ -1,5 +1,9 @@
 interface iStreamerProfile {
-    isButton?: boolean;
+    isButton: boolean;
 }
 
-interface iCreatorProfileContext {}
+interface iCreatorProfileContext {
+    isButton: boolean; // TODO: remove?
+    setIsOpen?: (open: boolean) => void;
+    isOpen?: boolean;
+}

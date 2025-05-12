@@ -1,3 +1,4 @@
+import StreamerProfile from "@/components/streamer-profile";
 import TradeDrawer from "@/components/trade-modal";
 import { cn } from "@/lib/utils";
 
@@ -9,8 +10,9 @@ export default function Component({ counter }: iStreamerBoard) {
     return (
         <div className="bg-white100 flex h-17 flex-col items-center justify-between rounded-[.125rem] shadow-xs">
             <section className="flex w-full items-center justify-between px-3 pt-1.5">
-                <aside>
+                <aside className="flex items-center gap-3">
                     <span>#{counter}</span>
+                    <StreamerProfile isButton={true} />
                 </aside>
 
                 <aside className="flex items-center gap-2">

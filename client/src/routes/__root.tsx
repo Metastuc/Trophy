@@ -11,7 +11,7 @@ type RouterContext = {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen bg-white" data-vaul-drawer-wrapper>
             <TopNavigationBar />
             <main className="mb-20">
                 <Outlet />

@@ -1,5 +1,7 @@
-import { truncateWalletAddress } from "@/lib/truncate";
 import CountUp from "react-countup";
+
+import { truncateWalletAddress } from "@/lib/truncate";
+
 import { useTradeCreatorTokenContext } from "../hooks";
 
 export default function Component() {
