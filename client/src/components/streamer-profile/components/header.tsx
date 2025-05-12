@@ -1,10 +1,10 @@
 import { CLOSE } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
-import { useTradeCreatorTokenContext } from "../hooks";
+import { useCreatorProfileContext } from "../hooks";
 
 export default function Component() {
-    const { setIsOpen } = useTradeCreatorTokenContext();
+    const { setIsOpen } = useCreatorProfileContext();
 
     return (
         <header className="relative flex items-center justify-between">
