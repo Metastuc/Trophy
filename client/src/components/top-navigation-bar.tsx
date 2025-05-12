@@ -10,6 +10,8 @@ export default function Component() {
     const checkRoute = useMatchRoute();
     const { toggleIsVisible } = useDiscoverSearchStore();
 
+    // todo: top navbar scroll away
+
     async function handleButtonClick() {
         toggleIsVisible();
 
