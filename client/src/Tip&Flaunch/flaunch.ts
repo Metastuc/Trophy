@@ -1,12 +1,12 @@
 import { getSmartAccount } from "@/biconomy/smartAccount";
-import { ENV_SCHEMA, network } from "@/lib/constants";
+import { ENV_SCHEMA, REVENUE_MANAGER_ADDRESS, network } from "@/lib/constants";
+import { SignTypedData } from "@/lib/types";
 import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
 import { createDrift } from "@delvtech/drift";
 import { viemAdapter } from "@delvtech/drift-viem";
 import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
-import { SignTypedData } from "@/lib/types";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
@@ -48,7 +48,7 @@ export const createCreatorToken = async (
 ): Promise<`0x${string}`> => {
   const sFlaunch = await sFlaunchClient(provider);
 
-  return await sFlaunch.fastFlaunchIPFS({
+  return await sFlaunch.flaunchIPFSWithRevenueManager({
     name,
     symbol,
     creator: address,
@@ -61,6 +61,11 @@ export const createCreatorToken = async (
     pinataConfig: {
       jwt: ENV_SCHEMA.PINATA_JWT,
     },
+    fairLaunchPercent: 40,
+    fairLaunchDuration: 30 * 60, // 30 mins
+    initialMarketCapUSD: 10_000,
+    creatorFeeAllocationPercent: 80,
+    revenueManagerInstanceAddress: REVENUE_MANAGER_ADDRESS,
   });
 };
 
@@ -123,4 +128,38 @@ export const sellCreatorToken = async (
 
     return await checkTx(hash);
   }
+};
+
+export const deployRevenueManager = async (provider: EIP1193Provider) => {
+  const flaunch = await flaunchClient(provider);
+
+  return await flaunch.deployRevenueManager({
+    protocolFeePercent: 0,
+    protocolRecipient: "0x",
+  });
+};
+
+export const fetchFeeBalance = async (creator: `0x${string}`, provider: EIP1193Provider) => {
+  const flaunch = await flaunchClient(provider);
+
+  return await flaunch.revenueManagerBalance({
+    recipient: creator,
+    revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
+  });
+}
+
+export const claimCreatorFees = async (provider: EIP1193Provider) => {
+  const flaunch = await flaunchClient(provider);
+
+  return await flaunch.revenueManagerCreatorClaim({
+    revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
+  });
+}
+
+export const claimApplicationFees = async (provider: EIP1193Provider) => {
+  const flaunch = await flaunchClient(provider);
+
+  return await flaunch.revenueManagerProtocolClaim({
+    revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
+  });
 };
