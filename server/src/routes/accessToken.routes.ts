@@ -4,6 +4,6 @@ import { getAccessToken } from "../controllers/accessToken.controller.js";
 
 const router = Router();
 
-router.post("/access-stream", getAccessToken);
+router.post("/", getAccessToken);
 
 export default router;

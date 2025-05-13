@@ -9,7 +9,7 @@ export const getAccessToken = async (
     res: Response<TypedResponse<{ token?: string }>>
   ): Promise<void> => {
     try {
-      const { roomId, address } = req.body;
+      const { roomId, address, } = req.body;
   
       if (!roomId || !address) {
         res.status(400).json({

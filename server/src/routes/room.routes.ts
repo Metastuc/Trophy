@@ -4,7 +4,7 @@ import { createStream } from "../controllers/room.controller.js";
 
 const router = Router();
 
-router.post("/create-stream", createStream);
+router.post("/", createStream);
 
 router.get("/", (req, res) => {
   res.status(200).send("🚀 Server is working!");

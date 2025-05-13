@@ -61,5 +61,4 @@ export const createStream = async (
         message: "Room creation failed",
       });
     }
-  };
-  
+};
