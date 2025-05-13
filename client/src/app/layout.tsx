@@ -1,27 +1,19 @@
-"use client"
-
+import BottomNavigationBar from "@/components/bottom-navigation-bar";
+import MobileOnly from "@/components/mobile-restrict";
 import ProtectedRoutes from "@/components/protected";
+import TopNavigationBar from "@/components/top-navigation-bar";
 import { AuthenticationContextProvider } from "@/context/authentication";
 import PrivyProvider from "@/context/privy";
-import { HuddleClient, HuddleProvider } from "@huddle01/react";
+
 import type { Metadata } from "next";
+import React from "react";
 
 import "./globals.css";
 
-// Initialize HuddleClient
-const huddleClient = new HuddleClient({
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
-  options: {
-    activeSpeakers: {
-      size: 12,
-    },
-  },
-});
-
-// export const metadata: Metadata = {
-//     title: "Trophy",
-//     description: "onChain",
-// };
+export const metadata: Metadata = {
+    title: "Trophy",
+    description: "onChain",
+};
 
 interface iProps {
     children: React.ReactNode;
@@ -30,21 +22,25 @@ interface iProps {
 export default function RootLayout({ children }: iProps) {
     return (
         <html lang="en">
-            <body>{App({ children })}</body>
+            <body>
+                <PrivyProvider>
+                    <AuthenticationContextProvider>
+                        <ProtectedRoutes>
+                            <MobileOnly>{App({ children })}</MobileOnly>
+                        </ProtectedRoutes>
+                    </AuthenticationContextProvider>
+                </PrivyProvider>
+            </body>
         </html>
     );
 }
 
 function App({ children }: iProps) {
     return (
-        <PrivyProvider>
-            <AuthenticationContextProvider>
-                <ProtectedRoutes>
-                    <HuddleProvider client={huddleClient}>
-                        {children}
-                    </HuddleProvider>
-                </ProtectedRoutes>
-            </AuthenticationContextProvider>
-        </PrivyProvider>
+        <div className="relative min-h-screen">
+            <TopNavigationBar />
+            <main>{children}</main>
+            <BottomNavigationBar />
+        </div>
     );
 }
