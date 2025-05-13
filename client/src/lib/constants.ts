@@ -11,3 +11,5 @@ export const ENV_SCHEMA = {
 export const PUBLIC_ROUTES = ["/auth"];
 
 export const network = ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base;
+
+export const REVENUE_MANAGER_ADDRESS = `0x${""}`;
