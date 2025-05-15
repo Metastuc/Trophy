@@ -17,7 +17,8 @@ export const signUp = async (
             email,
             bio,
             farcaster,
-            address
+            address,
+            totalStreams: 0
         };
         
         await db.collection('users').add(userData);
