@@ -6,7 +6,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { Toaster } from "@/components/ui/sonner";
-import { useAuthenticationContext } from "@/contexts/authentication.tsx";
+import {
+    AuthenticationContextProvider,
+    useAuthenticationContext,
+} from "@/contexts/authentication.tsx";
 import { PrivyContextProvider } from "@/contexts/privy.tsx";
 
 import { routeTree } from "./routeTree.gen.ts";
@@ -39,7 +42,9 @@ function App() {
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <PrivyContextProvider>
-            <App />
+            <AuthenticationContextProvider>
+                <App />
+            </AuthenticationContextProvider>
         </PrivyContextProvider>
         <Toaster position="top-center" richColors />
     </StrictMode>,

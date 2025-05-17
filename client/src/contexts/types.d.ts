@@ -1,5 +1,5 @@
 interface iAuthenticationContext {
     isAuthenticated: boolean;
-    logout: () => void;
+    logout: () => Promise<void>;
     user: User | null;
 }
