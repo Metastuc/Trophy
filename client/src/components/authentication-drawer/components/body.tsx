@@ -20,6 +20,7 @@ export function AuthenticationDrawerBody() {
             return (
                 <OtpAuthentication
                     email={state.email as string}
+                    error={otpFlow.status === "error" ? otpFlow.error?.message : null}
                     isSubmitting={otpFlow.status === "submitting-code"}
                     onSubmit={(code: string) => {
                         loginWithCode({ code });
