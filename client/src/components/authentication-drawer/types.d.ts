@@ -54,3 +54,16 @@ interface iOtpAuthentication {
     onResend: () => void;
     onSubmit: (code: string) => void;
 }
+
+interface iAuthenticationDrawerContext {
+    dispatch: React.ActionDispatch<[action: tAuthAction]>;
+    drawerState: iDrawerState;
+    hasLoggedInRef: React.RefObject<boolean>;
+    setDrawerState: React.Dispatch<React.SetStateAction<iDrawerState>>;
+    state: tAuthState;
+}
+
+interface iDrawerState {
+    isDrawerOpen: boolean;
+    isLoggingOut: boolean;
+}
