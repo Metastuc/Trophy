@@ -10,6 +10,8 @@ export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAu
             if (error.includes("exited")) {
                 dispatch({ type: "GO_TO_DEFAULT" });
             }
+
+            // console.log({ toast: error, otpFlow });
         },
     });
 

@@ -21,7 +21,7 @@ export function AuthenticationDrawerHeader() {
 
         case "otp":
             return (
-                <DrawerTitle className="text-center font-normal">
+                <DrawerTitle className="flex items-center justify-center">
                     <i className="size-10 text-black">{EMAIL()}</i>
                 </DrawerTitle>
             );
