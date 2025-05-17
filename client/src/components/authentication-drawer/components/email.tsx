@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { EMAIL } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
-export default function Component({ dispatch, sendCode }: iEmailAuthentication) {
+export function EmailAuthentication({ dispatch, sendCode }: iEmailAuthentication) {
     const [email, setEmail] = React.useState<string | null>(null);
 
     async function handleEmailSubmit(event: React.FormEvent) {

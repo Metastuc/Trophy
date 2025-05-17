@@ -38,8 +38,6 @@ export function AuthenticationContextProvider({ children }: { children: React.Re
         [isAuthenticated, logout, user],
     );
 
-    console.log({ value });
-
     return (
         <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>
     );
