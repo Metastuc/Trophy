@@ -1,7 +1,7 @@
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 
-import { EMAIL, PRIVY } from "@/assets/icons";
+import { BACK, CLOSE, EMAIL, PRIVY } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -11,17 +11,27 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
-    DrawerTrigger,
 } from "@/components/ui/drawer";
-import { sleep } from "@/lib/utils";
+import { cn, sleep } from "@/lib/utils";
 
+import { useAuthenticationContext } from "@/contexts/authentication";
+import { Loader } from "lucide-react";
 import DefaultButtons from "./components/buttons";
 import EmailAuthentication from "./components/email";
 import OtpAuthentication from "./components/otp";
 import { AuthenticationReducer } from "./utils";
 
 export default function Component() {
+    const { isAuthenticated, logout, user } = useAuthenticationContext();
+    console.log({ isAuthenticated, user });
+
     const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
+
+    const [drawerState, setDrawerState] = React.useState(() => ({
+        isDrawerOpen: false,
+        isLoggingOut: false,
+    }));
+
     const hasLoggedInRef = React.useRef<boolean>(false);
 
     const [state, dispatch] = React.useReducer(AuthenticationReducer, {
@@ -29,6 +39,9 @@ export default function Component() {
         screenStack: ["default"],
     });
 
+    /**
+     * authenticate with otp
+     */
     const {
         loginWithCode,
         sendCode,
@@ -46,11 +59,14 @@ export default function Component() {
         },
     });
 
+    /**
+     * authenticate with wallet
+     */
     const { login } = useLogin({
         onComplete({ user, isNewUser }) {
             console.log("Login successful:", { user, isNewUser });
-            setIsDrawerOpen(false);
             dispatch({ type: "GO_TO_DEFAULT" });
+            setIsDrawerOpen(false);
         },
         onError(error) {
             console.error("Wallet error:", error);
@@ -58,12 +74,15 @@ export default function Component() {
             if (error.includes("exited")) {
                 dispatch({ type: "GO_TO_DEFAULT" });
             }
+            setIsDrawerOpen(true);
         },
     });
 
     React.useEffect(() => {
         if (state.type === "wallet" && !hasLoggedInRef.current) {
             hasLoggedInRef.current = true;
+            setIsDrawerOpen(false);
+
             login({
                 loginMethods: ["wallet"],
                 walletChainType: "ethereum-only",
@@ -170,29 +189,60 @@ export default function Component() {
         }
     }
 
+    async function handleAuthentication() {
+        if (isAuthenticated) {
+            setDrawerState((previous) => ({ ...previous, isLoggingOut: true }));
+
+            try {
+                await logout();
+            } catch (error) {
+                console.error("Logout error:", error);
+            } finally {
+                setDrawerState((previous) => ({ ...previous, isLoggingOut: false }));
+            }
+        } else {
+            setIsDrawerOpen(true);
+        }
+    }
+
     return (
         <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerTrigger asChild>
-                <Button className="bg-blue100 h-6 w-15 rounded-[.125rem]">
-                    <span className="text-xs">login</span>
-                </Button>
-            </DrawerTrigger>
+            <Button
+                className={cn("bg-blue100 h-6 w-15 rounded-[.125rem]")}
+                onClick={handleAuthentication}
+                disabled={drawerState.isLoggingOut}
+            >
+                <span className="text-xs">
+                    {drawerState.isLoggingOut ? (
+                        <i className="size-4">
+                            <Loader className="animate-spin" />
+                        </i>
+                    ) : isAuthenticated ? (
+                        "Log out"
+                    ) : (
+                        "Log in"
+                    )}
+                </span>
+            </Button>
 
             <DrawerContent>
                 <DrawerFooter className="flex flex-row items-center justify-between">
                     {state.type !== "default" && state.type !== "wallet" ? (
                         <Button
-                            variant="ghost"
-                            className="border-blue100 text-blue100 hover:bg-blue100/10 border"
+                            variant="outline"
+                            className="bg-white200 mr-auto size-5 rounded-full p-0"
                             onClick={() => dispatch({ type: "BACK" })}
                         >
-                            Back
+                            <i className="size-3">{BACK()}</i>
                         </Button>
                     ) : null}
 
                     <DrawerClose asChild onClick={handleDrawerState}>
-                        <Button variant="default" className="bg-blue100 ml-auto">
-                            Cancel
+                        <Button
+                            variant="outline"
+                            className="bg-white200 ml-auto size-5 rounded-full p-0"
+                        >
+                            <i className="size-3">{CLOSE()}</i>
                         </Button>
                     </DrawerClose>
                 </DrawerFooter>

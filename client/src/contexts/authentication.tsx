@@ -18,7 +18,7 @@ export function useAuthenticationContext(): iAuthenticationContext {
 export function AuthenticationContextProvider({ children }: { children: React.ReactNode }) {
     const { authenticated, logout, ready, user: privyUser } = usePrivy();
 
-    const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(true);
+    const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(authenticated);
     const [user, setUser] = React.useState<User | null>(privyUser);
 
     React.useEffect(
@@ -37,6 +37,8 @@ export function AuthenticationContextProvider({ children }: { children: React.Re
         },
         [isAuthenticated, logout, user],
     );
+
+    console.log({ value });
 
     return (
         <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>
