@@ -5,9 +5,11 @@ import HomeDropdown from "@/components/home-dropdown";
 import StreamArticle from "@/components/streamer-article";
 
 export const Route = createFileRoute("/")({
-    beforeLoad({ context, location }) {
+    beforeLoad({ context }) {
         if (!context.authentication.isAuthenticated) {
-            console.log(context, location);
+            console.log("user is logged out");
+        } else {
+            console.log("user is not logged in");
         }
     },
 
