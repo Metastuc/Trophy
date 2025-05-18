@@ -23,20 +23,12 @@ export const signUp = async (
             address?: string;
         } = req.body;
 
-        // Enforce mandatory fields
-        if (!email || !username) {
-            return res.status(400).json({
-                status: "error",
-                message: "Username and email are required"
-            });
-        }
-
-        const uploadedPfp = pfp ?? "url"; // fallback default
+        const uploadedPfp = pfp ?? "url"; // Default fallback
 
         const userData = {
             uploadedPfp,
-            username,
-            email,
+            username: username ?? "",
+            email: email ?? "",
             bio: bio ?? "",
             farcaster: farcaster ?? "",
             address: address ?? "",
@@ -55,7 +47,7 @@ export const signUp = async (
         console.error(error);
         res.status(500).json({
             status: "error",
-            message: "Failed to create user"
+            message: "Failed to create user",
         });
     }
 };
