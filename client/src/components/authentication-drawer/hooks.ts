@@ -6,6 +6,17 @@ export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAu
         sendCode,
         state: otpFlow,
     } = useLoginWithEmail({
+        onComplete(params) {
+            console.log("Login successful:", params);
+            // dispatch({ type: "GO_TO_DEFAULT" });
+
+            if (params.isNewUser) {
+                dispatch({ type: "GO_TO_FINISH" });
+            }else{
+                // check if user profile is completed
+            }
+        },
+
         onError(error) {
             if (error.includes("exited")) {
                 dispatch({ type: "GO_TO_DEFAULT" });

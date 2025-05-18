@@ -18,6 +18,10 @@ export function AuthenticationDrawerHeader() {
             );
 
         case "farcaster":
+            return;
+
+        case "finish":
+            return <DrawerTitle className="text-center font-normal">Finish setup</DrawerTitle>;
 
         case "otp":
             return (

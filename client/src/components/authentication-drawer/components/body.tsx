@@ -2,6 +2,7 @@ import { useAuthenticationDrawerContext } from "../context";
 import { useOtpAuthentication } from "../hooks";
 import { AuthenticationButtons } from "./buttons";
 import { EmailAuthentication } from "./email";
+import { AuthenticationProfile } from "./form";
 import { OtpAuthentication } from "./otp";
 
 export function AuthenticationDrawerBody() {
@@ -16,6 +17,11 @@ export function AuthenticationDrawerBody() {
             return <EmailAuthentication dispatch={dispatch} sendCode={sendCode} />;
 
         case "farcaster":
+            return;
+
+        case "finish":
+            return <AuthenticationProfile />;
+
         case "otp":
             return (
                 <OtpAuthentication
