@@ -31,9 +31,33 @@ export const createStream = async (
         startTime: streamTime.toISOString(),
         roomId,
         status: isLive ? "live" : "scheduled",
+        participants: 0
       };
   
       await db.collection("livestreams").doc(roomId).set(streamData);
+      
+      const userSnap = await db.collection('users')
+      .where("address", "==", address)
+      .limit(1)
+      .get();
+    
+      if (userSnap.empty) {
+        res.status(404).json({
+          status: "error",
+          message: "User not found",
+        });
+        return;
+      }
+
+      const streamCount = userSnap.docs[0].data().totalStreams;
+      const newStreamCount = streamCount + 1;
+
+      const userDocRef = userSnap.docs[0].ref;
+
+      await userDocRef.update({
+        totalStreams: newStreamCount,
+      });
+
       console.log("Livestream saved:", streamData);
   
       if (isLive) {

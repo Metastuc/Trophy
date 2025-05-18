@@ -7,20 +7,36 @@ export const signUp = async (
     res: Response<TypedResponse<{ message?: string }>>
 ): Promise<void> => {
     try {
-        const { pfp, username, email, bio, farcaster, address } = req.body;
-
-        const uploadedPfp = "url";
-
-        const userData = {
-            uploadedPfp,
+        const {
+            pfp,
             username,
             email,
             bio,
             farcaster,
             address
+        }: {
+            pfp?: string;
+            username?: string;
+            email?: string;
+            bio?: string;
+            farcaster?: string;
+            address?: string;
+        } = req.body;
+
+        const uploadedPfp = pfp ?? "url"; // Default fallback
+
+        const userData = {
+            uploadedPfp,
+            username: username ?? "",
+            email: email ?? "",
+            bio: bio ?? "",
+            farcaster: farcaster ?? "",
+            address: address ?? "",
+            totalStreams: 0
         };
-        
+
         await db.collection('users').add(userData);
+
         console.log("user signed up:", userData);
 
         res.status(201).json({
@@ -32,6 +48,6 @@ export const signUp = async (
         res.status(500).json({
             status: "error",
             message: "Failed to create user",
-        });        
+        });
     }
-}
+};
