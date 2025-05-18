@@ -10,10 +10,15 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@biconomy/abstractjs": "^1.0.8",
+        "@delvtech/drift": "^0.8.4",
+        "@delvtech/drift-viem": "^0.8.4",
+        "@flaunch/sdk": "^0.6.0",
         "@privy-io/react-auth": "^2.13.2",
         "@radix-ui/react-alert-dialog": "^1.1.13",
         "@radix-ui/react-dialog": "^1.1.11",
         "@radix-ui/react-slot": "^1.2.2",
+        "@rhinestone/module-sdk": "0.2.3",
         "@tailwindcss/vite": "^4.1.5",
         "@tanstack/react-query": "^5.75.1",
         "@tanstack/react-router": "^1.119.0",
@@ -22,6 +27,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "eslint-plugin-simple-import-sort": "^12.1.1",
+        "ethers": "^6.13.7",
         "input-otp": "^1.4.2",
         "lucide-react": "^0.507.0",
         "motion": "^12.10.5",
@@ -36,6 +42,7 @@
         "tailwind-merge": "^3.2.0",
         "tailwindcss": "^4.1.5",
         "vaul": "^1.1.2",
+        "viem": "^2.22.16",
         "zustand": "^5.0.4"
     },
     "devDependencies": {
