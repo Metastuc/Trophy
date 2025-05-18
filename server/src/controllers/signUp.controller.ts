@@ -7,21 +7,44 @@ export const signUp = async (
     res: Response<TypedResponse<{ message?: string }>>
 ): Promise<void> => {
     try {
-        const { pfp, username, email, bio, farcaster, address } = req.body;
+        const {
+            pfp,
+            username,
+            email,
+            bio,
+            farcaster,
+            address
+        }: {
+            pfp?: string;
+            username?: string;
+            email?: string;
+            bio?: string;
+            farcaster?: string;
+            address?: string;
+        } = req.body;
 
-        const uploadedPfp = "url";
+        // Enforce mandatory fields
+        if (!email || !username) {
+            return res.status(400).json({
+                status: "error",
+                message: "Username and email are required"
+            });
+        }
+
+        const uploadedPfp = pfp ?? "url"; // fallback default
 
         const userData = {
             uploadedPfp,
             username,
             email,
-            bio,
-            farcaster,
-            address,
+            bio: bio ?? "",
+            farcaster: farcaster ?? "",
+            address: address ?? "",
             totalStreams: 0
         };
-        
+
         await db.collection('users').add(userData);
+
         console.log("user signed up:", userData);
 
         res.status(201).json({
@@ -32,7 +55,7 @@ export const signUp = async (
         console.error(error);
         res.status(500).json({
             status: "error",
-            message: "Failed to create user",
-        });        
+            message: "Failed to create user"
+        });
     }
-}
+};

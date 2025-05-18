@@ -31,6 +31,7 @@ export const createStream = async (
         startTime: streamTime.toISOString(),
         roomId,
         status: isLive ? "live" : "scheduled",
+        participants: 0
       };
   
       await db.collection("livestreams").doc(roomId).set(streamData);
@@ -56,7 +57,7 @@ export const createStream = async (
       await userDocRef.update({
         totalStreams: newStreamCount,
       });
-      
+
       console.log("Livestream saved:", streamData);
   
       if (isLive) {
