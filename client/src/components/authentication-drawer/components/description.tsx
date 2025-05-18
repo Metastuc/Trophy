@@ -24,7 +24,7 @@ export function AuthenticationDrawerDescription() {
 
         case "finish":
             return (
-                <DrawerDescription className="text-black200 w-[17.5rem] text-center font-light text-xs mx-auto">
+                <DrawerDescription className="text-black200 mx-auto w-[17.5rem] text-center text-xs font-light">
                     Your account has been created successfully, please enter the details below to
                     finish setup
                 </DrawerDescription>

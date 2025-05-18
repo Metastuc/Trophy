@@ -12,7 +12,7 @@ export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAu
 
             if (params.isNewUser) {
                 dispatch({ type: "GO_TO_FINISH" });
-            }else{
+            } else {
                 // check if user profile is completed
             }
         },
