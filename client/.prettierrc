@@ -4,10 +4,12 @@
     "endOfLine": "lf",
     "importOrder": ["^@?\\w", "^#", "^components/(.*)$", "^[./]"],
     "importOrderSortSpecifiers": true,
-    "plugins": ["@trivago/prettier-plugin-sort-imports"],
+    "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
     "printWidth": 100,
     "semi": true,
     "singleQuote": false,
     "trailingComma": "all",
-    "useTabs": false
+    "useTabs": false,
+    "tailwindFunctions": ["clsx", "tw"],
+    "tailwindPreserveWhitespace": true
 }
