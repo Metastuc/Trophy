@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 
+import { makeRequest } from "@/lib/axios";
 import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "../utils";
 
 export function AuthenticationProfile() {
@@ -15,13 +16,20 @@ export function AuthenticationProfile() {
         if (file) setProfileImage(URL.createObjectURL(file));
     }
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        let profile: tAuthenticationProfileSchema, file: FormDataEntryValue | null;
 
-        let profile: tAuthenticationProfileSchema;
         const formData = new FormData(event.currentTarget);
+        file = formData.get("profileImage");
 
-        profile = Object.fromEntries(formData) as tAuthenticationProfileSchema;
+        profile = {
+            bio: formData.get("bio")?.toString() ?? "",
+            email: formData.get("email")?.toString() ?? "",
+            profileImage: file instanceof File && file.name ? file : "default-pfp.svg",
+            username: formData.get("username")?.toString() ?? "",
+        };
+
         const result = AuthenticationProfileSchema.safeParse(profile);
 
         if (!result.success) {
@@ -29,7 +37,7 @@ export function AuthenticationProfile() {
 
             toast.error("Form Submission Error", {
                 description: (
-                    <pre className="mt-1 max-h-20 overflow-auto rounded bg-gray-950 text-left text-xs text-white">
+                    <pre className="mt-1 max-h-25 overflow-auto rounded bg-gray-950 text-left text-xs text-white">
                         {JSON.stringify(errors, null, 1)}
                     </pre>
                 ),
@@ -40,6 +48,19 @@ export function AuthenticationProfile() {
         }
 
         profile = result.data;
+
+        await makeRequest({
+            method: "POST",
+            url: "/sign-up",
+            data: {
+                bio: profile.bio,
+                email: profile.email,
+                pfp: profile.profileImage,
+                username: profile.username,
+            },
+        }).then(function (response) {
+            console.log(response);
+        });
     }
 
     return (

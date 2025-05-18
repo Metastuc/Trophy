@@ -66,13 +66,17 @@ export const AuthenticationProfileSchema = z.object({
 
     email: z.string().email("Invalid email address"),
 
-    profileImage: z
-        .instanceof(File)
-        .refine((file) => file.size < 10 * 1024 * 1024, "File size must be less than 10MB")
-        .refine(
-            (file) => ["image/jpeg", "image/png"].includes(file.type),
-            "Only JPEG and PNG formats are allowed",
-        ),
+    profileImage: z.union([
+        z
+            .instanceof(File)
+            .refine((file) => file.size < 10 * 1024 * 1024, "File size must be less than 10MB")
+            .refine(
+                (file) => ["image/jpeg", "image/png"].includes(file.type),
+                "Only JPEG and PNG formats are allowed",
+            )
+            .optional(),
+        z.literal("default-pfp.svg"),
+    ]),
 
     username: z.string().min(3, "Username must be at least 3 characters"),
 });

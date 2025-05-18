@@ -8,7 +8,7 @@ import signUpRoutes from "./src/routes/signUp.routes.js";
 
 const server = express();
 
-// server.use(cors({ origin: ["http://localhost:3000", "deployed-url"] }));
+server.use(cors({ origin: ["http://localhost:5173", "deployed-url"] }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
