@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export function AuthenticationReducer(state: tAuthState, action: tAuthAction): tAuthState {
     switch (action.type) {
         case "BACK":
@@ -32,6 +34,13 @@ export function AuthenticationReducer(state: tAuthState, action: tAuthAction): t
                 type: "farcaster",
             };
 
+        case "GO_TO_FINISH":
+            return {
+                ...state,
+                screenStack: [...state.screenStack, "finish"],
+                type: "finish",
+            };
+
         case "GO_TO_OTP":
             return {
                 ...state,
@@ -51,3 +60,21 @@ export function AuthenticationReducer(state: tAuthState, action: tAuthAction): t
             return state;
     }
 }
+
+export const AuthenticationProfileSchema = z.object({
+    bio: z.string().optional(),
+
+    email: z.string().email("Invalid email address"),
+
+    profileImage: z
+        .instanceof(File)
+        .refine((file) => file.size < 10 * 1024 * 1024, "File size must be less than 10MB")
+        .refine(
+            (file) => ["image/jpeg", "image/png"].includes(file.type),
+            "Only JPEG and PNG formats are allowed",
+        ),
+
+    username: z.string().min(3, "Username must be at least 3 characters"),
+});
+
+export type tAuthenticationProfileSchema = z.infer<typeof AuthenticationProfileSchema>;

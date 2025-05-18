@@ -304,10 +304,32 @@ export function CLOSE() {
 
 export function BACK() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width={32} height={32} viewBox="0 0 24 24">
+        <svg width={4} height={8} viewBox="0 0 4 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
-                fill="currentColor"
-                d="M7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z"
+                d="M3.5 1l-3 3 3 3"
+                stroke="#060606"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+
+export function PENCIL() {
+    return (
+        <svg
+            width={10}
+            height={10}
+            viewBox="0 0 10 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M5 8.333h3.75M6.823 1.51a.884.884 0 111.251 1.25L3.07 7.764c-.099.1-.222.172-.356.211l-1.197.35a.208.208 0 01-.258-.259l.349-1.197a.833.833 0 01.21-.355l5.005-5.005zM6.25 2.083l1.25 1.25"
+                stroke="#000"
+                strokeWidth={0.833333}
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );

@@ -19,6 +19,7 @@
         "@tanstack/react-router": "^1.119.0",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/react-lazy-load-image-component": "^1.6.4",
+        "axios": "^1.9.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "eslint-plugin-simple-import-sort": "^12.1.1",
@@ -36,6 +37,7 @@
         "tailwind-merge": "^3.2.0",
         "tailwindcss": "^4.1.5",
         "vaul": "^1.1.2",
+        "zod": "^3.24.4",
         "zustand": "^5.0.4"
     },
     "devDependencies": {

@@ -46,6 +46,6 @@ createRoot(document.getElementById("root")!).render(
                 <App />
             </AuthenticationContextProvider>
         </PrivyContextProvider>
-        <Toaster position="top-center" richColors />
+        <Toaster position="top-center" />
     </StrictMode>,
 );

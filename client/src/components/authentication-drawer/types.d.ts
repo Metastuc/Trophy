@@ -1,4 +1,4 @@
-type tScreen = "default" | "email" | "farcaster" | "otp" | "wallet";
+type tScreen = "default" | "email" | "farcaster" | "finish" | "otp" | "wallet";
 
 type tAuthState = {
     type: tScreen;
@@ -11,6 +11,7 @@ type tAuthAction =
     | { type: "GO_TO_DEFAULT" }
     | { type: "GO_TO_EMAIL" }
     | { type: "GO_TO_FARCASTER" }
+    | { type: "GO_TO_FINISH" }
     | { type: "GO_TO_OTP"; email: string }
     | { type: "GO_TO_WALLET" };
 
@@ -48,4 +49,11 @@ interface iAuthenticationDrawerContext {
 interface iDrawerState {
     isDrawerOpen: boolean;
     isLoggingOut: boolean;
+}
+
+interface iAuthenticationProfile {
+    bio: string;
+    email: string;
+    profileImage: string;
+    username: string;
 }

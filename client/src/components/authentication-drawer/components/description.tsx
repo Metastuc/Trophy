@@ -17,7 +17,18 @@ export function AuthenticationDrawerDescription() {
             );
 
         case "email":
+            return;
+
         case "farcaster":
+            return;
+
+        case "finish":
+            return (
+                <DrawerDescription className="text-black200 w-[17.5rem] text-center font-light text-xs mx-auto">
+                    Your account has been created successfully, please enter the details below to
+                    finish setup
+                </DrawerDescription>
+            );
 
         case "otp":
             return (

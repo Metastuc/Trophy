@@ -21,8 +21,8 @@ export function AuthenticationDrawerContextProvider({ children }: { children: Re
     const hasLoggedInRef = React.useRef<boolean>(false);
 
     const [state, dispatch] = React.useReducer(AuthenticationReducer, {
-        type: "otp",
-        screenStack: ["otp"],
+        type: "finish",
+        screenStack: ["finish"],
     });
 
     const [drawerState, setDrawerState] = React.useState<iDrawerState>(() => ({

@@ -14,7 +14,7 @@ import { useAuthenticationDrawerContext } from "./context";
 
 export default function Component() {
     const { isAuthenticated, logout } = useAuthenticationContext();
-    const { setDrawerState, drawerState } = useAuthenticationDrawerContext();
+    const { drawerState, setDrawerState, state } = useAuthenticationDrawerContext();
 
     async function handleAuthentication() {
         if (isAuthenticated) {
@@ -70,11 +70,13 @@ export default function Component() {
                     <AuthenticationDrawerBody />
                 </section>
 
-                <i className="my-4">
-                    <a href="https://privy.io/" target="_blank">
-                        {PRIVY()}
-                    </a>
-                </i>
+                {state.type === "default" || state.type === "email" || state.type === "otp" ? (
+                    <i className="my-4">
+                        <a href="https://privy.io/" target="_blank">
+                            {PRIVY()}
+                        </a>
+                    </i>
+                ) : null}
             </DrawerContent>
         </Drawer>
     );
