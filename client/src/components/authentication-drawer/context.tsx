@@ -21,12 +21,12 @@ export function AuthenticationDrawerContextProvider({ children }: { children: Re
     const hasLoggedInRef = React.useRef<boolean>(false);
 
     const [state, dispatch] = React.useReducer(AuthenticationReducer, {
-        type: "finish",
-        screenStack: ["finish"],
+        type: "default",
+        screenStack: ["default"],
     });
 
     const [drawerState, setDrawerState] = React.useState<iDrawerState>(() => ({
-        isDrawerOpen: true,
+        isDrawerOpen: false,
         isLoggingOut: false,
     }));
 

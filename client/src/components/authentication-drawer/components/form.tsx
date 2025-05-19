@@ -3,13 +3,17 @@ import React from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { makeRequest } from "@/lib/axios";
 
+import { makeRequest } from "@/lib/axios";
+import { useAuthenticationDrawerContext } from "../context";
 import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "../utils";
 
 export function AuthenticationProfile() {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImage, setProfileImage] = React.useState<string | null>(null);
+    const { state } = useAuthenticationDrawerContext();
+
+    console.log({ state });
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -49,19 +53,41 @@ export function AuthenticationProfile() {
 
         profile = result.data;
 
-        await makeRequest({
-            method: "POST",
-            url: "/sign-up",
-            data: {
-                bio: profile.bio,
-                email: profile.email,
-                pfp: profile.profileImage,
-                username: profile.username,
-            },
-        }).then(function (response) {
-            console.log(response);
-        });
+        if (profile.profileImage instanceof File) {
+            const request = new FormData();
+            request.append("bio", profile.bio ?? "");
+            request.append("email", profile.email);
+            request.append("pfp", profile.profileImage);
+            request.append("username", profile.username);
+
+            await makeRequest({
+                method: "POST",
+                url: "/sign-up",
+                data: Object.fromEntries(request),
+            }).then(function (response) {
+                console.log(response);
+            });
+        } else {
+            await makeRequest({
+                method: "POST",
+                url: "/sign-up",
+                data: {
+                    bio: profile.bio,
+                    email: profile.email,
+                    pfp: "default-pfp.svg",
+                    username: profile.username,
+                },
+            }).then(function (response) {
+                console.log(response);
+            });
+        }
     }
+
+    React.useEffect(() => {
+        return () => {
+            URL.revokeObjectURL(profileImage || "");
+        };
+    }, [profileImage]);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
