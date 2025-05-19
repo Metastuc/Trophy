@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ENV_SCHEMA, network } from "@/lib/constants";
 import {
     createBicoPaymasterClient,
