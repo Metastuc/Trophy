@@ -18,7 +18,7 @@ export function useServer<TRequest extends Record<string, unknown>, TResponse>(
         METHOD: HttpMethod;
     },
     options?: UseMutationOptions<DataResponse<TResponse>, Error, TRequest>,
-    transformRequestData?: (variables: TRequest) => Record<string, unknown> | undefined,
+    transformRequestData?: (variables: TRequest) => Record<string, unknown> | FormData | undefined,
 ) {
     return useMutation<DataResponse<TResponse>, Error, TRequest>({
         /**

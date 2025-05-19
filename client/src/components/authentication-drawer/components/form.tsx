@@ -3,8 +3,8 @@ import React from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { makeRequest } from "@/lib/axios";
 
+import { useServer } from "@/hooks/server";
 import { useAuthenticationDrawerContext } from "../context";
 import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "../utils";
 
@@ -13,6 +13,31 @@ export function AuthenticationProfile() {
     const [profileImage, setProfileImage] = React.useState<string | null>(null);
     const { state, setDrawerState } = useAuthenticationDrawerContext();
 
+    const { isPending, mutate } = useServer<tAuthenticationProfileSchema, unknown>(
+        { METHOD: "POST", URL: "/sign-up" },
+        {
+            onSuccess(response) {
+                if (response.status === 201) {
+                    toast.success("Profile Creation Success");
+                    setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+                }
+            },
+        },
+        function (variables) {
+            if (variables.profileImage instanceof File) {
+                const formData = new FormData();
+
+                formData.append("bio", variables.bio ?? "");
+                formData.append("email", variables.email);
+                formData.append("pfp", variables.profileImage);
+                formData.append("username", variables.username);
+
+                return formData;
+            }
+            return variables;
+        },
+    );
+
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
         if (file) setProfileImage(URL.createObjectURL(file));
@@ -20,22 +45,19 @@ export function AuthenticationProfile() {
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        let profile: tAuthenticationProfileSchema, file: FormDataEntryValue | null;
 
         const formData = new FormData(event.currentTarget);
-        file = formData.get("profileImage");
+        const file = formData.get("profileImage");
 
-        profile = {
+        const request = AuthenticationProfileSchema.safeParse({
             bio: formData.get("bio")?.toString() ?? "",
             email: formData.get("email")?.toString() ?? "",
             profileImage: file instanceof File && file.name ? file : "default-pfp.svg",
             username: formData.get("username")?.toString() ?? "",
-        };
+        });
 
-        const result = AuthenticationProfileSchema.safeParse(profile);
-
-        if (!result.success) {
-            const errors = result.error.flatten().fieldErrors;
+        if (!request.success) {
+            const errors = request.error.flatten().fieldErrors;
 
             toast.error("Form Submission Error", {
                 description: (
@@ -49,39 +71,7 @@ export function AuthenticationProfile() {
             return;
         }
 
-        profile = result.data;
-
-        if (profile.profileImage instanceof File) {
-            const request = new FormData();
-            request.append("bio", profile.bio ?? "");
-            request.append("email", profile.email);
-            request.append("pfp", profile.profileImage);
-            request.append("username", profile.username);
-
-            await makeRequest({
-                method: "POST",
-                url: "/sign-up",
-                data: Object.fromEntries(request),
-            }).then(function (response) {
-                console.log(response);
-            });
-        } else {
-            await makeRequest({
-                method: "POST",
-                url: "/sign-up",
-                data: {
-                    bio: profile.bio,
-                    email: profile.email,
-                    pfp: "default-pfp.svg",
-                    username: profile.username,
-                },
-            }).then(function (response) {
-                if (response.status === 201) {
-                    toast.success("Profile Creation Success");
-                    setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
-                }
-            });
-        }
+        mutate(request.data);
     }
 
     React.useEffect(() => {
@@ -148,7 +138,12 @@ export function AuthenticationProfile() {
                 />
             </section>
 
-            <Button type="submit" variant="default" className="bg-blue100 h-12 w-full">
+            <Button
+                type="submit"
+                variant="default"
+                className="bg-blue100 h-12 w-full"
+                disabled={isPending}
+            >
                 <span className="font-extralight tracking-[.0625rem]">Finish setup</span>
             </Button>
         </form>
