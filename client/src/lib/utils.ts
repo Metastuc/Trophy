@@ -12,3 +12,8 @@ export function sleep(ms: number) {
 export function resetScroll() {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+export function truncateWalletAddress(address: string) {
+    if (!address || address.length <= 10) return address;
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}

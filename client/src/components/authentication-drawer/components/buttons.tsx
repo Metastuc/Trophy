@@ -8,7 +8,7 @@ interface iProps {
     dispatch: React.ActionDispatch<[action: tAuthAction]>;
 }
 
-export default function Component({ dispatch }: iProps) {
+export function AuthenticationButtons({ dispatch }: iProps) {
     return (
         <React.Fragment>
             {AUTHENTICATION_BUTTONS.map((props: iAuthenticationButton, index) => (

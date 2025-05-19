@@ -8,12 +8,12 @@ import signUpRoutes from "./src/routes/signUp.routes.js";
 
 const server = express();
 
-// server.use(cors({ origin: ["http://localhost:3000", "deployed-url"] }));
+server.use(cors({ origin: ["http://localhost:5173", "deployed-url"] }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.use("/api/create-stream", roomRoutes);
-server.use("/api", roomRoutes);
+// server.use("/api", roomRoutes);
 
 server.use("/api/access-stream", accessTokenRoutes);
 

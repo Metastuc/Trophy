@@ -9,15 +9,14 @@
     --color-green100: #ddffd8;
     --color-green200: #137c00;
     --color-white100: #fafafa;
-    --color-white200: #D3D3D373;
-    --color-yellow100: #E8FF1A;
+    --color-white200: #d3d3d373;
+    --color-yellow100: #e8ff1a;
 
     --font-oxanium: "Oxanium", sans-serif;
 
     --animate-caret-blink: caret-blink 1.25s ease-out infinite;
 
     @keyframes caret-blink {
-
         0%,
         70%,
         100% {

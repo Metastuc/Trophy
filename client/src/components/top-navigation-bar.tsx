@@ -5,6 +5,7 @@ import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 
 import AuthenticationDrawer from "./authentication-drawer";
+import { AuthenticationDrawerContextProvider } from "./authentication-drawer/context";
 
 export default function Component() {
     const checkRoute = useMatchRoute();
@@ -34,7 +35,9 @@ export default function Component() {
                     </button>
                 ) : null}
 
-                <AuthenticationDrawer />
+                <AuthenticationDrawerContextProvider>
+                    <AuthenticationDrawer />
+                </AuthenticationDrawerContextProvider>
             </aside>
         </section>
     );

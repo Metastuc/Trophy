@@ -5,7 +5,7 @@ export const ENV_SCHEMA = {
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT || "development",
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
     PAYMASTER_API_KEY: import.meta.env.VITE_PAYMASTER_API_KEY as string,
-    PAYMASTER_URL: import.meta.env.VITE_PAYMASTER_URL!
+    PAYMASTER_URL: import.meta.env.VITE_PAYMASTER_URL!,
 };
 
 export const PUBLIC_ROUTES = ["/auth"];
