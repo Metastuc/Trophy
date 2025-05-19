@@ -1,12 +1,13 @@
-import { getSmartAccount } from "@/biconomy/smartAccount";
-import { ENV_SCHEMA, REVENUE_MANAGER_ADDRESS, network } from "@/lib/constants";
-import { SignTypedData } from "@/lib/types";
-import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
 import { createDrift } from "@delvtech/drift";
 import { viemAdapter } from "@delvtech/drift-viem";
 import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
+
+import { getSmartAccount } from "@/biconomy/smartAccount";
+import { ENV_SCHEMA, network,REVENUE_MANAGER_ADDRESS } from "@/lib/constants";
+import { SignTypedData } from "@/lib/types";
+import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 

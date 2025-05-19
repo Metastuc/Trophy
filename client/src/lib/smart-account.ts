@@ -1,4 +1,3 @@
-import { ENV_SCHEMA, network } from "@/lib/constants";
 import {
     createBicoPaymasterClient,
     createSmartAccountClient,
@@ -6,6 +5,8 @@ import {
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
+
+import { ENV_SCHEMA, network } from "@/lib/constants";
 
 export const getSmartAccount = async (provider: EIP1193Provider) => {
     try {
