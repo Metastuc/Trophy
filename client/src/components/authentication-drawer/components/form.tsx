@@ -3,8 +3,8 @@ import React from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-
 import { useServer } from "@/hooks/server";
+
 import { useAuthenticationDrawerContext } from "../context";
 import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "../utils";
 
