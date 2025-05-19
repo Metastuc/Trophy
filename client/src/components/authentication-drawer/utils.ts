@@ -37,6 +37,7 @@ export function AuthenticationReducer(state: tAuthState, action: tAuthAction): t
         case "GO_TO_FINISH":
             return {
                 ...state,
+                autheticationMethod: action.autheticationMethod,
                 screenStack: [...state.screenStack, "finish"],
                 type: "finish",
             };

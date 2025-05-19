@@ -4,6 +4,7 @@ type tAuthState = {
     type: tScreen;
     screenStack: Array<tScreen>;
     email?: string;
+    autheticationMethod?: LoginMethod;
 };
 
 type tAuthAction =
@@ -11,7 +12,7 @@ type tAuthAction =
     | { type: "GO_TO_DEFAULT" }
     | { type: "GO_TO_EMAIL" }
     | { type: "GO_TO_FARCASTER" }
-    | { type: "GO_TO_FINISH" }
+    | { type: "GO_TO_FINISH"; autheticationMethod: LoginMethod }
     | { type: "GO_TO_OTP"; email: string }
     | { type: "GO_TO_WALLET" };
 

@@ -11,7 +11,7 @@ export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAu
             // dispatch({ type: "GO_TO_DEFAULT" });
 
             if (params.isNewUser) {
-                dispatch({ type: "GO_TO_FINISH" });
+                dispatch({ type: "GO_TO_FINISH", autheticationMethod: params.loginMethod });
             } else {
                 // check if user profile is completed
             }
@@ -36,10 +36,12 @@ interface iUseWalletAuthentication {
 
 export function useWalletAuthentication({ dispatch, setDrawerState }: iUseWalletAuthentication) {
     const { login } = useLogin({
-        onComplete({ user, isNewUser }) {
+        onComplete({ user, isNewUser, loginMethod }) {
             console.log("Login successful:", { user, isNewUser });
-            dispatch({ type: "GO_TO_DEFAULT" });
-            setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+            setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
+
+            dispatch({ type: "GO_TO_FINISH", autheticationMethod: loginMethod });
+            // setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
         },
         onError(error) {
             console.error("Wallet error:", error);

@@ -2,6 +2,7 @@ import { type Request, type Response } from "express";
 import { type TypedResponse } from "../type/response";
 import { HUDDLE_KEY } from '../utils/env.js';
 import { db } from '../utils/firebase.js';
+import { recordStreamJoin } from "./recordListener.controller.js";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 
 export const getAccessToken = async (
@@ -9,7 +10,7 @@ export const getAccessToken = async (
     res: Response<TypedResponse<{ token?: string }>>
   ): Promise<void> => {
     try {
-      const { roomId, address, } = req.body;
+      const { roomId, address } = req.body;
   
       if (!roomId || !address) {
         res.status(400).json({
@@ -59,6 +60,8 @@ export const getAccessToken = async (
       });
       
       const token = await accessToken.toJwt();
+
+      await recordStreamJoin(address, roomId);
       res.status(200).json({
         status: "success",
         data: { token },
