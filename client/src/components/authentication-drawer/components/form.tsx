@@ -11,9 +11,7 @@ import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "
 export function AuthenticationProfile() {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImage, setProfileImage] = React.useState<string | null>(null);
-    const { state } = useAuthenticationDrawerContext();
-
-    console.log({ state });
+    const { state, setDrawerState } = useAuthenticationDrawerContext();
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -78,7 +76,10 @@ export function AuthenticationProfile() {
                     username: profile.username,
                 },
             }).then(function (response) {
-                console.log(response);
+                if (response.status === 201) {
+                    toast.success("Profile Creation Success");
+                    setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+                }
             });
         }
     }
@@ -124,12 +125,14 @@ export function AuthenticationProfile() {
                     />
                 </div>
 
-                <TextInput
-                    className="border-blue100/40 h-11 w-full rounded-[.125rem] border p-2.5 text-xs lowercase"
-                    name="email"
-                    placeholder="enter email"
-                    type="email"
-                />
+                {state.autheticationMethod !== "email" ? (
+                    <TextInput
+                        className="border-blue100/40 h-11 w-full rounded-[.125rem] border p-2.5 text-xs lowercase"
+                        name="email"
+                        placeholder="enter email"
+                        type="email"
+                    />
+                ) : null}
 
                 <TextInput
                     className="border-blue100/40 h-11 w-full rounded-[.125rem] border p-2.5 text-xs lowercase"
