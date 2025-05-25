@@ -7,6 +7,7 @@ import authUserRoutes from "./src/routes/authUser.routes.js";
 import signUpRoutes from "./src/routes/signUp.routes.js";
 import callUpRoutes from "./src/routes/callUp.routes.js";
 import getUserRoutes from "./src/routes/getUser.routes.js";
+import profileRoutes from "./src/routes/profile.routes.js";
 
 const server = express();
 
@@ -26,6 +27,8 @@ server.use("/api/sign-up", signUpRoutes);
 server.use("/api/call-up", callUpRoutes);
 
 server.use("/api/getUser", getUserRoutes);
+
+server.use("/api/get-profile", profileRoutes);
 
 server.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);

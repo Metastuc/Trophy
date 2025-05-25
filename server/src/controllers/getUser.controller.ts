@@ -4,6 +4,10 @@ import { db } from '../utils/firebase.js';
 import { getEpicStream } from './epicStream.controller.js';
 import { ethers, Network } from "ethers";
 import { erc20ABI } from "../utils/ERC20ABI.js";
+// import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
+// import { createPublicClient, createWalletClient, http } from "viem";
+// import { privateKeyToAccount } from 'viem/accounts';
+// import { baseSepolia } from "viem/chains";
 
 interface TopHolderInfo {
     holder: string;
@@ -13,11 +17,34 @@ interface TopHolderInfo {
 
 interface UserResponse {
     totalStreams: number;
-    epicStream: number | null;
+    epicStream: string | null;
     topHolders: TopHolderInfo[];
     username: string;
     pfp: string;
 }
+
+const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+        return `${(num / 1000000).toFixed(1)}M`;
+    }
+    if (num >= 1000) {
+        return `${(num / 1000).toFixed(1)}K`;
+    }
+    return num.toString();
+};
+
+// const getTokenInfo = async (tokenAddress: string): Promise<string> => {
+//     const publicClient = createPublicClient({
+//         chain: baseSepolia,
+//         transport: http(),
+//     });
+
+//     const flaunchRead = createFlaunch({ publicClient }) as ReadFlaunchSDK;
+
+//     const formattedAddress = tokenAddress.startsWith('0x') ? tokenAddress.slice(2) : tokenAddress;
+//     const marketCap = await flaunchRead.coinMarketCapInUSD({ coinAddress: `0x${formattedAddress}` });
+//     return marketCap;
+// };
 
 export const getUser = async (
     req: Request,
@@ -54,8 +81,9 @@ export const getUser = async (
         const username = userData.username;
         const pfp = userData.uploadedPfp;
 
-        // Get epic stream value
-        const epicStream = await getEpicStream(address);
+        // Get epic stream value and format it
+        const epicStreamValue = await getEpicStream(address);
+        const epicStream = epicStreamValue !== null ? formatNumber(epicStreamValue) : null;
 
         // Get token total supply and holder information
         let topHolders: TopHolderInfo[] = [];
@@ -72,7 +100,6 @@ export const getUser = async (
             
             // Get user information for each holder
             const holderPromises = rawTopHolders.map(async (holder: { holder: string; amount: bigint }) => {
-
                 const percentage = Number(holder.amount * BigInt(10000) / totalSupply) / 100; // Calculate percentage with 2 decimal places
 
                 return {
@@ -103,3 +130,4 @@ export const getUser = async (
         });
     }
 };
+
