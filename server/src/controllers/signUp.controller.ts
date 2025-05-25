@@ -32,7 +32,9 @@ export const signUp = async (
             bio: bio ?? "",
             farcaster: farcaster ?? "",
             address: address ?? "",
-            totalStreams: 0
+            totalStreams: 0,
+            creatorToken: "",
+            topHolders: []
         };
 
         await db.collection('users').add(userData);
