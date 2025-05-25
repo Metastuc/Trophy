@@ -10,7 +10,7 @@ export const createStream = async (
     res: Response<TypedResponse<{ roomId?: string, token?: string }>>
   ): Promise<void> => {
     try {
-      const { title, startTime, address, creatorToken } = req.body;
+      const { title, startTime, address } = req.body;
   
       const streamTime = new Date(startTime);
       const now = new Date();
@@ -54,17 +54,9 @@ export const createStream = async (
 
       const userDocRef = userSnap.docs[0].ref;
 
-      // If this is their first stream and they provided a creatorToken, update their creatorAddress
-      if (streamCount === 0 && creatorToken) {
-        await userDocRef.update({
-          totalStreams: newStreamCount,
-          creatorToken: creatorToken
-        });
-      } else {
-        await userDocRef.update({
-          totalStreams: newStreamCount,
-        });
-      }
+      await userDocRef.update({
+        totalStreams: newStreamCount,
+      });
 
       console.log("Livestream saved:", streamData);
   
