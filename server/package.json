@@ -3,8 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-  "dev": "nodemon",
-  "start": "ts-node server.ts"
+    "dev": "nodemon",
+    "start": "ts-node server.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -22,6 +22,7 @@
     "axios": "^1.9.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
+    "ethers": "^6.14.1",
     "express": "^5.1.0",
     "firebase-admin": "^13.3.0",
     "http-status": "^2.1.0",

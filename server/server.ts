@@ -5,6 +5,8 @@ import roomRoutes from "./src/routes/room.routes.js";
 import accessTokenRoutes from "./src/routes/accessToken.routes.js";
 import authUserRoutes from "./src/routes/authUser.routes.js";
 import signUpRoutes from "./src/routes/signUp.routes.js";
+import callUpRoutes from "./src/routes/callUp.routes.js";
+import getUserRoutes from "./src/routes/getUser.routes.js";
 
 const server = express();
 
@@ -20,6 +22,10 @@ server.use("/api/access-stream", accessTokenRoutes);
 server.use("/api/auth-user", authUserRoutes);
 
 server.use("/api/sign-up", signUpRoutes);
+
+server.use("/api/call-up", callUpRoutes);
+
+server.use("/api/getUser", getUserRoutes);
 
 server.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
