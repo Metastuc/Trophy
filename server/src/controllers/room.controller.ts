@@ -5,9 +5,15 @@ import { HUDDLE_KEY } from '../utils/env.js';
 import { db } from '../utils/firebase.js';
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 
+interface RoomResponse {
+  roomId?: string;
+  token?: string;
+  streamLink?: string;
+}
+
 export const createStream = async (
     req: Request,
-    res: Response<TypedResponse<{ roomId?: string, token?: string }>>
+    res: Response<TypedResponse<RoomResponse>>
   ): Promise<void> => {
     try {
       const { title, startTime, address } = req.body;
@@ -76,6 +82,9 @@ export const createStream = async (
         res.status(201).json({
           status: "success",
           message: "Stream scheduled successfully",
+          data: {
+            streamLink: `${process.env.BASE_CLIENT_URL}/${roomId}`
+          }
         });
       }
     } catch (error) {
