@@ -1,7 +1,10 @@
 import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
 
+import { getUserProfile } from "@/api/get-user-profile";
+import { Skeleton } from "@/components/ui/skeleton";
 import { logger } from "@/utils/logger";
 import MainContentLayout from "@/views/main-content";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/profile")({
     async beforeLoad({ context }) {
@@ -17,15 +20,15 @@ export const Route = createFileRoute("/profile")({
         // const { status, data } = useQuery(
         //     getUserProfile(authentication.user?.wallet?.address as string),
         // );
-        // const { status, data } = useQuery(
-        //     getUserProfile("0x2AE67a159fc288dB6bA4407C014F20147130b54a"),
-        // );
-        // const userData = data?.data;
-        // logger({ userData });
+        const { status, data } = useQuery(
+            getUserProfile("0x2AE67a159fc288dB6bA4407C014F20147130b54a"),
+        );
+        const userData = data?.data;
+        logger({ userData });
 
         return (
             <MainContentLayout>
-                {/* <section className="flex">
+                <section className="flex">
                     <aside className="flex w-15 items-center justify-center border border-black">
                         {status === "pending" ? (
                             <Skeleton className="size-14 rounded-full" />
@@ -47,7 +50,7 @@ export const Route = createFileRoute("/profile")({
                             )}
                         </h3>
                     </aside>
-                </section> */}
+                </section>
             </MainContentLayout>
         );
     },

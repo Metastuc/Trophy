@@ -50,6 +50,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15 }}
+            className="relative min-h-screen"
         >
             <RouterProvider router={router} context={{ authentication }} />
         </motion.section>
