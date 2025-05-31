@@ -16,7 +16,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.use("/api/create-stream", roomRoutes);
-// server.use("/api", roomRoutes);
+server.use("/api", roomRoutes);
 
 server.use("/api/access-stream", accessTokenRoutes);
 

@@ -113,6 +113,15 @@ export const createStream = async (
             token: recordingToken,
             layout: "spotlight"
           });
+
+          await recorder.startLivestream({
+            roomId,
+            token: recordingToken,
+            rtmpUrls: [`rtmp://138.68.142.137/live/${roomId}`]
+          });
+
+          console.log(recordingToken, `rtmp://138.68.142.137/live/${roomId}`);
+          
         } catch (recordingError) {
           console.error("Failed to start recording:", recordingError);
           // Continue with stream creation even if recording fails
