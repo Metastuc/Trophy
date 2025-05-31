@@ -3,6 +3,7 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 import BottomNavigationBar from "@/components/bottom-navigation-bar";
 import TopNavigationBar from "@/components/top-navigation-bar";
+import { iAuthenticationContext } from "@/contexts/authentication";
 
 type RouterContext = {
     queryClient: QueryClient;

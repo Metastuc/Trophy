@@ -2,6 +2,8 @@ import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import { Loader } from "lucide-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -34,8 +36,23 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
+    const authentication = useAuthenticationContext();
+
+    if (!authentication.isReady)
+        return (
+            <section className="flex h-screen w-screen items-center justify-center">
+                <Loader className="animate-spin" />
+            </section>
+        );
+
     return (
-        <RouterProvider router={router} context={{ authentication: useAuthenticationContext() }} />
+        <motion.section
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+        >
+            <RouterProvider router={router} context={{ authentication }} />
+        </motion.section>
     );
 }
 
