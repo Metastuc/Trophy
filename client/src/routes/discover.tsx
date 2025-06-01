@@ -3,13 +3,14 @@ import { motion } from "motion/react";
 
 import StreamerBoard from "@/components/streamer-board";
 import { useDiscoverSearchStore } from "@/store/discover-search";
+import MainContentLayout from "@/views/main-content";
 
 export const Route = createFileRoute("/discover")({
     component: function Page() {
         const { isVisible } = useDiscoverSearchStore();
 
         return (
-            <section className="my-2 px-4">
+            <MainContentLayout>
                 {isVisible ? (
                     <motion.header
                         className="flex h-6 w-full items-center justify-center border"
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/discover")({
                         <StreamerBoard key={index} counter={index + 1} />
                     ))}
                 </motion.footer>
-            </section>
+            </MainContentLayout>
         );
     },
 });

@@ -1,6 +1,13 @@
 import { usePrivy, type User } from "@privy-io/react-auth";
 import React from "react";
 
+export interface iAuthenticationContext {
+    isAuthenticated: boolean;
+    isReady: boolean;
+    logout: () => Promise<void>;
+    user: User | null;
+}
+
 export const AuthenticationContext: React.Context<iAuthenticationContext> =
     React.createContext<iAuthenticationContext>({} as iAuthenticationContext);
 
@@ -16,26 +23,18 @@ export function useAuthenticationContext(): iAuthenticationContext {
 }
 
 export function AuthenticationContextProvider({ children }: { children: React.ReactNode }) {
-    const { authenticated, logout, ready, user: privyUser } = usePrivy();
-
-    const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(authenticated);
-    const [user, setUser] = React.useState<User | null>(privyUser);
-
-    React.useEffect(
-        function () {
-            if (ready) {
-                setIsAuthenticated(authenticated);
-                setUser(privyUser);
-            }
-        },
-        [ready, authenticated, privyUser],
-    );
+    const { authenticated, logout, ready, user } = usePrivy();
 
     const value: iAuthenticationContext = React.useMemo(
         function () {
-            return { isAuthenticated, logout, user };
+            return {
+                isAuthenticated: authenticated,
+                isReady: ready,
+                logout,
+                user,
+            };
         },
-        [isAuthenticated, logout, user],
+        [authenticated, ready, logout, user],
     );
 
     return (

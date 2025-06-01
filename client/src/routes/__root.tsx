@@ -3,6 +3,8 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 import BottomNavigationBar from "@/components/bottom-navigation-bar";
 import TopNavigationBar from "@/components/top-navigation-bar";
+import { iAuthenticationContext } from "@/contexts/authentication";
+import { Fragment } from "react";
 
 type RouterContext = {
     queryClient: QueryClient;
@@ -11,12 +13,12 @@ type RouterContext = {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
-        <div className="relative min-h-screen">
+        <Fragment>
             <TopNavigationBar />
             <main className="mb-20">
                 <Outlet />
             </main>
             <BottomNavigationBar />
-        </div>
+        </Fragment>
     ),
 });

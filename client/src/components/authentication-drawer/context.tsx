@@ -32,20 +32,53 @@ export function AuthenticationDrawerContextProvider({ children }: { children: Re
 
     const { login } = useWalletAuthentication({ dispatch, setDrawerState });
 
+    // React.useEffect(() => {
+    //     if (state.type === "wallet" && !hasLoggedInRef.current) {
+    //         hasLoggedInRef.current = true;
+    //         setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+
+    //         login({
+    //             loginMethods: ["wallet"],
+    //             walletChainType: "ethereum-only",
+    //         });
+    //     }
+
+    //     if (state.type !== "wallet") {
+    //         hasLoggedInRef.current = false;
+    //     }
+
+    //     if (state.type === "farcaster" && !hasLoggedInRef.current) {
+    //         hasLoggedInRef.current = true;
+    //         setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+
+    //         login({
+    //             loginMethods: ["farcaster"],
+    //         });
+    //     }
+
+    //     if (state.type !== "farcaster") {
+    //         hasLoggedInRef.current = false;
+    //     }
+    // }, [state.type, login]);
+
+    const prevTypeRef = React.useRef<string | null>(null);
+
     React.useEffect(() => {
-        if (state.type === "wallet" && !hasLoggedInRef.current) {
-            hasLoggedInRef.current = true;
-            setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+        if (prevTypeRef.current !== state.type) {
+            // Transition detected
+            if (state.type === "wallet" && !hasLoggedInRef.current) {
+                hasLoggedInRef.current = true;
+                setDrawerState((prev) => ({ ...prev, isDrawerOpen: false }));
+                login({ loginMethods: ["wallet"], walletChainType: "ethereum-only" });
+            }
 
-            login({
-                loginMethods: ["wallet"],
-                walletChainType: "ethereum-only",
-            });
+            if (state.type === "farcaster" && !hasLoggedInRef.current) {
+                hasLoggedInRef.current = true;
+                setDrawerState((prev) => ({ ...prev, isDrawerOpen: false }));
+                login({ loginMethods: ["farcaster"] });
+            }
         }
-
-        if (state.type !== "wallet") {
-            hasLoggedInRef.current = false;
-        }
+        prevTypeRef.current = state.type;
     }, [state.type, login]);
 
     const contextValue = {
