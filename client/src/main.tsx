@@ -2,7 +2,7 @@ import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -46,14 +46,16 @@ function App() {
         );
 
     return (
-        <motion.section
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.15 }}
-            className="relative min-h-screen"
-        >
-            <RouterProvider router={router} context={{ authentication }} />
-        </motion.section>
+        <AnimatePresence mode="wait">
+            <motion.section
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25 }}
+                className="relative min-h-screen"
+            >
+                <RouterProvider router={router} context={{ authentication }} />
+            </motion.section>
+        </AnimatePresence>
     );
 }
 

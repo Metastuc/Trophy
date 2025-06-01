@@ -30,13 +30,13 @@ export const Route = createFileRoute("/profile")({
             <MainContentLayout>
                 <section className="flex gap-1">
                     <aside className="flex w-15 items-center justify-center">
-                        {status !== "pending" ? (
+                        {status === "pending" ? (
                             <Skeleton className="size-14 rounded-full" />
                         ) : (
                             <img
                                 alt="user-pfp"
                                 className="size-14 rounded-full"
-                                src={userData?.pfp}
+                                src={userData?.uploadedPfp}
                             />
                         )}
                     </aside>
