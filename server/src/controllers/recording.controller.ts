@@ -4,6 +4,7 @@ import { db } from '../utils/firebase.js';
 import { Recorder } from '@huddle01/server-sdk/recorder';
 import { AccessToken, Role } from '@huddle01/server-sdk/auth';
 import { API } from '@huddle01/server-sdk/api';
+import { HUDDLE_KEY } from '../utils/env.js';
 
 const recorder = new Recorder(
     process.env.HUDDLE_PROJECT_ID!,
@@ -88,6 +89,16 @@ export const startRecording = async (
             return;
         }
 
+        // Generate token using the existing function
+        const token = await generateToken(roomId);
+
+        // Start recording using Huddle01 SDK
+        await recorder.startRecording({
+            roomId,
+            token,
+            layout: "spotlight"
+        });
+
         // Update recordStream field in Firestore
         await db.collection('livestreams').doc(roomId).update({
             recordStream: true
@@ -97,14 +108,14 @@ export const startRecording = async (
             status: "success",
             data: {
                 success: true,
-                message: "Stream recording enabled successfully"
+                message: "Stream recording started successfully"
             }
         });
     } catch (error) {
         console.error("Error in startRecording:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to enable stream recording"
+            message: error instanceof Error ? error.message : "Failed to start stream recording"
         });
     }
 };

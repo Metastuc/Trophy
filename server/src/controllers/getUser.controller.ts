@@ -91,13 +91,13 @@ export const getUser = async (
             const baseSepolia = new Network("base-sepolia", 84532);
             const provider = new ethers.JsonRpcProvider("https://sepolia.base.org", baseSepolia);
             const tokenContract = new ethers.Contract(creatorToken, erc20ABI, provider);
-
+            
             // Get total supply
             const totalSupply = await tokenContract.totalSupply();
-
+            
             // Get holder information
             const rawTopHolders = userData.topHolders || [];
-
+            
             // Get user information for each holder
             const holderPromises = rawTopHolders.map(async (holder: { holder: string; amount: bigint }) => {
                 const percentage = Number(holder.amount * BigInt(10000) / totalSupply) / 100; // Calculate percentage with 2 decimal places
@@ -119,7 +119,7 @@ export const getUser = async (
                 epicStream,
                 topHolders,
                 username,
-                pfp,
+                pfp
             }
         });
     } catch (error) {
@@ -130,4 +130,3 @@ export const getUser = async (
         });
     }
 };
-

@@ -3,8 +3,10 @@ import { type TypedResponse } from "../type/response";
 import { db } from '../utils/firebase.js';
 import { ethers, Network } from "ethers";
 import { erc20ABI } from "../utils/ERC20ABI.js";
-import Moralis from "moralis"
+import Moralis from 'moralis';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
 interface TokenBalance {
     symbol: string;
@@ -20,6 +22,7 @@ interface ProfileResponse {
     tokenBalances: TokenBalance[];
     totalUsdValue: number;
 }
+
 
 
 export const getProfile = async (
@@ -60,17 +63,17 @@ export const getProfile = async (
 
         // Hardcoded tokens array with decimals and addresses
         const tokens = [
-            {
-                testnetAddress: "0xd08d9ff04a610897106A2B5bbE715F0BEA64217F",
+            { 
+                testnetAddress: "0xd08d9ff04a610897106A2B5bbE715F0BEA64217F", 
                 mainnetAddress: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
-                symbol: "DEGEN",
-                decimals: 18
+                symbol: "DEGEN", 
+                decimals: 18 
             },
-            {
-                testnetAddress: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+            { 
+                testnetAddress: "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 
                 mainnetAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-                symbol: "USDC",
-                decimals: 6
+                symbol: "USDC", 
+                decimals: 6 
             }
         ];
 
@@ -93,11 +96,11 @@ export const getProfile = async (
         const ethUsdValue = parseFloat(formattedEthBalance) * ethUsdPrice;
 
         // Get balances and prices for each token
-        const balancePromises = tokens.map(async (token: {
-            testnetAddress: string;
+        const balancePromises = tokens.map(async (token: { 
+            testnetAddress: string; 
             mainnetAddress: string;
-            symbol: string;
-            decimals: number
+            symbol: string; 
+            decimals: number 
         }) => {
             const tokenContract = new ethers.Contract(token.testnetAddress, erc20ABI, provider);
             const balance = await tokenContract.balanceOf(address);
@@ -123,9 +126,9 @@ export const getProfile = async (
         });
 
         tokenBalances = [
-            {
-                symbol: "ETH",
-                balance: formattedEthBalance,
+            { 
+                symbol: "ETH", 
+                balance: formattedEthBalance, 
                 usdValue: ethUsdValue,
                 priceChange24h: ethPriceResponse.raw["24hrPercentChange"] ? ethPriceResponse.raw["24hrPercentChange"] : undefined
             },
