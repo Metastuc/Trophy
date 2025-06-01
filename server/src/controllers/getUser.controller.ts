@@ -119,7 +119,7 @@ export const getUser = async (
                 epicStream,
                 topHolders,
                 username,
-                pfp
+                pfp,
             }
         });
     } catch (error) {

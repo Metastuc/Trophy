@@ -28,9 +28,9 @@ export const Route = createFileRoute("/profile")({
 
         return (
             <MainContentLayout>
-                <section className="flex">
-                    <aside className="flex w-15 items-center justify-center border border-black">
-                        {status === "pending" ? (
+                <section className="flex gap-1">
+                    <aside className="flex w-15 items-center justify-center">
+                        {status !== "pending" ? (
                             <Skeleton className="size-14 rounded-full" />
                         ) : (
                             <img
@@ -41,14 +41,28 @@ export const Route = createFileRoute("/profile")({
                         )}
                     </aside>
 
-                    <aside className="flex-1">
+                    <aside className="flex-1 space-y-1">
                         <h3>
-                            {status === "pending" ? (
-                                <Skeleton className="size-4" />
+                            {status !== "pending" ? (
+                                <Skeleton className="h-4 w-1/4" />
                             ) : (
-                                <span>@{userData?.username}</span>
+                                <span className="font-medium">@{userData?.username}</span>
                             )}
                         </h3>
+
+                        {status === "pending" ? (
+                            <Skeleton className="h-8 w-1/2" />
+                        ) : (
+                            <p className="max-h-16 min-h-8 w-48 overflow-hidden text-sm">
+                                {/* {userData?.bio} */}
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Incidunt
+                                modi vel, asperiores commodi blanditiis suscipit fugiat saepe error.
+                                Non, natus! Cupiditate, temporibus quaerat! Ullam ea perferendis
+                                velit, blanditiis nam possimus tempora, neque ipsam sint nesciunt
+                                error molestiae? Soluta aperiam tenetur nulla eos dolorem deserunt
+                                nesciunt maxime, architecto unde perspiciatis maiores!
+                            </p>
+                        )}
                     </aside>
                 </section>
             </MainContentLayout>

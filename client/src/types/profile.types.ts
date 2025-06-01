@@ -1,11 +1,12 @@
 import { type QueryStatus } from "@tanstack/react-query";
 
 export type tQueryResponse = {
-    status: QueryStatus;
     data: tUserProfileResponse;
+    status: QueryStatus;
 };
 
 export type tUserProfileResponse = {
+    bio: string;
     epicStream: string;
     pfp: string;
     topHolders: Array<unknown>;
