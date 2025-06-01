@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, AxiosResponse } from "axios";
+import axios, { AxiosHeaders, AxiosInstance, AxiosResponse } from "axios";
 
 /**
  * Define supported HTTP methods.
@@ -6,17 +6,29 @@ import axios, { AxiosHeaders, AxiosResponse } from "axios";
 export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
 
 /**
+ * Define DataResponse type for receiving requests
+ */
+export type DataResponse<T> = {
+    config: AxiosResponse<T>["config"];
+    data: AxiosResponse<T>["data"];
+    headers: AxiosResponse<T>["headers"];
+    request?: AxiosResponse<T>["request"];
+    status: AxiosResponse<T>["status"];
+    statusText: AxiosResponse<T>["statusText"];
+};
+
+/**
  * Define RequestOptions type for configuring requests.
  */
 type RequestOptions = {
-    url: string;
+    data?: Record<string, unknown> | FormData;
+    headers?: AxiosHeaders;
     method: HttpMethod;
     params?: Record<string, unknown>;
-    headers?: AxiosHeaders;
-    data?: Record<string, unknown>;
+    url: string;
 };
 
-const axiosInstance = axios.create({
+const axiosInstance: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
 });
 
@@ -25,16 +37,16 @@ const axiosInstance = axios.create({
  *
  * @template T - The expected response type.
  * @param options - The configuration options for the request.
- * @returns A promise that resolves with the response data.
+ * @returns A promise that resolves with the response details.
  * @throws Will throw an error if the request fails.
  */
 export async function makeRequest<T>({
-    url,
+    data,
+    headers,
     method,
     params,
-    headers,
-    data,
-}: RequestOptions): Promise<T> {
+    url,
+}: RequestOptions): Promise<DataResponse<T>> {
     /**
      * Determine if the request is to an external API (full URL).
      * If so, bypass the axiosInstance baseURL.
@@ -49,16 +61,32 @@ export async function makeRequest<T>({
             ? await axios({ url, method, params, headers, data })
             : await axiosInstance({ url, method, params, headers, data });
 
+        const {
+            config,
+            data: responseData,
+            headers: responseHeaders,
+            request,
+            status,
+            statusText,
+        } = response;
+
         /**
-         * Return the response data.
+         * Return the response data and status.
          */
-        return response.data as T;
+        return {
+            config,
+            data: responseData,
+            headers: responseHeaders,
+            request,
+            status,
+            statusText,
+        };
     } catch (error) {
         /**
          * Handle Axios errors.
          */
         if (axios.isAxiosError(error)) {
-            console.error(error);
+            console.error("Axios Error:", error);
         } else {
             /**
              * Handle non-Axios errors.
