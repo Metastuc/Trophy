@@ -10,6 +10,8 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer-express-handlebars": "^4.0.5",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
@@ -29,6 +31,9 @@
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
     "moralis": "^2.27.2",
+    "nodemailer": "^7.0.3",
+    "nodemailer-express-handlebars": "^7.0.0",
+    "socket.io": "^4.8.1",
     "winston": "^3.17.0"
   }
 }
