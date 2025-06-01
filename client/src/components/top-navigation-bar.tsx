@@ -1,6 +1,7 @@
-import { Link, useMatchRoute } from "@tanstack/react-router";
+import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
 import { LOGO, SEARCH } from "@/assets/icons";
+import { useAuthenticationContext } from "@/contexts/authentication";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 
@@ -35,10 +36,30 @@ export default function Component() {
                     </button>
                 ) : null}
 
-                <AuthenticationDrawerContextProvider>
-                    <AuthenticationDrawer />
-                </AuthenticationDrawerContextProvider>
+                {!checkRoute({ to: "/profile" }) ? (
+                    <AuthenticationDrawerContextProvider>
+                        <AuthenticationDrawer />
+                    </AuthenticationDrawerContextProvider>
+                ) : (
+                    <ProfileExitButton />
+                )}
             </aside>
         </section>
+    );
+}
+
+function ProfileExitButton() {
+    const { logout } = useAuthenticationContext();
+    const navigate = useNavigate();
+
+    function handleLogout() {
+        logout();
+        navigate({ to: "/" });
+    }
+
+    return (
+        <button onClick={handleLogout}>
+            <span>exit</span>
+        </button>
     );
 }
