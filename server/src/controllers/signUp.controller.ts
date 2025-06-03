@@ -1,11 +1,11 @@
-import { type Request, type Response } from "express";
-import { type TypedResponse } from "../type/response";
-import { db } from '../utils/firebase.js';
+import type { Request, Response } from "express";
+import { sendRegisterEmail } from "../utils/emailNotis";
+import { User } from "../models/userSchema";
 
 export const signUp = async (
     req: Request,
-    res: Response<TypedResponse<{ message?: string }>>
-): Promise<void> => {
+    res: Response
+) => {
     try {
         const {
             pfp,
@@ -16,33 +16,31 @@ export const signUp = async (
             address
         }: {
             pfp?: string;
-            username?: string;
-            email?: string;
+            username: string;
+            email: string;
             bio?: string;
             farcaster?: string;
-            address?: string;
+            address: string;
         } = req.body;
 
-        const uploadedPfp = pfp ?? "url"; // Default fallback
+        const userPfp = pfp ?? "url"; // Default fallback
 
         const userData = {
-            uploadedPfp,
-            username: username ?? "",
-            email: email ?? "",
+            userPfp,
+            username,
+            email,
             bio: bio ?? "",
             farcaster: farcaster ?? "",
-            address: address ?? "",
-            totalStreams: 0,
-            creatorToken: "",
-            topHolders: []
+            address
         };
 
-        await db.collection('users').add(userData);
+        const newUser = new User(userData);
+        await newUser.save();
 
-        console.log("user signed up:", userData);
+        await sendRegisterEmail({ email, username }, "Welcome to Trophy 🎉")
 
         res.status(201).json({
-            status: "success",
+            user: newUser,
             message: "User signed up successfully"
         });
     } catch (error) {
