@@ -14,6 +14,7 @@
         "@delvtech/drift": "^0.8.4",
         "@delvtech/drift-viem": "^0.8.4",
         "@flaunch/sdk": "^0.6.0",
+        "@huddle01/react": "^2.5.1",
         "@privy-io/react-auth": "^2.13.2",
         "@radix-ui/react-alert-dialog": "^1.1.13",
         "@radix-ui/react-dialog": "^1.1.11",
