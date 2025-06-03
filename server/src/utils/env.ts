@@ -5,7 +5,9 @@ export const PORT = process.env.PORT || 4500;
 
 export const FIRESTORE_CRED = process.env.FIRESTORE_CRED;
 
-export const HUDDLE_KEY = process.env.HUDDLE_API_KEY!;
+export const HUDDLE_API_KEY = process.env.HUDDLE_API_KEY!;
+
+export const HUDDLE_PROJECT_ID = process.env.HUDDLE_PROJECT_ID!;
 
 export const EMAIL_USER = process.env.EMAIL_USER!;
 
