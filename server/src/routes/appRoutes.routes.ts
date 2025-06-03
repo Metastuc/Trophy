@@ -16,10 +16,12 @@ router
 	.post("/create-stream", createStream)
 	.post("/join-stream", getAccessToken)
 	.post("/update-stream", scheduleActions)
+
 	.post("/get-user", getUser)
 	.post("/update-profile", updateProfile)
 	.post("/fetch-user", authUser)
 	.post("/add-guest", getGuestAccessToken)
+
 	.post('/recording/start', startRecording)
 	.post('/recording/stop', stopRecording)
 	.post('/recording/end-stream', endLivestream)
