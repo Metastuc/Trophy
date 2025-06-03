@@ -5,7 +5,7 @@ import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
 
 import { getSmartAccount } from "@/biconomy/smartAccount";
-import { ENV_SCHEMA, network,REVENUE_MANAGER_ADDRESS } from "@/lib/constants";
+import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "@/lib/constants";
 import { SignTypedData } from "@/lib/types";
 import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
 

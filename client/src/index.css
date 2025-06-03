@@ -149,18 +149,12 @@
         @apply bg-background text-foreground;
     }
 
-    svg,
-    img {
-        @apply !size-full;
-    }
-
     i {
         @apply flex items-center justify-center;
-    }
 
-    :is(#privy-modal-content) {
+        svg,
         img {
-            @apply !size-6;
+            @apply !size-full;
         }
     }
 

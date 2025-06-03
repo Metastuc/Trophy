@@ -1,11 +1,9 @@
-import { type Request, type Response } from "express";
-import { type TypedResponse } from "../types/response";
-import { HUDDLE_KEY } from "../utils/env.js";
-import { db } from "../utils/firebase.js";
-import { recordStreamJoin } from "./recordListener.controller.js";
+import type { Request, Response } from "express";
+import { HUDDLE_KEY } from "../utils/env";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema";
 import { format } from "date-fns";
+import { Recorder } from '@huddle01/server-sdk/recorder';
 
 export const getAccessToken = async (req: Request, res: Response) => {
 	try {
@@ -19,21 +17,6 @@ export const getAccessToken = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// Find the stream from Firestore
-		// const streamSnap = await db
-		//   .collection("livestreams")
-		//   .where("roomId", "==", roomId)
-		//   .limit(1)
-		//   .get();
-
-		// if (streamSnap.empty) {
-		//   res.status(404).json({
-		//     status: "error",
-		//     message: "Stream not found",
-		//   });
-		//   return;
-		// }
-
 		const stream = await Stream.findOne({ roomId });
 
 		if (!stream) {
@@ -44,7 +27,6 @@ export const getAccessToken = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// const stream = streamSnap.docs[0].data();
 		const now = new Date();
 		const startTime = new Date(stream.date!);
 		const isOwner = stream.streamer.toLowerCase() === name.toLowerCase();
@@ -104,4 +86,33 @@ export const getAccessToken = async (req: Request, res: Response) => {
 			message: "Failed to generate access token",
 		});
 	}
+};
+
+
+// const recorder = new Recorder(
+//   process.env.HUDDLE_PROJECT_ID!,
+//   process.env.HUDDLE_API_KEY!
+// );
+
+const generateRecordingToken = async (roomId: string) => {
+  const token = new AccessToken({
+    apiKey: process.env.HUDDLE_API_KEY!,
+    roomId: roomId,
+    role: Role.BOT,
+    permissions: {
+      admin: true,
+      canConsume: true,
+      canProduce: true,
+      canProduceSources: {
+        cam: true,
+        mic: true,
+        screen: true,
+      },
+      canRecvData: true,
+      canSendData: true,
+      canUpdateMetadata: true,
+    },
+  });
+
+  return await token.toJwt();
 };

@@ -1,8 +1,11 @@
 import express from "express";
 import cors from "cors";
-import { PORT } from "./src/utils/env";
 import appRoutes from "./src/routes/appRoutes.routes";
 import DB from "./src/config/db";
+import { PORT } from "./src/utils/env";
+import chatRoutes from "./src/routes/chat.routes.js";
+import tipRoutes from "./src/routes/tip.routes.js";
+import recordingRoutes from "./src/routes/recording.routes.js";
 
 const server = express();
 
@@ -11,6 +14,12 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.use("/api", appRoutes);
+
+server.use("/api/chat", chatRoutes);
+
+server.use("/api/tip", tipRoutes);
+
+server.use("/api/recording", recordingRoutes);
 
 server.listen(PORT, async () => {
   console.log(`✅ Server is running on port ${PORT}`);

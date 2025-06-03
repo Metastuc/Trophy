@@ -21,8 +21,8 @@ export type DataResponse<T> = {
  * Define RequestOptions type for configuring requests.
  */
 type RequestOptions = {
-    data?: Record<string, unknown> | FormData;
-    headers?: AxiosHeaders;
+    data?: Record<string, unknown> | FormData | string;
+    headers?: Record<string, string>;
     method: HttpMethod;
     params?: Record<string, unknown>;
     url: string;

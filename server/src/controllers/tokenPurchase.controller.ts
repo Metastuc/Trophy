@@ -66,6 +66,7 @@ export const tokenPurchase = async (
 			topHolders: updatedTopHolders,
 		});
 
+<<<<<<< HEAD:server/src/controllers/TokenPurchase.controller.ts
 		res.status(201).json({
 			status: "success",
 			message: "Top holders updated successfully",
@@ -81,3 +82,17 @@ export const tokenPurchase = async (
 		});
 	}
 };
+=======
+        res.status(201).json({
+            status: "success",
+            message: "Top holders updated successfully"
+        });
+    } catch (error) {
+        console.error("Error in tokenPurchase:", error);
+        res.status(500).json({
+            status: "error",
+            message: error instanceof Error ? error.message : "Failed to process token purchase"
+        });
+    }
+};
+>>>>>>> origin/miraclemenikelechi:server/src/controllers/tokenPurchase.controller.ts

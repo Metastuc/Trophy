@@ -1,4 +1,5 @@
 import { Loader } from "lucide-react";
+import React from "react";
 
 import { PRIVY } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,15 @@ import { useAuthenticationDrawerContext } from "./context";
 export default function Component() {
     const { isAuthenticated, logout } = useAuthenticationContext();
     const { drawerState, setDrawerState, state } = useAuthenticationDrawerContext();
+
+    React.useEffect(
+        function () {
+            if (isAuthenticated) {
+                setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+            }
+        },
+        [isAuthenticated],
+    );
 
     async function handleAuthentication() {
         if (isAuthenticated) {

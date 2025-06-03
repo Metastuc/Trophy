@@ -4,29 +4,6 @@ import { User } from "../models/userSchema";
 export const authUser = async (req: Request, res: Response) => {
 	try {
 		const { email } = req.body;
-		// console.log(id, authMethod);
-
-		// const allowedMethods = ["email", "wallet", "farcaster"];
-		// if (!allowedMethods.includes(authMethod)) {
-		//   res.status(400).json({
-		//     status: "error",
-		//     message: "Invalid authentication method",
-		//   });
-		//   return;
-		// }
-
-		// const userSnap = await db.collection('users')
-		// .where(`${authMethod}`, "==", id)
-		// .limit(1)
-		// .get();
-
-		// if (userSnap.empty) {
-		//     res.status(404).json({
-		//       status: "error",
-		//       message: "User not found",
-		//     });
-		//     return;
-		// }
 
 		const user = await User.findOne({ email });
 		if (!user) {
