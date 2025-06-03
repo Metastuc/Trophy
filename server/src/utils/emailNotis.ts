@@ -5,11 +5,11 @@ import hbs, {
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASSWORD } from "./env";
-import type { User, MailOptions } from "../type/types";
+import type { UserProp, MailOptions } from "../types/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// using gmail service/transport. Will update to Zoho domain email.
+// currently using gmail service/transport. Will update to Zoho domain email.
 const transporter = nodemailer.createTransport({
 	service: EMAIL_SERVICE,
 	secure: true,
@@ -29,7 +29,7 @@ const options: NodemailerExpressHandlebarsOptions = {
 
 transporter.use("compile", hbs(options));
 
-export const sendRegisterEmail = async (user: User, subject: string) => {
+export const sendRegisterEmail = async (user: UserProp, subject: string) => {
 	try {
 		await transporter.sendMail({
 			from: EMAIL_USER,
@@ -37,7 +37,7 @@ export const sendRegisterEmail = async (user: User, subject: string) => {
 			subject: subject,
 			template: "newUser",
 			context: {
-				username: user.username
+				username: user.username,
 			},
 		} as MailOptions);
 	} catch (error) {
@@ -46,7 +46,7 @@ export const sendRegisterEmail = async (user: User, subject: string) => {
 	}
 };
 
-export const sendStreamEmail = async (user: User, subject: string) => {
+export const sendStreamEmail = async (user: UserProp, subject: string) => {
 	try {
 		await transporter.sendMail({
 			from: EMAIL_USER,
@@ -54,7 +54,7 @@ export const sendStreamEmail = async (user: User, subject: string) => {
 			template: "stream",
 			subject: subject,
 			context: {
-				username: user.username
+				username: user.username,
 			},
 		} as MailOptions);
 	} catch (error) {
@@ -62,4 +62,3 @@ export const sendStreamEmail = async (user: User, subject: string) => {
 		throw new Error("Error sending Login mail");
 	}
 };
-
