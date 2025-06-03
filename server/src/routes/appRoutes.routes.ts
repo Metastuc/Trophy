@@ -7,6 +7,7 @@ import { scheduleActions } from "../controllers/scheduleActions.controller";
 import { getAccessToken } from "../controllers/accessToken.controller";
 import { getGuestAccessToken } from "../controllers/guest.controller";
 import { authUser } from "../controllers/authUser.controller";
+import { startRecording, stopRecording, endLivestream, getRecordingUrl } from "../controllers/recording.controller";
 
 const router = Router();
 
@@ -18,6 +19,10 @@ router
 	.post("/get-user", getUser)
 	.post("/update-profile", updateProfile)
 	.post("/fetch-user", authUser)
-	.post("/add-guest", getGuestAccessToken);
+	.post("/add-guest", getGuestAccessToken)
+	.post('/recording/start', startRecording)
+	.post('/recording/stop', stopRecording)
+	.post('/recording/end-stream', endLivestream)
+	.get('/recording/url/:roomId', getRecordingUrl);
 
 export default router;
