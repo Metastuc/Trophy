@@ -8,11 +8,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { Toaster } from "@/components/ui/sonner";
+import { HuddleContextProvider, PrivyContextProvider } from "@/contexts/authContexts.tsx";
 import {
     AuthenticationContextProvider,
     useAuthenticationContext,
 } from "@/contexts/authentication.tsx";
-import { PrivyContextProvider } from "@/contexts/privy.tsx";
 
 import { routeTree } from "./routeTree.gen.ts";
 
@@ -64,7 +64,9 @@ createRoot(document.getElementById("root")!).render(
         <QueryClientProvider client={queryClient}>
             <PrivyContextProvider>
                 <AuthenticationContextProvider>
-                    <App />
+                    <HuddleContextProvider>
+                        <App />
+                    </HuddleContextProvider>
                 </AuthenticationContextProvider>
             </PrivyContextProvider>
             <Toaster position="top-center" />
