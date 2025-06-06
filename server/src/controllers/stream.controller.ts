@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { API } from "@huddle01/server-sdk/api";
-import { HUDDLE_KEY } from "../utils/env.js";
+import { HUDDLE_API_KEY } from "../utils/env.js";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema.js";
 import { User } from "../models/userSchema.js";
@@ -15,7 +15,7 @@ export const createStream = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const api = new API({ apiKey: HUDDLE_KEY });
+		const api = new API({ apiKey: HUDDLE_API_KEY });
 
 		const { roomId } = await api.createRoom({
 			roomLocked: false,
@@ -37,7 +37,7 @@ export const createStream = async (req: Request, res: Response) => {
 			newStream.status = "Live";
 
 			const accessToken = new AccessToken({
-				apiKey: HUDDLE_KEY,
+				apiKey: HUDDLE_API_KEY,
 				roomId,
 				role: Role.HOST,
 				permissions: {
@@ -60,7 +60,7 @@ export const createStream = async (req: Request, res: Response) => {
 			res.status(200).json({
 				status: "success",
 				roomId,
-				token
+				token,
 			});
 		}
 	} catch (error) {

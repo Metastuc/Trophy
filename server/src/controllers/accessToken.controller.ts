@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import { HUDDLE_KEY } from "../utils/env";
+import { HUDDLE_API_KEY } from "../utils/env";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema";
 import { format } from "date-fns";
-import { Recorder } from '@huddle01/server-sdk/recorder';
+import { Recorder } from "@huddle01/server-sdk/recorder";
 
 export const getAccessToken = async (req: Request, res: Response) => {
 	try {
@@ -66,7 +66,7 @@ export const getAccessToken = async (req: Request, res: Response) => {
 
 		// Generate access token
 		const accessToken = new AccessToken({
-			apiKey: HUDDLE_KEY,
+			apiKey: HUDDLE_API_KEY,
 			roomId,
 			role,
 			permissions,
@@ -88,31 +88,30 @@ export const getAccessToken = async (req: Request, res: Response) => {
 	}
 };
 
-
 // const recorder = new Recorder(
 //   process.env.HUDDLE_PROJECT_ID!,
 //   process.env.HUDDLE_API_KEY!
 // );
 
 const generateRecordingToken = async (roomId: string) => {
-  const token = new AccessToken({
-    apiKey: process.env.HUDDLE_API_KEY!,
-    roomId: roomId,
-    role: Role.BOT,
-    permissions: {
-      admin: true,
-      canConsume: true,
-      canProduce: true,
-      canProduceSources: {
-        cam: true,
-        mic: true,
-        screen: true,
-      },
-      canRecvData: true,
-      canSendData: true,
-      canUpdateMetadata: true,
-    },
-  });
+	const token = new AccessToken({
+		apiKey: process.env.HUDDLE_API_KEY!,
+		roomId: roomId,
+		role: Role.BOT,
+		permissions: {
+			admin: true,
+			canConsume: true,
+			canProduce: true,
+			canProduceSources: {
+				cam: true,
+				mic: true,
+				screen: true,
+			},
+			canRecvData: true,
+			canSendData: true,
+			canUpdateMetadata: true,
+		},
+	});
 
-  return await token.toJwt();
+	return await token.toJwt();
 };
