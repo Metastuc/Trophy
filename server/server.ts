@@ -3,8 +3,7 @@ import cors from "cors";
 import appRoutes from "./src/routes/appRoutes.routes";
 import DB from "./src/config/db";
 import { PORT } from "./src/utils/env";
-import chatRoutes from "./src/routes/chat.routes.js";
-import tipRoutes from "./src/routes/tip.routes.js";
+import { Server } from "socket.io";
 
 const server = express();
 
@@ -14,11 +13,12 @@ server.use(express.urlencoded({ extended: true }));
 
 server.use("/api", appRoutes);
 
-server.use("/api/chat", chatRoutes);
-
-server.use("/api/tip", tipRoutes);
-
-server.listen(PORT, async () => {
+const io = new Server(server.listen(PORT, async () => {
   console.log(`✅ Server is running on port ${PORT}`);
   await DB();
+}), { pingTimeout: 60000});
+
+io.on("connection", (socket) => {
+  console.log(`🔗 User connected: ${socket.id}`);
+  // Add more socket event listeners here as needed
 });
