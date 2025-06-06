@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 /**
  * Define supported HTTP methods.
