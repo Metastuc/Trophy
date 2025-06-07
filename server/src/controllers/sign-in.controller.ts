@@ -9,7 +9,7 @@ export const signIn = async (req: Request, res: Response) => {
         const { userPfp, username, email, privyId, bio } = req.body;
 
         if (!privyId) {
-            return res.status(400).json({
+            res.status(400).json({
                 status: "error",
                 message: "privyId is required",
             });
@@ -19,7 +19,7 @@ export const signIn = async (req: Request, res: Response) => {
 
         if (!_user) {
             if (!userPfp || !username || !email) {
-                return res.status(400).json({
+                res.status(400).json({
                     status: "error",
                     message: "userPfp, username, and email are required",
                 });
@@ -28,7 +28,7 @@ export const signIn = async (req: Request, res: Response) => {
             _user = await User.create({ privyId, userPfp, username, email, bio });
             // await sendRegisterEmail({ email, username }, "Welcome to Trophy 🎉");
 
-            return res.status(201).json({
+            res.status(201).json({
                 status: "success",
                 data: {
                     isBasicProfileComplete: true,
@@ -53,7 +53,7 @@ export const signIn = async (req: Request, res: Response) => {
             await _user.save();
         }
 
-        return res.status(200).json({
+        res.status(200).json({
             status: "success",
             data: {
                 isBasicProfileComplete: !!(_user.email && _user.userPfp && _user.username),
