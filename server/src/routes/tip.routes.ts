@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { sendTip } from '../controllers/tip.controller.js';
+import { Router } from "express";
+import { sendTip } from "../controllers/tip.controller.js";
 
 const router = Router();
 
-router.post('/send', sendTip);
+router.post("/send", sendTip);
 
-export default router; 
+export default router;

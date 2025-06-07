@@ -21,7 +21,7 @@ export function AuthenticationDrawerFooter() {
 
     return (
         <DrawerFooter className="flex flex-row items-center justify-between">
-            {state.type !== "default" && state.type !== "wallet" ? (
+            {!["default", "wallet", "finish"].includes(state.type) ? (
                 <Button
                     variant="outline"
                     className="bg-white200 mr-auto size-5 rounded-full p-0"

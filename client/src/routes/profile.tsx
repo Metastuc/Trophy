@@ -1,17 +1,15 @@
-import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 
 import { getUserProfile } from "@/api/get-user-profile";
 import { Skeleton } from "@/components/ui/skeleton";
+import { authGuard } from "@/utils/auth";
 import { logger } from "@/utils/logger";
 import MainContentLayout from "@/views/main-content";
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/profile")({
     async beforeLoad({ context }) {
-        if (!context.authentication.isReady) return;
-        if (!context.authentication.isAuthenticated) {
-            throw redirect({ to: "/" });
-        }
+        await authGuard(context);
     },
     component: function Page() {
         const { authentication } = useRouteContext({ from: "/profile" });
@@ -30,13 +28,13 @@ export const Route = createFileRoute("/profile")({
             <MainContentLayout>
                 <section className="flex gap-1">
                     <aside className="flex w-15 items-center justify-center">
-                        {status !== "pending" ? (
+                        {status === "pending" ? (
                             <Skeleton className="size-14 rounded-full" />
                         ) : (
                             <img
                                 alt="user-pfp"
                                 className="size-14 rounded-full"
-                                src={userData?.pfp}
+                                src={userData?.uploadedPfp}
                             />
                         )}
                     </aside>
