@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signUp } from "../controllers/signUp.controller";
+import { signIn } from "../controllers/sign-in.controller";
 import { updateProfile } from "../controllers/updateProfile.controller";
 import { getUser } from "../controllers/getUser.controller";
 import { createStream } from "../controllers/stream.controller";
@@ -12,19 +12,19 @@ import { startRecording, stopRecording, endLivestream, getRecordingUrl } from ".
 const router = Router();
 
 router
-	.post("/sign-up", signUp)
-	.post("/create-stream", createStream)
-	.post("/join-stream", getAccessToken)
-	.post("/update-stream", scheduleActions)
+    .post("/sign-in", signIn)
+    .post("/create-stream", createStream)
+    .post("/join-stream", getAccessToken)
+    .post("/update-stream", scheduleActions)
 
-	.post("/get-user", getUser)
-	.post("/update-profile", updateProfile)
-	.post("/fetch-user", authUser)
-	.post("/add-guest", getGuestAccessToken)
+    .post("/get-user", getUser)
+    .post("/update-profile", updateProfile)
+    .post("/fetch-user", authUser)
+    .post("/add-guest", getGuestAccessToken)
 
-	.post('/recording/start', startRecording)
-	.post('/recording/stop', stopRecording)
-	.post('/recording/end-stream', endLivestream)
-	.get('/recording/url/:roomId', getRecordingUrl);
+    .post("/recording/start", startRecording)
+    .post("/recording/stop", stopRecording)
+    .post("/recording/end-stream", endLivestream)
+    .get("/recording/url/:roomId", getRecordingUrl);
 
 export default router;

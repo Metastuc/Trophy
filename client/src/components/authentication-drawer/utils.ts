@@ -67,7 +67,7 @@ export const AuthenticationProfileSchema = z.object({
 
     email: z.string().email("Invalid email address"),
 
-    profileImage: z.union([
+    userPfp: z.union([
         z
             .instanceof(File)
             .refine((file) => file.size < 10 * 1024 * 1024, "File size must be less than 10MB")
@@ -78,6 +78,8 @@ export const AuthenticationProfileSchema = z.object({
             .optional(),
         z.literal("default-pfp.svg"),
     ]),
+
+    privyId: z.string(),
 
     username: z.string().min(3, "Username must be at least 3 characters"),
 });

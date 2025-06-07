@@ -5,32 +5,44 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useServer } from "@/hooks/server";
 
+import { useAuthenticationContext } from "@/contexts/authentication";
+import { logger } from "@/utils/logger";
 import { useAuthenticationDrawerContext } from "../context";
 import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "../utils";
 
 export function AuthenticationProfile() {
+    const { user } = useAuthenticationContext();
+
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImage, setProfileImage] = React.useState<string | null>(null);
     const { state, setDrawerState } = useAuthenticationDrawerContext();
 
     const { isPending, mutate } = useServer<tAuthenticationProfileSchema, unknown>(
-        { METHOD: "POST", URL: "/sign-up" },
+        { METHOD: "POST", URL: "/sign-in" },
         {
             onSuccess(response) {
+                logger({ response });
+
                 if (response.status === 201) {
                     toast.success("Profile Creation Success");
+                    setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+                }
+
+                if (response.status === 200) {
+                    toast.success("Profile Update Success");
                     setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
                 }
             },
         },
         function (variables) {
-            if (variables.profileImage instanceof File) {
+            if (variables.userPfp instanceof File) {
                 const formData = new FormData();
 
                 formData.append("bio", variables.bio ?? "");
                 formData.append("email", variables.email);
-                formData.append("pfp", variables.profileImage);
+                formData.append("privyId", variables.privyId);
                 formData.append("username", variables.username);
+                formData.append("userPfp", variables.userPfp);
 
                 return formData;
             }
@@ -52,8 +64,9 @@ export function AuthenticationProfile() {
         const request = AuthenticationProfileSchema.safeParse({
             bio: formData.get("bio")?.toString() ?? "",
             email: formData.get("email")?.toString() ?? "",
-            profileImage: file instanceof File && file.name ? file : "default-pfp.svg",
+            privyId: user?.id ?? "",
             username: formData.get("username")?.toString() ?? "",
+            userPfp: file instanceof File && file.name ? file : "default-pfp.svg",
         });
 
         if (!request.success) {

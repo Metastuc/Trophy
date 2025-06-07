@@ -1,17 +1,15 @@
-import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 
 import { getUserProfile } from "@/api/get-user-profile";
 import { Skeleton } from "@/components/ui/skeleton";
+import { authGuard } from "@/utils/auth";
 import { logger } from "@/utils/logger";
 import MainContentLayout from "@/views/main-content";
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/profile")({
     async beforeLoad({ context }) {
-        if (!context.authentication.isReady) return;
-        if (!context.authentication.isAuthenticated) {
-            throw redirect({ to: "/" });
-        }
+        await authGuard(context);
     },
     component: function Page() {
         const { authentication } = useRouteContext({ from: "/profile" });

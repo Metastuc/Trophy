@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 
 export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAuthAction]>) {
@@ -31,24 +32,36 @@ export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAu
 
 interface iUseWalletAuthentication {
     dispatch: React.ActionDispatch<[action: tAuthAction]>;
+    handleHasLoggedInRef: () => void;
     setDrawerState: React.Dispatch<React.SetStateAction<iDrawerState>>;
 }
 
-export function useWalletAuthentication({ dispatch, setDrawerState }: iUseWalletAuthentication) {
+export function useWalletAuthentication({
+    dispatch,
+    handleHasLoggedInRef,
+    setDrawerState,
+}: iUseWalletAuthentication) {
     const { login } = useLogin({
-        onComplete({ user, isNewUser, loginMethod }) {
-            console.log("Login successful:", { user, isNewUser });
-            setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
+        onComplete({ loginMethod, user }) {
+            logger({ user });
 
-            dispatch({ type: "GO_TO_FINISH", autheticationMethod: loginMethod });
-            // setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+            handleHasLoggedInRef();
+
+            const userHasUsername = !!user.customMetadata?.username;
+            if (!userHasUsername) {
+                dispatch({ type: "GO_TO_FINISH", autheticationMethod: loginMethod });
+                setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
+            } else {
+                setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+            }
         },
-        onError(error) {
-            console.error("Wallet error:", error);
 
+        onError(error) {
             if (error.includes("exited")) {
                 dispatch({ type: "GO_TO_DEFAULT" });
+                handleHasLoggedInRef();
             }
+
             setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
         },
     });
