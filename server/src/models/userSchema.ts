@@ -23,21 +23,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  followers: {
-    type: Number,
-    default: 0
+  xUrl: {
+    type: String
   },
-  following: {
-    type: Number,
-    default: 0
+  YTUrl: {
+    type: String
   },
+  notifications: [{
+    type: String,
+  }],
+  followers: [{
+    type: String
+  }],
+  following: [{
+    type: String
+  }],
   creatorToken: {
     type: String
   },
   videoTokenAddresses: [{
-    tokenAddress: {
-      type: String
-    }
+    type: String
   }]
 });
 
