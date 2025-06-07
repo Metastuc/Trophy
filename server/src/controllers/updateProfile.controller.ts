@@ -4,13 +4,15 @@ import { Stream } from "../models/streamSchema";
 
 export const updateProfile = async (req: Request, res: Response) => {
 	try {
-		const { username, bio } = req.body;
+		const { username, bio, xUrl, YTUrl } = req.body;
 
 		const user = await User.findOneAndUpdate(
 			username,
 			{
 				$set: {
 					bio,
+					xUrl,
+					YTUrl
 				},
 			},
 			{ new: true }
@@ -27,11 +29,11 @@ export const updateProfile = async (req: Request, res: Response) => {
 			streams
 		});
 	} catch (error) {
-		console.error("Error in getProfile:", error);
+		console.error("Error in update Profile:", error);
 		res.status(500).json({
 			status: "error",
 			message:
-				error instanceof Error ? error.message : "Failed to get profile data",
+				error instanceof Error ? error.message : "Failed to update profile data",
 		});
 	}
 };
