@@ -1,4 +1,4 @@
-import { logger } from "@/utils/logger";
+import { makeRequest } from "@/lib/axios";
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 
 export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAuthAction]>) {
@@ -42,13 +42,16 @@ export function useWalletAuthentication({
     setDrawerState,
 }: iUseWalletAuthentication) {
     const { login } = useLogin({
-        onComplete({ loginMethod, user }) {
-            logger({ user });
-
+        async onComplete({ loginMethod, user }) {
             handleHasLoggedInRef();
 
-            const userHasUsername = !!user.customMetadata?.username;
-            if (!userHasUsername) {
+            const { data } = await makeRequest<iUserProfileCompleteResponse>({
+                method: "POST",
+                url: "/fetch-user",
+                data: { privyId: user?.id },
+            }).then((response) => response.data);
+
+            if (!data?.isBasicProfileComplete) {
                 dispatch({ type: "GO_TO_FINISH", autheticationMethod: loginMethod });
                 setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
             } else {

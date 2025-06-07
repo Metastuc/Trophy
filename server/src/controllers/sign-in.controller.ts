@@ -13,6 +13,7 @@ export const signIn = async (req: Request, res: Response) => {
                 status: "error",
                 message: "privyId is required",
             });
+            return;
         }
 
         _user = await User.findOne({ privyId });
@@ -23,6 +24,7 @@ export const signIn = async (req: Request, res: Response) => {
                     status: "error",
                     message: "userPfp, username, and email are required",
                 });
+                return;
             }
 
             _user = await User.create({ privyId, userPfp, username, email, bio });
@@ -34,6 +36,7 @@ export const signIn = async (req: Request, res: Response) => {
                     isBasicProfileComplete: true,
                 },
             });
+            return;
         }
 
         const _fieldsToUpdate: Partial<iUser> = {
@@ -59,6 +62,7 @@ export const signIn = async (req: Request, res: Response) => {
                 isBasicProfileComplete: !!(_user.email && _user.userPfp && _user.username),
             },
         });
+        return;
     } catch (error) {
         console.error(error);
 
@@ -66,5 +70,6 @@ export const signIn = async (req: Request, res: Response) => {
             status: "error",
             message: "Failed to authenticate user",
         });
+        return;
     }
 };

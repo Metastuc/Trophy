@@ -59,3 +59,10 @@ interface iAuthenticationProfile {
     profileImage: string;
     username: string;
 }
+
+interface iUserProfileCompleteResponse {
+    data: {
+        isBasicProfileComplete: boolean;
+    };
+    status: string;
+}
