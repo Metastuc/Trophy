@@ -7,9 +7,15 @@ export type tQueryResponse = {
 
 export type tUserProfileResponse = {
     bio: string;
-    epicStream: string;
-    pfp: string;
-    topHolders: Array<unknown>;
-    totalStreams: string;
+    tokenBalances: Array<tUserTokenBalance>;
+    totalUsdValue: number;
+    uploadedPfp: string;
     username: string;
+};
+
+type tUserTokenBalance = {
+    symbol: tToken;
+    balance: string;
+    usdValue: number;
+    priceChange24h: string;
 };

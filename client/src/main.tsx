@@ -2,17 +2,17 @@ import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { Toaster } from "@/components/ui/sonner";
+import { HuddleContextProvider, PrivyContextProvider } from "@/contexts/authContexts.tsx";
 import {
     AuthenticationContextProvider,
     useAuthenticationContext,
 } from "@/contexts/authentication.tsx";
-import { PrivyContextProvider } from "@/contexts/privy.tsx";
 
 import { routeTree } from "./routeTree.gen.ts";
 
@@ -46,14 +46,16 @@ function App() {
         );
 
     return (
-        <motion.section
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.15 }}
-            className="relative min-h-screen"
-        >
-            <RouterProvider router={router} context={{ authentication }} />
-        </motion.section>
+        <AnimatePresence mode="wait">
+            <motion.section
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25 }}
+                className="relative min-h-screen"
+            >
+                <RouterProvider router={router} context={{ authentication }} />
+            </motion.section>
+        </AnimatePresence>
     );
 }
 
@@ -62,7 +64,9 @@ createRoot(document.getElementById("root")!).render(
         <QueryClientProvider client={queryClient}>
             <PrivyContextProvider>
                 <AuthenticationContextProvider>
-                    <App />
+                    <HuddleContextProvider>
+                        <App />
+                    </HuddleContextProvider>
                 </AuthenticationContextProvider>
             </PrivyContextProvider>
             <Toaster position="top-center" />

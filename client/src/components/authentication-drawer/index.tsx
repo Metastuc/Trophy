@@ -15,7 +15,7 @@ import { useAuthenticationDrawerContext } from "./context";
 
 export default function Component() {
     const { isAuthenticated, logout } = useAuthenticationContext();
-    const { drawerState, setDrawerState, state } = useAuthenticationDrawerContext();
+    const { dispatch, drawerState, setDrawerState, state } = useAuthenticationDrawerContext();
 
     React.useEffect(
         function () {
@@ -36,6 +36,7 @@ export default function Component() {
                 console.error("Logout error:", error);
             } finally {
                 setDrawerState((previous) => ({ ...previous, isLoggingOut: false }));
+                dispatch({ type: "GO_TO_DEFAULT" });
             }
         } else {
             setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));

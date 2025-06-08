@@ -1,15 +1,11 @@
 import { type Request, type Response } from "express";
-import { type TypedResponse } from "../type/response";
-import { db } from '../utils/firebase.js';
-import { Recorder } from '@huddle01/server-sdk/recorder';
-import { AccessToken, Role } from '@huddle01/server-sdk/auth';
-import { API } from '@huddle01/server-sdk/api';
-import { HUDDLE_KEY } from '../utils/env.js';
+import { db } from "../utils/firebase.js";
+import { Recorder } from "@huddle01/server-sdk/recorder";
+import { AccessToken, Role } from "@huddle01/server-sdk/auth";
+import { API } from "@huddle01/server-sdk/api";
+import { HUDDLE_API_KEY, HUDDLE_PROJECT_ID } from "../utils/env";
 
-const recorder = new Recorder(
-    process.env.HUDDLE_PROJECT_ID!,
-    process.env.HUDDLE_API_KEY!
-);
+const recorder = new Recorder(HUDDLE_PROJECT_ID, HUDDLE_API_KEY);
 
 interface RecordingResponse {
     success: boolean;
@@ -46,27 +42,24 @@ const generateToken = async (roomId: string) => {
     return await token.toJwt();
 };
 
-export const startRecording = async (
-    req: Request,
-    res: Response<TypedResponse<RecordingResponse>>
-): Promise<void> => {
+export const startRecording = async (req: Request, res: Response): Promise<void> => {
     try {
         const { roomId, address } = req.body;
 
         if (!roomId || !address) {
             res.status(400).json({
                 status: "error",
-                message: "RoomId and address are required"
+                message: "RoomId and address are required",
             });
             return;
         }
 
         // Check if user is the stream owner
-        const streamDoc = await db.collection('livestreams').doc(roomId).get();
+        const streamDoc = await db.collection("livestreams").doc(roomId).get();
         if (!streamDoc.exists) {
             res.status(404).json({
                 status: "error",
-                message: "Stream not found"
+                message: "Stream not found",
             });
             return;
         }
@@ -75,7 +68,7 @@ export const startRecording = async (
         if (streamData?.address !== address) {
             res.status(403).json({
                 status: "error",
-                message: "Only the stream owner can start recording"
+                message: "Only the stream owner can start recording",
             });
             return;
         }
@@ -84,7 +77,7 @@ export const startRecording = async (
         if (streamData?.recordStream) {
             res.status(400).json({
                 status: "error",
-                message: "Stream is already set to record"
+                message: "Stream is already set to record",
             });
             return;
         }
@@ -96,51 +89,48 @@ export const startRecording = async (
         await recorder.startRecording({
             roomId,
             token,
-            layout: "spotlight"
+            layout: "spotlight",
         });
 
         // Update recordStream field in Firestore
-        await db.collection('livestreams').doc(roomId).update({
-            recordStream: true
+        await db.collection("livestreams").doc(roomId).update({
+            recordStream: true,
         });
 
         res.status(200).json({
             status: "success",
             data: {
                 success: true,
-                message: "Stream recording started successfully"
-            }
+                message: "Stream recording started successfully",
+            },
         });
     } catch (error) {
         console.error("Error in startRecording:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to start stream recording"
+            message: error instanceof Error ? error.message : "Failed to start stream recording",
         });
     }
 };
 
-export const stopRecording = async (
-    req: Request,
-    res: Response<TypedResponse<RecordingResponse>>
-): Promise<void> => {
+export const stopRecording = async (req: Request, res: Response): Promise<void> => {
     try {
         const { roomId, address } = req.body;
 
         if (!roomId || !address) {
             res.status(400).json({
                 status: "error",
-                message: "RoomId and address are required"
+                message: "RoomId and address are required",
             });
             return;
         }
 
         // Check if user is the stream owner
-        const streamDoc = await db.collection('livestreams').doc(roomId).get();
+        const streamDoc = await db.collection("livestreams").doc(roomId).get();
         if (!streamDoc.exists) {
             res.status(404).json({
                 status: "error",
-                message: "Stream not found"
+                message: "Stream not found",
             });
             return;
         }
@@ -149,7 +139,7 @@ export const stopRecording = async (
         if (streamData?.address !== address) {
             res.status(403).json({
                 status: "error",
-                message: "Only the stream owner can stop recording"
+                message: "Only the stream owner can stop recording",
             });
             return;
         }
@@ -158,53 +148,50 @@ export const stopRecording = async (
         if (!streamData?.recordStream) {
             res.status(400).json({
                 status: "error",
-                message: "Stream is already set to not record"
+                message: "Stream is already set to not record",
             });
             return;
         }
 
         // Update recordStream field in Firestore
-        await db.collection('livestreams').doc(roomId).update({
-            recordStream: false
+        await db.collection("livestreams").doc(roomId).update({
+            recordStream: false,
         });
 
         res.status(200).json({
             status: "success",
             data: {
                 success: true,
-                message: "Stream recording disabled successfully"
-            }
+                message: "Stream recording disabled successfully",
+            },
         });
     } catch (error) {
         console.error("Error in stopRecording:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to disable stream recording"
+            message: error instanceof Error ? error.message : "Failed to disable stream recording",
         });
     }
 };
 
-export const endLivestream = async (
-    req: Request,
-    res: Response<TypedResponse<RecordingResponse>>
-): Promise<void> => {
+export const endLivestream = async (req: Request, res: Response): Promise<void> => {
     try {
         const { roomId, address } = req.body;
 
         if (!roomId || !address) {
             res.status(400).json({
                 status: "error",
-                message: "RoomId and address are required"
+                message: "RoomId and address are required",
             });
             return;
         }
 
         // Check if user is the stream owner
-        const streamDoc = await db.collection('livestreams').doc(roomId).get();
+        const streamDoc = await db.collection("livestreams").doc(roomId).get();
         if (!streamDoc.exists) {
             res.status(404).json({
                 status: "error",
-                message: "Stream not found"
+                message: "Stream not found",
             });
             return;
         }
@@ -213,7 +200,7 @@ export const endLivestream = async (
         if (streamData?.address !== address) {
             res.status(403).json({
                 status: "error",
-                message: "Only the stream owner can end the livestream"
+                message: "Only the stream owner can end the livestream",
             });
             return;
         }
@@ -221,54 +208,51 @@ export const endLivestream = async (
         // If recording is active, stop it first
         if (streamData?.recordStream) {
             await recorder.stop({
-                roomId
+                roomId,
             });
         }
 
         // Update stream status in Firestore
-        await db.collection('livestreams').doc(roomId).update({
+        await db.collection("livestreams").doc(roomId).update({
             status: "ended",
             recordStream: false,
-            endedAt: Date.now()
+            endedAt: Date.now(),
         });
 
         res.status(200).json({
             status: "success",
             data: {
                 success: true,
-                message: "Livestream ended successfully"
-            }
+                message: "Livestream ended successfully",
+            },
         });
     } catch (error) {
         console.error("Error in endLivestream:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to end livestream"
+            message: error instanceof Error ? error.message : "Failed to end livestream",
         });
     }
 };
 
-export const getRecordingUrl = async (
-    req: Request,
-    res: Response<TypedResponse<RecordingUrlResponse>>
-): Promise<void> => {
+export const getRecordingUrl = async (req: Request, res: Response): Promise<void> => {
     try {
         const { roomId } = req.params;
 
         if (!roomId) {
             res.status(400).json({
                 status: "error",
-                message: "RoomId is required"
+                message: "RoomId is required",
             });
             return;
         }
 
         // Check if stream exists
-        const streamDoc = await db.collection('livestreams').doc(roomId).get();
+        const streamDoc = await db.collection("livestreams").doc(roomId).get();
         if (!streamDoc.exists) {
             res.status(404).json({
                 status: "error",
-                message: "Stream not found"
+                message: "Stream not found",
             });
             return;
         }
@@ -285,7 +269,7 @@ export const getRecordingUrl = async (
         if (!sessionList || sessionList.length === 0) {
             res.status(404).json({
                 status: "error",
-                message: "No sessions found for this room"
+                message: "No sessions found for this room",
             });
             return;
         }
@@ -295,16 +279,16 @@ export const getRecordingUrl = async (
         const { sessionId, startTime, endTime } = firstSession;
 
         // Get recording for the session
-        const recordings = await api.getRecordings({ 
-            sessionId, 
-            limit: 1, 
-            cursor: 1 
+        const recordings = await api.getRecordings({
+            sessionId,
+            limit: 1,
+            cursor: 1,
         });
 
         if (!recordings || !recordings.data || recordings.data.recordings.length === 0) {
             res.status(404).json({
                 status: "error",
-                message: "No recording found for this session"
+                message: "No recording found for this session",
             });
             return;
         }
@@ -317,14 +301,14 @@ export const getRecordingUrl = async (
                 recordingUrl,
                 sessionId,
                 startTime,
-                endTime: endTime || 0
-            }
+                endTime: endTime || 0,
+            },
         });
     } catch (error) {
         console.error("Error in getRecordingUrl:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to get recording URL"
+            message: error instanceof Error ? error.message : "Failed to get recording URL",
         });
     }
-}; 
+};

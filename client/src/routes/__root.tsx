@@ -6,7 +6,7 @@ import TopNavigationBar from "@/components/top-navigation-bar";
 import { iAuthenticationContext } from "@/contexts/authentication";
 import { Fragment } from "react";
 
-type RouterContext = {
+export type RouterContext = {
     queryClient: QueryClient;
     authentication: iAuthenticationContext;
 };
