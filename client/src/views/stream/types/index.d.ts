@@ -1,0 +1,1 @@
+type tStreamAction = "now" | "schedule";
