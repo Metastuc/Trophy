@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
+import React from "react";
 
-import { GO_LIVE } from "@/assets/icons";
+import { GO_LIVE, SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
 import MainContentLayout from "@/views/main-content";
 import { TabButton } from "@/views/stream/components/button";
 import { useTabSwitcher } from "@/views/stream/hooks";
@@ -9,6 +10,26 @@ import { useTabSwitcher } from "@/views/stream/hooks";
 export const Route = createFileRoute("/stream")({
     component: function Page() {
         const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("now");
+        const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
+        const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
+            left: "0px",
+            width: "0px",
+        });
+
+        React.useEffect(
+            function () {
+                const index = activeTab === "now" ? 0 : 1;
+                const tabEl = tabRefs.current[index];
+
+                if (!tabEl) return;
+
+                setTabIndicator({
+                    left: `${tabEl?.offsetLeft}px`,
+                    width: `${tabEl?.offsetWidth}px`,
+                });
+            },
+            [activeTab],
+        );
 
         return (
             <MainContentLayout>
@@ -25,19 +46,40 @@ export const Route = createFileRoute("/stream")({
                 </figure>
 
                 <section>
-                    <ul className="flex items-center justify-between border px-3">
-                        <TabButton
-                            handleClick={() => handleTabClick("now")}
-                            isActive={tabIsActive("now")}
-                            text={"Go live now"}
-                        />
+                    <aside className="flex items-center justify-center overflow-hidden">
+                        <ul className="bg-blue100 relative flex w-full items-center justify-between rounded-lg p-1">
+                            <TabButton
+                                icon={STREAM_NOW()}
+                                handleClick={() => handleTabClick("now")}
+                                isActive={tabIsActive("now")}
+                                text={"Go live now"}
+                                ref={(el: HTMLLIElement | null) => {
+                                    tabRefs.current[0] = el;
+                                }}
+                            />
 
-                        <TabButton
-                            handleClick={() => handleTabClick("schedule")}
-                            isActive={tabIsActive("schedule")}
-                            text={"Schedule livestream"}
-                        />
-                    </ul>
+                            <TabButton
+                                icon={SCHEDULE_STREAM()}
+                                handleClick={() => handleTabClick("schedule")}
+                                isActive={tabIsActive("schedule")}
+                                text={"Schedule livestream"}
+                                ref={(el: HTMLLIElement | null) => {
+                                    tabRefs.current[1] = el;
+                                }}
+                            />
+
+                            <motion.div
+                                className="absolute z-0 h-[80%] rounded bg-white"
+                                animate={{ left: tabIndicator.left, width: tabIndicator.width }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 500,
+                                    damping: 30,
+                                    duration: 0.15,
+                                }}
+                            />
+                        </ul>
+                    </aside>
 
                     <aside className="overflow-hidden">
                         <AnimatePresence mode="wait" initial={false}>

@@ -562,3 +562,51 @@ export function GO_LIVE() {
         </svg>
     );
 }
+
+export function STREAM_NOW() {
+    return (
+        <svg
+            width={18}
+            height={18}
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M3.75 5.25l-1.5-1.5M6.75 4.5V2.25M9.75 5.25l1.5-1.5M6.75 12a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M8.873 9H15a1.5 1.5 0 011.5 1.5v3A1.5 1.5 0 0115 15H3a1.5 1.5 0 01-1.5-1.5v-3A1.5 1.5 0 013 9h1.628M12 12h1.5"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+
+export function SCHEDULE_STREAM() {
+    return (
+        <svg
+            width={16}
+            height={16}
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M10.667 12.666h4M10.667 1.333V4M12.667 10.666v4M14 8.399v-4.4a1.334 1.334 0 00-1.333-1.333H3.333A1.333 1.333 0 002 4v9.333a1.333 1.333 0 001.333 1.333H9M2 6.667h12M5.333 1.333V4"
+                stroke="currentColor"
+                strokeOpacity={0.9}
+                strokeWidth={1.33333}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
