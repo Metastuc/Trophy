@@ -5,6 +5,7 @@ import React from "react";
 import { GO_LIVE, SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
 import MainContentLayout from "@/views/main-content";
 import { TabButton } from "@/views/stream/components/button";
+import { StreamNowForm } from "@/views/stream/components/stream-now-form";
 import { useTabSwitcher } from "@/views/stream/hooks";
 
 export const Route = createFileRoute("/stream")({
@@ -45,7 +46,7 @@ export const Route = createFileRoute("/stream")({
                     <i>{GO_LIVE()}</i>
                 </figure>
 
-                <section>
+                <section className="space-y-3">
                     <aside className="flex items-center justify-center overflow-hidden">
                         <ul className="bg-blue100 relative flex w-full items-center justify-between rounded-lg p-1">
                             <TabButton
@@ -68,7 +69,7 @@ export const Route = createFileRoute("/stream")({
                                 }}
                             />
 
-                            <motion.div
+                            <motion.li
                                 className="absolute z-0 h-[80%] rounded bg-white"
                                 animate={{ left: tabIndicator.left, width: tabIndicator.width }}
                                 transition={{
@@ -81,7 +82,7 @@ export const Route = createFileRoute("/stream")({
                         </ul>
                     </aside>
 
-                    <aside className="overflow-hidden">
+                    <aside className="border-blue100/25 overflow-hidden rounded-lg border px-4 py-5">
                         <AnimatePresence mode="wait" initial={false}>
                             {activeTab === "now" ? (
                                 <motion.div
@@ -91,7 +92,7 @@ export const Route = createFileRoute("/stream")({
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.15 }}
                                 >
-                                    render now
+                                    <StreamNowForm />
                                 </motion.div>
                             ) : null}
 

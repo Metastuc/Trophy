@@ -14,7 +14,7 @@ export function TabButton({ handleClick, icon, isActive, ref, text }: iTabButton
             onClick={handleClick}
             className={cn(
                 "z-10 flex items-center justify-between gap-1 py-1.5 px-4 text-sm transition-colors duration-150 ease-in-out",
-                isActive ? "text-blue100" : "text-white",
+                isActive ? "text-black100" : "text-white",
             )}
             ref={ref}
         >
