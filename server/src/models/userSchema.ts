@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  totalFees: {
+    type: Number,
+    default: 0
+  },
   xUrl: {
     type: String
   },
