@@ -1,19 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
-
-export interface iUser extends Document {
-    username: string;
-    email: string;
-    privyId: string;
-    userPfp: string;
-    totalStreams: number;
-    bio: string;
-    followers: number;
-    following: number;
-    creatorToken: string;
-    videoTokenAddresses: {
-        tokenAddress: string;
-    }[];
-}
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -61,4 +46,4 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
-export const User = mongoose.model<iUser>("Users", userSchema);
+export const User = mongoose.model("Users", userSchema);
