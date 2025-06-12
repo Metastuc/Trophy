@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import { type TypedResponse } from "../type/response";
 import { ethers, Network } from "ethers";
-import { db } from '../utils/firebase.js';
+import { db } from "../utils/firebase.js";
 import { erc20ABI } from "../utils/ERC20ABI.js";
 
 interface TopHolder {
@@ -11,7 +11,7 @@ interface TopHolder {
 
 export const tokenPurchase = async (
     req: Request,
-    res: Response<TypedResponse<{ message?: string }>>
+    res: Response<TypedResponse<{ message?: string }>>,
 ): Promise<void> => {
     try {
         const baseSepolia = new Network("base-sepolia", 84532);
@@ -24,15 +24,12 @@ export const tokenPurchase = async (
         const buyerBalance = amount + balance;
 
         // Find the user document with matching creatorToken
-        const userQuery = await db.collection('users')
-            .where('creatorToken', '==', token)
-            .limit(1)
-            .get();
+        const userQuery = await db.collection("users").where("creatorToken", "==", token).limit(1).get();
 
         if (userQuery.empty) {
             res.status(404).json({
                 status: "error",
-                message: "No user found with this creator token"
+                message: "No user found with this creator token",
             });
             return;
         }
@@ -44,7 +41,7 @@ export const tokenPurchase = async (
         // Create new holder entry
         const newHolder: TopHolder = {
             holder: buyer,
-            amount: buyerBalance
+            amount: buyerBalance,
         };
 
         // Add new holder to array and sort in descending order
@@ -60,18 +57,18 @@ export const tokenPurchase = async (
 
         // Update the document with new topHolders array
         await userDoc.ref.update({
-            topHolders: updatedTopHolders
+            topHolders: updatedTopHolders,
         });
 
         res.status(201).json({
             status: "success",
-            message: "Top holders updated successfully"
+            message: "Top holders updated successfully",
         });
     } catch (error) {
         console.error("Error in tokenPurchase:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to process token purchase"
+            message: error instanceof Error ? error.message : "Failed to process token purchase",
         });
     }
 };

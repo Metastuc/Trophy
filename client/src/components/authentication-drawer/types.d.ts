@@ -55,6 +55,14 @@ interface iDrawerState {
 interface iAuthenticationProfile {
     bio: string;
     email: string;
+    privyId: string;
     profileImage: string;
     username: string;
+}
+
+interface iUserProfileCompleteResponse {
+    data: {
+        isBasicProfileComplete: boolean;
+    };
+    status: string;
 }

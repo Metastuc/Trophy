@@ -1,3 +1,4 @@
+import { makeRequest } from "@/lib/axios";
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
 
 export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAuthAction]>) {
@@ -31,24 +32,39 @@ export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAu
 
 interface iUseWalletAuthentication {
     dispatch: React.ActionDispatch<[action: tAuthAction]>;
+    handleHasLoggedInRef: () => void;
     setDrawerState: React.Dispatch<React.SetStateAction<iDrawerState>>;
 }
 
-export function useWalletAuthentication({ dispatch, setDrawerState }: iUseWalletAuthentication) {
+export function useWalletAuthentication({
+    dispatch,
+    handleHasLoggedInRef,
+    setDrawerState,
+}: iUseWalletAuthentication) {
     const { login } = useLogin({
-        onComplete({ user, isNewUser, loginMethod }) {
-            console.log("Login successful:", { user, isNewUser });
-            setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
+        async onComplete({ loginMethod, user }) {
+            handleHasLoggedInRef();
 
-            dispatch({ type: "GO_TO_FINISH", autheticationMethod: loginMethod });
-            // setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+            const { data } = await makeRequest<iUserProfileCompleteResponse>({
+                method: "POST",
+                url: "/fetch-user",
+                data: { privyId: user?.id },
+            }).then((response) => response.data);
+
+            if (!data?.isBasicProfileComplete) {
+                dispatch({ type: "GO_TO_FINISH", autheticationMethod: loginMethod });
+                setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
+            } else {
+                setDrawerState((previous) => ({ ...previous, isDrawerOpen: false }));
+            }
         },
-        onError(error) {
-            console.error("Wallet error:", error);
 
+        onError(error) {
             if (error.includes("exited")) {
                 dispatch({ type: "GO_TO_DEFAULT" });
+                handleHasLoggedInRef();
             }
+
             setDrawerState((previous) => ({ ...previous, isDrawerOpen: true }));
         },
     });

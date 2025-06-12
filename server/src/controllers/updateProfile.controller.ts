@@ -18,10 +18,10 @@ export const updateProfile = async (req: Request, res: Response) => {
 			{ new: true }
 		);
 
-		const streams = await Stream.find({
-			streamer: username,
-			status: "Scheduled",
-		});
+        const streams = await Stream.find({
+            streamer: username,
+            status: "Scheduled",
+        });
 
 		res.status(200).json({
 			status: "success",
