@@ -20,7 +20,7 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
         });
 
         return nexusAccountClient.account.walletClient;
-    } catch (error: any) {
+    } catch (error) {
         console.error(error);
         throw new Error(error);
     }
