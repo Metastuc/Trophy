@@ -1,4 +1,4 @@
-import { HuddleClient,HuddleProvider } from "@huddle01/react";
+import { HuddleClient, HuddleProvider } from "@huddle01/react";
 import { PrivyProvider } from "@privy-io/react-auth";
 import React from "react";
 
@@ -11,6 +11,6 @@ export function PrivyContextProvider({ children }: { children: React.ReactNode }
 export function HuddleContextProvider({ children }: { children: React.ReactNode }) {
     const huddleClient = new HuddleClient({
         projectId: ENV_SCHEMA.HUDDLE_PROJECT_ID,
-      });
+    });
     return <HuddleProvider client={huddleClient}>{children}</HuddleProvider>;
 }

@@ -3,10 +3,11 @@ import React from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { useServer } from "@/hooks/server";
-
+import { TextInput } from "@/components/ui/text-field";
 import { useAuthenticationContext } from "@/contexts/authentication";
+import { useServer } from "@/hooks/server";
 import { logger } from "@/utils/logger";
+
 import { useAuthenticationDrawerContext } from "../context";
 import { AuthenticationProfileSchema, type tAuthenticationProfileSchema } from "../utils";
 
@@ -161,20 +162,4 @@ export function AuthenticationProfile() {
             </Button>
         </form>
     );
-}
-
-type TextInputProps =
-    | React.ComponentPropsWithRef<"input">
-    | (Omit<React.ComponentPropsWithRef<"textarea">, "ref"> & {
-          ref?: React.Ref<HTMLTextAreaElement>;
-      });
-
-function TextInput(props: TextInputProps) {
-    if ("type" in props && props.type === "textarea") {
-        const { ref, ...rest } = props as React.ComponentPropsWithRef<"textarea">;
-        return <textarea ref={ref} {...rest} />;
-    } else {
-        const { ref, ...rest } = props as React.ComponentPropsWithRef<"input">;
-        return <input ref={ref} {...rest} />;
-    }
 }

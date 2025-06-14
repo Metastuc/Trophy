@@ -1,5 +1,6 @@
-import { makeRequest } from "@/lib/axios";
 import { useLogin, useLoginWithEmail } from "@privy-io/react-auth";
+
+import { makeRequest } from "@/lib/axios";
 
 export function useOtpAuthentication(dispatch: React.ActionDispatch<[action: tAuthAction]>) {
     const {

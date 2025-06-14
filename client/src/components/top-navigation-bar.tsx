@@ -4,6 +4,7 @@ import { LOGO, SEARCH } from "@/assets/icons";
 import { useAuthenticationContext } from "@/contexts/authentication";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
+import { shouldShowExitButton } from "@/utils/auth";
 
 import AuthenticationDrawer from "./authentication-drawer";
 import { AuthenticationDrawerContextProvider } from "./authentication-drawer/context";
@@ -11,6 +12,7 @@ import { AuthenticationDrawerContextProvider } from "./authentication-drawer/con
 export default function Component() {
     const checkRoute = useMatchRoute();
     const { toggleIsVisible } = useDiscoverSearchStore();
+    const showExitButton = shouldShowExitButton(["/profile", "/stream"]);
 
     // todo: top navbar scroll away
 
@@ -36,19 +38,19 @@ export default function Component() {
                     </button>
                 ) : null}
 
-                {!checkRoute({ to: "/profile" }) ? (
+                {!showExitButton ? (
                     <AuthenticationDrawerContextProvider>
                         <AuthenticationDrawer />
                     </AuthenticationDrawerContextProvider>
                 ) : (
-                    <ProfileExitButton />
+                    <ExitButton />
                 )}
             </aside>
         </section>
     );
 }
 
-function ProfileExitButton() {
+function ExitButton() {
     const { logout } = useAuthenticationContext();
     const navigate = useNavigate();
 
