@@ -8,7 +8,7 @@ export const ENV_SCHEMA = {
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
     PAYMASTER_URL: `https://paymaster.biconomy.io/api/v2/84532/${import.meta.env.VITE_PAYMASTER_API_KEY!}`,
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
-    MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY!
+    MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY!,
 };
 
 export const PUBLIC_ROUTES = ["/auth"];
@@ -22,13 +22,13 @@ export const REVENUE_MANAGER_ADDRESS = `0x${""}`;
 export const BACKEND_URL = "http://localhost:4500";
 
 export const moralisChain =
-  environment === "development"
-    ? Moralis.EvmUtils.EvmChain.BASE_SEPOLIA
-    : Moralis.EvmUtils.EvmChain.BASE;
+    environment === "development"
+        ? Moralis.EvmUtils.EvmChain.BASE_SEPOLIA
+        : Moralis.EvmUtils.EvmChain.BASE;
 
 const addresses = {
     development: [""],
-    production: [DEGEN, USDC, ZORA]
-}
+    production: [DEGEN, USDC, ZORA],
+};
 
 export const tokenAddresses = addresses[environment];

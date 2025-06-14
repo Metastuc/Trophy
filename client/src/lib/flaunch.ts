@@ -4,8 +4,8 @@ import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
 
-import { getSmartAccount } from "./smartAccount";
 import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "./constants";
+import { getSmartAccount } from "./smartAccount";
 import { SignTypedData } from "./types";
 import { getPublicClient, getWalletClient } from "./viem";
 

@@ -8,6 +8,7 @@
     "singleQuote": false,
     "trailingComma": "all",
     "useTabs": false,
+    "tabWidth": 4,
     "tailwindFunctions": ["clsx", "tw"],
     "tailwindPreserveWhitespace": true
 }
