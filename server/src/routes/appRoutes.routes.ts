@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { signIn } from "../controllers/sign-in.controller";
-import { updateProfile } from "../controllers/updateProfile.controller";
+import { updateProfile, feesUpdate } from "../controllers/updateUser.controller";
 import { getUser } from "../controllers/getUser.controller";
 import { createStream } from "../controllers/stream.controller";
 import { scheduleActions } from "../controllers/scheduleActions.controller";
@@ -16,6 +16,7 @@ router
     .post("/create-stream", createStream)
     .post("/join-stream", getAccessToken)
     .post("/update-stream", scheduleActions)
+    .post("/update-fees", feesUpdate)
 
     .post("/get-user", getUser)
     .post("/update-profile", updateProfile)
