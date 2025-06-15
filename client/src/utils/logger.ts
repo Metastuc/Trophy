@@ -1,4 +1,4 @@
-export function logger(...args: any[]) {
+export function logger(...args: unknown[]) {
     console.log();
     console.log();
     console.log();

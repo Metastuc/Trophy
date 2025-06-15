@@ -1,7 +1,5 @@
 // import CountUp from "react-countup";
 
-import { useState } from "react";
-
 // import { truncateWalletAddress } from "@/lib/truncate";
 
 // import { useTradeCreatorTokenContext } from "../hooks";
@@ -91,141 +89,141 @@ import { useState } from "react";
 //     );
 // }
 
-export default function Component() {
-    const [initialValues, setInitialValues] = useState(() => ({
-        buyAmount: 0,
-        sellAmount: 0,
-        buyToken: "",
-        sellToken: "",
-        buyBalance: 0,
-        sellBalance: 0,
-    }));
+// export default function Component() {
+//     const [initialValues, setInitialValues] = useState(() => ({
+//         buyAmount: 0,
+//         sellAmount: 0,
+//         buyToken: "",
+//         sellToken: "",
+//         buyBalance: 0,
+//         sellBalance: 0,
+//     }));
 
-    return <SwapComponent />;
+//     return <SwapComponent />;
 
-    return <section></section>;
-}
+//     return <section></section>;
+// }
 
-import React from "react";
+// import React from "react";
 
-const SwapComponent = () => {
-    // State for amounts, selected tokens, and balances
-    const [sellAmount, setSellAmount] = useState("0.00");
-    const [buyAmount, setBuyAmount] = useState("0.00");
-    const [sellToken, setSellToken] = useState("USDC");
-    const [buyToken, setBuyToken] = useState("Jehee");
-    const [sellBalance, setSellBalance] = useState(0);
-    const [buyBalance, setBuyBalance] = useState(0);
+// const SwapComponent = () => {
+//     // State for amounts, selected tokens, and balances
+//     const [sellAmount, setSellAmount] = useState("0.00");
+//     const [buyAmount, setBuyAmount] = useState("0.00");
+//     const [sellToken, setSellToken] = useState("USDC");
+//     const [buyToken, setBuyToken] = useState("Jehee");
+//     const [sellBalance, setSellBalance] = useState(0);
+//     const [buyBalance, setBuyBalance] = useState(0);
 
-    // Handle amount changes
-    const handleSellAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSellAmount(e.target.value);
-        // Placeholder for calculating buy amount based on exchange rate
-        setBuyAmount((parseFloat(e.target.value) * 1).toFixed(2)); // Simple 1:1 ratio for demo
-    };
+//     // Handle amount changes
+//     const handleSellAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//         setSellAmount(e.target.value);
+//         // Placeholder for calculating buy amount based on exchange rate
+//         setBuyAmount((parseFloat(e.target.value) * 1).toFixed(2)); // Simple 1:1 ratio for demo
+//     };
 
-    const handleBuyAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setBuyAmount(e.target.value);
-        // Placeholder for calculating sell amount
-        setSellAmount((parseFloat(e.target.value) * 1).toFixed(2)); // Simple 1:1 ratio for demo
-    };
+//     const handleBuyAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//         setBuyAmount(e.target.value);
+//         // Placeholder for calculating sell amount
+//         setSellAmount((parseFloat(e.target.value) * 1).toFixed(2)); // Simple 1:1 ratio for demo
+//     };
 
-    // Swap tokens
-    const handleSwapTokens = () => {
-        const tempToken = sellToken;
-        const tempAmount = sellAmount;
-        setSellToken(buyToken);
-        setSellAmount(buyAmount);
-        setBuyToken(tempToken);
-        setBuyAmount(tempAmount);
-    };
+//     // Swap tokens
+//     const handleSwapTokens = () => {
+//         const tempToken = sellToken;
+//         const tempAmount = sellAmount;
+//         setSellToken(buyToken);
+//         setSellAmount(buyAmount);
+//         setBuyToken(tempToken);
+//         setBuyAmount(tempAmount);
+//     };
 
-    // Placeholder for swap action
-    const handleSwap = () => {
-        console.log("Swap executed:", { sellToken, sellAmount, buyToken, buyAmount });
-        // Add your swap logic here (e.g., API call)
-    };
+//     // Placeholder for swap action
+//     const handleSwap = () => {
+//         console.log("Swap executed:", { sellToken, sellAmount, buyToken, buyAmount });
+//         // Add your swap logic here (e.g., API call)
+//     };
 
-    return (
-        <div className="mx-auto max-w-md p-4">
-            {/* Sell Section */}
-            <div className="mb-4 flex items-center justify-between rounded-lg border-2 border-blue-500 p-4">
-                <div>
-                    <input
-                        type="number"
-                        value={sellAmount}
-                        onChange={handleSellAmountChange}
-                        className="w-24 border-none bg-transparent text-2xl font-bold focus:outline-none"
-                        placeholder="0.00"
-                    />
-                    <p className="text-sm text-gray-500">
-                        ${(parseFloat(sellAmount) * 1).toFixed(2)}
-                    </p>
-                </div>
-                <div className="flex items-center">
-                    <select
-                        value={sellToken}
-                        onChange={(e) => setSellToken(e.target.value)}
-                        className="cursor-pointer rounded-full bg-blue-500 px-3 py-1 text-white"
-                    >
-                        <option value="USDC">USDC</option>
-                        {/* Add more tokens as needed */}
-                    </select>
-                    <span className="ml-2 text-gray-500">Balance: {sellBalance}</span>
-                </div>
-            </div>
+//     return (
+//         <div className="mx-auto max-w-md p-4">
+//             {/* Sell Section */}
+//             <div className="mb-4 flex items-center justify-between rounded-lg border-2 border-blue-500 p-4">
+//                 <div>
+//                     <input
+//                         type="number"
+//                         value={sellAmount}
+//                         onChange={handleSellAmountChange}
+//                         className="w-24 border-none bg-transparent text-2xl font-bold focus:outline-none"
+//                         placeholder="0.00"
+//                     />
+//                     <p className="text-sm text-gray-500">
+//                         ${(parseFloat(sellAmount) * 1).toFixed(2)}
+//                     </p>
+//                 </div>
+//                 <div className="flex items-center">
+//                     <select
+//                         value={sellToken}
+//                         onChange={(e) => setSellToken(e.target.value)}
+//                         className="cursor-pointer rounded-full bg-blue-500 px-3 py-1 text-white"
+//                     >
+//                         <option value="USDC">USDC</option>
+//                         {/* Add more tokens as needed */}
+//                     </select>
+//                     <span className="ml-2 text-gray-500">Balance: {sellBalance}</span>
+//                 </div>
+//             </div>
 
-            {/* Swap Button */}
-            <div className="mb-4 flex justify-center">
-                <button
-                    onClick={handleSwapTokens}
-                    className="-translate-y-4 transform rounded-full bg-blue-500 p-2 text-white"
-                >
-                    ↔
-                </button>
-            </div>
+//             {/* Swap Button */}
+//             <div className="mb-4 flex justify-center">
+//                 <button
+//                     onClick={handleSwapTokens}
+//                     className="-translate-y-4 transform rounded-full bg-blue-500 p-2 text-white"
+//                 >
+//                     ↔
+//                 </button>
+//             </div>
 
-            {/* Buy Section */}
-            <div className="mb-4 flex items-center justify-between rounded-lg border-2 border-blue-500 p-4">
-                <div>
-                    <input
-                        type="number"
-                        value={buyAmount}
-                        onChange={handleBuyAmountChange}
-                        className="w-24 border-none bg-transparent text-2xl font-bold focus:outline-none"
-                        placeholder="0.00"
-                    />
-                    <p className="text-sm text-gray-500">
-                        ${(parseFloat(buyAmount) * 1).toFixed(2)}
-                    </p>
-                </div>
-                <div className="flex items-center">
-                    <select
-                        value={buyToken}
-                        onChange={(e) => setBuyToken(e.target.value)}
-                        className="cursor-pointer rounded-full bg-blue-500 px-3 py-1 text-white"
-                    >
-                        <option value="Jehee">Jehee</option>
-                        {/* Add more tokens as needed */}
-                    </select>
-                    <span className="ml-2 text-gray-500">Balance: {buyBalance}</span>
-                </div>
-            </div>
+//             {/* Buy Section */}
+//             <div className="mb-4 flex items-center justify-between rounded-lg border-2 border-blue-500 p-4">
+//                 <div>
+//                     <input
+//                         type="number"
+//                         value={buyAmount}
+//                         onChange={handleBuyAmountChange}
+//                         className="w-24 border-none bg-transparent text-2xl font-bold focus:outline-none"
+//                         placeholder="0.00"
+//                     />
+//                     <p className="text-sm text-gray-500">
+//                         ${(parseFloat(buyAmount) * 1).toFixed(2)}
+//                     </p>
+//                 </div>
+//                 <div className="flex items-center">
+//                     <select
+//                         value={buyToken}
+//                         onChange={(e) => setBuyToken(e.target.value)}
+//                         className="cursor-pointer rounded-full bg-blue-500 px-3 py-1 text-white"
+//                     >
+//                         <option value="Jehee">Jehee</option>
+//                         {/* Add more tokens as needed */}
+//                     </select>
+//                     <span className="ml-2 text-gray-500">Balance: {buyBalance}</span>
+//                 </div>
+//             </div>
 
-            {/* Warning Message */}
-            <p className="mb-4 text-center text-sm text-gray-500">
-                ⚠ please ensure you review your trade inputs above before you swap
-            </p>
+//             {/* Warning Message */}
+//             <p className="mb-4 text-center text-sm text-gray-500">
+//                 ⚠ please ensure you review your trade inputs above before you swap
+//             </p>
 
-            {/* Swap Action Button */}
-            <button
-                onClick={handleSwap}
-                className="w-full rounded-lg bg-blue-500 py-3 font-bold text-white"
-            >
-                Swap
-            </button>
-        </div>
-    );
-};
+//             {/* Swap Action Button */}
+//             <button
+//                 onClick={handleSwap}
+//                 className="w-full rounded-lg bg-blue-500 py-3 font-bold text-white"
+//             >
+//                 Swap
+//             </button>
+//         </div>
+//     );
+// };
 
-// export default SwapComponent;
+// // export default SwapComponent;

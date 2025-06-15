@@ -11,7 +11,7 @@ export async function authGuard(context: RouterContext) {
     }
 }
 
-export function shouldShowExitButton(routes: string[]) {
+export function useShouldShowExitButton(routes: string[]) {
     const location = useLocation();
     return routes.includes(location.pathname);
 }

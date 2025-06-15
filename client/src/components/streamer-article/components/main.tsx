@@ -1,10 +1,8 @@
 import { LIVE } from "@/assets/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useStreamArticleContext } from "../hooks";
-
 export default function Component() {
-    const {} = useStreamArticleContext();
+    // const {} = useStreamArticleContext();
 
     return (
         <main className="relative h-53 w-full">
