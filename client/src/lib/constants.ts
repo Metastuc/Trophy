@@ -1,5 +1,6 @@
 import Moralis from "moralis";
 import { base, baseSepolia } from "viem/chains";
+
 import { DEGEN, USDC, ZORA } from "./tipContracts";
 
 export const ENV_SCHEMA = {

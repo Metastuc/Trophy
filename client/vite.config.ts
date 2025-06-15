@@ -6,11 +6,17 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+    define: {
+        global: {},
+        "process.env": {},
+    },
+
     plugins: [
         TanStackRouterVite({ target: "react", autoCodeSplitting: true }),
         tailwindcss(),
         react(),
     ],
+
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
