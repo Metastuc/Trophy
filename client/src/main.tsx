@@ -6,14 +6,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { Toaster } from "sonner";
 
-import { Toaster } from "@/components/ui/sonner";
-import { HuddleContextProvider, PrivyContextProvider } from "@/contexts/authContexts.tsx";
 import {
     AuthenticationContextProvider,
     useAuthenticationContext,
 } from "@/contexts/authentication.tsx";
 
+import { HuddleContextProvider } from "./contexts/huddle.tsx";
+import { PrivyContextProvider } from "./contexts/privy.tsx";
 import { routeTree } from "./routeTree.gen.ts";
 
 const queryClient = new QueryClient();
@@ -62,14 +63,14 @@ function App() {
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <PrivyContextProvider>
-                <AuthenticationContextProvider>
-                    <HuddleContextProvider>
+            <HuddleContextProvider>
+                <PrivyContextProvider>
+                    <AuthenticationContextProvider>
                         <App />
-                    </HuddleContextProvider>
-                </AuthenticationContextProvider>
-            </PrivyContextProvider>
-            <Toaster position="top-center" />
+                    </AuthenticationContextProvider>
+                </PrivyContextProvider>
+            </HuddleContextProvider>
         </QueryClientProvider>
+        <Toaster position="top-center" />
     </StrictMode>,
 );

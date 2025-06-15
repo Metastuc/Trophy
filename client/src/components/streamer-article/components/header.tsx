@@ -1,10 +1,8 @@
 import StreamerDisplay from "@/components/streamer-profile";
 import TradeDrawer from "@/components/trade-modal";
 
-import { useStreamArticleContext } from "../hooks";
-
 export default function Component() {
-    const {} = useStreamArticleContext();
+    // const {} = useStreamArticleContext();
 
     return (
         <header className="flex h-8 items-center justify-between">

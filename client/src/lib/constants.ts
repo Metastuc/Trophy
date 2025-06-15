@@ -1,17 +1,35 @@
+import Moralis from "moralis";
 import { base, baseSepolia } from "viem/chains";
+
+import { DEGEN, USDC, ZORA } from "./tipContracts";
 
 export const ENV_SCHEMA = {
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
-    ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT || "development",
+    ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
     PAYMASTER_URL: `https://paymaster.biconomy.io/api/v2/84532/${import.meta.env.VITE_PAYMASTER_API_KEY!}`,
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
+    MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY!,
 };
 
 export const PUBLIC_ROUTES = ["/auth"];
 
-export const network = ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base;
+const environment = ENV_SCHEMA.ENVIRONMENT;
+
+export const network = environment === "development" ? baseSepolia : base;
 
 export const REVENUE_MANAGER_ADDRESS = `0x${""}`;
 
 export const BACKEND_URL = "http://localhost:4500";
+
+export const moralisChain =
+    environment === "development"
+        ? Moralis.EvmUtils.EvmChain.BASE_SEPOLIA
+        : Moralis.EvmUtils.EvmChain.BASE;
+
+const addresses = {
+    development: [""],
+    production: [DEGEN, USDC, ZORA],
+};
+
+export const tokenAddresses = addresses[environment];

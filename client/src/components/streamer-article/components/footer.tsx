@@ -1,9 +1,7 @@
 import { WATCHING } from "@/assets/icons";
 
-import { useStreamArticleContext } from "../hooks";
-
 export default function Component() {
-    const {} = useStreamArticleContext();
+    // const {} = useStreamArticleContext();
 
     return (
         <footer className="flex items-center justify-between">
