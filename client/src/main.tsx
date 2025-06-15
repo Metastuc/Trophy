@@ -70,7 +70,7 @@ createRoot(document.getElementById("root")!).render(
                     </AuthenticationContextProvider>
                 </PrivyContextProvider>
             </HuddleContextProvider>
-            <Toaster position="top-center" />
         </QueryClientProvider>
+        <Toaster position="top-center" />
     </StrictMode>,
 );
