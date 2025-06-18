@@ -1,9 +1,21 @@
 import type { Request, Response } from "express";
 import { API } from "@huddle01/server-sdk/api";
-import { HUDDLE_API_KEY } from "../utils/env.js";
+import { CLIENT_URL, HUDDLE_API_KEY } from "../utils/env.js";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema.js";
 import { User } from "../models/userSchema.js";
+import { sendScheduleEmail } from "../utils/emailNotis.js";
+
+const formatDate = (date: Date) => {
+    const year = date.getUTCFullYear();
+    const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+    const day = ('0' + date.getUTCDate()).slice(-2);
+    const hours = ('0' + date.getUTCHours()).slice(-2);
+    const minutes = ('0' + date.getUTCMinutes()).slice(-2);
+    const seconds = ('0' + date.getUTCSeconds()).slice(-2);
+
+    return `${year}${month}${day}T${hours}${minutes}${seconds}Z`
+}
 
 export const createStream = async (req: Request, res: Response) => {
     try {
@@ -28,7 +40,14 @@ export const createStream = async (req: Request, res: Response) => {
             newStream.status = "Scheduled";
             newStream.date = date;
 
+            const dtStamp = formatDate(new Date());
+            const dateIsoString = new Date(date).toISOString();
+            const calendarDate = formatDate(new Date(dateIsoString));
+
+            const calendarProps = { dtStamp, date: calendarDate, streamTitle: title, streamLink: `${CLIENT_URL}/${roomId}` }
+
             await newStream.save();
+            await sendScheduleEmail({ username, email: user.email }, `📌 ${title} Scheduled!`, calendarProps)
             res.status(201).json({
                 roomId,
                 message: "Stream scheduled successfully",
