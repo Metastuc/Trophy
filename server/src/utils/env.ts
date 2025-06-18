@@ -17,6 +17,4 @@ export const EMAIL_PASSWORD = process.env.EMAIL_USER!;
 
 export const DB_URI = process.env.DB_URI!;
 
-export const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET!;
-
-export const PRIVY_APP_ID = process.env.PRIVY_APP_ID!;
+export const CLIENT_URL = "https://trophystream.xyz";
