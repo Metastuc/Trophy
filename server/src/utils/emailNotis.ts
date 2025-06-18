@@ -61,7 +61,11 @@ export const sendStreamEmail = async (user: UserProp, subject: string) => {
   }
 };
 
-export const sendScheduleEmail = async (user: UserProp, subject: string, calendarProps: { dtStamp: string, date: string, streamTitle: string, streamLink: String }) => {
+export const sendScheduleEmail = async (
+  user: UserProp,
+  subject: string,
+  calendarProps: { dtStamp: string; date: string; streamTitle: string; streamLink: String },
+) => {
   try {
     const { date, streamLink, streamTitle, dtStamp } = calendarProps;
     const icsCalendarContent = `
@@ -96,8 +100,8 @@ export const sendScheduleEmail = async (user: UserProp, subject: string, calenda
       icalEvent: {
         filename: "stream-schedule.ics",
         content: icsCalendarContent,
-        method: "REQUEST"
-      }
+        method: "REQUEST",
+      },
     } as MailOptions);
   } catch (error) {
     console.error(error);

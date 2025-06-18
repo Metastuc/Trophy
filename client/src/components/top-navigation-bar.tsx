@@ -1,13 +1,9 @@
 import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
 import { LOGO, SEARCH } from "@/assets/icons";
-import { useAuthenticationContext } from "@/contexts/authentication";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 import { useShouldShowExitButton } from "@/utils/auth";
-
-import AuthenticationDrawer from "./authentication-drawer";
-import { AuthenticationDrawerContextProvider } from "./authentication-drawer/context";
 
 export default function Component() {
     const checkRoute = useMatchRoute();
@@ -39,9 +35,11 @@ export default function Component() {
                 ) : null}
 
                 {!showExitButton ? (
-                    <AuthenticationDrawerContextProvider>
-                        <AuthenticationDrawer />
-                    </AuthenticationDrawerContextProvider>
+                    // <AuthenticationDrawerContextProvider>
+                    //     <AuthenticationDrawer />
+                    // </AuthenticationDrawerContextProvider>
+
+                    <>button</>
                 ) : (
                     <ExitButton />
                 )}
@@ -51,11 +49,11 @@ export default function Component() {
 }
 
 function ExitButton() {
-    const { logout } = useAuthenticationContext();
+    // const { logout } = useAuthenticationContext();
     const navigate = useNavigate();
 
     function handleLogout() {
-        logout();
+        // logout();
         navigate({ to: "/" });
     }
 

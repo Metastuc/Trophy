@@ -7,6 +7,6 @@ const router = Router();
 router.post("/", createStream);
 
 router.get("/", (req, res) => {
-    res.status(200).send("🚀 Server is working!");
+  res.status(200).send("🚀 Server is working!");
 });
 export default router;

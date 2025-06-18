@@ -14,10 +14,13 @@ server.use(express.urlencoded({ extended: true }));
 
 server.use("/api", appRoutes);
 
-const io = new Server(server.listen(PORT, async () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-  await DB();
-}), { pingTimeout: 60000 });
+const io = new Server(
+  server.listen(PORT, async () => {
+    console.log(`✅ Server is running on port ${PORT}`);
+    await DB();
+  }),
+  { pingTimeout: 60000 },
+);
 
 const userSocketIds = new Map();
 
@@ -74,5 +77,5 @@ io.on("connection", (socket) => {
   socket.on("chat-message", (data) => {
     console.log(`💬 Message from ${data.username}: ${data.message}`);
     io.to(data.roomId).emit("chat-message", data);
-  })
+  });
 });

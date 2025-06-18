@@ -6,13 +6,13 @@ import StreamArticle from "@/components/streamer-article";
 import MainContentLayout from "@/views/main-content";
 
 export const Route = createFileRoute("/")({
-    beforeLoad({ context }) {
-        if (!context.authentication.isAuthenticated) {
-            console.log("user is logged out");
-        } else {
-            console.log("user is logged in");
-        }
-    },
+    // beforeLoad({ context }) {
+    //     if (!context.authentication.isAuthenticated) {
+    //         console.log("user is logged out");
+    //     } else {
+    //         console.log("user is logged in");
+    //     }
+    // },
 
     component: function Page() {
         const [content, setContent] = React.useState<tContent>("trending");

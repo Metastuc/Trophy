@@ -7,7 +7,7 @@ import { TextInput } from "@/components/ui/text-field";
 import { useAuthenticationContext } from "@/contexts/authentication";
 import { logger } from "@/utils/logger";
 
-export function StreamNowForm() {
+export function ScheduleStreamForm() {
     const { user } = useAuthenticationContext();
 
     logger({ user });
@@ -18,7 +18,7 @@ export function StreamNowForm() {
 
     return (
         <section className="space-y-5">
-            <h5 className="text-center">Start a livestream now</h5>
+            <h5 className="text-center">Schedule Livestream</h5>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <input type="hidden" name="date" />

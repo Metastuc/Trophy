@@ -1,43 +1,39 @@
-import { usePrivy, type User } from "@privy-io/react-auth";
+import { usePrivy } from "@privy-io/react-auth";
 import React from "react";
 
-export interface iAuthenticationContext {
-    isAuthenticated: boolean;
-    isReady: boolean;
-    logout: () => Promise<void>;
-    user: User | null;
-}
+import { syncUserData } from "@/api/fetch-user";
+import { useAuthenticationStore } from "@/store/authentication";
 
-export const AuthenticationContext: React.Context<iAuthenticationContext> =
-    React.createContext<iAuthenticationContext>({} as iAuthenticationContext);
+export function AuthenticationProvider({ children }: { children: React.ReactNode }) {
+    const { authenticated, ready, user: privyUser } = usePrivy();
+    const setUser = useAuthenticationStore((state) => state.setUser);
+    const setIsLoading = useAuthenticationStore((state) => state.setIsLoading);
 
-export function useAuthenticationContext(): iAuthenticationContext {
-    const context: iAuthenticationContext = React.useContext(AuthenticationContext);
-
-    if (context === undefined || context === null || !context)
-        throw new Error(
-            "useAuthenticationContext must be used within a AuthenticationContextProvider",
-        );
-
-    return context;
-}
-
-export function AuthenticationContextProvider({ children }: { children: React.ReactNode }) {
-    const { authenticated, logout, ready, user } = usePrivy();
-
-    const value: iAuthenticationContext = React.useMemo(
+    React.useEffect(
         function () {
-            return {
-                isAuthenticated: authenticated,
-                isReady: ready,
-                logout,
-                user,
-            };
+            if (!ready) return;
+
+            if (!authenticated || !privyUser) {
+                setIsLoading(false);
+                return;
+            }
+
+            (async function () {
+                setIsLoading(true);
+
+                try {
+                    setUser((await syncUserData(privyUser.id)) as tAuthenticatedUser);
+                } catch (error) {
+                    console.error(`failed to sync user data: ${error}`);
+                } finally {
+                    setIsLoading(false);
+                }
+            })();
         },
-        [authenticated, ready, logout, user],
+        [authenticated, ready, privyUser],
     );
 
-    return (
-        <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>
-    );
+    if (!ready) return null;
+
+    return children;
 }

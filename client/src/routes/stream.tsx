@@ -5,6 +5,7 @@ import React from "react";
 import { GO_LIVE, SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
 import MainContentLayout from "@/views/main-content";
 import { TabButton } from "@/views/stream/components/button";
+import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-form";
 import { StreamNowForm } from "@/views/stream/components/stream-now-form";
 import { useTabSwitcher } from "@/views/stream/hooks";
 
@@ -104,7 +105,7 @@ export const Route = createFileRoute("/stream")({
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.15 }}
                                 >
-                                    render schedule
+                                    <ScheduleStreamForm />
                                 </motion.div>
                             ) : null}
                         </AnimatePresence>

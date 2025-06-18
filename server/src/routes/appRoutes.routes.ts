@@ -12,20 +12,20 @@ import { startRecording, stopRecording, endLivestream, getRecordingUrl } from ".
 const router = Router();
 
 router
-    .post("/sign-in", signIn)
-    .post("/create-stream", createStream)
-    .post("/join-stream", getAccessToken)
-    .post("/update-stream", scheduleActions)
-    .post("/update-fees", feesUpdate)
+  .post("/sign-in", signIn)
+  .post("/create-stream", createStream)
+  .post("/join-stream", getAccessToken)
+  .post("/update-stream", scheduleActions)
+  .post("/update-fees", feesUpdate)
 
-    .post("/get-user", getUser)
-    .post("/update-profile", updateProfile)
-    .post("/fetch-user", authUser)
-    .post("/add-guest", getGuestAccessToken)
+  .post("/get-user", getUser)
+  .post("/update-profile", updateProfile)
+  .post("/fetch-user", authUser)
+  .post("/add-guest", getGuestAccessToken)
 
-    .post("/recording/start", startRecording)
-    .post("/recording/stop", stopRecording)
-    .post("/recording/end-stream", endLivestream)
-    .get("/recording/url/:roomId", getRecordingUrl);
+  .post("/recording/start", startRecording)
+  .post("/recording/stop", stopRecording)
+  .post("/recording/end-stream", endLivestream)
+  .get("/recording/url/:roomId", getRecordingUrl);
 
 export default router;
