@@ -11,7 +11,7 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 
-import RenderMain from "./components/main";
+// import RenderMain from "./components/main";
 import { TradeCreatorTokenContext } from "./hooks";
 
 export default function Component() {
@@ -40,7 +40,7 @@ export default function Component() {
                     </DrawerHeader>
 
                     <main>
-                        <RenderMain />
+                        {/* <RenderMain /> */}
                     </main>
 
                     <DrawerFooter>
