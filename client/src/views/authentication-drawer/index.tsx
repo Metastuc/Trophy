@@ -12,10 +12,12 @@ import { AuthenticationDrawerBody } from "./components/body";
 import { AuthenticationDrawerDescription } from "./components/description";
 import { AuthenticationDrawerFooter } from "./components/footer";
 import { AuthenticationDrawerHeader } from "./components/header";
+import { usePrivyLoginTrigger } from "./hooks/trigger";
 import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function AuthenticationDrawer() {
     const { logout } = usePrivy();
+    usePrivyLoginTrigger();
 
     const { closeDrawer, isOpen, openDrawer } = useAuthenticationDrawerStateStore(
         useShallow((state) => ({

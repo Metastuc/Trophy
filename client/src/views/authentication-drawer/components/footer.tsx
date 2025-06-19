@@ -27,7 +27,7 @@ export function AuthenticationDrawerFooter() {
         if (isOpen) {
             closeDrawer();
 
-            await sleep(150);
+            await sleep(300);
             goToDefault();
         } else {
             openDrawer();
