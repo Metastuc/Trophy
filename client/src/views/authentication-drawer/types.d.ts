@@ -21,3 +21,9 @@ type tAuthenticationNavigationState = {
     goToOtp: (email: string) => void;
     goToWallet: () => void;
 };
+
+interface iAuthenticateWithButton {
+    handler: () => void;
+    icon: () => React.ReactNode;
+    label: string;
+}

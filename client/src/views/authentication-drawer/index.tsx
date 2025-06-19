@@ -3,14 +3,16 @@ import { Loader } from "lucide-react";
 import React from "react";
 import { useShallow } from "zustand/shallow";
 
+import { PRIVY } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 import { useAuthenticationStore } from "@/store/authentication";
 
+import { AuthenticationDrawerBody } from "./components/body";
 import { AuthenticationDrawerDescription } from "./components/description";
 import { AuthenticationDrawerFooter } from "./components/footer";
 import { AuthenticationDrawerHeader } from "./components/header";
-import { useAuthenticationDrawerStateStore } from "./store";
+import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function AuthenticationDrawer() {
     const { logout } = usePrivy();
@@ -25,6 +27,10 @@ export function AuthenticationDrawer() {
 
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
     const [isLoggingOut, setIsLoggingOut] = React.useState<boolean>(false);
+
+    const currentScreen = useAuthenticationDrawerNavigationStore((state) => state.screen);
+    const showPrivyLogo =
+        currentScreen === "default" || currentScreen === "email" || currentScreen === "otp";
 
     function handleAuthentication() {
         if (isAuthenticated) {
@@ -70,6 +76,18 @@ export function AuthenticationDrawer() {
                     <AuthenticationDrawerHeader />
                     <AuthenticationDrawerDescription />
                 </DrawerHeader>
+
+                <section className="flex flex-col gap-5 p-4">
+                    <AuthenticationDrawerBody />
+                </section>
+
+                {showPrivyLogo ? (
+                    <i className="my-4">
+                        <a href="https://privy.io/" target="_blank">
+                            {PRIVY()}
+                        </a>
+                    </i>
+                ) : null}
             </DrawerContent>
         </Drawer>
     );
