@@ -39,9 +39,7 @@ export default function Component() {
                         </DrawerDescription>
                     </DrawerHeader>
 
-                    <main>
-                        {/* <RenderMain /> */}
-                    </main>
+                    <main>{/* <RenderMain /> */}</main>
 
                     <DrawerFooter>
                         <Button>

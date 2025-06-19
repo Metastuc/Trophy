@@ -10,123 +10,123 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as StreamImport } from './routes/stream'
-import { Route as ProfileImport } from './routes/profile'
-import { Route as DiscoverImport } from './routes/discover'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as DiscoverImport } from "./routes/discover";
+import { Route as IndexImport } from "./routes/index";
+import { Route as ProfileImport } from "./routes/profile";
+import { Route as StreamImport } from "./routes/stream";
 
 // Create/Update Routes
 
 const StreamRoute = StreamImport.update({
-  id: '/stream',
-  path: '/stream',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: "/stream",
+    path: "/stream",
+    getParentRoute: () => rootRoute,
+} as any);
 
 const ProfileRoute = ProfileImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: "/profile",
+    path: "/profile",
+    getParentRoute: () => rootRoute,
+} as any);
 
 const DiscoverRoute = DiscoverImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: "/discover",
+    path: "/discover",
+    getParentRoute: () => rootRoute,
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: "/",
+    path: "/",
+    getParentRoute: () => rootRoute,
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+declare module "@tanstack/react-router" {
+    interface FileRoutesByPath {
+        "/": {
+            id: "/";
+            path: "/";
+            fullPath: "/";
+            preLoaderRoute: typeof IndexImport;
+            parentRoute: typeof rootRoute;
+        };
+        "/discover": {
+            id: "/discover";
+            path: "/discover";
+            fullPath: "/discover";
+            preLoaderRoute: typeof DiscoverImport;
+            parentRoute: typeof rootRoute;
+        };
+        "/profile": {
+            id: "/profile";
+            path: "/profile";
+            fullPath: "/profile";
+            preLoaderRoute: typeof ProfileImport;
+            parentRoute: typeof rootRoute;
+        };
+        "/stream": {
+            id: "/stream";
+            path: "/stream";
+            fullPath: "/stream";
+            preLoaderRoute: typeof StreamImport;
+            parentRoute: typeof rootRoute;
+        };
     }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverImport
-      parentRoute: typeof rootRoute
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
-    }
-    '/stream': {
-      id: '/stream'
-      path: '/stream'
-      fullPath: '/stream'
-      preLoaderRoute: typeof StreamImport
-      parentRoute: typeof rootRoute
-    }
-  }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+    "/": typeof IndexRoute;
+    "/discover": typeof DiscoverRoute;
+    "/profile": typeof ProfileRoute;
+    "/stream": typeof StreamRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+    "/": typeof IndexRoute;
+    "/discover": typeof DiscoverRoute;
+    "/profile": typeof ProfileRoute;
+    "/stream": typeof StreamRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+    __root__: typeof rootRoute;
+    "/": typeof IndexRoute;
+    "/discover": typeof DiscoverRoute;
+    "/profile": typeof ProfileRoute;
+    "/stream": typeof StreamRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover' | '/profile' | '/stream'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover' | '/profile' | '/stream'
-  id: '__root__' | '/' | '/discover' | '/profile' | '/stream'
-  fileRoutesById: FileRoutesById
+    fileRoutesByFullPath: FileRoutesByFullPath;
+    fullPaths: "/" | "/discover" | "/profile" | "/stream";
+    fileRoutesByTo: FileRoutesByTo;
+    to: "/" | "/discover" | "/profile" | "/stream";
+    id: "__root__" | "/" | "/discover" | "/profile" | "/stream";
+    fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DiscoverRoute: typeof DiscoverRoute
-  ProfileRoute: typeof ProfileRoute
-  StreamRoute: typeof StreamRoute
+    IndexRoute: typeof IndexRoute;
+    DiscoverRoute: typeof DiscoverRoute;
+    ProfileRoute: typeof ProfileRoute;
+    StreamRoute: typeof StreamRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DiscoverRoute: DiscoverRoute,
-  ProfileRoute: ProfileRoute,
-  StreamRoute: StreamRoute,
-}
+    IndexRoute: IndexRoute,
+    DiscoverRoute: DiscoverRoute,
+    ProfileRoute: ProfileRoute,
+    StreamRoute: StreamRoute,
+};
 
 export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+    ._addFileChildren(rootRouteChildren)
+    ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {

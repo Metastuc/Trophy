@@ -1,14 +1,14 @@
 import "./index.css";
 
+import { usePrivy } from "@privy-io/react-auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { Loader } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 
-import { usePrivy } from "@privy-io/react-auth";
-import { Loader } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { AppContextProviders } from "./contexts/index.tsx";
 import { routeTree } from "./routeTree.gen.ts";
 import { useAuthenticationStore } from "./store/authentication.ts";
