@@ -1,9 +1,16 @@
 import { makeRequest } from "@/lib/axios";
 
-export async function syncUserData(userId: string) {
-    return await makeRequest<Partial<tAuthenticatedUser>>({
+interface iFetchUserResponse {
+    status: string;
+    data: iBackendUser;
+}
+
+export async function syncUserData(userPrivyId: string) {
+    return await makeRequest<iFetchUserResponse>({
         url: "/fetch-user",
         method: "POST",
-        data: { privyId: userId },
-    }).then((response) => response.data);
+        data: { privyId: userPrivyId },
+    }).then((response) => {
+        return response.data;
+    });
 }

@@ -1,10 +1,8 @@
 import type { Request, Response } from "express";
-import { iUser, User } from "../models/userSchema";
+import { User } from "../models/userSchema";
 import { sendRegisterEmail } from "../utils/emailNotis";
 
 export const signIn = async (req: Request, res: Response) => {
-  let _user: iUser | null;
-
   try {
     const { userPfp, username, email, privyId, bio } = req.body;
 
@@ -16,9 +14,9 @@ export const signIn = async (req: Request, res: Response) => {
       return;
     }
 
-    _user = await User.findOne({ privyId });
+    const checkUser = await User.findOne({ privyId });
 
-    if (!_user) {
+    if (!checkUser) {
       if (!userPfp || !username || !email) {
         res.status(400).json({
           status: "error",
@@ -27,7 +25,7 @@ export const signIn = async (req: Request, res: Response) => {
         return;
       }
 
-      _user = await User.create({ privyId, userPfp, username, email, bio });
+      const user = await User.create({ privyId, userPfp, username, email, bio });
       // await sendRegisterEmail({ email, username }, "Welcome to Trophy 🎉");
 
       res.status(201).json({
@@ -39,28 +37,8 @@ export const signIn = async (req: Request, res: Response) => {
       return;
     }
 
-    const _fieldsToUpdate: Partial<iUser> = {
-      email: email || _user.email,
-      userPfp: userPfp || _user.userPfp,
-      username: username || _user.username,
-      bio: bio || _user.bio,
-    };
-
-    const _needsUpdate = Object.entries(_fieldsToUpdate).some(([key, value]) => {
-      const userKey = key as keyof iUser;
-      return value !== (_user?.[userKey] ?? value);
-    });
-
-    if (_needsUpdate) {
-      Object.assign(_user, _fieldsToUpdate);
-      await _user.save();
-    }
-
     res.status(200).json({
       status: "success",
-      data: {
-        isBasicProfileComplete: !!(_user.email && _user.userPfp && _user.username),
-      },
     });
     return;
   } catch (error) {

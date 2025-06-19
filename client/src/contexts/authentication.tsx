@@ -13,27 +13,22 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
         function () {
             if (!ready) return;
 
-            if (!authenticated || !privyUser) {
-                setIsLoading(false);
-                return;
-            }
+            setIsLoading(false);
+
+            if (!authenticated || !privyUser) return;
 
             (async function () {
-                setIsLoading(true);
+                const { data: backendData } = await syncUserData(privyUser.id);
 
                 try {
-                    setUser((await syncUserData(privyUser.id)) as tAuthenticatedUser);
+                    setUser({ ...privyUser, backendUserData: backendData });
                 } catch (error) {
                     console.error(`failed to sync user data: ${error}`);
-                } finally {
-                    setIsLoading(false);
                 }
             })();
         },
         [authenticated, ready, privyUser],
     );
-
-    if (!ready) return null;
 
     return children;
 }

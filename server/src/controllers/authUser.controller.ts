@@ -2,36 +2,35 @@ import { type Request, type Response } from "express";
 import { User } from "../models/userSchema";
 
 export const authUser = async (req: Request, res: Response) => {
-  let _user;
-
   try {
     const { privyId } = req.body;
 
     if (!privyId) {
-      res.status(400).json({
+      res.status(403).json({
         status: "error",
         message: "privyId is required",
       });
-      return;
     }
 
-    _user = await User.findOne({ privyId });
+    const user = await User.findOne({ privyId });
 
-    if (!_user) {
+    if (!user) {
       res.status(404).json({
         status: "error",
         message: "User not found",
       });
-      return;
     }
 
     res.status(200).json({
       status: "success",
       data: {
-        isBasicProfileComplete: !!(_user?.email && _user?.userPfp && _user?.username),
+        isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username),
+        user: {
+          email: user?.email,
+          username: user?.username,
+        },
       },
     });
-    return;
   } catch (error) {
     console.error(error);
 
@@ -39,6 +38,5 @@ export const authUser = async (req: Request, res: Response) => {
       message: "Failed to authenticate user",
       error: (error as Error).message,
     });
-    return;
   }
 };

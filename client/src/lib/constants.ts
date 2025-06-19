@@ -4,12 +4,13 @@ import { base, baseSepolia } from "viem/chains";
 import { DEGEN, USDC, ZORA } from "./tipContracts";
 
 export const ENV_SCHEMA = {
-    PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
-    PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
-    PAYMASTER_URL: `https://paymaster.biconomy.io/api/v2/84532/${import.meta.env.VITE_PAYMASTER_API_KEY!}`,
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
     MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY!,
+    PAYMASTER_URL: `https://paymaster.biconomy.io/api/v2/84532/${import.meta.env.VITE_PAYMASTER_API_KEY!}`,
+    PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
+    PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
+    PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
 };
 
 export const PUBLIC_ROUTES = ["/auth"];
