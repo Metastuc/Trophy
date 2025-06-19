@@ -11,11 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as StreamImport } from './routes/stream'
 import { Route as ProfileImport } from './routes/profile'
 import { Route as DiscoverImport } from './routes/discover'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const StreamRoute = StreamImport.update({
+  id: '/stream',
+  path: '/stream',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ProfileRoute = ProfileImport.update({
   id: '/profile',
@@ -60,6 +67,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
+    '/stream': {
+      id: '/stream'
+      path: '/stream'
+      fullPath: '/stream'
+      preLoaderRoute: typeof StreamImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -69,12 +83,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/discover': typeof DiscoverRoute
   '/profile': typeof ProfileRoute
+  '/stream': typeof StreamRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/discover': typeof DiscoverRoute
   '/profile': typeof ProfileRoute
+  '/stream': typeof StreamRoute
 }
 
 export interface FileRoutesById {
@@ -82,14 +98,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/discover': typeof DiscoverRoute
   '/profile': typeof ProfileRoute
+  '/stream': typeof StreamRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover' | '/profile'
+  fullPaths: '/' | '/discover' | '/profile' | '/stream'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover' | '/profile'
-  id: '__root__' | '/' | '/discover' | '/profile'
+  to: '/' | '/discover' | '/profile' | '/stream'
+  id: '__root__' | '/' | '/discover' | '/profile' | '/stream'
   fileRoutesById: FileRoutesById
 }
 
@@ -97,12 +114,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DiscoverRoute: typeof DiscoverRoute
   ProfileRoute: typeof ProfileRoute
+  StreamRoute: typeof StreamRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DiscoverRoute: DiscoverRoute,
   ProfileRoute: ProfileRoute,
+  StreamRoute: StreamRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +136,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/discover",
-        "/profile"
+        "/profile",
+        "/stream"
       ]
     },
     "/": {
@@ -128,6 +148,9 @@ export const routeTree = rootRoute
     },
     "/profile": {
       "filePath": "profile.tsx"
+    },
+    "/stream": {
+      "filePath": "stream.tsx"
     }
   }
 }

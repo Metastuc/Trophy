@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export function AuthenticationReducer(state: tAuthState, action: tAuthAction): tAuthState {
     switch (action.type) {
-        case "BACK":
+        case "BACK": {
             const newStack = [...state.screenStack];
             newStack.pop();
             const previousScreen = newStack[newStack.length - 1] || "default";
@@ -12,6 +12,7 @@ export function AuthenticationReducer(state: tAuthState, action: tAuthAction): t
                 screenStack: newStack,
                 type: previousScreen as tAuthState["type"],
             };
+        }
 
         case "GO_TO_DEFAULT":
             return {

@@ -1,6 +1,7 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { makeRequest } from "@/lib/axios";
 import { tQueryResponse } from "@/types/profile.types";
-import { queryOptions } from "@tanstack/react-query";
 
 export function getUserProfile(address: string) {
     return queryOptions({

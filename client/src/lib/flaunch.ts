@@ -4,10 +4,10 @@ import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
 
-import { getSmartAccount } from "@/biconomy/smartAccount";
-import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "@/lib/constants";
-import { SignTypedData } from "@/lib/types";
-import { getPublicClient, getWalletClient } from "@/viemClient/viemClient";
+import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "./constants";
+import { getSmartAccount } from "./smartAccount";
+import { SignTypedData } from "./types";
+import { getPublicClient, getWalletClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
@@ -135,7 +135,7 @@ export const deployRevenueManager = async (provider: EIP1193Provider) => {
     const flaunch = await flaunchClient(provider);
 
     return await flaunch.deployRevenueManager({
-        protocolFeePercent: 0,
+        protocolFeePercent: 20,
         protocolRecipient: "0x",
     });
 };
