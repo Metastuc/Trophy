@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 import { useAuthenticationStore } from "@/store/authentication";
 
+import { AuthenticationDrawerDescription } from "./components/description";
 import { AuthenticationDrawerFooter } from "./components/footer";
 import { AuthenticationDrawerHeader } from "./components/header";
 import { useAuthenticationDrawerStateStore } from "./store";
@@ -67,6 +68,7 @@ export function AuthenticationDrawer() {
 
                 <DrawerHeader>
                     <AuthenticationDrawerHeader />
+                    <AuthenticationDrawerDescription />
                 </DrawerHeader>
             </DrawerContent>
         </Drawer>
