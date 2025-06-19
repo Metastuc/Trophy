@@ -7,10 +7,8 @@ interface iFetchUserResponse {
 
 export async function syncUserData(userPrivyId: string) {
     return await makeRequest<iFetchUserResponse>({
-        url: "/fetch-user",
-        method: "POST",
         data: { privyId: userPrivyId },
-    }).then((response) => {
-        return response.data;
-    });
+        method: "POST",
+        url: "/fetch-user",
+    }).then((response) => response.data);
 }

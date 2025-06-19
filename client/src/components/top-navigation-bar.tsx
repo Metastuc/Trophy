@@ -1,9 +1,11 @@
+import { usePrivy } from "@privy-io/react-auth";
 import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
 import { LOGO, SEARCH } from "@/assets/icons";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 import { useShouldShowExitButton } from "@/utils/auth";
+import { AuthenticationDrawer } from "@/views/authentication-drawer";
 
 export default function Component() {
     const checkRoute = useMatchRoute();
@@ -34,26 +36,18 @@ export default function Component() {
                     </button>
                 ) : null}
 
-                {!showExitButton ? (
-                    // <AuthenticationDrawerContextProvider>
-                    //     <AuthenticationDrawer />
-                    // </AuthenticationDrawerContextProvider>
-
-                    <>button</>
-                ) : (
-                    <ExitButton />
-                )}
+                {!showExitButton ? <AuthenticationDrawer /> : <ExitButton />}
             </aside>
         </section>
     );
 }
 
 function ExitButton() {
-    // const { logout } = useAuthenticationContext();
+    const { logout } = usePrivy();
     const navigate = useNavigate();
 
     function handleLogout() {
-        // logout();
+        logout();
         navigate({ to: "/" });
     }
 
