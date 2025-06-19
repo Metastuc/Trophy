@@ -4,9 +4,10 @@ import React from "react";
 import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 import { useAuthenticationStore } from "@/store/authentication";
 
+import { AuthenticationDrawerFooter } from "./components/footer";
 import { useAuthenticationDrawerStateStore } from "./store";
 
 export function AuthenticationDrawer() {
@@ -60,7 +61,13 @@ export function AuthenticationDrawer() {
                 )}
             </Button>
 
-            <DrawerContent></DrawerContent>
+            <DrawerContent>
+                <AuthenticationDrawerFooter />
+
+                <DrawerHeader>
+                    
+                </DrawerHeader>
+            </DrawerContent>
         </Drawer>
     );
 }
