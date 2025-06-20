@@ -1,11 +1,11 @@
 import { useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
+import { toast } from "sonner";
+import { useShallow } from "zustand/shallow";
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { cn, sleep } from "@/lib/utils";
 
-import { toast } from "sonner";
-import { useShallow } from "zustand/shallow";
 import {
     useAuthenticationDrawerNavigationStore,
     useAuthenticationDrawerStateStore,
@@ -90,6 +90,7 @@ export function ValidateOTP() {
                         try {
                             sendCode({ email: email as string });
                         } catch (error) {
+                            console.error("Error resending OTP:", error);
                             toast.error("Error resending OTP. Please try again later.");
                         }
                     }}
