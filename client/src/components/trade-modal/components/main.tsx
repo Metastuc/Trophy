@@ -43,7 +43,7 @@
 
 // function RenderMetric({ suffix, title, value }: iMetric) {
 //     return (
-//         <article className="bg-blue100 flex h-13.5 w-26 flex-col items-center justify-center gap-1 rounded-[.125rem] text-center">
+//         <article className="bg-blue100 flex h-13.5 w-26 flex-col items-center justify-center gap-1 rounded-xs text-center">
 //             <span className="text-yellow100 text-lg leading-4.5 font-normal">
 //                 <CountUp end={Number(value)} duration={1} />
 //                 {suffix}

@@ -30,7 +30,10 @@ export const authUser = async (req: Request, res: Response) => {
       data: {
         isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username),
         user: {
+          bio: user?.bio,
           email: user?.email,
+          privyId: user?.privyId,
+          profilePicture: user?.userPfp,
           username: user?.username,
         },
       },

@@ -77,3 +77,30 @@ export const useAuthenticationDrawerNavigationStore: UseBoundStore<
         });
     },
 }));
+
+export const useAuthenticationDrawerFormStore: UseBoundStore<StoreApi<iAuthenticationFormState>> =
+    create<iAuthenticationFormState>((set) => ({
+        bio: null,
+
+        email: null,
+
+        isNewUser: false,
+
+        privyId: null,
+
+        profilePicture: null,
+
+        username: null,
+
+        setField(field, value) {
+            set((state) => ({ ...state, [field]: value }));
+        },
+
+        setIsNewUser(isNewUser) {
+            set({ isNewUser });
+        },
+
+        resetForm() {
+            set({ bio: null, email: null, privyId: null, profilePicture: null, username: null });
+        },
+    }));

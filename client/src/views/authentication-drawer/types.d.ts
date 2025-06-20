@@ -21,6 +21,22 @@ type tAuthenticationNavigationState = {
     goToWallet: () => void;
 };
 
+type iAuthenticationFormState = {
+    bio: string | null;
+    email: string | null;
+    isNewUser: boolean;
+    privyId: string | null;
+    profilePicture: File | string | null;
+    username: string | null;
+
+    resetForm: () => void;
+    setField: <K extends keyof iAuthenticationFormState>(
+        key: K,
+        value: iAuthenticationFormState[K],
+    ) => void;
+    setIsNewUser: (isNewUser: boolean) => void;
+};
+
 interface iAuthenticateWithButton {
     handler: () => void;
     icon: () => React.ReactNode;

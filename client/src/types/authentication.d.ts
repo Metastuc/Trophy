@@ -4,7 +4,10 @@ declare global {
     interface iBackendUser {
         isBasicProfileComplete: boolean;
         user: {
+            bio: string;
             email: string;
+            privyId: string;
+            profilePicture: string;
             username: string;
         };
     }

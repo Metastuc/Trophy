@@ -1,6 +1,7 @@
 import { useAuthenticationDrawerNavigationStore } from "../store";
 import { AuthenticationDefaultScreen } from "./default";
 import { AuthenticateWithEmail } from "./email";
+import { CompleteProfile } from "./form";
 import { ValidateOTP } from "./otp";
 
 export function AuthenticationDrawerBody() {
@@ -17,7 +18,7 @@ export function AuthenticationDrawerBody() {
             return;
 
         case "finish":
-            return;
+            return <CompleteProfile />;
 
         case "otp":
             return <ValidateOTP />;

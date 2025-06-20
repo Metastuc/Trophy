@@ -78,10 +78,7 @@ export default function Component({ content, setContent }: iHomeDropdown) {
             <Button
                 variant={"default"}
                 onClick={() => setIsOpen(!isOpen)}
-                className={cn(
-                    "h-7 w-28 rounded-[.125rem] text-white",
-                    isOpen ? "bg-primary/90" : "",
-                )}
+                className={cn("h-7 w-28 rounded-xs text-white", isOpen ? "bg-primary/90" : "")}
             >
                 <span className="text-xs capitalize">{content}</span>
                 <i className={cn("transition-transform duration-150", isOpen ? "rotate-180" : "")}>

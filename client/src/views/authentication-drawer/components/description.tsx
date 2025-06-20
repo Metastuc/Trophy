@@ -6,10 +6,7 @@ import { useAuthenticationDrawerNavigationStore } from "../store";
 
 export function AuthenticationDrawerDescription() {
     const { email, screen } = useAuthenticationDrawerNavigationStore(
-        useShallow((state) => ({
-            email: state.email,
-            screen: state.screen,
-        })),
+        useShallow((state) => ({ email: state.email, screen: state.screen })),
     );
 
     switch (screen) {

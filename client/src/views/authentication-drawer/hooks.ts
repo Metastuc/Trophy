@@ -9,10 +9,7 @@ import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateSto
 export function usePrivyLoginTrigger() {
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
     const { goToDefault, screen } = useAuthenticationDrawerNavigationStore(
-        useShallow((state) => ({
-            goToDefault: state.goToDefault,
-            screen: state.screen,
-        })),
+        useShallow((state) => ({ goToDefault: state.goToDefault, screen: state.screen })),
     );
 
     const { login } = useLogin({
@@ -44,6 +41,6 @@ export function usePrivyLoginTrigger() {
                 login({ loginMethods: ["farcaster"] });
             }
         },
-        [closeDrawer, login, screen],
+        [screen],
     );
 }

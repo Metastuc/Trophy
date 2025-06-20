@@ -48,11 +48,16 @@ export function AuthenticationDrawerFooter() {
                 </Button>
             ) : null}
 
-            <DrawerClose asChild onClick={handleDrawerClose}>
-                <Button variant="outline" className="bg-white200 ml-auto size-5 rounded-full p-0">
-                    <i className="size-3">{CLOSE()}</i>
-                </Button>
-            </DrawerClose>
+            {!["finish"].includes(useAuthenticationDrawerNavigationStore.getState().screen) ? (
+                <DrawerClose asChild onClick={handleDrawerClose}>
+                    <Button
+                        variant="outline"
+                        className="bg-white200 ml-auto size-5 rounded-full p-0"
+                    >
+                        <i className="size-3">{CLOSE()}</i>
+                    </Button>
+                </DrawerClose>
+            ) : null}
         </DrawerFooter>
     );
 }

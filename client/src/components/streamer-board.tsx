@@ -8,7 +8,7 @@ interface iStreamerBoard {
 
 export default function Component({ counter }: iStreamerBoard) {
     return (
-        <div className="bg-white100 flex h-17 flex-col items-center justify-between rounded-[.125rem] shadow-xs">
+        <div className="bg-white100 flex h-17 flex-col items-center justify-between rounded-xs shadow-xs">
             <section className="flex w-full items-center justify-between px-3 pt-1.5">
                 <aside className="flex items-center gap-3">
                     <span>#{counter}</span>

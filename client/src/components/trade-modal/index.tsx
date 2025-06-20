@@ -26,7 +26,7 @@ export default function Component() {
         <TradeCreatorTokenContext.Provider value={contextValue}>
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
                 <DrawerTrigger asChild>
-                    <Button variant="default" className="bg-green100 h-6 w-15 rounded-[.125rem]">
+                    <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
                         <span className="text-green200 capitalize">trade</span>
                     </Button>
                 </DrawerTrigger>

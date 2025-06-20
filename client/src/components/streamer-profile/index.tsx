@@ -78,7 +78,7 @@ function RenderModal() {
 //         <TradeCreatorTokenContext.Provider value={contextValue}>
 //             <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
 //                 <AlertDialogTrigger asChild>
-//                     <Button variant="default" className="bg-green100 h-6 w-15 rounded-[.125rem]">
+//                     <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
 //                         <span className="text-green200 capitalize">trade</span>
 //                     </Button>
 //                 </AlertDialogTrigger>

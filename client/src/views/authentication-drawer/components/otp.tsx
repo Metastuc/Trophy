@@ -16,10 +16,7 @@ export function ValidateOTP() {
     const hasSubmittedRef = React.useRef<boolean>(false);
 
     const { email, goToDefault } = useAuthenticationDrawerNavigationStore(
-        useShallow((state) => ({
-            email: state.email,
-            goToDefault: state.goToDefault,
-        })),
+        useShallow((state) => ({ email: state.email, goToDefault: state.goToDefault })),
     );
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
 
