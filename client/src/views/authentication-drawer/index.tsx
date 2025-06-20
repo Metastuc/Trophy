@@ -12,7 +12,7 @@ import { AuthenticationDrawerBody } from "./components/body";
 import { AuthenticationDrawerDescription } from "./components/description";
 import { AuthenticationDrawerFooter } from "./components/footer";
 import { AuthenticationDrawerHeader } from "./components/header";
-import { usePrivyLoginTrigger } from "./hooks/trigger";
+import { usePrivyLoginTrigger } from "./hooks";
 import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function AuthenticationDrawer() {
@@ -73,6 +73,8 @@ export function AuthenticationDrawer() {
 
             <DrawerContent>
                 <AuthenticationDrawerFooter />
+
+                {/* <button onClick={() => logout()}>logout</button> */}
 
                 <DrawerHeader>
                     <AuthenticationDrawerHeader />

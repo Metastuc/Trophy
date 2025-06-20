@@ -2,23 +2,30 @@ import { useLogin } from "@privy-io/react-auth";
 import React from "react";
 import { useShallow } from "zustand/shallow";
 
-import {
-    useAuthenticationDrawerNavigationStore,
-    useAuthenticationDrawerStateStore,
-} from "../store";
+import { fetchUser } from "@/api/fetch-user";
+import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function usePrivyLoginTrigger() {
-    const { goToDefault, screen } = useAuthenticationDrawerNavigationStore(
+    const { goToDefault, goToFinish, screen } = useAuthenticationDrawerNavigationStore(
         useShallow((state) => ({
-            screen: state.screen,
             goToDefault: state.goToDefault,
+            goToFinish: state.goToFinish,
+            screen: state.screen,
         })),
     );
 
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
 
     const { login } = useLogin({
-        onComplete(params) {},
+        async onComplete(params) {
+            const { data } = await fetchUser(params.user.id);
+
+            if (data.isBasicProfileComplete) {
+                goToDefault();
+            } else {
+                goToFinish();
+            }
+        },
 
         onError(error) {
             console.error("Login error:", error);
@@ -32,7 +39,6 @@ export function usePrivyLoginTrigger() {
     React.useEffect(
         function () {
             if (screen === "wallet") {
-                console.log("Wallet login triggered");
                 closeDrawer();
                 login({ loginMethods: ["wallet"], walletChainType: "ethereum-only" });
             }

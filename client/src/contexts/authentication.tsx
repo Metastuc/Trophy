@@ -1,7 +1,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import React from "react";
 
-import { syncUserData } from "@/api/fetch-user";
+import { fetchUser } from "@/api/fetch-user";
 import { useAuthenticationStore } from "@/store/authentication";
 
 export function AuthenticationProvider({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
             if (!authenticated || !privyUser) return;
 
             (async function () {
-                const { data: backendData } = await syncUserData(privyUser.id);
+                const { data: backendData } = await fetchUser(privyUser.id);
 
                 try {
                     setUser({ ...privyUser, backendUserData: backendData });
