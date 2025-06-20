@@ -5,6 +5,7 @@ import { useShallow } from "zustand/shallow";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
 
+import { cn } from "@/lib/utils";
 import { useAuthenticationDrawerFormStore } from "../store";
 
 export function CompleteProfile() {
@@ -99,7 +100,10 @@ export function CompleteProfile() {
                 </div>
 
                 <TextInput
-                    className="border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase"
+                    className={cn(
+                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                        !!email && "opacity-50",
+                    )}
                     name="email"
                     placeholder="enter email"
                     type="email"
@@ -111,7 +115,10 @@ export function CompleteProfile() {
                 />
 
                 <TextInput
-                    className="border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase"
+                    className={cn(
+                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                        !!username && "opacity-50",
+                    )}
                     name="username"
                     placeholder="enter username"
                     value={username || ""}

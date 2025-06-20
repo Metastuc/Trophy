@@ -39,13 +39,15 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
 
                 const response = await fetchUser(privyUser.id);
                 if (!response) {
+                    logger("AuthenticationProvider: ", privyUser);
+
                     setIsNewUser(true);
 
-                    setFormField("bio", null);
-                    setFormField("email", null);
-                    setFormField("privyId", privyUser.id);
-                    setFormField("profilePicture", null);
-                    setFormField("username", null);
+                    setFormField("bio", privyUser.farcaster?.bio || null);
+                    setFormField("email", privyUser.email?.address || null);
+                    setFormField("privyId", privyUser.id || null);
+                    setFormField("profilePicture", privyUser.farcaster?.pfp || null);
+                    setFormField("username", privyUser.farcaster?.username || null);
 
                     await sleep(2000);
                     goToFinish();
@@ -63,7 +65,7 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
 
                     setFormField("bio", backendUserData.user.bio || null);
                     setFormField("email", backendUserData.user.email || null);
-                    setFormField("privyId", backendUserData.user.privyId || privyUser.id);
+                    setFormField("privyId", backendUserData.user.privyId || null);
                     setFormField("profilePicture", backendUserData.user.profilePicture || null);
                     setFormField("username", backendUserData.user.username || null);
 
