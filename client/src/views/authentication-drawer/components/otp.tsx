@@ -25,7 +25,7 @@ export function ValidateOTP() {
 
     const { loginWithCode, state, sendCode } = useLoginWithEmail({
         async onComplete() {
-            await sleep(1500);
+            await sleep(1250);
             closeDrawer();
 
             await sleep(300);
