@@ -21,6 +21,10 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                 const { data: backendData } = await fetchUser(privyUser.id);
 
                 try {
+                    if (!backendData.isBasicProfileComplete) {
+                        throw new Error("User profile is not complete");
+                    }
+
                     setUser({ ...privyUser, backendUserData: backendData });
                 } catch (error) {
                     console.error(`failed to sync user data: ${error}`);

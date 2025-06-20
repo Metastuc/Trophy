@@ -5,7 +5,6 @@ type tAuthenticationDrawerState = {
 
     closeDrawer: () => void;
     openDrawer: () => void;
-    toggle: () => void;
 };
 
 type tAuthenticationNavigationState = {
@@ -26,4 +25,10 @@ interface iAuthenticateWithButton {
     handler: () => void;
     icon: () => React.ReactNode;
     label: string;
+}
+
+interface iAuthenticateWithEmailFormState {
+    email: string | null;
+    isLoading: boolean;
+    isValid: boolean;
 }

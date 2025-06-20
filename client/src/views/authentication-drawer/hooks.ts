@@ -3,6 +3,7 @@ import React from "react";
 import { useShallow } from "zustand/shallow";
 
 import { fetchUser } from "@/api/fetch-user";
+
 import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function usePrivyLoginTrigger() {
@@ -14,7 +15,12 @@ export function usePrivyLoginTrigger() {
         })),
     );
 
-    const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
+    const { closeDrawer, openDrawer } = useAuthenticationDrawerStateStore(
+        useShallow((state) => ({
+            closeDrawer: state.closeDrawer,
+            openDrawer: state.openDrawer,
+        })),
+    );
 
     const { login } = useLogin({
         async onComplete(params) {
@@ -23,12 +29,12 @@ export function usePrivyLoginTrigger() {
             if (data.isBasicProfileComplete) {
                 goToDefault();
             } else {
+                openDrawer();
                 goToFinish();
             }
         },
 
         onError(error) {
-            console.error("Login error:", error);
             if (error.includes("exited")) {
                 closeDrawer();
                 goToDefault();

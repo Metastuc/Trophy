@@ -1,5 +1,6 @@
 import { useAuthenticationDrawerNavigationStore } from "../store";
 import { AuthenticationDefaultScreen } from "./default";
+import { AuthenticateWithEmail } from "./email";
 
 export function AuthenticationDrawerBody() {
     const currentScreen = useAuthenticationDrawerNavigationStore((state) => state.screen);
@@ -9,7 +10,7 @@ export function AuthenticationDrawerBody() {
             return <AuthenticationDefaultScreen />;
 
         case "email":
-            return;
+            return <AuthenticateWithEmail />;
 
         case "farcaster":
             return;
