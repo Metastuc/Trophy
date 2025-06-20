@@ -3,8 +3,7 @@ import { create, StoreApi, UseBoundStore } from "zustand";
 export const useAuthenticationDrawerStateStore: UseBoundStore<
     StoreApi<tAuthenticationDrawerState>
 > = create<tAuthenticationDrawerState>()((set) => ({
-    // isOpen: false,
-    isOpen: true,
+    isOpen: false,
 
     closeDrawer() {
         set({ isOpen: false });
@@ -18,8 +17,7 @@ export const useAuthenticationDrawerStateStore: UseBoundStore<
 export const useAuthenticationDrawerNavigationStore: UseBoundStore<
     StoreApi<tAuthenticationNavigationState>
 > = create<tAuthenticationNavigationState>()((set, get) => ({
-    // screen: "default",
-    screen: "email",
+    screen: "default",
 
     screenStack: ["default"],
 

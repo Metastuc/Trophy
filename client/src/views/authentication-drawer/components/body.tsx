@@ -1,6 +1,7 @@
 import { useAuthenticationDrawerNavigationStore } from "../store";
 import { AuthenticationDefaultScreen } from "./default";
 import { AuthenticateWithEmail } from "./email";
+import { ValidateOTP } from "./otp";
 
 export function AuthenticationDrawerBody() {
     const currentScreen = useAuthenticationDrawerNavigationStore((state) => state.screen);
@@ -19,7 +20,7 @@ export function AuthenticationDrawerBody() {
             return;
 
         case "otp":
-            return;
+            return <ValidateOTP />;
 
         case "wallet":
             return;
