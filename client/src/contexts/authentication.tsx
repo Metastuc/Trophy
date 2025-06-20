@@ -3,11 +3,18 @@ import React from "react";
 
 import { fetchUser } from "@/api/fetch-user";
 import { useAuthenticationStore } from "@/store/authentication";
+import {
+    useAuthenticationDrawerNavigationStore,
+    useAuthenticationDrawerStateStore,
+} from "@/views/authentication-drawer/store";
 
 export function AuthenticationProvider({ children }: { children: React.ReactNode }) {
     const { authenticated, ready, user: privyUser } = usePrivy();
     const setUser = useAuthenticationStore((state) => state.setUser);
     const setIsLoading = useAuthenticationStore((state) => state.setIsLoading);
+
+    const navigateToFinish = useAuthenticationDrawerNavigationStore((state) => state.goToFinish);
+    const openDrawer = useAuthenticationDrawerStateStore((state) => state.openDrawer);
 
     React.useEffect(
         function () {
@@ -18,20 +25,22 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
             if (!authenticated || !privyUser) return;
 
             (async function () {
-                const { data: backendData } = await fetchUser(privyUser.id);
+                const response = await fetchUser(privyUser.id);
+                if (response) {
+                    try {
+                        if (!response.data.isBasicProfileComplete) {
+                            navigateToFinish();
+                            openDrawer();
+                        }
 
-                try {
-                    if (!backendData.isBasicProfileComplete) {
-                        throw new Error("User profile is not complete");
+                        setUser({ ...privyUser, backendUserData: response.data });
+                    } catch (error) {
+                        console.error(`failed to sync user data: ${error}`);
                     }
-
-                    setUser({ ...privyUser, backendUserData: backendData });
-                } catch (error) {
-                    console.error(`failed to sync user data: ${error}`);
                 }
             })();
         },
-        [authenticated, ready, privyUser],
+        [authenticated, ready, privyUser, setIsLoading, setUser],
     );
 
     return children;

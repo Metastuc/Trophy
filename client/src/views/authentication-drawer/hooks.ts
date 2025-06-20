@@ -2,36 +2,26 @@ import { useLogin } from "@privy-io/react-auth";
 import React from "react";
 import { useShallow } from "zustand/shallow";
 
-import { fetchUser } from "@/api/fetch-user";
+import { sleep } from "@/lib/utils";
 
 import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function usePrivyLoginTrigger() {
-    const { goToDefault, goToFinish, screen } = useAuthenticationDrawerNavigationStore(
+    const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
+    const { goToDefault, screen } = useAuthenticationDrawerNavigationStore(
         useShallow((state) => ({
             goToDefault: state.goToDefault,
-            goToFinish: state.goToFinish,
             screen: state.screen,
         })),
     );
 
-    const { closeDrawer, openDrawer } = useAuthenticationDrawerStateStore(
-        useShallow((state) => ({
-            closeDrawer: state.closeDrawer,
-            openDrawer: state.openDrawer,
-        })),
-    );
-
     const { login } = useLogin({
-        async onComplete(params) {
-            const { data } = await fetchUser(params.user.id);
+        async onComplete() {
+            await sleep(1500);
+            closeDrawer();
 
-            if (data.isBasicProfileComplete) {
-                goToDefault();
-            } else {
-                openDrawer();
-                goToFinish();
-            }
+            await sleep(300);
+            goToDefault();
         },
 
         onError(error) {
@@ -54,6 +44,6 @@ export function usePrivyLoginTrigger() {
                 login({ loginMethods: ["farcaster"] });
             }
         },
-        [screen],
+        [closeDrawer, login, screen],
     );
 }
