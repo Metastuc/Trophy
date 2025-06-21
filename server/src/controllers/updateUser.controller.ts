@@ -6,8 +6,13 @@ export const updateProfile = async (req: Request, res: Response) => {
   try {
     const { username, bio, xUrl, YTUrl } = req.body;
 
+    if (!username || typeof username !== "string") {
+      res.status(400).json({ message: "Invalid username" });
+      return;
+    }
+
     const user = await User.findOneAndUpdate(
-      username,
+      { username },
       {
         $set: {
           bio,
@@ -28,12 +33,14 @@ export const updateProfile = async (req: Request, res: Response) => {
       user,
       streams,
     });
+    return;
   } catch (error) {
     console.error("Error in update Profile:", error);
     res.status(500).json({
       status: "error",
       message: error instanceof Error ? error.message : "Failed to update profile data",
     });
+    return;
   }
 };
 

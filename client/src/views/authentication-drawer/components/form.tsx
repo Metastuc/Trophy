@@ -5,7 +5,9 @@ import { useShallow } from "zustand/shallow";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
 
+import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
+import { logger } from "@/utils/logger";
 import { useAuthenticationDrawerFormStore } from "../store";
 
 export function CompleteProfile() {
@@ -33,6 +35,35 @@ export function CompleteProfile() {
         setProfileImagePreview(URL.createObjectURL(file));
         setFormField("profilePicture", file);
     }
+
+    const { mutate, isPending } = useServer<iAuthenticateFormData, unknown>(
+        { METHOD: isNewUser ? "POST" : "PATCH", URL: isNewUser ? "/sign-in" : "/update-profile" },
+
+        {
+            onSuccess(response) {
+                logger("success", response);
+            },
+        },
+
+        function (variables) {
+            const formData = new FormData();
+
+            formData.append("bio", variables.bio as string);
+            formData.append("email", variables.email as string);
+            formData.append("privyId", variables.privyId as string);
+            formData.append("username", variables.username as string);
+
+            if (variables.profilePicture) {
+                if (typeof variables.profilePicture === "string") {
+                    formData.append("profilePicture", variables.profilePicture);
+                } else {
+                    formData.append("profilePicture", variables.profilePicture);
+                }
+            }
+
+            return formData;
+        },
+    );
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();

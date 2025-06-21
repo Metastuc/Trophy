@@ -21,14 +21,7 @@ type tAuthenticationNavigationState = {
     goToWallet: () => void;
 };
 
-type iAuthenticationFormState = {
-    bio: string | null;
-    email: string | null;
-    isNewUser: boolean;
-    privyId: string | null;
-    profilePicture: File | string | null;
-    username: string | null;
-
+type iAuthenticationFormState = iAuthenticateFormData & {
     resetForm: () => void;
     setField: <K extends keyof iAuthenticationFormState>(
         key: K,
@@ -47,4 +40,15 @@ interface iAuthenticateWithEmailFormState {
     email: string | null;
     isLoading: boolean;
     isValid: boolean;
+}
+
+interface iAuthenticateFormData {
+    [key: string]: unknown;
+
+    bio: string | null;
+    email: string | null;
+    isNewUser: boolean;
+    privyId: string | null;
+    profilePicture: File | string | null;
+    username: string | null;
 }

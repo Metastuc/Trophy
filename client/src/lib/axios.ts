@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 /**
  * Define supported HTTP methods.
  */
-export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
+export type HttpMethod = "DELETE" | "GET" | "PATCH" | "POST" | "PUT";
 
 /**
  * Define DataResponse type for receiving requests

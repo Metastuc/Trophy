@@ -40,7 +40,6 @@ export const signIn = async (req: Request, res: Response) => {
     res.status(200).json({
       status: "success",
     });
-    return;
   } catch (error) {
     console.error(error);
 
@@ -48,6 +47,5 @@ export const signIn = async (req: Request, res: Response) => {
       status: "error",
       message: "Failed to authenticate user",
     });
-    return;
   }
 };

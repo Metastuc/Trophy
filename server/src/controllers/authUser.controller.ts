@@ -10,7 +10,6 @@ export const authUser = async (req: Request, res: Response) => {
         status: "error",
         message: "privyId is required",
       });
-
       return;
     }
 
@@ -21,7 +20,6 @@ export const authUser = async (req: Request, res: Response) => {
         status: "error",
         message: "User not found",
       });
-
       return;
     }
 
@@ -38,8 +36,6 @@ export const authUser = async (req: Request, res: Response) => {
         },
       },
     });
-
-    return;
   } catch (error) {
     console.error(error);
 
@@ -47,7 +43,5 @@ export const authUser = async (req: Request, res: Response) => {
       message: "Failed to authenticate user",
       error: (error as Error).message,
     });
-
-    return;
   }
 };

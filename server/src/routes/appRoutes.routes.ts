@@ -19,7 +19,7 @@ router
   .post("/update-fees", feesUpdate)
 
   .post("/get-user", getUser)
-  .post("/update-profile", updateProfile)
+  .patch("/update-profile", updateProfile)
   .post("/fetch-user", authUser)
   .post("/add-guest", getGuestAccessToken)
 
