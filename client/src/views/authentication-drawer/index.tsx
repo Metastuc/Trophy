@@ -74,7 +74,7 @@ export function AuthenticationDrawer() {
             <DrawerContent>
                 <AuthenticationDrawerFooter />
 
-                <button onClick={() => logout()}>logout</button>
+                {/* <button onClick={() => logout()}>logout</button> */}
 
                 <DrawerHeader>
                     <AuthenticationDrawerHeader />
