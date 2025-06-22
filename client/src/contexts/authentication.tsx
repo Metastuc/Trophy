@@ -50,7 +50,7 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                     setFormField("profilePicture", privyUser.farcaster?.pfp || null);
                     setFormField("username", privyUser.farcaster?.username || null);
 
-                    await sleep(2000);
+                    await sleep(3000);
                     goToFinish();
                     openDrawer();
                     return;
@@ -66,7 +66,7 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                     setFormField("profilePicture", backendUserData.user.profilePicture || null);
                     setFormField("username", backendUserData.user.username || null);
 
-                    await sleep(2000);
+                    await sleep(3000);
                     goToFinish();
                     openDrawer();
                 }
