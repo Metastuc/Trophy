@@ -45,10 +45,9 @@ interface iAuthenticateWithEmailFormState {
 interface iAuthenticateFormData {
     [key: string]: unknown;
 
-    bio: string | null;
-    email: string | null;
-    isNewUser: boolean;
-    privyId: string | null;
-    profilePicture: File | string | null;
-    username: string | null;
+    bio?: string | null;
+    email?: string | null;
+    isNewUser?: boolean;
+    profilePicture?: File | string | null;
+    username?: string | null;
 }

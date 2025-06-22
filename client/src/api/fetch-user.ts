@@ -5,9 +5,8 @@ interface iFetchUserResponse {
     data: iBackendUser;
 }
 
-export async function fetchUser(userPrivyId: string) {
+export async function fetchUser(): Promise<void | iFetchUserResponse> {
     return await makeRequest<iFetchUserResponse>({
-        data: { privyId: userPrivyId },
         method: "POST",
         url: "/fetch-user",
     })

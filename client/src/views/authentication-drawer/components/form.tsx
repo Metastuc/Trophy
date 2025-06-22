@@ -1,32 +1,36 @@
-import { PencilLine } from "lucide-react";
+import { Loader, PencilLine } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
-
 import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
 import { logger } from "@/utils/logger";
+
 import { useAuthenticationDrawerFormStore } from "../store";
+import { AuthenticationProfileSchema } from "../utils";
 
 export function CompleteProfile() {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImagePreview, setProfileImagePreview] = React.useState<string | null>(null);
 
-    const { bio, email, isNewUser, privyId, profilePicture, setFormField, username } =
+    const { bio, email, isNewUser, profilePicture, setFormField, username } =
         useAuthenticationDrawerFormStore(
             useShallow((state) => ({
                 bio: state.bio,
                 email: state.email,
                 isNewUser: state.isNewUser,
-                privyId: state.privyId,
                 profilePicture: state.profilePicture,
                 username: state.username,
 
                 setFormField: state.setField,
             })),
         );
+
+    const isEmailPreFilled = React.useRef(Boolean(email));
+    const isUsernamePreFilled = React.useRef(Boolean(username));
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -37,7 +41,7 @@ export function CompleteProfile() {
     }
 
     const { mutate, isPending } = useServer<iAuthenticateFormData, unknown>(
-        { METHOD: isNewUser ? "POST" : "PATCH", URL: isNewUser ? "/sign-in" : "/update-profile" },
+        { METHOD: isNewUser ? "POST" : "PATCH", URL: isNewUser ? "/onboard" : "/update-profile" },
 
         {
             onSuccess(response) {
@@ -46,27 +50,63 @@ export function CompleteProfile() {
         },
 
         function (variables) {
-            const formData = new FormData();
+            if (variables.profilePicture instanceof File) {
+                const formData = new FormData();
 
-            formData.append("bio", variables.bio as string);
-            formData.append("email", variables.email as string);
-            formData.append("privyId", variables.privyId as string);
-            formData.append("username", variables.username as string);
+                formData.append("bio", variables.bio as string);
+                formData.append("email", variables.email as string);
+                formData.append("username", variables.username as string);
+                formData.append("profilePicture", variables.profilePicture);
 
-            if (variables.profilePicture) {
-                if (typeof variables.profilePicture === "string") {
-                    formData.append("profilePicture", variables.profilePicture);
-                } else {
-                    formData.append("profilePicture", variables.profilePicture);
-                }
+                return formData;
             }
 
-            return formData;
+            return variables;
         },
     );
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+
+        const request = AuthenticationProfileSchema.safeParse({
+            bio,
+            email,
+            isNewUser,
+            profilePicture,
+            username,
+        });
+
+        if (!request.success) {
+            const errors = request.error.flatten().fieldErrors;
+
+            toast.error("Form Submission Error", {
+                description: (
+                    <pre className="mt-1 max-h-25 overflow-auto rounded bg-gray-950 text-left text-xs text-white">
+                        {JSON.stringify(errors, null, 1)}
+                    </pre>
+                ),
+                duration: 5000,
+            });
+
+            return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { isNewUser: _, ...data } = request.data;
+        mutate(data);
+    }
+
+    function buttonContent() {
+        switch (true) {
+            case isPending:
+                return <Loader className="size-5 animate-spin" />;
+
+            case isUsernamePreFilled.current:
+                return <span className="font-extralight tracking-[.0625rem]">Update profile</span>;
+
+            default:
+                return <span className="font-extralight tracking-[.0625rem]">Finish setup</span>;
+        }
     }
 
     React.useEffect(
@@ -90,8 +130,6 @@ export function CompleteProfile() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            <input type="hidden" name="privyId" value={privyId as string} />
-
             <section className="space-y-4">
                 <div className="flex items-center justify-start gap-2">
                     <aside
@@ -133,7 +171,7 @@ export function CompleteProfile() {
                 <TextInput
                     className={cn(
                         "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
-                        !!email && "opacity-50",
+                        isEmailPreFilled.current && "opacity-50",
                     )}
                     name="email"
                     placeholder="enter email"
@@ -142,13 +180,13 @@ export function CompleteProfile() {
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         setFormField("email", event.target.value)
                     }
-                    disabled={!!email}
+                    disabled={isEmailPreFilled.current}
                 />
 
                 <TextInput
                     className={cn(
                         "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
-                        !!username && "opacity-50",
+                        isUsernamePreFilled.current && "opacity-50",
                     )}
                     name="username"
                     placeholder="enter username"
@@ -157,7 +195,7 @@ export function CompleteProfile() {
                         setFormField("username", event.target.value)
                     }
                     required
-                    disabled={!!username}
+                    disabled={isUsernamePreFilled.current}
                 />
 
                 <TextInput
@@ -175,10 +213,13 @@ export function CompleteProfile() {
             <Button
                 type="submit"
                 variant="default"
-                className="bg-blue100 h-12 w-full rounded"
-                // disabled={false}
+                className={cn(
+                    "bg-blue100 h-12 w-full rounded transition-colors",
+                    isPending && "opacity-50",
+                )}
+                disabled={isPending}
             >
-                <span className="font-extralight tracking-[.0625rem]">Finish setup</span>
+                {buttonContent()}
             </Button>
         </form>
     );

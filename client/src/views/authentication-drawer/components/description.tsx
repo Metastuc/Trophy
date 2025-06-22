@@ -2,9 +2,10 @@ import { useShallow } from "zustand/shallow";
 
 import { DrawerDescription } from "@/components/ui/drawer";
 
-import { useAuthenticationDrawerNavigationStore } from "../store";
+import { useAuthenticationDrawerFormStore, useAuthenticationDrawerNavigationStore } from "../store";
 
 export function AuthenticationDrawerDescription() {
+    const isNewUser = useAuthenticationDrawerFormStore((state) => state.isNewUser);
     const { email, screen } = useAuthenticationDrawerNavigationStore(
         useShallow((state) => ({ email: state.email, screen: state.screen })),
     );
@@ -27,10 +28,14 @@ export function AuthenticationDrawerDescription() {
             return;
 
         case "finish":
-            return (
+            return isNewUser ? (
                 <DrawerDescription className="text-black200 mx-auto w-[17.5rem] text-center text-xs font-light">
                     Your account has been created successfully, please enter the details below to
                     finish setup
+                </DrawerDescription>
+            ) : (
+                <DrawerDescription className="text-black200 mx-auto w-[17.5rem] text-center text-xs font-light">
+                    Please enter the details below to complete your Trophy profile
                 </DrawerDescription>
             );
 

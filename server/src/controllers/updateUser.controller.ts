@@ -3,44 +3,47 @@ import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 
 export const updateProfile = async (req: Request, res: Response) => {
-  try {
-    const { username, bio, xUrl, YTUrl } = req.body;
+  const privyId = req.privyUser?.userId;
 
-    if (!username || typeof username !== "string") {
-      res.status(400).json({ message: "Invalid username" });
+  const updateFields: Record<string, string> = {};
+  const fieldMap: Record<string, string> = {
+    email: "email",
+    bio: "bio",
+    xUrl: "xUrl",
+    YTUrl: "YTUrl",
+    username: "username",
+    profilePicture: "userPfp",
+  };
+
+  try {
+    for (const [clientField, dbField] of Object.entries(fieldMap)) {
+      const value = req.body[clientField];
+      if (typeof value === "string" && value.trim() !== "") {
+        updateFields[dbField] = value.trim();
+      }
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      res.status(422).json({ message: "No valid fields provided for update." });
       return;
     }
 
-    const user = await User.findOneAndUpdate(
-      { username },
-      {
-        $set: {
-          bio,
-          xUrl,
-          YTUrl,
-        },
-      },
-      { new: true },
-    );
+    const user = await User.findOneAndUpdate({ privyId }, { $set: updateFields }, { new: true });
+    if (!user) {
+      res.status(404).json({ message: "user not found" });
+      return;
+    }
 
-    const streams = await Stream.find({
-      streamer: username,
-      status: "Scheduled",
-    });
+    const streams = await Stream.find({ streamer: user.username, status: "Scheduled" });
 
-    res.status(200).json({
-      status: "success",
-      user,
-      streams,
-    });
-    return;
+    res.status(200).json({ status: "success", user, streams });
   } catch (error) {
-    console.error("Error in update Profile:", error);
+    console.error(error);
+
     res.status(500).json({
-      status: "error",
-      message: error instanceof Error ? error.message : "Failed to update profile data",
+      error: (error as Error).message,
+      message: "Failed to update profile data",
     });
-    return;
   }
 };
 

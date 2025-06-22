@@ -86,8 +86,6 @@ export const useAuthenticationDrawerFormStore: UseBoundStore<StoreApi<iAuthentic
 
         isNewUser: false,
 
-        privyId: null,
-
         profilePicture: null,
 
         username: null,

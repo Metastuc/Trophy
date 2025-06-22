@@ -1,3 +1,4 @@
+import { useAuthenticationStore } from "@/store/authentication";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 /**
@@ -42,7 +43,7 @@ const axiosInstance: AxiosInstance = axios.create({
  */
 export async function makeRequest<T>({
     data,
-    headers,
+    headers = {},
     method,
     params,
     url,
@@ -52,6 +53,11 @@ export async function makeRequest<T>({
      * If so, bypass the axiosInstance baseURL.
      */
     const isExternalApi = url.startsWith("http");
+
+    const token = useAuthenticationStore.getState().token;
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
 
     try {
         /**

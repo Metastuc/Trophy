@@ -2,17 +2,9 @@ import { type Request, type Response } from "express";
 import { User } from "../models/userSchema";
 
 export const authUser = async (req: Request, res: Response) => {
+  const privyId = req.privyUser?.userId;
+
   try {
-    const { privyId } = req.body;
-
-    if (!privyId) {
-      res.status(403).json({
-        status: "error",
-        message: "privyId is required",
-      });
-      return;
-    }
-
     const user = await User.findOne({ privyId });
 
     if (!user) {
@@ -30,18 +22,15 @@ export const authUser = async (req: Request, res: Response) => {
         user: {
           bio: user?.bio,
           email: user?.email,
-          privyId: user?.privyId,
           profilePicture: user?.userPfp,
           username: user?.username,
         },
       },
     });
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
-      message: "Failed to authenticate user",
       error: (error as Error).message,
+      message: "Failed to authenticate user",
     });
   }
 };

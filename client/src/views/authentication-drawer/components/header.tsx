@@ -1,10 +1,11 @@
 import { EMAIL } from "@/assets/icons";
 import { DrawerTitle } from "@/components/ui/drawer";
 
-import { useAuthenticationDrawerNavigationStore } from "../store";
+import { useAuthenticationDrawerFormStore, useAuthenticationDrawerNavigationStore } from "../store";
 
 export function AuthenticationDrawerHeader() {
     const currentScreen = useAuthenticationDrawerNavigationStore((state) => state.screen);
+    const isNewUser = useAuthenticationDrawerFormStore((state) => state.isNewUser);
 
     switch (currentScreen) {
         case "default":
@@ -21,7 +22,11 @@ export function AuthenticationDrawerHeader() {
             return;
 
         case "finish":
-            return <DrawerTitle className="text-center font-normal">Finish setup</DrawerTitle>;
+            return isNewUser ? (
+                <DrawerTitle className="text-center font-normal">Finish setup</DrawerTitle>
+            ) : (
+                <DrawerTitle className="text-center font-normal">Update profile</DrawerTitle>
+            );
 
         case "otp":
             return (

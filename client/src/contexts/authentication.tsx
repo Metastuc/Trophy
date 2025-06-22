@@ -1,11 +1,10 @@
-import { usePrivy } from "@privy-io/react-auth";
+import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import React from "react";
 import { useShallow } from "zustand/shallow";
 
 import { fetchUser } from "@/api/fetch-user";
 import { sleep } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
-import { logger } from "@/utils/logger";
 import {
     useAuthenticationDrawerFormStore,
     useAuthenticationDrawerNavigationStore,
@@ -23,8 +22,12 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
         useShallow((state) => ({ setIsNewUser: state.setIsNewUser, setFormField: state.setField })),
     );
 
-    const { setIsLoading, setUser } = useAuthenticationStore(
-        useShallow((state) => ({ setIsLoading: state.setIsLoading, setUser: state.setUser })),
+    const { setIsLoading, setToken, setUser } = useAuthenticationStore(
+        useShallow((state) => ({
+            setIsLoading: state.setIsLoading,
+            setToken: state.setToken,
+            setUser: state.setUser,
+        })),
     );
 
     React.useEffect(
@@ -35,16 +38,14 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
             lastFetchedUserIdRef.current = privyUser.id;
 
             (async function () {
-                logger("AuthenticationProvider: Fetching user data from backend");
+                const accessToken = await getAccessToken();
+                setToken(accessToken as string);
 
-                const response = await fetchUser(privyUser.id);
+                const response = await fetchUser();
                 if (!response) {
-                    logger("AuthenticationProvider: ", privyUser);
-
                     setIsNewUser(true);
 
                     setFormField("bio", privyUser.farcaster?.bio || null);
-                    setFormField("email", privyUser.email?.address || null);
                     setFormField("privyId", privyUser.id || null);
                     setFormField("profilePicture", privyUser.farcaster?.pfp || null);
                     setFormField("username", privyUser.farcaster?.username || null);
@@ -56,16 +57,12 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                 }
 
                 const backendUserData = response.data;
-                logger("AuthenticationProvider: Fetched user data from backend", backendUserData);
 
                 if (!backendUserData.isBasicProfileComplete) {
-                    logger(response);
-
                     setIsNewUser(false);
 
                     setFormField("bio", backendUserData.user.bio || null);
                     setFormField("email", backendUserData.user.email || null);
-                    setFormField("privyId", backendUserData.user.privyId || null);
                     setFormField("profilePicture", backendUserData.user.profilePicture || null);
                     setFormField("username", backendUserData.user.username || null);
 

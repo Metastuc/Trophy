@@ -8,19 +8,21 @@ import { getAccessToken } from "../controllers/accessToken.controller";
 import { getGuestAccessToken } from "../controllers/guest.controller";
 import { authUser } from "../controllers/authUser.controller";
 import { startRecording, stopRecording, endLivestream, getRecordingUrl } from "../controllers/recording.controller";
+import { authenticate } from "../middlewares/authenticate";
+import { onboard } from "../controllers/onboard.controller";
 
 const router = Router();
 
 router
-  .post("/sign-in", signIn)
+  .post("/onboard", authenticate, onboard)
   .post("/create-stream", createStream)
   .post("/join-stream", getAccessToken)
   .post("/update-stream", scheduleActions)
   .post("/update-fees", feesUpdate)
 
   .post("/get-user", getUser)
-  .patch("/update-profile", updateProfile)
-  .post("/fetch-user", authUser)
+  .patch("/update-profile", authenticate, updateProfile)
+  .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
 
   .post("/recording/start", startRecording)
