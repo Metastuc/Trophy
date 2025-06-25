@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { DEFAULT_IMAGE } from "../utils/env";
 
 const userSchema = new mongoose.Schema({
   privyId: {
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   userPfp: {
     type: String,
-    required: true,
+    default: DEFAULT_IMAGE
   },
   totalStreams: {
     type: Number,

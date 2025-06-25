@@ -24,3 +24,13 @@ export const PRIVY_APP_ID = process.env.PRIVY_APP_ID!;
 export const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET!;
 
 export const PRIVY_KEY = process.env.PRIVY_KEY!.replace(/\\n/g, "\n");
+
+export const AWS_REGION = process.env.AWS_REGION!;
+
+export const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID!;
+
+export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY!;
+
+export const AWS_S3_BUCKET = process.env.AWS_S3_BUCKET!;
+
+export const DEFAULT_IMAGE = process.env.DEFAULT_IMAGE!;
