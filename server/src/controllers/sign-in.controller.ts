@@ -8,7 +8,6 @@ export const signIn = async (req: Request, res: Response) => {
 
     if (!privyId) {
       res.status(400).json({
-        status: "error",
         message: "privyId is required",
       });
       return;
@@ -29,22 +28,21 @@ export const signIn = async (req: Request, res: Response) => {
       // await sendRegisterEmail({ email, username }, "Welcome to Trophy 🎉");
 
       res.status(201).json({
-        status: "success",
         data: {
           isBasicProfileComplete: true,
+          user
         },
       });
       return;
     }
 
     res.status(200).json({
-      status: "success",
+      user: checkUser
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      status: "error",
       message: "Failed to authenticate user",
     });
   }

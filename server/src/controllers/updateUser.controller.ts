@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
+import { DEFAULT_IMAGE } from "../utils/env";
+import { deletePfp } from "../utils/pfp";
 
 export const updateProfile = async (req: Request, res: Response) => {
   const privyId = req.privyUser?.userId;
@@ -65,3 +67,30 @@ export const feesUpdate = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const updatePfp = async (req: Request, res: Response) => { 
+  try {
+    const imageToUpdate = (req.file as any)?.location;
+    const privyId = req.privyUser;
+
+    const user = await User.findOne({ privyId });
+
+    if (!user) { 
+      res.status(404).json({ message: "user not found" });
+      return;
+    }
+
+    if (user.userPfp !== DEFAULT_IMAGE) {
+      await deletePfp(user.userPfp);
+    }
+
+    user.userPfp = imageToUpdate;
+    await user.save();
+
+    res.status(200).json({ user });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+  }
+}
