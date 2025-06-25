@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { signIn } from "../controllers/sign-in.controller";
-import { updateProfile, feesUpdate } from "../controllers/updateUser.controller";
+import { updateProfile, feesUpdate, updatePfp } from "../controllers/updateUser.controller";
 import { getUser } from "../controllers/getUser.controller";
 import { createStream } from "../controllers/stream.controller";
 import { scheduleActions } from "../controllers/scheduleActions.controller";
@@ -10,11 +10,12 @@ import { authUser } from "../controllers/authUser.controller";
 import { startRecording, stopRecording, endLivestream, getRecordingUrl } from "../controllers/recording.controller";
 import { authenticate } from "../middlewares/authenticate";
 import { onboard } from "../controllers/onboard.controller";
+import { uploadPfp } from "../utils/pfp";
 
 const router = Router();
 
 router
-  .post("/onboard", authenticate, onboard)
+  .post("/onboard", uploadPfp.single("pfp"), authenticate, onboard)
   .post("/create-stream", createStream)
   .post("/join-stream", getAccessToken)
   .post("/update-stream", scheduleActions)
@@ -24,6 +25,7 @@ router
   .patch("/update-profile", authenticate, updateProfile)
   .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
+  .post("/update-pfp", uploadPfp.single("pfp"), updatePfp)
 
   .post("/recording/start", startRecording)
   .post("/recording/stop", stopRecording)
