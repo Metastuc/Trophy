@@ -4,12 +4,11 @@ import React from "react";
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
-import { useAuthenticationContext } from "@/contexts/authentication";
+import { useAuthenticationStore } from "@/store/authentication";
 import { logger } from "@/utils/logger";
 
 export function StreamNowForm() {
-    const { user } = useAuthenticationContext();
-
+    const user = useAuthenticationStore((state) => state.user);
     logger({ user });
 
     function handleSubmit(event: React.FormEvent) {

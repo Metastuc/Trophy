@@ -38,7 +38,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     const streams = await Stream.find({ streamer: user.username, status: "Scheduled" });
 
-    res.status(200).json({ status: "success", user, streams });
+    res.status(200).json({ message: "profile update success", user, streams });
   } catch (error) {
     console.error(error);
 
@@ -68,14 +68,14 @@ export const feesUpdate = async (req: Request, res: Response) => {
   }
 };
 
-export const updatePfp = async (req: Request, res: Response) => { 
+export const updatePfp = async (req: Request, res: Response) => {
   try {
     const imageToUpdate = (req.file as any)?.location;
     const privyId = req.privyUser;
 
     const user = await User.findOne({ privyId });
 
-    if (!user) { 
+    if (!user) {
       res.status(404).json({ message: "user not found" });
       return;
     }
@@ -88,9 +88,8 @@ export const updatePfp = async (req: Request, res: Response) => {
     await user.save();
 
     res.status(200).json({ user });
-
   } catch (error) {
     console.error(error);
     res.status(500);
   }
-}
+};

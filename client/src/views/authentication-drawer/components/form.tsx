@@ -6,13 +6,14 @@ import { useShallow } from "zustand/shallow";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
-import { cn } from "@/lib/utils";
-import { logger } from "@/utils/logger";
+import { cn, sleep } from "@/lib/utils";
 
-import { useAuthenticationDrawerFormStore } from "../store";
+import { useAuthenticationDrawerFormStore, useAuthenticationDrawerStateStore } from "../store";
 import { AuthenticationProfileSchema } from "../utils";
 
 export function CompleteProfile() {
+    const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
+
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImagePreview, setProfileImagePreview] = React.useState<string | null>(null);
 
@@ -44,8 +45,21 @@ export function CompleteProfile() {
         { METHOD: isNewUser ? "POST" : "PATCH", URL: isNewUser ? "/onboard" : "/update-profile" },
 
         {
-            onSuccess(response) {
-                logger("success", response);
+            async onSuccess(response) {
+                if (response.status === 200) {
+                    toast.success("Profile updated successfully!", {
+                        duration: 3000,
+                    });
+                }
+
+                if (response.status === 201) {
+                    toast.success("Profile created successfully!", {
+                        duration: 3000,
+                    });
+                }
+
+                await sleep(1500);
+                closeDrawer();
             },
         },
 
