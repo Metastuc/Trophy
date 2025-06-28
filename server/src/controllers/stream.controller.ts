@@ -23,7 +23,7 @@ export const createStream = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ username });
     if (!user) {
-      res.status(404).json({ error: "user doesn't exist!" });
+      res.status(404).json({ message: "user doesn't exist!" });
       return;
     }
 
@@ -47,7 +47,7 @@ export const createStream = async (req: Request, res: Response) => {
       const calendarProps = { dtStamp, date: calendarDate, streamTitle: title, streamLink: `${CLIENT_URL}/${roomId}` };
 
       await newStream.save();
-      await sendScheduleEmail({ username, email: user.email }, `📌 ${title} Scheduled!`, calendarProps);
+      // await sendScheduleEmail({ username, email: user.email }, `📌 ${title} Scheduled!`, calendarProps);
       res.status(201).json({
         roomId,
         message: "Stream scheduled successfully",
@@ -77,7 +77,7 @@ export const createStream = async (req: Request, res: Response) => {
       await user.save();
 
       res.status(200).json({
-        status: "success",
+        message: "Room created!",
         roomId,
         token,
       });
@@ -85,7 +85,7 @@ export const createStream = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: "error",
+      error: (error as Error).message,
       message: "Room creation failed",
     });
   }

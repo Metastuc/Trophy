@@ -5,10 +5,10 @@ export const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID!;
 export const AWS_REGION = process.env.AWS_REGION!;
 export const AWS_S3_BUCKET = process.env.AWS_S3_BUCKET!;
 export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY!;
-export const CLIENT_URL = "https://trophystream.xyz";
+export const CLIENT_URL = process.env.ENVIRONMENT === "development" ? "localhost:5173" : "https://trophystream.xyz";
 export const DB_URI = process.env.DB_URI!;
 export const DEFAULT_IMAGE = process.env.DEFAULT_IMAGE!;
-export const ENVIRONMENT = process.env.ENVIRONMENT
+export const ENVIRONMENT = process.env.ENVIRONMENT;
 export const EMAIL_PASSWORD = process.env.EMAIL_USER!;
 export const EMAIL_SERVICE = process.env.EMAIL_SERVICE!;
 export const EMAIL_USER = process.env.EMAIL_USER!;

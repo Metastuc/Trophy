@@ -7,6 +7,8 @@ import { TextInput } from "@/components/ui/text-field";
 import { useAuthenticationStore } from "@/store/authentication";
 import { logger } from "@/utils/logger";
 
+import { DateTimePicker } from "./date-time-picker";
+
 export function ScheduleStreamForm() {
     const user = useAuthenticationStore((state) => state.user);
     logger({ user });
@@ -33,9 +35,13 @@ export function ScheduleStreamForm() {
                     />
                 </div>
 
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                     <label htmlFor="record">Record livestream</label>
                     <input type="checkbox" name="record" id="record" />
+                </div> */}
+
+                <div>
+                    <DateTimePicker onChange={(date) => console.log(date)} />
                 </div>
 
                 <p className="text-xs">
@@ -48,7 +54,7 @@ export function ScheduleStreamForm() {
 
                 <Button type="submit" className="bg-blue100">
                     <i>{STREAM_NOW()}</i>
-                    <span>Start stream</span>
+                    <span>Generate stream link</span>
                 </Button>
             </form>
         </section>

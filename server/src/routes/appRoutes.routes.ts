@@ -16,9 +16,9 @@ const router = Router();
 
 router
   .post("/onboard", uploadPfp.single("pfp"), authenticate, onboard)
-  .post("/create-stream", createStream)
+  .post("/create-stream", authenticate, createStream)
   .post("/join-stream", getAccessToken)
-  .post("/update-stream", scheduleActions)
+  .post("/update-stream", authenticate, scheduleActions)
   .post("/update-fees", feesUpdate)
 
   .post("/get-user", getUser)

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import React from "react";
 
+import { createStream } from "@/api/create-stream";
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
@@ -11,17 +12,42 @@ export function StreamNowForm() {
     const user = useAuthenticationStore((state) => state.user);
     logger({ user });
 
-    function handleSubmit(event: React.FormEvent) {
+    async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
+
+        const formData = new FormData(event.target as HTMLFormElement);
+        const data = Object.fromEntries(formData.entries());
+
+        // logger(data);
+
+        const response = await createStream(data as tCreateStreamFormRequest);
+        logger({ response });
     }
+
+    const [formState, setFormState] = React.useState<iFormState>(() => ({
+        date: "",
+        username: "",
+    }));
+
+    React.useEffect(    
+        function () {
+            if (!user) return;
+
+            setFormState({
+                date: new Date().toISOString(),
+                username: user.backendUserData.user.username,
+            });
+        },
+        [user],
+    );
 
     return (
         <section className="space-y-5">
             <h5 className="text-center">Start a livestream now</h5>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <input type="hidden" name="date" />
-                <input type="hidden" name="username" />
+                <input type="hidden" name="date" value={formState.date} />
+                <input type="hidden" name="username" value={formState.username} />
 
                 <div className="flex flex-col">
                     <label htmlFor="title">Title</label>
@@ -33,10 +59,10 @@ export function StreamNowForm() {
                     />
                 </div>
 
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                     <label htmlFor="record">Record livestream</label>
                     <input type="checkbox" name="record" id="record" />
-                </div>
+                </div> */}
 
                 <p className="text-xs">
                     You can brodcast your livestreams to X and YouTube by including the RMTP URL to

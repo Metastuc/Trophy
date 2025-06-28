@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <Fragment>
             <TopNavigationBar />
-            <main className="mb-20">
+            <main className="pb-20">
                 <Outlet />
             </main>
             <BottomNavigationBar />
