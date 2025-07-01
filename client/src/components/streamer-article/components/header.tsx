@@ -1,5 +1,5 @@
 import StreamerDisplay from "@/components/streamer-profile";
-import TradeDrawer from "@/components/trade-modal";
+import { TradeDrawer } from "@/views/trade-modal";
 
 export default function Component() {
     // const {} = useStreamArticleContext();

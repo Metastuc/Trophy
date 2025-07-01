@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
                 <HomeDropdown content={content} setContent={setContent} />
 
                 <footer className="space-y-6.5">
-                    {[...Array(10)].map((_, index) => (
+                    {[...Array(1)].map((_, index) => (
                         <StreamArticle key={index} />
                     ))}
                 </footer>

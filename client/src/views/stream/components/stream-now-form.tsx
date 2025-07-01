@@ -29,7 +29,7 @@ export function StreamNowForm() {
         username: "",
     }));
 
-    React.useEffect(    
+    React.useEffect(
         function () {
             if (!user) return;
 
