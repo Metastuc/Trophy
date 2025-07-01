@@ -1,5 +1,6 @@
-import { useAuthenticationStore } from "@/store/authentication";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+
+import { useAuthenticationStore } from "@/store/authentication";
 
 /**
  * Define supported HTTP methods.

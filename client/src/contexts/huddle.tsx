@@ -3,9 +3,10 @@ import React from "react";
 
 import { ENV_SCHEMA } from "@/lib/constants";
 
+const huddleClient = new HuddleClient({
+    projectId: ENV_SCHEMA.HUDDLE_PROJECT_ID,
+});
+
 export function HuddleContextProvider({ children }: { children: React.ReactNode }) {
-    const huddleClient = new HuddleClient({
-        projectId: ENV_SCHEMA.HUDDLE_PROJECT_ID,
-    });
     return <HuddleProvider client={huddleClient}>{children}</HuddleProvider>;
 }

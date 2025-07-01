@@ -17,7 +17,7 @@ export async function onboard(request: Request, response: Response) {
 
       const user = await User.create({ bio, email, username, userPfp });
       response.status(201).json({
-        status: "success",
+        message: "success",
         data: { isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username) },
       });
     }

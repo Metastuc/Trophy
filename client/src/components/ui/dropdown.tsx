@@ -1,29 +1,34 @@
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 
-import { ARROW_DOWN_OUTLINE } from "@/assets/icons";
+import { ARROW_DOWN_FILLED, ARROW_DOWN_OUTLINE } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
-import { Button } from "./ui/button";
+import { Button } from "./button";
 
-const DROPDOWN_BUTTONS: Array<tDROPDOWN_BUTTON> = [
-    {
-        title: "Trending",
-        value: "trending",
-    },
-    {
-        title: "Following",
-        value: "following",
-    },
-    {
-        title: "All",
-        value: "all",
-    },
-];
+type tDropdownButton<T extends string> = {
+    render?: React.ReactNode;
+    title: React.ReactNode;
+    value: T;
+};
 
-export default function Component({ content, setContent }: iHomeDropdown) {
+interface iDropdown<T extends string> {
+    icon?: "filled" | "outlined";
+    onChange: (value: T) => void;
+    options: tDropdownButton<T>[];
+    styles?: Record<string, string>;
+    value?: T;
+}
+
+export function Dropdown<T extends string>({
+    icon,
+    onChange,
+    options,
+    styles,
+    value,
+}: iDropdown<T>) {
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
-    const headerRef = React.useRef<HTMLDivElement>(null);
+    const parentWrapperRef = React.useRef<HTMLElement | null>(null);
 
     const listVariants = {
         open: {
@@ -55,14 +60,17 @@ export default function Component({ content, setContent }: iHomeDropdown) {
         },
     };
 
-    function handleSelect(value: string) {
-        setContent(value as tContent);
+    function handleSelect(value: T) {
+        onChange(value);
         setIsOpen(false);
     }
 
     React.useEffect(function () {
         function handleClickOutside(event: MouseEvent) {
-            if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+            if (
+                parentWrapperRef.current &&
+                !parentWrapperRef.current.contains(event.target as Node)
+            ) {
                 setIsOpen(false);
             }
         }
@@ -74,15 +82,20 @@ export default function Component({ content, setContent }: iHomeDropdown) {
     }, []);
 
     return (
-        <header className="relative w-max" ref={headerRef}>
+        <section ref={parentWrapperRef} className={cn(styles?.parentWrapper, "relative w-max")}>
             <Button
-                variant={"default"}
+                className={cn(
+                    styles?.parentButton,
+                    "h-7 w-28 rounded-xs text-white",
+                    isOpen && "bg-primary/90",
+                )}
                 onClick={() => setIsOpen(!isOpen)}
-                className={cn("h-7 w-28 rounded-xs text-white", isOpen ? "bg-primary/90" : "")}
             >
-                <span className="text-xs capitalize">{content}</span>
-                <i className={cn("transition-transform duration-150", isOpen ? "rotate-180" : "")}>
-                    {ARROW_DOWN_OUTLINE()}
+                <span className="text-xs capitalize">
+                    {options.find((item) => item.value === value)?.title}
+                </span>
+                <i className={cn("transition-transform duration-150", isOpen && "rotate-180")}>
+                    {icon === "filled" ? ARROW_DOWN_FILLED() : ARROW_DOWN_OUTLINE()}
                 </i>
             </Button>
 
@@ -96,7 +109,7 @@ export default function Component({ content, setContent }: iHomeDropdown) {
                         exit="closed"
                         variants={listVariants}
                     >
-                        {DROPDOWN_BUTTONS.map((item, index) => (
+                        {options.map((item, index) => (
                             <motion.li
                                 key={index}
                                 variants={itemVariants}
@@ -107,7 +120,7 @@ export default function Component({ content, setContent }: iHomeDropdown) {
                                     className="size-full"
                                 >
                                     <span className="ml-5 flex items-center justify-start text-xs text-white capitalize">
-                                        {item.title}
+                                        {item.render ?? item.title}
                                     </span>
                                 </button>
                             </motion.li>
@@ -115,6 +128,6 @@ export default function Component({ content, setContent }: iHomeDropdown) {
                     </motion.ul>
                 ) : null}
             </AnimatePresence>
-        </header>
+        </section>
     );
 }
