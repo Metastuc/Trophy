@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 
-import { GO_LIVE, SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
+import { SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
 import MainContentLayout from "@/views/main-content";
 import { TabButton } from "@/views/stream/components/button";
 import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-form";
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/stream")({
                 </header>
 
                 <figure className="mx-auto mt-10 flex h-[13.75rem] w-[16.5rem] items-center justify-center">
-                    <i>{GO_LIVE()}</i>
+                    <img src="/go-live.svg" alt="go-live" />
                 </figure>
 
                 <section className="space-y-3">

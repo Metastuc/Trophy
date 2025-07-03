@@ -3,7 +3,6 @@ import { Loader } from "lucide-react";
 import React from "react";
 import { useShallow } from "zustand/shallow";
 
-import { PRIVY } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 import { useAuthenticationStore } from "@/store/authentication";
@@ -88,7 +87,7 @@ export function AuthenticationDrawer() {
                 {showPrivyLogo ? (
                     <i className="my-4">
                         <a href="https://privy.io/" target="_blank">
-                            {PRIVY()}
+                            <img src="/privy.svg" alt="protected-by-privy" />
                         </a>
                     </i>
                 ) : null}

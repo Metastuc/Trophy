@@ -1,0 +1,28 @@
+<svg width="394" height="213" viewBox="0 0 394 213" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_1103_3663)">
+    <rect width="394" height="213" fill="url(#paint0_linear_1103_3663)" />
+    <circle cx="296.328" cy="-38.2952" r="30.7652" transform="rotate(15 296.328 -38.2952)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="206.761" cy="158.209" r="30.7652" transform="rotate(15 206.761 158.209)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="275.338" cy="176.584" r="30.7652" transform="rotate(15 275.338 176.584)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="343.916" cy="194.959" r="30.7652" transform="rotate(15 343.916 194.959)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="412.493" cy="213.334" r="30.7652" transform="rotate(15 412.493 213.334)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="1.02837" cy="103.083" r="30.7652" transform="rotate(15 1.02837 103.083)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="69.606" cy="121.458" r="30.7652" transform="rotate(15 69.606 121.458)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="138.183" cy="139.833" r="30.7652" transform="rotate(15 138.183 139.833)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="154.249" cy="217.639" r="30.7652" transform="rotate(15 154.249 217.639)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="222.827" cy="236.014" r="30.7652" transform="rotate(15 222.827 236.014)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="17.0943" cy="180.889" r="30.7652" transform="rotate(15 17.0943 180.889)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="85.6719" cy="199.264" r="30.7652" transform="rotate(15 85.6719 199.264)" stroke="#E7E7E7" stroke-width="1.5777" />
+    <circle cx="-35.7221" cy="240.238" r="30.7652" transform="rotate(15 -35.7221 240.238)" stroke="#E7E7E7" stroke-width="1.5777" />
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear_1103_3663" x1="197" y1="0" x2="197" y2="213" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#204CE1" />
+      <stop offset="0.5" stop-color="#204CE1" />
+      <stop offset="1" stop-color="#204CE1" />
+    </linearGradient>
+    <clipPath id="clip0_1103_3663">
+      <rect width="394" height="213" fill="white" />
+    </clipPath>
+  </defs>
+</svg>

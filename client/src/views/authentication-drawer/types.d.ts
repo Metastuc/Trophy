@@ -32,7 +32,7 @@ type iAuthenticationFormState = iAuthenticateFormData & {
 
 interface iAuthenticateWithButton {
     handler: () => void;
-    icon: () => React.ReactNode;
+    icon: (() => React.ReactNode) | string;
     label: string;
 }
 

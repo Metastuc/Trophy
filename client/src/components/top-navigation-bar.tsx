@@ -1,7 +1,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
-import { LOGO, SEARCH } from "@/assets/icons";
+import { SEARCH } from "@/assets/icons";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 import { useShouldShowExitButton } from "@/utils/auth";
@@ -25,7 +25,7 @@ export default function Component() {
         <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white/85 p-5 backdrop-blur-sm">
             <aside>
                 <Link to={"/"}>
-                    <LOGO />
+                    <img src="/trophy.svg" alt="trophy-logo" />
                 </Link>
             </aside>
 

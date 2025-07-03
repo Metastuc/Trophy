@@ -1,6 +1,6 @@
 import { useShallow } from "zustand/shallow";
 
-import { EMAIL, FARCASTER, WALLET } from "@/assets/icons";
+import { EMAIL, WALLET } from "@/assets/icons";
 
 import { useAuthenticationDrawerNavigationStore } from "./store";
 
@@ -16,7 +16,7 @@ export function AUTHENTICATION_BUTTONS(): iAuthenticateWithButton[] {
     return [
         {
             handler: goToFarcaster,
-            icon: FARCASTER,
+            icon: "/farcaster.svg",
             label: "Continue with Farcaster",
         },
         {

@@ -10,7 +10,12 @@ export function AuthenticationDefaultScreen() {
             onClick={props.handler}
             variant="outline"
         >
-            <i className="size-7">{props.icon()}</i>
+            {typeof props.icon === "string" ? (
+                <img className="size-7" src={props.icon} />
+            ) : (
+                <i className="size-7">{props.icon()}</i>
+            )}
+
             <span className="text-black100 text-sm tracking-wide">{props.label}</span>
         </Button>
     ));

@@ -14,7 +14,7 @@ import {
 import { Swap } from "./components/swap";
 
 export function TradeDrawer() {
-    const [isOpen, setIsOpen] = React.useState<boolean>(true);
+    const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
     return (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
