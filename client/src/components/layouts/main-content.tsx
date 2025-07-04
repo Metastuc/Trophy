@@ -6,6 +6,6 @@ interface iProps extends React.PropsWithChildren {
     className?: string;
 }
 
-export default function Layout({ children, className }: iProps) {
+export function PageContentLayout({ children, className }: iProps) {
     return <section className={cn(className, "my-2 px-4")}>{children}</section>;
 }

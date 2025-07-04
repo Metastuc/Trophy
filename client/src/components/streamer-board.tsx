@@ -1,6 +1,6 @@
 import StreamerProfile from "@/components/streamer-profile";
-import TradeDrawer from "@/components/trade-modal";
 import { cn } from "@/lib/utils";
+import { TradeDrawer } from "@/views/trade-modal";
 
 interface iStreamerBoard {
     counter: number;

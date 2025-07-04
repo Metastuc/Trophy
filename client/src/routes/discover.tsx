@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
+import { PageContentLayout } from "@/components/layouts/main-content";
 import StreamerBoard from "@/components/streamer-board";
 import { useDiscoverSearchStore } from "@/store/discover-search";
-import MainContentLayout from "@/views/main-content";
 
 export const Route = createFileRoute("/discover")({
     component: function Page() {
         const { isVisible } = useDiscoverSearchStore();
 
         return (
-            <MainContentLayout>
+            <PageContentLayout>
                 {isVisible ? (
                     <motion.header
                         className="flex h-6 w-full items-center justify-center border"
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/discover")({
                         <StreamerBoard key={index} counter={index + 1} />
                     ))}
                 </motion.footer>
-            </MainContentLayout>
+            </PageContentLayout>
         );
     },
 });

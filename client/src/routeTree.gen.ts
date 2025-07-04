@@ -13,6 +13,7 @@ import { Route as StreamRouteImport } from './routes/stream'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StreamsIdRouteImport } from './rou./routes/streams.$id
 
 const StreamRoute = StreamRouteImport.update({
   id: '/stream',
@@ -34,18 +35,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StreamsIdRoute = StreamsIdRouteImport.update({
+  id: '/streams/$id',
+  path: '/streams/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/discover': typeof DiscoverRoute
   '/profile': typeof ProfileRoute
   '/stream': typeof StreamRoute
+  '/streams/$id': typeof StreamsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/discover': typeof DiscoverRoute
   '/profile': typeof ProfileRoute
   '/stream': typeof StreamRoute
+  '/streams/$id': typeof StreamsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/profile': typeof ProfileRoute
   '/stream': typeof StreamRoute
+  '/streams/$id': typeof StreamsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover' | '/profile' | '/stream'
+  fullPaths: '/' | '/discover' | '/profile' | '/stream' | '/streams/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover' | '/profile' | '/stream'
-  id: '__root__' | '/' | '/discover' | '/profile' | '/stream'
+  to: '/' | '/discover' | '/profile' | '/stream' | '/streams/$id'
+  id: '__root__' | '/' | '/discover' | '/profile' | '/stream' | '/streams/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   ProfileRoute: typeof ProfileRoute
   StreamRoute: typeof StreamRoute
+  StreamsIdRoute: typeof StreamsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/streams/$id': {
+      id: '/streams/$id'
+      path: '/streams/$id'
+      fullPath: '/streams/$id'
+      preLoaderRoute: typeof StreamsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   ProfileRoute: ProfileRoute,
   StreamRoute: StreamRoute,
+  StreamsIdRoute: StreamsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

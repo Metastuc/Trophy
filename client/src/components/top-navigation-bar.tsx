@@ -2,9 +2,9 @@ import { usePrivy } from "@privy-io/react-auth";
 import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
 import { SEARCH } from "@/assets/icons";
+import { useShouldShowExitButton } from "@/hooks/exit-button";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
-import { useShouldShowExitButton } from "@/utils/auth";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 
 export default function Component() {

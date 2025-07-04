@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, easeIn, easeOut, motion } from "motion/react";
 import React from "react";
 
 import { ARROW_DOWN_FILLED, ARROW_DOWN_OUTLINE } from "@/assets/icons";
@@ -51,12 +51,18 @@ export function Dropdown<T extends string>({
         open: {
             y: 0,
             opacity: 1,
-            transition: { duration: 0.25, ease: "easeOut" },
+            transition: {
+                duration: 0.25,
+                ease: easeOut,
+            },
         },
         closed: {
             y: -15,
             opacity: 0,
-            transition: { duration: 0.25, ease: "easeIn" },
+            transition: {
+                duration: 0.25,
+                ease: easeIn,
+            },
         },
     };
 

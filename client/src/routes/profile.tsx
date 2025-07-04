@@ -1,33 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { getUserProfile } from "@/api/get-user-profile";
-import { Skeleton } from "@/components/ui/skeleton";
-import { authGuard } from "@/utils/auth";
-import { logger } from "@/utils/logger";
-import MainContentLayout from "@/views/main-content";
+import { PageContentLayout } from "@/components/layouts/main-content";
 
 export const Route = createFileRoute("/profile")({
-    async beforeLoad({ context }) {
-        await authGuard(context);
-    },
     component: function Page() {
-        const { authentication } = useRouteContext({ from: "/profile" });
-        logger({ authentication });
-
-        // const { status, data } = useQuery(
-        //     getUserProfile(authentication.user?.wallet?.address as string),
-        // );
-        const { status, data } = useQuery(
-            getUserProfile("0x2AE67a159fc288dB6bA4407C014F20147130b54a"),
-        );
-        const userData = data?.data;
-        logger({ userData });
-
         return (
-            <MainContentLayout>
+            <PageContentLayout>
                 <section className="flex gap-1">
-                    <aside className="flex w-15 items-center justify-center">
+                    {/* <aside className="flex w-15 items-center justify-center">
                         {status === "pending" ? (
                             <Skeleton className="size-14 rounded-full" />
                         ) : (
@@ -52,7 +32,6 @@ export const Route = createFileRoute("/profile")({
                             <Skeleton className="h-8 w-1/2" />
                         ) : (
                             <p className="max-h-16 min-h-8 w-48 overflow-hidden text-sm">
-                                {/* {userData?.bio} */}
                                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Incidunt
                                 modi vel, asperiores commodi blanditiis suscipit fugiat saepe error.
                                 Non, natus! Cupiditate, temporibus quaerat! Ullam ea perferendis
@@ -61,9 +40,9 @@ export const Route = createFileRoute("/profile")({
                                 nesciunt maxime, architecto unde perspiciatis maiores!
                             </p>
                         )}
-                    </aside>
+                    </aside> */}
                 </section>
-            </MainContentLayout>
+            </PageContentLayout>
         );
     },
 });

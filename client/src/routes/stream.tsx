@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 
 import { SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
-import MainContentLayout from "@/views/main-content";
+import { PageContentLayout } from "@/components/layouts/main-content";
 import { TabButton } from "@/views/stream/components/button";
 import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-form";
 import { StreamNowForm } from "@/views/stream/components/stream-now-form";
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/stream")({
         );
 
         return (
-            <MainContentLayout>
+            <PageContentLayout>
                 <header className="[&>*]:font-jomhuria [&>*]:text-center [&>*]:leading-none">
                     <h1 className="text-[3.25rem]">you're about to go live!</h1>
                     <h3 className="text-base">
@@ -111,7 +111,7 @@ export const Route = createFileRoute("/stream")({
                         </AnimatePresence>
                     </aside>
                 </section>
-            </MainContentLayout>
+            </PageContentLayout>
         );
     },
 });
