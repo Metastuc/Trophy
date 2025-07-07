@@ -1,3 +1,4 @@
+import { EIP1193Provider,useWallets } from "@privy-io/react-auth";
 import React from "react";
 
 import {
@@ -22,6 +23,19 @@ export function Swap() {
         buyBalance: 0,
         sellBalance: 0,
     }));
+
+    const [provider, setProvider] = React.useState<EIP1193Provider| null>(null)
+
+    const { wallets } = useWallets();
+
+    const wallet = wallets[0];
+
+    React.useEffect(() => {
+        if (!wallet) {
+            return;
+        }
+        (async () => setProvider(await wallet.getEthereumProvider()))()
+    }, [wallet, provider])
 
     function handleSellAmountChange() {}
 

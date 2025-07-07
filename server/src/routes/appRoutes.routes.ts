@@ -11,6 +11,7 @@ import { startRecording, stopRecording, endLivestream, getRecordingUrl } from ".
 import { authenticate } from "../middlewares/authenticate";
 import { onboard } from "../controllers/onboard.controller";
 import { uploadPfp } from "../utils/pfp";
+import { getStream } from "../controllers/getStream.controller";
 
 const router = Router();
 
@@ -30,6 +31,7 @@ router
   .post("/recording/start", startRecording)
   .post("/recording/stop", stopRecording)
   .post("/recording/end-stream", endLivestream)
+  .get("/stream/:roomId", getStream)
   .get("/recording/url/:roomId", getRecordingUrl);
 
 export default router;

@@ -5,7 +5,7 @@ import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseEther } from "viem";
 
 import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "./constants";
-import { getSmartAccount } from "./smartAccount";
+import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getPublicClient, getWalletClient } from "./viem";
 
@@ -55,7 +55,7 @@ export const createCreatorToken = async (
         creator: address,
         metadata: {
             base64Image: image,
-            description: `${name} Creator Token`,
+            description: `${name} creator token`,
             twitterUrl: twitter,
             telegramUrl: telegram,
         },
@@ -64,8 +64,8 @@ export const createCreatorToken = async (
         },
         fairLaunchPercent: 40,
         fairLaunchDuration: 30 * 60, // 30 mins
-        initialMarketCapUSD: 10_000,
-        creatorFeeAllocationPercent: 80,
+        initialMarketCapUSD: 2_000,
+        creatorFeeAllocationPercent: 70,
         revenueManagerInstanceAddress: REVENUE_MANAGER_ADDRESS,
     });
 };
@@ -135,7 +135,7 @@ export const deployRevenueManager = async (provider: EIP1193Provider) => {
     const flaunch = await flaunchClient(provider);
 
     return await flaunch.deployRevenueManager({
-        protocolFeePercent: 20,
+        protocolFeePercent: 30,
         protocolRecipient: "0x",
     });
 };
@@ -150,9 +150,9 @@ export const fetchFeeBalance = async (creator: `0x${string}`, provider: EIP1193P
 };
 
 export const claimCreatorFees = async (provider: EIP1193Provider) => {
-    const flaunch = await flaunchClient(provider);
+    const sFlaunch = await sFlaunchClient(provider);
 
-    return await flaunch.revenueManagerCreatorClaim({
+    return await sFlaunch.revenueManagerCreatorClaim({
         revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
     });
 };

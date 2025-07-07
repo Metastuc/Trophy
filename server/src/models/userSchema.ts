@@ -1,6 +1,51 @@
 import mongoose from "mongoose";
 import { DEFAULT_IMAGE } from "../utils/env";
 
+const notificationSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  read: {
+    type: Boolean,
+    default: false,
+  },
+  follow: {
+    content: {
+      type: String,
+    },
+    followNots: [String],
+    recentFollows: {
+      type: Number,
+      default: 0
+    },
+    followedAt: {
+      type: Date,
+      default: Date.now,
+      expires: "7d",
+    },
+  },
+  tip: {
+    content: {
+      type: String,
+    },
+    tipNots: [String],
+    recentTip: {
+      type: Number,
+      default: 0
+    },
+    tippedAt: {
+      type: Date,
+      default: Date.now,
+      expires: "7d",
+    },
+  },
+  buy: {
+    buyNots: [String],
+  },
+});
+
 const userSchema = new mongoose.Schema({
   privyId: {
     type: String,
@@ -21,6 +66,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: DEFAULT_IMAGE
   },
+  walletAddress: {
+    type: String,
+    required: true,
+    unique: true
+  },
   totalStreams: {
     type: Number,
     default: 0,
@@ -39,11 +89,6 @@ const userSchema = new mongoose.Schema({
   YTUrl: {
     type: String,
   },
-  notifications: [
-    {
-      type: String,
-    },
-  ],
   followers: [
     {
       type: String,
@@ -65,3 +110,5 @@ const userSchema = new mongoose.Schema({
 });
 
 export const User = mongoose.model("Users", userSchema);
+
+export const Notification = mongoose.model("notifications", notificationSchema)
