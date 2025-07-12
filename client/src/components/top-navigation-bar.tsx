@@ -1,7 +1,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
-import { SEARCH } from "@/assets/icons";
+import { EXIT_PAGE, SEARCH } from "@/assets/icons";
 import { useShouldShowExitButton } from "@/hooks/exit-button";
 import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
@@ -53,7 +53,7 @@ function ExitButton() {
 
     return (
         <button onClick={handleLogout}>
-            <span>exit</span>
+            <i>{EXIT_PAGE()}</i>
         </button>
     );
 }

@@ -11,7 +11,7 @@ import { useTabSwitcher } from "@/views/stream/hooks";
 
 export const Route = createFileRoute("/stream")({
     component: function Page() {
-        const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("schedule");
+        const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("now");
         const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
         const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
             left: "0px",

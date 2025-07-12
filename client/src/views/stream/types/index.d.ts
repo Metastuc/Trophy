@@ -3,6 +3,7 @@ type tStreamAction = "now" | "schedule";
 interface iFormState {
     date: string;
     username: string;
+    walletAddress: string;
 }
 
 type tCreateStreamFormRequest = {

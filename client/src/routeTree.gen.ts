@@ -13,7 +13,7 @@ import { Route as StreamRouteImport } from './routes/stream'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as StreamsIdRouteImport } from './rou./routes/streams.$id
+import { Route as StreamsIdRouteImport } from './routes/streams.$id'
 
 const StreamRoute = StreamRouteImport.update({
   id: '/stream',
