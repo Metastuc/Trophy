@@ -1,5 +1,7 @@
-import { logger } from "@/utils/logger";
 import { createFileRoute } from "@tanstack/react-router";
+
+import { PageContentLayout } from "@/components/layouts/main-content";
+import { logger } from "@/utils/logger";
 
 export const Route = createFileRoute("/streams/$id")({
     loader: async ({ params }) => {
@@ -11,5 +13,15 @@ export const Route = createFileRoute("/streams/$id")({
 });
 
 function RouteComponent() {
-    return <div>Hello "/streams/$id"!</div>;
+    return (
+        <section className="">
+            <header>
+                <img src="/trophy.svg" alt="trophy-logo" />
+            </header>
+
+            <footer>
+                <PageContentLayout></PageContentLayout>
+            </footer>
+        </section>
+    );
 }

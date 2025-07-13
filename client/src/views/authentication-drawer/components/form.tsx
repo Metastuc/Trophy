@@ -17,7 +17,7 @@ export function CompleteProfile() {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImagePreview, setProfileImagePreview] = React.useState<string | null>(null);
 
-    const { bio, email, isNewUser, profilePicture, setFormField, username } =
+    const { bio, email, isNewUser, profilePicture, setFormField, username, walletAddress } =
         useAuthenticationDrawerFormStore(
             useShallow((state) => ({
                 bio: state.bio,
@@ -25,6 +25,7 @@ export function CompleteProfile() {
                 isNewUser: state.isNewUser,
                 profilePicture: state.profilePicture,
                 username: state.username,
+                walletAddress: state.walletAddress,
 
                 setFormField: state.setField,
             })),
@@ -69,8 +70,9 @@ export function CompleteProfile() {
 
                 formData.append("bio", variables.bio as string);
                 formData.append("email", variables.email as string);
-                formData.append("username", variables.username as string);
                 formData.append("profilePicture", variables.profilePicture);
+                formData.append("username", variables.username as string);
+                formData.append("walletAddress", variables.walletAddress as string);
 
                 return formData;
             }
@@ -88,7 +90,10 @@ export function CompleteProfile() {
             isNewUser,
             profilePicture,
             username,
+            walletAddress,
         });
+
+        console.log(request, { bio, email, isNewUser, profilePicture, username, walletAddress });
 
         if (!request.success) {
             const errors = request.error.flatten().fieldErrors;

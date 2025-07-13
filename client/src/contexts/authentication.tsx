@@ -34,6 +34,11 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
         function () {
             if (!authenticated || !privyUser || !ready) return;
 
+            if (!privyUser.wallet?.address) {
+                console.warn("User has no wallet yet, skipping auth bootstrap...");
+                return;
+            }
+
             if (lastFetchedUserIdRef.current === privyUser.id) return;
             lastFetchedUserIdRef.current = privyUser.id;
 
@@ -46,9 +51,11 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                     setIsNewUser(true);
 
                     setFormField("bio", privyUser.farcaster?.bio || null);
+                    setFormField("email", privyUser.email?.address || null);
                     setFormField("privyId", privyUser.id || null);
                     setFormField("profilePicture", privyUser.farcaster?.pfp || null);
                     setFormField("username", privyUser.farcaster?.username || null);
+                    setFormField("walletAddress", privyUser.wallet?.address || null);
 
                     await sleep(3000);
                     goToFinish();

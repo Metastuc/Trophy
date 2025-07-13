@@ -50,4 +50,5 @@ interface iAuthenticateFormData {
     isNewUser?: boolean;
     profilePicture?: File | string | null;
     username?: string | null;
+    walletAddress?: string | null;
 }

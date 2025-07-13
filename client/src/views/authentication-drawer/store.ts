@@ -90,6 +90,8 @@ export const useAuthenticationDrawerFormStore: UseBoundStore<StoreApi<iAuthentic
 
         username: null,
 
+        walletAddress: null,
+
         setField(field, value) {
             set((state) => ({ ...state, [field]: value }));
         },

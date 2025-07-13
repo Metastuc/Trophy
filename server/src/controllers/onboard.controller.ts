@@ -6,7 +6,7 @@ export async function onboard(request: Request, response: Response) {
   const userPfp = (request.file as any)?.location;
 
   try {
-    const { bio, email, username } = request.body;
+    const { bio, email, username, walletAddress } = request.body;
     const existingUser = await User.findOne({ privyId });
 
     if (!existingUser) {
@@ -15,7 +15,7 @@ export async function onboard(request: Request, response: Response) {
         return;
       }
 
-      const user = await User.create({ bio, email, username, userPfp });
+      const user = await User.create({ bio, email, username, userPfp, walletAddress });
       response.status(201).json({
         message: "success",
         data: { isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username) },

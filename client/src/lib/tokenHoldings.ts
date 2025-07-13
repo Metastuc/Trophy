@@ -13,31 +13,31 @@ type tokenType = {
 }[];
 
 export default async function tokenHoldings(address: string): Promise<tokenType> {
-  const moralis = await MoralisClient();
+    const moralis = await MoralisClient();
 
-  const { result: holdings } = await moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
-    chain: moralisChain,
-    address,
-  });
+    const { result: holdings } = await moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
+        chain: moralisChain,
+        address,
+    });
 
-  const tokens = ["ETH", "ZORA", "DEGEN", "USDC"];
+    const tokens = ["ETH", "ZORA", "DEGEN", "USDC"];
 
-  const tokenList: tokenType = [];
+    const tokenList: tokenType = [];
 
-  for (const token of holdings) {
-    if (!tokens.includes(token.symbol.toUpperCase())) {
-      const percentage = Number(toFixed(token.portfolioPercentage));
-      const arrow = percentage > 0 ? "up" : "down";
-      tokenList.push({
-        name: token.name,
-        price: toFixed(token.usdPrice),
-        logo: token.logo,
-        mcap: "",
-        arrow,
-        percentage,
-      });
+    for (const token of holdings) {
+        if (!tokens.includes(token.symbol.toUpperCase())) {
+            const percentage = Number(toFixed(token.portfolioPercentage));
+            const arrow = percentage > 0 ? "up" : "down";
+            tokenList.push({
+                name: token.name,
+                price: toFixed(token.usdPrice),
+                logo: token.logo,
+                mcap: "",
+                arrow,
+                percentage,
+            });
+        }
     }
-  }
 
-  return tokenList;
+    return tokenList;
 }

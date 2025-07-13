@@ -2,6 +2,7 @@ import { EIP1193Provider } from "@privy-io/react-auth";
 import { parseAbi, parseEther, parseUnits } from "viem";
 
 import { DEGEN, USDC, ZORA } from "@/lib/tipContracts";
+
 import { getWalletClient } from "./viem";
 
 export const ethTip = async (recipient: string, amount: string, provider: EIP1193Provider) => {
