@@ -20,7 +20,7 @@ const DROPDOWN_BUTTONS: Array<tDROPDOWN_BUTTON> = [
     },
 ];
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_app/")({
     component: function Page() {
         const [content, setContent] = React.useState<tContent>("trending");
 

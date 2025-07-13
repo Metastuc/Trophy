@@ -5,7 +5,7 @@ import { PageContentLayout } from "@/components/layouts/main-content";
 import StreamerBoard from "@/components/streamer-board";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 
-export const Route = createFileRoute("/discover")({
+export const Route = createFileRoute("/_app/discover")({
     component: function Page() {
         const { isVisible } = useDiscoverSearchStore();
 

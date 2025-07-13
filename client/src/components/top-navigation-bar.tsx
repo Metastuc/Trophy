@@ -7,7 +7,7 @@ import { resetScroll, sleep } from "@/lib/utils";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 
-export default function Component() {
+export function TopNavigationBar() {
     const checkRoute = useMatchRoute();
     const { toggleIsVisible } = useDiscoverSearchStore();
     const showExitButton = useShouldShowExitButton(["/profile", "/stream"]);

@@ -18,7 +18,7 @@ const LINKS: Array<iNavigationButton> = [
     { title: "profile", href: "/profile", icon: NAV_PROFILE },
 ];
 
-export default function Component() {
+export function BottomNavigationBar() {
     return (
         <section className="bg-accent/85 fixed bottom-0 z-50 flex w-full items-center justify-center border-t border-t-black/5 py-3.5 backdrop-blur-[.125rem] backdrop-grayscale">
             <ul className="flex w-80 items-center justify-between px-4">

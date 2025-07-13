@@ -9,105 +9,101 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as StreamRouteImport } from './routes/stream'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as StreamsIdRouteImport } from './routes/streams.$id'
+import { Route as AppStreamRouteImport } from './routes/_app/stream'
+import { Route as AppProfileRouteImport } from './routes/_app/profile'
+import { Route as AppDiscoverRouteImport } from './routes/_app/discover'
 
-const StreamRoute = StreamRouteImport.update({
-  id: '/stream',
-  path: '/stream',
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const StreamsIdRoute = StreamsIdRouteImport.update({
   id: '/streams/$id',
   path: '/streams/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppStreamRoute = AppStreamRouteImport.update({
+  id: '/stream',
+  path: '/stream',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppDiscoverRoute = AppDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+  '/discover': typeof AppDiscoverRoute
+  '/profile': typeof AppProfileRoute
+  '/stream': typeof AppStreamRoute
   '/streams/$id': typeof StreamsIdRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+  '/discover': typeof AppDiscoverRoute
+  '/profile': typeof AppProfileRoute
+  '/stream': typeof AppStreamRoute
   '/streams/$id': typeof StreamsIdRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+  '/_app': typeof AppRouteRouteWithChildren
+  '/_app/discover': typeof AppDiscoverRoute
+  '/_app/profile': typeof AppProfileRoute
+  '/_app/stream': typeof AppStreamRoute
   '/streams/$id': typeof StreamsIdRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover' | '/profile' | '/stream' | '/streams/$id'
+  fullPaths: '/discover' | '/profile' | '/stream' | '/streams/$id' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover' | '/profile' | '/stream' | '/streams/$id'
-  id: '__root__' | '/' | '/discover' | '/profile' | '/stream' | '/streams/$id'
+  to: '/discover' | '/profile' | '/stream' | '/streams/$id' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/discover'
+    | '/_app/profile'
+    | '/_app/stream'
+    | '/streams/$id'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DiscoverRoute: typeof DiscoverRoute
-  ProfileRoute: typeof ProfileRoute
-  StreamRoute: typeof StreamRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
   StreamsIdRoute: typeof StreamsIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/stream': {
-      id: '/stream'
-      path: '/stream'
-      fullPath: '/stream'
-      preLoaderRoute: typeof StreamRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/streams/$id': {
       id: '/streams/$id'
@@ -116,14 +112,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StreamsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/stream': {
+      id: '/_app/stream'
+      path: '/stream'
+      fullPath: '/stream'
+      preLoaderRoute: typeof AppStreamRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/discover': {
+      id: '/_app/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof AppDiscoverRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
+interface AppRouteRouteChildren {
+  AppDiscoverRoute: typeof AppDiscoverRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppStreamRoute: typeof AppStreamRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppDiscoverRoute: AppDiscoverRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppStreamRoute: AppStreamRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DiscoverRoute: DiscoverRoute,
-  ProfileRoute: ProfileRoute,
-  StreamRoute: StreamRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
   StreamsIdRoute: StreamsIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -9,7 +9,7 @@ import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-fo
 import { StreamNowForm } from "@/views/stream/components/stream-now-form";
 import { useTabSwitcher } from "@/views/stream/hooks";
 
-export const Route = createFileRoute("/stream")({
+export const Route = createFileRoute("/_app/stream")({
     component: function Page() {
         const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("now");
         const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
