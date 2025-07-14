@@ -1,18 +1,24 @@
+import { useUser } from "@privy-io/react-auth";
 import { Loader, PencilLine } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
+import { fetchUser } from "@/api/fetch-user";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { cn, sleep } from "@/lib/utils";
+import { useAuthenticationStore } from "@/store/authentication";
 
 import { useAuthenticationDrawerFormStore, useAuthenticationDrawerStateStore } from "../store";
 import { AuthenticationProfileSchema } from "../utils";
 
 export function CompleteProfile() {
+    const { user: privyUser } = useUser();
+
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
+    const setAuthenticatedUser = useAuthenticationStore((state) => state.setUser);
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [profileImagePreview, setProfileImagePreview] = React.useState<string | null>(null);
@@ -47,6 +53,8 @@ export function CompleteProfile() {
 
         {
             async onSuccess(response) {
+                const backendUserData = await fetchUser().then((response) => response?.data);
+
                 if (response.status === 200) {
                     toast.success("Profile updated successfully!", {
                         duration: 3000,
@@ -61,6 +69,9 @@ export function CompleteProfile() {
 
                 await sleep(1500);
                 closeDrawer();
+
+                if (privyUser && backendUserData)
+                    setAuthenticatedUser({ ...privyUser, backendUserData });
             },
         },
 
@@ -92,8 +103,6 @@ export function CompleteProfile() {
             username,
             walletAddress,
         });
-
-        console.log(request, { bio, email, isNewUser, profilePicture, username, walletAddress });
 
         if (!request.success) {
             const errors = request.error.flatten().fieldErrors;

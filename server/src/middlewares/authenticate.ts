@@ -16,8 +16,6 @@ export async function authenticate(request: Request, response: Response, next: N
   try {
     request.privyUser = await privy.verifyAuthToken(authorizationHeader.split(" ")[1], PRIVY_KEY);
 
-    console.log({ user: request.privyUser });
-
     next();
   } catch (error) {
     response.status(403).json({

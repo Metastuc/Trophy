@@ -1,7 +1,8 @@
+import { isAddress } from "viem";
 import { z } from "zod";
 
 export const AuthenticationProfileSchema = z.object({
-    bio: z.string().optional(),
+    bio: z.string().optional().nullable(),
 
     email: z.string().email("Invalid email address"),
 
@@ -20,6 +21,8 @@ export const AuthenticationProfileSchema = z.object({
     ]),
 
     username: z.string().min(3, "Username must be at least 3 characters"),
+
+    walletAddress: z.string().refine(isAddress, "Invalid wallet address"),
 });
 
 export type tAuthenticationProfileSchema = z.infer<typeof AuthenticationProfileSchema>;
