@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
@@ -9,20 +9,24 @@ import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
-import { logger } from "@/utils/logger";
+import { useStreamStore } from "@/store/streams";
 
 export function StreamNowForm() {
+    const navigate = useNavigate();
+
     const user = useAuthenticationStore((state) => state.user);
-    logger(user);
+    const setSteamInfo = useStreamStore((state) => state.setSession);
 
     const { isPending, mutate } = useServer<tCreateStreamFormRequest, tCreateStreamFormResponse>(
+        { METHOD: "POST", URL: "/create-stream" },
+
         {
-            METHOD: "POST",
-            URL: "/create-stream",
-        },
-        {
-            onSuccess(data) {
-                logger({ data });
+            onSuccess(response) {
+                console.log(`token: ${response.data.token}`, `roomId: ${response.data.roomId}`);
+
+                toast.success(response.data.message);
+                navigate({ to: `/streams/$id`, params: { id: response.data.roomId } });
+                setSteamInfo({ roomId: response.data.roomId, roomToken: response.data.token });
             },
         },
     );
@@ -37,8 +41,6 @@ export function StreamNowForm() {
 
         const formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData.entries());
-
-        logger(data);
 
         mutate(data as tCreateStreamFormRequest);
     }
@@ -67,7 +69,6 @@ export function StreamNowForm() {
             <h5 className="text-center">Start a livestream now</h5>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                {/* <input type="hidden" name="date" value={formState.date} /> */}
                 <input type="hidden" name="username" value={formState.username} />
 
                 <div className="flex flex-col">
