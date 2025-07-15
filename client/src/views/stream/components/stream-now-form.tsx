@@ -12,7 +12,7 @@ import { useAuthenticationStore } from "@/store/authentication";
 import { useStreamStore } from "@/store/streams";
 
 export function StreamNowForm() {
-    const navigate = useNavigate();
+    const navigate = useNavigate({ from: "/stream" });
 
     const user = useAuthenticationStore((state) => state.user);
     const setSteamInfo = useStreamStore((state) => state.setSession);

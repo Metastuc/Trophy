@@ -1,18 +1,31 @@
-import { useRoom } from "@huddle01/react";
 import { createFileRoute } from "@tanstack/react-router";
 
+import { joinStream } from "@/api/join-stream";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { logger } from "@/utils/logger";
 
 export const Route = createFileRoute("/streams/$id")({
-    loader: async ({ params }) => {
+    // async beforeLoad({ params, context }) {
+    //     if (!context.user) return;
+
+    //     const response = await joinStream({
+    //         roomId: params.id,
+    //         username: context.user.backendUserData.user.username,
+    //     });
+
+    //     if (!response) return {};
+
+    //     console.log(response);
+
+    //     return {};
+    // },
+
+    async loader({ params }) {
         logger(params.id);
         return null;
     },
 
-    component: function () {
-        const { joinRoom } = useRoom();
-
+    component() {
         return (
             <section className="">
                 <header>
@@ -20,7 +33,7 @@ export const Route = createFileRoute("/streams/$id")({
                 </header>
 
                 <footer>
-                    <PageContentLayout></PageContentLayout>
+                    <PageContentLayout>hello</PageContentLayout>
                 </footer>
             </section>
         );

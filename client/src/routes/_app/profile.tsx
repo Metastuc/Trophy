@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageContentLayout } from "@/components/layouts/main-content";
 
 export const Route = createFileRoute("/_app/profile")({
-    component: function Page() {
+    component() {
         return (
             <PageContentLayout>
                 <section className="flex gap-1">

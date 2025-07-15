@@ -7,7 +7,7 @@ import { Recorder } from "@huddle01/server-sdk/recorder";
 
 export const getAccessToken = async (req: Request, res: Response) => {
   try {
-    const { name, roomId } = req.body;
+    const { username: name, roomId } = req.body;
 
     if (!roomId || !name) {
       res.status(400).json({
@@ -76,13 +76,13 @@ export const getAccessToken = async (req: Request, res: Response) => {
 
     // await recordStreamJoin(address, roomId);
     res.status(200).json({
-      status: "success",
+      message: "Access token generated successfully",
       token,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: "error",
+      error: (error as Error).message,
       message: "Failed to generate access token",
     });
   }

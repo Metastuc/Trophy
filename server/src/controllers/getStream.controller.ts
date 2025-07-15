@@ -19,8 +19,13 @@ export const getStream = async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json({ title: stream.title, streamer: stream.streamer, creatorToken: user.creatorToken, creatorAddress: user.walletAddress });
-  } catch (error) {
-
-  }
-}
+    res
+      .status(200)
+      .json({
+        title: stream.title,
+        streamer: stream.streamer,
+        creatorToken: user.creatorToken,
+        creatorAddress: user.walletAddress,
+      });
+  } catch (error) {}
+};

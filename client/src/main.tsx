@@ -16,7 +16,9 @@ import { useAuthenticationStore } from "./store/authentication.ts";
 const queryClient = new QueryClient();
 const router = createRouter({
     routeTree,
-    context: { queryClient },
+    context: {
+        queryClient,
+    },
     scrollRestoration: true,
     getScrollRestorationKey(location) {
         const paths = ["/"];
