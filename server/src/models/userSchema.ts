@@ -14,6 +14,7 @@ const notificationSchema = new mongoose.Schema({
   follow: {
     content: {
       type: String,
+      default: ""
     },
     followNots: [String],
     recentFollows: {
@@ -26,24 +27,12 @@ const notificationSchema = new mongoose.Schema({
       expires: "7d",
     },
   },
-  tip: {
-    content: {
-      type: String,
-    },
-    tipNots: [String],
-    recentTip: {
-      type: Number,
-      default: 0
-    },
-    tippedAt: {
-      type: Date,
-      default: Date.now,
-      expires: "7d",
-    },
-  },
-  buy: {
-    buyNots: [String],
-  },
+  tip: [{
+    token: String,
+    amount: String,
+    tipper: String
+  }],
+  buy: [String],
 });
 
 const userSchema = new mongoose.Schema({
