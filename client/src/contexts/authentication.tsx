@@ -32,7 +32,12 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
 
     React.useEffect(
         function () {
-            if (!authenticated || !privyUser || !ready) return;
+            if (!ready) return;
+
+            if (!authenticated || !privyUser) {
+                setIsLoading(false);
+                return;
+            }
 
             if (!privyUser.wallet?.address) {
                 console.warn("User has no wallet yet, skipping auth bootstrap...");

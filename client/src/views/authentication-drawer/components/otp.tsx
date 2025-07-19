@@ -1,4 +1,4 @@
-import { useCreateWallet, useLoginWithEmail, useUser } from "@privy-io/react-auth";
+import { useCreateWallet, useLoginWithEmail } from "@privy-io/react-auth";
 import React from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
@@ -20,13 +20,9 @@ export function ValidateOTP() {
     );
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
 
-    const { user, refreshUser } = useUser();
     const { createWallet } = useCreateWallet();
-
     const { loginWithCode, state, sendCode } = useLoginWithEmail({
-        async onComplete() {
-            await refreshUser();
-
+        async onComplete({ user }) {
             if (!user?.wallet?.address) {
                 toast.info("Creating wallet... Please wait.", { duration: 3000 });
                 await createWallet();

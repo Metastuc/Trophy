@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 
@@ -10,9 +10,15 @@ import { StreamNowForm } from "@/views/stream/components/stream-now-form";
 import { useTabSwitcher } from "@/views/stream/hooks";
 
 export const Route = createFileRoute("/_app/stream")({
+    beforeLoad({ context }) {
+        if (!context.authenticationStore?.isAuthenticated) {
+            throw redirect({ to: "/" });
+        }
+    },
+
     component() {
-        const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("now");
         const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
+        const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("now");
         const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
             left: "0px",
             width: "0px",

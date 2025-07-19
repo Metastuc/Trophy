@@ -1,4 +1,4 @@
-import { useCreateWallet, useLogin, useUser } from "@privy-io/react-auth";
+import { useCreateWallet, useLogin } from "@privy-io/react-auth";
 import React from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
@@ -8,7 +8,6 @@ import { sleep } from "@/lib/utils";
 import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
 export function usePrivyLoginTrigger() {
-    const { user, refreshUser } = useUser();
     const { createWallet } = useCreateWallet();
 
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
@@ -17,9 +16,7 @@ export function usePrivyLoginTrigger() {
     );
 
     const { login } = useLogin({
-        async onComplete() {
-            await refreshUser();
-
+        async onComplete({ user }) {
             if (!user?.wallet?.address) {
                 toast.info("Creating wallet... Please wait.", { duration: 3000 });
                 await createWallet();

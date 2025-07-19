@@ -1,4 +1,4 @@
-import { createFileRoute, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import React from "react";
 
 import { PageContentLayout } from "@/components/layouts/main-content";
@@ -6,19 +6,19 @@ import StreamArticle from "@/components/streamer-article";
 import { Dropdown } from "@/components/ui/dropdown";
 
 export const Route = createFileRoute("/_app/")({
-    beforeLoad() {
+    loader() {
         return {
             dropdownButtons: [
-                { title: "Trending", value: "trending" },
-                { title: "Following", value: "following" },
+                // { title: "Trending", value: "trending" },
+                // { title: "Following", value: "following" },
                 { title: "All", value: "all" },
             ] as tDROPDOWN_BUTTON[],
         };
     },
 
     component() {
-        const [content, setContent] = React.useState<tContent>("trending");
-        const { dropdownButtons } = useRouteContext({ from: "/_app/" });
+        const [content, setContent] = React.useState<tContent>("all");
+        const { dropdownButtons } = useLoaderData({ from: "/_app/" });
 
         return (
             <PageContentLayout className="space-y-10.5">

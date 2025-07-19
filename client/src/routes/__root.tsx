@@ -3,6 +3,7 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 export type RouterContext = {
     queryClient: QueryClient;
+    authenticationStore?: tAuthenticatedState;
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({

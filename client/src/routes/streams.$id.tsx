@@ -1,24 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { joinStream } from "@/api/join-stream";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { logger } from "@/utils/logger";
 
 export const Route = createFileRoute("/streams/$id")({
-    // async beforeLoad({ params, context }) {
-    //     if (!context.user) return;
-
-    //     const response = await joinStream({
-    //         roomId: params.id,
-    //         username: context.user.backendUserData.user.username,
-    //     });
-
-    //     if (!response) return {};
-
-    //     console.log(response);
-
-    //     return {};
-    // },
+    beforeLoad(ctx) {},
 
     async loader({ params }) {
         logger(params.id);

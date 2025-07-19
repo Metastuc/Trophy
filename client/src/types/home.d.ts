@@ -1,4 +1,4 @@
-type tContent = "trending" | "following" | "search";
+type tContent = "trending" | "following" | "all";
 
 interface iHomeDropdown {
     content: tContent;

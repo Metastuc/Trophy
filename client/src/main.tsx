@@ -1,6 +1,5 @@
 import "./index.css";
 
-import { usePrivy } from "@privy-io/react-auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
@@ -8,6 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
+import { useShallow } from "zustand/shallow";
 
 import { AppContextProviders } from "./contexts/index.tsx";
 import { routeTree } from "./routeTree.gen.ts";
@@ -18,6 +18,7 @@ const router = createRouter({
     routeTree,
     context: {
         queryClient,
+        authenticationStore: undefined,
     },
     scrollRestoration: true,
     getScrollRestorationKey(location) {
@@ -35,10 +36,9 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-    const isAuthenticationReady = useAuthenticationStore((state) => !state.isLoading);
-    const isPrivyReady = usePrivy().ready;
+    const authenticationStore = useAuthenticationStore(useShallow((state) => state));
 
-    if (!isAuthenticationReady || !isPrivyReady)
+    if (authenticationStore.isLoading)
         return (
             <section className="flex h-screen w-screen items-center justify-center">
                 <Loader className="animate-spin" />
@@ -53,7 +53,7 @@ function App() {
                 transition={{ duration: 0.25 }}
                 className="relative min-h-screen"
             >
-                <RouterProvider router={router} />
+                <RouterProvider router={router} context={{ authenticationStore }} />
             </motion.section>
         </AnimatePresence>
     );

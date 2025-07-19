@@ -4,7 +4,7 @@ export const useAuthenticationStore: UseBoundStore<StoreApi<tAuthenticatedState>
     create<tAuthenticatedState>()((set) => ({
         isAuthenticated: false,
 
-        isLoading: false,
+        isLoading: true,
 
         token: null,
 
