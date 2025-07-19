@@ -2,7 +2,7 @@ import { createDrift } from "@delvtech/drift";
 import { viemAdapter } from "@delvtech/drift-viem";
 import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { parseEther } from "viem";
+import { Address, parseEther } from "viem";
 
 import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "./constants";
 import { getSmartAccount } from "./smart-account";
@@ -41,12 +41,12 @@ const sFlaunchClient = async (provider: EIP1193Provider) => {
 export const createCreatorToken = async (
     name: string,
     symbol: string,
-    address: `0x${string}`,
+    address: Address,
     image: string,
     provider: EIP1193Provider,
     twitter?: string,
     telegram?: string,
-): Promise<`0x${string}`> => {
+): Promise<Address> => {
     const sFlaunch = await sFlaunchClient(provider);
 
     return await sFlaunch.flaunchIPFSWithRevenueManager({
@@ -70,7 +70,7 @@ export const createCreatorToken = async (
     });
 };
 
-const checkTx = async (hash: `0x${string}`, flaunch = fClient) => {
+const checkTx = async (hash: Address, flaunch = fClient) => {
     const txReceipt = await flaunch?.drift.waitForTransaction({ hash });
 
     if (txReceipt?.status !== "success") {
@@ -81,7 +81,7 @@ const checkTx = async (hash: `0x${string}`, flaunch = fClient) => {
 };
 
 export const buyCreatorToken = async (
-    coinAddress: `0x${string}`,
+    coinAddress: Address,
     amount: string,
     provider: EIP1193Provider,
 ) => {
@@ -96,8 +96,22 @@ export const buyCreatorToken = async (
     return await checkTx(hash);
 };
 
+export const getSwapQuote = async (
+    provider: EIP1193Provider,
+    ethToCreatorToken: boolean,
+    amount: string,
+    coinAddress: Address,
+) => {
+    const flaunch = await flaunchClient(provider);
+    if (ethToCreatorToken) {
+        return await flaunch.getBuyQuoteExactInput(coinAddress, parseEther(amount));
+    }
+
+    return await flaunch.getSellQuoteExactInput(coinAddress, parseEther(amount));
+};
+
 export const sellCreatorToken = async (
-    coinAddress: `0x${string}`,
+    coinAddress: Address,
     amount: string,
     provider: EIP1193Provider,
     signTypedData: SignTypedData,
@@ -116,7 +130,7 @@ export const sellCreatorToken = async (
             slippagePercent: 4,
             amountIn: amountInWei,
             permitSingle,
-            signature: signature as unknown as `0x${string}`,
+            signature: signature as unknown as Address,
         });
 
         return await checkTx(hash);
@@ -140,7 +154,7 @@ export const deployRevenueManager = async (provider: EIP1193Provider) => {
     });
 };
 
-export const fetchFeeBalance = async (creator: `0x${string}`, provider: EIP1193Provider) => {
+export const fetchFeeBalance = async (creator: Address, provider: EIP1193Provider) => {
     const flaunch = await flaunchClient(provider);
 
     return await flaunch.revenueManagerBalance({
