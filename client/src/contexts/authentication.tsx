@@ -35,6 +35,7 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
             if (!ready) return;
 
             if (!authenticated || !privyUser) {
+                lastFetchedUserIdRef.current = null;
                 setIsLoading(false);
                 return;
             }

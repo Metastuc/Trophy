@@ -11,7 +11,7 @@ export const useAuthenticationStore: UseBoundStore<StoreApi<tAuthenticatedState>
         user: null,
 
         logout() {
-            set({ isAuthenticated: false, isLoading: false, user: null });
+            set({ isAuthenticated: false, isLoading: false, token: null, user: null });
         },
 
         setIsLoading(isLoading) {

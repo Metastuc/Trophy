@@ -4,6 +4,7 @@ import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 import { EXIT_PAGE, SEARCH } from "@/assets/icons";
 import { useShouldShowExitButton } from "@/hooks/exit-button";
 import { resetScroll, sleep } from "@/lib/utils";
+import { useAuthenticationStore } from "@/store/authentication";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 
@@ -46,9 +47,14 @@ function ExitButton() {
     const { logout } = usePrivy();
     const navigate = useNavigate();
 
-    function handleLogout() {
-        logout();
-        navigate({ to: "/" });
+    async function handleLogout() {
+        logout()
+            .then(function () {
+                useAuthenticationStore.getState().logout();
+            })
+            .finally(function () {
+                navigate({ to: "/" });
+            });
     }
 
     return (
