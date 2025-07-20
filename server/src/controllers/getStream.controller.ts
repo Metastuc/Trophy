@@ -9,23 +9,27 @@ export const getStream = async (req: Request, res: Response) => {
     const stream = await Stream.findOne({ roomId });
 
     if (!stream) {
-      res.status(400).json({ error: "Invalid roomId" });
+      res.status(400).json({ message: "Invalid roomId" });
       return;
     }
 
     const user = await User.findOne({ username: stream.streamer });
     if (!user) {
-      res.status(400).json({ error: "Invalid streamer" });
+      res.status(400).json({ message: "Invalid streamer" });
       return;
     }
 
-    res
-      .status(200)
-      .json({
-        title: stream.title,
-        streamer: stream.streamer,
-        creatorToken: user.creatorToken,
-        creatorAddress: user.walletAddress,
-      });
-  } catch (error) {}
+    res.status(200).json({
+      title: stream.title,
+      streamer: stream.streamer,
+      creatorToken: user.creatorToken,
+      creatorAddress: user.walletAddress,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: (error as Error).message,
+      message: "Failed to get stream",
+    });
+  }
 };

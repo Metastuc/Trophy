@@ -8,7 +8,6 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!username) {
       res.status(400).json({
-        status: "error",
         message: "username is required",
       });
       return;
@@ -18,7 +17,6 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!user) {
       res.status(404).json({
-        status: "error",
         message: "User not found",
       });
       return;
@@ -30,15 +28,15 @@ export const getUser = async (req: Request, res: Response) => {
     }).sort({ _id: -1 });
 
     res.status(200).json({
-      status: "success",
+      message: "User data retrieved successfully",
       user,
       streams,
     });
   } catch (error) {
     console.error("Error in getUser:", error);
     res.status(500).json({
-      status: "error",
-      message: error instanceof Error ? error.message : "Failed to get user data",
+      error: (error as Error).message,
+      message: "Failed to get user data",
     });
   }
 };

@@ -1,5 +1,4 @@
 import { makeRequest } from "@/lib/axios";
-import { logger } from "@/utils/logger";
 
 export async function joinStream(data: tJoinStreamRequest): Promise<void | tJoinStreamResponse> {
     return makeRequest<tJoinStreamResponse>({
@@ -8,5 +7,7 @@ export async function joinStream(data: tJoinStreamRequest): Promise<void | tJoin
         data,
     })
         .then((response) => response.data)
-        .catch((error) => logger({ error }));
+        .catch((error) => {
+            throw new Error(`Failed to join stream: ${error.message}`);
+        });
 }
