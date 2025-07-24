@@ -1,5 +1,3 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
-
 import { getStream } from "@/api/get-stream";
 import { getUser } from "@/api/get-user";
 import { joinStream } from "@/api/join-stream";
@@ -7,8 +5,9 @@ import { PageContentLayout } from "@/components/layouts/main-content";
 import { logger } from "@/utils/logger";
 import { StreamContext } from "@/views/streams/components/stream-context";
 import { useRoom } from "@huddle01/react";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/streams/$id")({
+export const Route = createFileRoute("/live/$id")({
     async beforeLoad({ context, params }) {
         const streamResponse = await getStream({ roomId: params.id });
         if (!streamResponse) {
@@ -41,7 +40,7 @@ export const Route = createFileRoute("/streams/$id")({
     },
 
     component() {
-        const { token } = useLoaderData({ from: "/streams/$id" });
+        const { token } = useLoaderData({ from: "/live/$id" });
 
         const {} = useRoom({
             onFailed(data) {},

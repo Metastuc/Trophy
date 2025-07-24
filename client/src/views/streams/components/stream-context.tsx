@@ -2,7 +2,7 @@ import { useRouteContext } from "@tanstack/react-router";
 
 export function StreamContext() {
     const { streamCreator, streamResponse } = useRouteContext({
-        from: "/streams/$id",
+        from: "/live/$id",
     });
 
     return (

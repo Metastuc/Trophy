@@ -25,7 +25,7 @@ export function StreamNowForm() {
                 console.log(`token: ${response.data.token}`, `roomId: ${response.data.roomId}`);
 
                 toast.success(response.data.message);
-                navigate({ to: `/streams/$id`, params: { id: response.data.roomId } });
+                navigate({ to: `/live/$id`, params: { id: response.data.roomId } });
                 setSteamInfo({ roomId: response.data.roomId, roomToken: response.data.token });
             },
         },
