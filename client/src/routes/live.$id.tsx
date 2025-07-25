@@ -4,6 +4,7 @@ import { joinStream } from "@/api/join-stream";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { logger } from "@/utils/logger";
 import { StreamContext } from "@/views/streams/components/stream-context";
+import { StreamScreen } from "@/views/streams/components/stream-screen";
 import { useRoom } from "@huddle01/react";
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 
@@ -59,8 +60,10 @@ export const Route = createFileRoute("/live/$id")({
 
                 <footer>
                     <PageContentLayout>
-                        <div>Stream</div>
+                        <StreamScreen />
                         <StreamContext />
+
+                        <div>chatroom</div>
                     </PageContentLayout>
                 </footer>
             </section>
