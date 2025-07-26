@@ -19,3 +19,7 @@ export const PORT = process.env.PORT || 4500;
 export const PRIVY_APP_ID = process.env.PRIVY_APP_ID!;
 export const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET!;
 export const PRIVY_KEY = process.env.PRIVY_KEY!.replace(/\\n/g, "\n");
+export const REDIS_URI = process.env.REDIS_URI!;
+export const REDIS_PORT = process.env.REDIS_PORT!;
+export const REDIS_USERNAME = process.env.REDIS_USERNAME!;
+export const REDIS_PASSWORD = process.env.REDIS_PASSWORD!;
