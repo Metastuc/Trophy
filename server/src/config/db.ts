@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { DB_URI } from "../utils/env";
+import { DB_URI, REDIS_PASSWORD, REDIS_PORT, REDIS_URI, REDIS_USERNAME } from "../utils/env";
+import { createClient, type RedisClientType } from "redis";
 
 // General container
 const DB = async () => {
@@ -11,5 +12,32 @@ const DB = async () => {
     process.exit(1);
   }
 };
+
+let redisClient: RedisClientType | null;
+
+export const getRedisClient = async () => {
+  
+  if (redisClient) return redisClient;
+
+  redisClient = createClient({
+    username: REDIS_USERNAME,
+    password: REDIS_PASSWORD,
+    socket: {
+      host: REDIS_URI,
+      port: Number(REDIS_PORT),
+    }
+  });
+
+  redisClient.on("error", (err) => {
+    console.log("Redis Client Error", err);
+    return
+  });
+
+  await redisClient.connect();
+
+  return redisClient;
+}
+
+export const RedisClient = await getRedisClient();
 
 export default DB;
