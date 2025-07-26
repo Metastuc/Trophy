@@ -5,6 +5,7 @@ import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema.js";
 import { User } from "../models/userSchema.js";
 import { sendScheduleEmail } from "../utils/emailNotis.js";
+import { RedisClient } from "../config/db.js";
 
 const formatDate = (date: Date) => {
   const year = date.getUTCFullYear();
@@ -20,6 +21,11 @@ const formatDate = (date: Date) => {
 export const createStream = async (req: Request, res: Response) => {
   try {
     const { title, date, username } = req.body;
+
+    if (!username) {
+      res.status(400).json({ error: "Username is required!" });
+      return
+    }
 
     const user = await User.findOne({ username });
     if (!user) {
@@ -47,6 +53,12 @@ export const createStream = async (req: Request, res: Response) => {
       const calendarProps = { dtStamp, date: calendarDate, streamTitle: title, streamLink: `${CLIENT_URL}/${roomId}` };
 
       await newStream.save();
+
+      const streams = await Stream.find({ streamer: username, status: "Scheduled" }).sort({ _id: -1 });
+      if (streams.length > 0) {
+        await RedisClient.set(`stream:${username}`, JSON.stringify(streams));
+      }
+
       // await sendScheduleEmail({ username, email: user.email }, `📌 ${title} Scheduled!`, calendarProps);
       res.status(201).json({
         roomId,
@@ -71,7 +83,9 @@ export const createStream = async (req: Request, res: Response) => {
           canSendData: true,
         },
       });
+
       const token = await accessToken.toJwt();
+
       user.totalStreams += 1;
       await newStream.save();
       await user.save();
@@ -86,7 +100,35 @@ export const createStream = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({
       error: (error as Error).message,
-      message: "Room creation failed",
     });
   }
 };
+
+export const stopStream = async (req: Request, res: Response) => {
+  try {
+    const { roomId, username } = req.body;
+
+    if (!roomId || username) {
+      res.status(400).json({ error: "room id and username is required!" });
+      return;
+    }
+
+    const liveStream = await Stream.findOne({ roomId });
+    if (!liveStream) {
+      res.status(404).json({ message: "Stream not found!" });
+      return;
+    }
+
+    if (liveStream.status !== "Live") {
+      res.status(400).json({ message: "Stream is not live!" });
+      return;
+    }
+
+    liveStream.status = "Ended";
+    await liveStream.save();
+
+    res.status(200).json({ message: "Live stream ended" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message })
+  }
+}
