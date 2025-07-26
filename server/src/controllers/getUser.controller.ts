@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
-import { Stream } from "../models/streamSchema.js";
+import { Stream } from "../models/streamSchema";
+import { RedisClient } from "../config/db";
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -14,11 +15,23 @@ export const getUser = async (req: Request, res: Response) => {
       return;
     }
 
+    const userCache = await RedisClient.get(`user:${username}`);
+    const streamCache = await RedisClient.get(`stream:${username}`);
+    if (userCache && streamCache) {
+      const userProp = JSON.parse(userCache);
+
+      res.status(200).json({
+        user: userProp,
+        streams: streamCache ? JSON.parse(streamCache) : [],
+      });
+
+      return
+    }
+
     const user = await User.findOne({ username });
 
     if (!user) {
       res.status(404).json({
-        status: "error",
         message: "User not found",
       });
       return;
@@ -29,6 +42,9 @@ export const getUser = async (req: Request, res: Response) => {
       status: "Scheduled",
     }).sort({ _id: -1 });
 
+    await RedisClient.set(`user:${username}`, JSON.stringify(user));
+    await RedisClient.set(`stream:${username}`, JSON.stringify(streams));
+
     res.status(200).json({
       status: "success",
       user,
@@ -37,8 +53,7 @@ export const getUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error in getUser:", error);
     res.status(500).json({
-      status: "error",
-      message: error instanceof Error ? error.message : "Failed to get user data",
+      error: error instanceof Error ? error.message : "Failed to get user data",
     });
   }
 };

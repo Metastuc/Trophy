@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../models/userSchema";
+import { RedisClient } from "../config/db";
 
 export async function onboard(request: Request, response: Response) {
   const privyId = request.privyUser?.userId;
@@ -16,6 +17,9 @@ export async function onboard(request: Request, response: Response) {
       }
 
       const user = await User.create({ bio, email, privyId, username, userPfp, walletAddress });
+
+      await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
+
       response.status(201).json({
         message: "success",
         data: { isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username) },
