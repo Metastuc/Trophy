@@ -10,8 +10,9 @@ interface iStreamingUIContext {
     permissions: iStreamingUIPermissions;
 }
 
-export const StreamingUIContext: React.Context<iStreamingUIContext> =
-    React.createContext<iStreamingUIContext>({} as iStreamingUIContext);
+export const StreamingUIContext: React.Context<iStreamingUIContext> = React.createContext<iStreamingUIContext>(
+    {} as iStreamingUIContext,
+);
 
 // export const StreamingUIContext = React.createContext(null);
 
@@ -57,9 +58,7 @@ export function StreamingUIContextProvider({ children }: { children: React.React
         function () {
             (async function () {
                 if (isHost && state === "connected" && !isVideoOn) {
-                    await enableVideo().catch((error) =>
-                        console.error("Error enabling video:", error),
-                    );
+                    await enableVideo().catch((error) => console.error("Error enabling video:", error));
                 }
             })();
         },

@@ -1,12 +1,5 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
-import {
-    createPublicClient,
-    createWalletClient,
-    custom,
-    http,
-    type PublicClient,
-    type WalletClient,
-} from "viem";
+import { createPublicClient, createWalletClient, custom, http, type PublicClient, type WalletClient } from "viem";
 
 import { network } from "@/lib/constants";
 

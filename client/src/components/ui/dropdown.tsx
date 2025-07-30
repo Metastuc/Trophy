@@ -20,13 +20,7 @@ interface iDropdown<T extends string> {
     value?: T;
 }
 
-export function Dropdown<T extends string>({
-    icon,
-    onChange,
-    options,
-    styles,
-    value,
-}: iDropdown<T>) {
+export function Dropdown<T extends string>({ icon, onChange, options, styles, value }: iDropdown<T>) {
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
     const parentWrapperRef = React.useRef<HTMLElement | null>(null);
 
@@ -73,10 +67,7 @@ export function Dropdown<T extends string>({
 
     React.useEffect(function () {
         function handleClickOutside(event: MouseEvent) {
-            if (
-                parentWrapperRef.current &&
-                !parentWrapperRef.current.contains(event.target as Node)
-            ) {
+            if (parentWrapperRef.current && !parentWrapperRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         }
@@ -90,16 +81,10 @@ export function Dropdown<T extends string>({
     return (
         <section ref={parentWrapperRef} className={cn(styles?.parentWrapper, "relative w-max")}>
             <Button
-                className={cn(
-                    styles?.parentButton,
-                    "h-7 w-28 rounded-xs text-white",
-                    isOpen && "bg-primary/90",
-                )}
+                className={cn(styles?.parentButton, "h-7 w-28 rounded-xs text-white", isOpen && "bg-primary/90")}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <span className="text-xs capitalize">
-                    {options.find((item) => item.value === value)?.title}
-                </span>
+                <span className="text-xs capitalize">{options.find((item) => item.value === value)?.title}</span>
                 <i className={cn("transition-transform duration-150", isOpen && "rotate-180")}>
                     {icon === "filled" ? ARROW_DOWN_FILLED() : ARROW_DOWN_OUTLINE()}
                 </i>
@@ -121,10 +106,7 @@ export function Dropdown<T extends string>({
                                 variants={itemVariants}
                                 className="bg-black100 flex h-7 items-center justify-start"
                             >
-                                <button
-                                    onClick={() => handleSelect(item.value)}
-                                    className="size-full"
-                                >
+                                <button onClick={() => handleSelect(item.value)} className="size-full">
                                     <span className="ml-5 flex items-center justify-start text-xs text-white capitalize">
                                         {item.render ?? item.title}
                                     </span>

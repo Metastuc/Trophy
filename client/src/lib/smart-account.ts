@@ -1,8 +1,4 @@
-import {
-    createBicoPaymasterClient,
-    createSmartAccountClient,
-    toNexusAccount,
-} from "@biconomy/abstractjs";
+import { createBicoPaymasterClient, createSmartAccountClient, toNexusAccount } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
 

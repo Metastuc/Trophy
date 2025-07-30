@@ -23,9 +23,7 @@ const router = createRouter({
     scrollRestoration: true,
     getScrollRestorationKey(location) {
         const paths = ["/"];
-        return paths.includes(location.pathname)
-            ? location.pathname
-            : (location.state.key as string);
+        return paths.includes(location.pathname) ? location.pathname : (location.state.key as string);
     },
 });
 

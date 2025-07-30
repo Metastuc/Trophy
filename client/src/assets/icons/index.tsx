@@ -1,12 +1,6 @@
 export function NAV_HOME() {
     return (
-        <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M15 21v-8a1 1 0 00-1-1h-4a1 1 0 00-1 1v8"
                 stroke="currentColor"
@@ -27,13 +21,7 @@ export function NAV_HOME() {
 
 export function NAV_DISCOVER() {
     return (
-        <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M18.2 12.27L20 6H4l1.8 6.27a1 1 0 00.95.73h10.5a1 1 0 00.96-.73h-.01zM8 13v9M16 22v-9M9 6l1 7M15 6l-1 7M12 6V2M13 2h-2"
                 stroke="currentColor"
@@ -47,13 +35,7 @@ export function NAV_DISCOVER() {
 
 export function NAV_STREAM() {
     return (
-        <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M10 7.75a.75.75 0 011.142-.638l3.664 2.249a.75.75 0 010 1.278l-3.664 2.25a.751.751 0 01-1.142-.64V7.75zM7 21h10"
                 stroke="currentColor"
@@ -74,13 +56,7 @@ export function NAV_STREAM() {
 
 export function NAV_NOTIFICATIONS() {
     return (
-        <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M10.268 21a2 2 0 003.464 0M22 8c0-2.3-.8-4.3-2-6M3.262 15.326A1 1 0 004 17h16a1 1 0 00.74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 106 8c0 4.499-1.411 5.956-2.738 7.326zM4 2C2.8 3.7 2 5.7 2 8"
                 stroke="currentColor"
@@ -94,13 +70,7 @@ export function NAV_NOTIFICATIONS() {
 
 export function NAV_PROFILE() {
     return (
-        <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
                 stroke="currentColor"
@@ -114,13 +84,7 @@ export function NAV_PROFILE() {
 
 export function WALLET() {
     return (
-        <svg
-            width={24}
-            height={21}
-            viewBox="0 0 24 21"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={24} height={21} viewBox="0 0 24 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -139,13 +103,7 @@ export function WALLET() {
 
 export function EMAIL() {
     return (
-        <svg
-            width={22}
-            height={18}
-            viewBox="0 0 22 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={22} height={18} viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -158,13 +116,7 @@ export function EMAIL() {
 
 export function LIVE() {
     return (
-        <svg
-            width={10}
-            height={10}
-            viewBox="0 0 10 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={10} height={10} viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx={5.00001} cy={5} r={4.66667} fill="#F32828" />
         </svg>
     );
@@ -172,13 +124,7 @@ export function LIVE() {
 
 export function WATCHING() {
     return (
-        <svg
-            width={11}
-            height={11}
-            viewBox="0 0 11 11"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={11} height={11} viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g
                 clipPath="url(#clip0_216_1520)"
                 stroke="#204CE1"
@@ -211,32 +157,15 @@ export function ARROW_DOWN_FILLED() {
 
 export function ARROW_DOWN_OUTLINE() {
     return (
-        <svg
-            width={11}
-            height={6}
-            viewBox="0 0 11 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M10 1L5.5 5 1 1"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
+        <svg width={11} height={6} viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 1L5.5 5 1 1" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     );
 }
 
 export function SEARCH() {
     return (
-        <svg
-            width={12}
-            height={12}
-            viewBox="0 0 12 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M10 10l1 1m-.5-5.25a4.75 4.75 0 11-9.5 0 4.75 4.75 0 019.5 0z"
                 stroke="#060606"
@@ -262,25 +191,14 @@ export function CLOSE() {
 export function BACK() {
     return (
         <svg width={4} height={8} viewBox="0 0 4 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M3.5 1l-3 3 3 3"
-                stroke="#060606"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
+            <path d="M3.5 1l-3 3 3 3" stroke="#060606" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     );
 }
 
 export function PENCIL() {
     return (
-        <svg
-            width={10}
-            height={10}
-            viewBox="0 0 10 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={10} height={10} viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M5 8.333h3.75M6.823 1.51a.884.884 0 111.251 1.25L3.07 7.764c-.099.1-.222.172-.356.211l-1.197.35a.208.208 0 01-.258-.259l.349-1.197a.833.833 0 01.21-.355l5.005-5.005zM6.25 2.083l1.25 1.25"
                 stroke="#000"
@@ -294,13 +212,7 @@ export function PENCIL() {
 
 export function STREAM_NOW() {
     return (
-        <svg
-            width={18}
-            height={18}
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={18} height={18} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M3.75 5.25l-1.5-1.5M6.75 4.5V2.25M9.75 5.25l1.5-1.5M6.75 12a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
                 stroke="currentColor"
@@ -321,13 +233,7 @@ export function STREAM_NOW() {
 
 export function SCHEDULE_STREAM() {
     return (
-        <svg
-            width={16}
-            height={16}
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={16} height={16} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M10.667 12.666h4M10.667 1.333V4M12.667 10.666v4M14 8.399v-4.4a1.334 1.334 0 00-1.333-1.333H3.333A1.333 1.333 0 002 4v9.333a1.333 1.333 0 001.333 1.333H9M2 6.667h12M5.333 1.333V4"
                 stroke="currentColor"
@@ -342,13 +248,7 @@ export function SCHEDULE_STREAM() {
 
 export function EXIT_PAGE() {
     return (
-        <svg
-            width={18}
-            height={18}
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width={18} height={18} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M6.75 15.75h-3a1.5 1.5 0 01-1.5-1.5V3.75a1.5 1.5 0 011.5-1.5h3M12 12.75L15.75 9 12 5.25M15.75 9h-9"
                 stroke="#204CE1"

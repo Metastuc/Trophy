@@ -18,9 +18,7 @@ export function StreamControls() {
                 <div className="absolute bottom-0 flex w-full items-center justify-between">
                     <aside className="flex h-5 w-[6.75rem] items-center justify-between rounded bg-white px-1">
                         <i className="size-2.5">{WATCHING()}</i>
-                        <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">
-                            {viewerCount} watching
-                        </span>
+                        <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">{viewerCount} watching</span>
                         <span className="pt-0.5 text-[.5rem]">10:12:13</span>
                     </aside>
 
@@ -35,8 +33,7 @@ export function StreamControls() {
 
 function RenderControlsBasedOnRole() {
     const { isHost, isListener } = useStreamingUIContext();
-    const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } =
-        useStreamingUIPermissions();
+    const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
 
     return (
         <React.Fragment>
@@ -138,10 +135,7 @@ type tControlButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButt
 
 function ControlButton({ children, ...props }: tControlButtonProps) {
     return (
-        <button
-            className={cn(props.className, "flex items-center justify-between bg-white")}
-            {...props}
-        >
+        <button className={cn(props.className, "flex items-center justify-between bg-white")} {...props}>
             {children}
         </button>
     );

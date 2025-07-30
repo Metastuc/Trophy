@@ -1,25 +1,14 @@
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
-import { logger } from "@/utils/logger";
-import { useLocalPeer, useLocalVideo, usePeerIds } from "@huddle01/react";
+import { useLocalVideo, usePeerIds } from "@huddle01/react";
 import { useStreamingUIContext } from "../context";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { peerIds } = usePeerIds();
-    const { role } = useLocalPeer();
-    const { isCoHost, isHost, viewerCount } = useStreamingUIContext();
-
-    logger({ peerIds });
+    const { isHost } = useStreamingUIContext();
+    const { peerIds: coHostIds } = usePeerIds({ roles: ["cohost"] });
+    const { peerIds: hostId } = usePeerIds({ roles: ["host"] });
 
     return <HostOnly />;
-
-    switch (true) {
-        case isHost && peerIds.length === 0:
-            return <HostOnly />;
-
-        default:
-            return <></>;
-    }
 }
 
 function HostOnly() {

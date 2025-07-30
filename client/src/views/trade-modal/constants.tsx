@@ -4,11 +4,7 @@ export const TOKENS = [
             <div className="flex items-center justify-center gap-1">
                 <aside className="relative">
                     <img src="/etherum.svg" className="size-3.5" alt="etherum-logo" />
-                    <img
-                        src="/base.svg"
-                        className="absolute -right-0.5 -bottom-0.5 size-2"
-                        alt="base-logo"
-                    />
+                    <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
                 </aside>
                 <span>ETH</span>
             </div>
@@ -27,11 +23,7 @@ export const TOKENS = [
             <div className="flex items-center justify-center gap-1">
                 <aside className="relative">
                     <img src="/usdc.svg" className="size-3.5" alt="usdc-logo" />
-                    <img
-                        src="/base.svg"
-                        className="absolute -right-0.5 -bottom-0.5 size-2"
-                        alt="base-logo"
-                    />
+                    <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
                 </aside>
                 <span>USDC</span>
             </div>
@@ -50,11 +42,7 @@ export const TOKENS = [
             <div className="flex items-center justify-center gap-1">
                 <aside className="relative">
                     <img src="/zora.svg" className="size-3.5" alt="zora-logo" />
-                    <img
-                        src="/base.svg"
-                        className="absolute -right-0.5 -bottom-0.5 size-2"
-                        alt="base-logo"
-                    />
+                    <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
                 </aside>
                 <span>ZORA</span>
             </div>
@@ -73,11 +61,7 @@ export const TOKENS = [
             <div className="flex items-center justify-center gap-1">
                 <aside className="relative">
                     <img src="/degen.svg" className="size-3.5" alt="degen-logo" />
-                    <img
-                        src="/base.svg"
-                        className="absolute -right-0.5 -bottom-0.5 size-2"
-                        alt="base-logo"
-                    />
+                    <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
                 </aside>
                 <span>DEGEN</span>
             </div>

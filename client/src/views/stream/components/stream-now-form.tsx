@@ -84,8 +84,7 @@ export function StreamNowForm() {
                 </div>
 
                 <p className="text-xs">
-                    You can brodcast your livestreams to X and YouTube by including the RMTP URL to
-                    your{" "}
+                    You can brodcast your livestreams to X and YouTube by including the RMTP URL to your{" "}
                     <Link to="/profile" className="text-blue100">
                         profile
                     </Link>

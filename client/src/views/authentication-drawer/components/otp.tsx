@@ -6,10 +6,7 @@ import { useShallow } from "zustand/shallow";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { cn, sleep } from "@/lib/utils";
 
-import {
-    useAuthenticationDrawerNavigationStore,
-    useAuthenticationDrawerStateStore,
-} from "../store";
+import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "../store";
 
 export function ValidateOTP() {
     const [code, setCode] = React.useState<string | null>(null);
@@ -103,8 +100,8 @@ export function ValidateOTP() {
             </div>
 
             <p className="mt-2 text-center text-xs font-light">
-                By loggin in, you agree to our <span className="font-normal underline">Terms</span>{" "}
-                and <span className="font-normal underline">Privacy Policy</span>
+                By loggin in, you agree to our <span className="font-normal underline">Terms</span> and{" "}
+                <span className="font-normal underline">Privacy Policy</span>
             </p>
         </section>
     );

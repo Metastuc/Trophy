@@ -58,13 +58,7 @@ export function TradeDrawer() {
                                         strokeWidth={0.7}
                                         strokeLinecap="round"
                                     />
-                                    <circle
-                                        cx={4.99998}
-                                        cy={6.24998}
-                                        r={0.416667}
-                                        fill="#060606"
-                                        fillOpacity={0.7}
-                                    />
+                                    <circle cx={4.99998} cy={6.24998} r={0.416667} fill="#060606" fillOpacity={0.7} />
                                 </g>
                                 <defs>
                                     <clipPath id="clip0_341_1152">

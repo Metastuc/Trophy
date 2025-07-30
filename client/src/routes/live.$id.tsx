@@ -17,9 +17,7 @@ export const Route = createFileRoute("/live/$id")({
             throw new Error("Unable to get stream");
         }
 
-        const streamCreator = await context.queryClient.ensureQueryData(
-            getUser({ username: streamResponse.streamer }),
-        );
+        const streamCreator = await context.queryClient.ensureQueryData(getUser({ username: streamResponse.streamer }));
         if (!streamCreator) {
             throw new Error("Unable to get stream creator");
         }

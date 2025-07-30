@@ -47,11 +47,7 @@ export function DateTimePicker({ defaultTime, onChange }: iDateTimePickerProps) 
                     onOpenChange={(isOpen) => setState((previous) => ({ ...previous, isOpen }))}
                 >
                     <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            id="date-picker"
-                            className="w-32 justify-between font-normal"
-                        >
+                        <Button variant="outline" id="date-picker" className="w-32 justify-between font-normal">
                             {state.date ? state.date.toLocaleDateString() : "Select date"}
                             <ChevronDownIcon />
                         </Button>

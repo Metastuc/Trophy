@@ -30,8 +30,7 @@ export function AuthenticationDrawer() {
     const [isLoggingOut, setIsLoggingOut] = React.useState<boolean>(false);
 
     const currentScreen = useAuthenticationDrawerNavigationStore((state) => state.screen);
-    const showPrivyLogo =
-        currentScreen === "default" || currentScreen === "email" || currentScreen === "otp";
+    const showPrivyLogo = currentScreen === "default" || currentScreen === "email" || currentScreen === "otp";
 
     function handleAuthentication() {
         if (isAuthenticated) {
@@ -54,11 +53,7 @@ export function AuthenticationDrawer() {
             open={isOpen}
             onOpenChange={(isDrawerOpen) => (isDrawerOpen ? openDrawer() : closeDrawer())}
         >
-            <Button
-                className="bg-blue100 h-6 w-15 rounded-xs"
-                onClick={handleAuthentication}
-                disabled={isLoggingOut}
-            >
+            <Button className="bg-blue100 h-6 w-15 rounded-xs" onClick={handleAuthentication} disabled={isLoggingOut}>
                 {isLoggingOut ? (
                     <i className="size-4">
                         <Loader className="animate-spin" />

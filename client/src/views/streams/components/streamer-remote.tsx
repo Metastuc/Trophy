@@ -90,12 +90,7 @@ export function StreamerRemote({ peerId }: Props) {
     return (
         // <div className="flex flex-col gap-2">
         <div className="">
-            <video
-                ref={vidRef}
-                autoPlay
-                muted
-                className="border-white-400 aspect-video rounded-xl border-2"
-            />
+            <video ref={vidRef} autoPlay muted className="border-white-400 aspect-video rounded-xl border-2" />
             {screenVideo && (
                 <video
                     ref={screenVideoRef}

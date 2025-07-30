@@ -23,10 +23,7 @@ type tAuthenticationNavigationState = {
 
 type iAuthenticationFormState = iAuthenticateFormData & {
     resetForm: () => void;
-    setField: <K extends keyof iAuthenticationFormState>(
-        key: K,
-        value: iAuthenticationFormState[K],
-    ) => void;
+    setField: <K extends keyof iAuthenticationFormState>(key: K, value: iAuthenticationFormState[K]) => void;
     setIsNewUser: (isNewUser: boolean) => void;
 };
 

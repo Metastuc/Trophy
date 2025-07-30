@@ -11,11 +11,7 @@ export function StreamerLivePFP({ imageSrc, imageAlt }: iProps) {
                     <div className="size-full rounded-full bg-gray-900 p-0.25">
                         <div className="size-full rounded-full bg-[radial-gradient(circle,_#000000_40%,_#FFFFFF50_100%)] p-0.5">
                             <div className="size-full rounded-full border border-[#DBDFE4]">
-                                <img
-                                    src={imageSrc}
-                                    alt={imageAlt}
-                                    className="size-full rounded-full object-cover"
-                                />
+                                <img src={imageSrc} alt={imageAlt} className="size-full rounded-full object-cover" />
                             </div>
                         </div>
                     </div>

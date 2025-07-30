@@ -70,8 +70,7 @@ export function CompleteProfile() {
                 await sleep(1500);
                 closeDrawer();
 
-                if (privyUser && backendUserData)
-                    setAuthenticatedUser({ ...privyUser, backendUserData });
+                if (privyUser && backendUserData) setAuthenticatedUser({ ...privyUser, backendUserData });
             },
         },
 
@@ -167,9 +166,7 @@ export function CompleteProfile() {
                         <img
                             src={
                                 profileImagePreview ||
-                                (typeof profilePicture === "string"
-                                    ? profilePicture
-                                    : "default-pfp.svg")
+                                (typeof profilePicture === "string" ? profilePicture : "default-pfp.svg")
                             }
                             alt="profile-image"
                             className="size-full rounded-full object-cover"
@@ -205,9 +202,7 @@ export function CompleteProfile() {
                     placeholder="enter email"
                     type="email"
                     value={email || ""}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormField("email", event.target.value)
-                    }
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormField("email", event.target.value)}
                     disabled={isEmailPreFilled.current}
                 />
 
@@ -241,10 +236,7 @@ export function CompleteProfile() {
             <Button
                 type="submit"
                 variant="default"
-                className={cn(
-                    "bg-blue100 h-12 w-full rounded transition-colors",
-                    isPending && "opacity-50",
-                )}
+                className={cn("bg-blue100 h-12 w-full rounded transition-colors", isPending && "opacity-50")}
                 disabled={isPending}
             >
                 {buttonContent()}

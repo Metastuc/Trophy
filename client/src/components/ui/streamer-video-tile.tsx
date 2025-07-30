@@ -21,12 +21,5 @@ export function StreamerVideoTile({ stream, className }: iStreamerVideoTile) {
         [stream],
     );
 
-    return (
-        <video
-            autoPlay={true}
-            className={cn(className, "size-full object-cover")}
-            muted={true}
-            ref={videoRef}
-        />
-    );
+    return <video autoPlay={true} className={cn(className, "size-full object-cover")} muted={true} ref={videoRef} />;
 }
