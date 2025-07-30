@@ -38,10 +38,10 @@ io.on("connection", (socket) => {
 
   function formatNumber(num: string) {
     const amount = Number(num);
-    if (amount >= 1000000000000) return (amount / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
-    if (amount >= 1000000000) return (amount / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
-    if (amount >= 1000000) return (amount / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (amount >= 1000) return (amount / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    if (amount >= 1000000000000) return (amount / 1000000000000).toFixed(1).replace(/\.0$/, "") + "T";
+    if (amount >= 1000000000) return (amount / 1000000000).toFixed(1).replace(/\.0$/, "") + "B";
+    if (amount >= 1000000) return (amount / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (amount >= 1000) return (amount / 1000).toFixed(1).replace(/\.0$/, "") + "K";
     return amount.toString();
   }
 
@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const recentFollow = (now.getTime() - new Date(notification.follow!.followedAt).getTime()) < 60 * 60 * 1000;
+    const recentFollow = now.getTime() - new Date(notification.follow!.followedAt).getTime() < 60 * 60 * 1000;
     let content = notification.follow!.content;
 
     if (recentFollow) {
@@ -99,9 +99,9 @@ io.on("connection", (socket) => {
 
     const notification = await Notification.findOne({ username });
 
-    const localeAmount = toLocaleString(amount as string)
+    const localeAmount = toLocaleString(amount as string);
 
-    const tipMessage = { tipper: sender.username, amount: localeAmount, token }
+    const tipMessage = { tipper: sender.username, amount: localeAmount, token };
 
     if (!notification) {
       await Notification.create({
@@ -124,22 +124,22 @@ io.on("connection", (socket) => {
   });
 
   socket.on("buy", async (data) => {
-    const { buyer, streamer, amount } = data
+    const { buyer, streamer, amount } = data;
     const notification = await Notification.findOne({ username: streamer });
-    
-    const buyMessage = `${buyer} bought ${formatNumber(amount)} of your troph`
+
+    const buyMessage = `${buyer} bought ${formatNumber(amount)} of your troph`;
 
     if (!notification) {
-      await Notification.create({ buy: [buyMessage] })
-      return
+      await Notification.create({ buy: [buyMessage] });
+      return;
     }
 
-    notification.buy.push(buyMessage)
-    await notification.save()
+    notification.buy.push(buyMessage);
+    await notification.save();
 
     const recieverSocketId = userSocketIds.get(streamer);
     io.to(recieverSocketId).emit("buy");
-  })
+  });
 
   socket.on("join-chat", (data) => {
     socket.join(data.roomId);

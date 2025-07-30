@@ -3,7 +3,7 @@ interface iProps {
     imageAlt: string;
 }
 
-export function StreamerLive({ imageSrc, imageAlt }: iProps) {
+export function StreamerLivePFP({ imageSrc, imageAlt }: iProps) {
     return (
         <section className="relative flex size-full items-center justify-center">
             <div className="size-full rounded-full bg-gradient-to-br from-[#7638FA] via-[#D300C5] to-[#2B55E2] p-0.25">

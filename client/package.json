@@ -15,6 +15,7 @@
         "@delvtech/drift-viem": "^0.11.0",
         "@flaunch/sdk": "^0.8.2",
         "@huddle01/react": "^2.5.1",
+        "@livepeer/react": "^4.3.6",
         "@privy-io/react-auth": "^2.19.0",
         "@radix-ui/react-alert-dialog": "^1.1.14",
         "@radix-ui/react-dialog": "^1.1.14",

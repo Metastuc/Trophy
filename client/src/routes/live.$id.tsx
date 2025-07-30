@@ -5,8 +5,10 @@ import { PageContentLayout } from "@/components/layouts/main-content";
 import { logger } from "@/utils/logger";
 import { StreamContext } from "@/views/streams/components/stream-context";
 import { StreamScreen } from "@/views/streams/components/stream-screen";
+import { StreamingUIContextProvider } from "@/views/streams/context";
 import { useRoom } from "@huddle01/react";
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import React from "react";
 
 export const Route = createFileRoute("/live/$id")({
     async beforeLoad({ context, params }) {
@@ -37,20 +39,37 @@ export const Route = createFileRoute("/live/$id")({
             throw new Error("Unable to join stream");
         }
 
-        return response;
+        return { token: response.token, roomId: params.id };
     },
 
     component() {
-        const { token } = useLoaderData({ from: "/live/$id" });
+        const { token, roomId } = useLoaderData({ from: "/live/$id" });
 
-        const {} = useRoom({
+        const { joinRoom, state } = useRoom({
             onFailed(data) {},
-            onJoin(data) {},
+            onJoin(data) {
+                console.log("Joined room successfully", data);
+            },
             onLeave(data) {},
-            onPeerJoin(data) {},
+            onPeerJoin(data) {
+                console.log("Peer joined", data);
+            },
             onPeerLeft(data) {},
             onWaiting(data) {},
         });
+
+        console.log({ state });
+
+        React.useEffect(
+            function () {
+                (async function () {
+                    if (state === "idle") {
+                        await joinRoom({ roomId, token });
+                    }
+                })();
+            },
+            [roomId, token],
+        );
 
         return (
             <section className="">
@@ -60,10 +79,12 @@ export const Route = createFileRoute("/live/$id")({
 
                 <footer>
                     <PageContentLayout>
-                        <StreamScreen />
-                        <StreamContext />
+                        <StreamingUIContextProvider>
+                            <StreamScreen />
+                            <StreamContext />
 
-                        <div>chatroom</div>
+                            <div>chatroom</div>
+                        </StreamingUIContextProvider>
                     </PageContentLayout>
                 </footer>
             </section>

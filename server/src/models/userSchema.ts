@@ -5,7 +5,7 @@ const notificationSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   read: {
     type: Boolean,
@@ -14,12 +14,12 @@ const notificationSchema = new mongoose.Schema({
   follow: {
     content: {
       type: String,
-      default: ""
+      default: "",
     },
     followNots: [String],
     recentFollows: {
       type: Number,
-      default: 0
+      default: 0,
     },
     followedAt: {
       type: Date,
@@ -27,11 +27,13 @@ const notificationSchema = new mongoose.Schema({
       expires: "7d",
     },
   },
-  tip: [{
-    token: String,
-    amount: String,
-    tipper: String
-  }],
+  tip: [
+    {
+      token: String,
+      amount: String,
+      tipper: String,
+    },
+  ],
   buy: [String],
 });
 
@@ -53,12 +55,12 @@ const userSchema = new mongoose.Schema({
   },
   userPfp: {
     type: String,
-    default: DEFAULT_IMAGE
+    default: DEFAULT_IMAGE,
   },
   walletAddress: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   totalStreams: {
     type: Number,
@@ -100,4 +102,4 @@ const userSchema = new mongoose.Schema({
 
 export const User = mongoose.model("Users", userSchema);
 
-export const Notification = mongoose.model("notifications", notificationSchema)
+export const Notification = mongoose.model("notifications", notificationSchema);

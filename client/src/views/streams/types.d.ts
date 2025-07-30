@@ -18,3 +18,14 @@ type tGetStreamResponse = {
     streamer: string;
     title: string;
 };
+
+type tRole = "host" | "coHost" | "speaker" | "listener" | "guest" | "bot";
+
+interface iStreamingUIPermissions {
+    canEndStream: boolean;
+    canInvite: boolean;
+    canShareScreen: boolean;
+    canToggleAudio: boolean;
+    canToggleChat: boolean;
+    canToggleVideo: boolean;
+}

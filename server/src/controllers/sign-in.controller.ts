@@ -30,14 +30,14 @@ export const signIn = async (req: Request, res: Response) => {
       res.status(201).json({
         data: {
           isBasicProfileComplete: true,
-          user
+          user,
         },
       });
       return;
     }
 
     res.status(200).json({
-      user: checkUser
+      user: checkUser,
     });
   } catch (error) {
     console.error(error);
