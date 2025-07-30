@@ -49,15 +49,21 @@ function HostOnly() {
     if (isHost) {
         if (isVideoOn && localStream) {
             return (
-                <StreamerVideoTile
-                    videoStream={localStream}
-                    videoStreamState={isVideoOn ? "playable" : "unavailable"}
-                    audioStream={localAudio}
-                    audioStreamState={isAudioOn ? "playable" : "unavailable"}
-                />
+                <div>
+                    <StreamerVideoTile
+                        videoStream={localStream}
+                        videoStreamState={isVideoOn ? "playable" : "unavailable"}
+                        audioStream={localAudio}
+                        audioStreamState={isAudioOn ? "playable" : "unavailable"}
+                    />
+                </div>
             );
         }
-        return <>Your video is off</>;
+        return (
+            <div className="flex size-full items-center justify-center">
+                <span className="text-white">Your video is off</span>
+            </div>
+        );
     }
 
     return (

@@ -1,16 +1,15 @@
-import { useLocalPeer } from "@huddle01/react";
 import { StreamLayout } from "./stream-layout";
 
 export function StreamScreen() {
-    const { role } = useLocalPeer();
-
     return (
-        <section className="border border-green-600">
+        <section style={{ backgroundImage: "url(/tv-bg.svg)", backgroundSize: "cover" }}>
             <div className="relative h-[13.25rem] w-full">
+                {/* <section className="size-full border-2 border-red-700"> */}
                 <StreamLayout />
+                {/* </section> */}
 
                 {/* <StreamControls /> */}
-                <section>stream: {role}</section>
+                {/* <section>stream: {role}</section> */}
             </div>
         </section>
     );
