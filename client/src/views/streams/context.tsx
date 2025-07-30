@@ -1,5 +1,6 @@
 import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
+import { useScreenSharing } from "./hooks";
 
 interface iStreamingUIContext {
     isHost: boolean;
@@ -8,6 +9,8 @@ interface iStreamingUIContext {
     isListener: boolean;
     viewerCount: number;
     permissions: iStreamingUIPermissions;
+    screenSharerPeerId: string | null;
+    isSomeoneSharingTheirScreen: boolean;
 }
 
 export const StreamingUIContext: React.Context<iStreamingUIContext> = React.createContext<iStreamingUIContext>(
@@ -32,6 +35,8 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     const { isVideoOn, enableVideo, isProducing } = useLocalVideo();
 
     const { state, room } = useRoom();
+
+    const { isSomeoneSharingTheirScreen, screenSharerPeerId } = useScreenSharing();
 
     console.log({ role, peerIds, state, room, isVideoOn, isProducing });
 
@@ -74,6 +79,8 @@ export function StreamingUIContextProvider({ children }: { children: React.React
             isListener,
             viewerCount,
             permissions,
+            isSomeoneSharingTheirScreen,
+            screenSharerPeerId,
         }),
         [isHost, isGuest, isCoHost, isListener, viewerCount, permissions],
     );

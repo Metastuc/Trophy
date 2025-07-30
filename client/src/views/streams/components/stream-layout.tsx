@@ -1,14 +1,43 @@
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { useLocalVideo, usePeerIds } from "@huddle01/react";
 import { useStreamingUIContext } from "../context";
+import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { isHost } = useStreamingUIContext();
-    const { peerIds: coHostIds } = usePeerIds({ roles: ["cohost"] });
-    const { peerIds: hostId } = usePeerIds({ roles: ["host"] });
+    const { isSomeoneSharingTheirScreen } = useStreamingUIContext();
+    const { peerIds: coHostIds } = usePeerIds({ roles: ["coHost"] });
 
-    return <HostOnly />;
+    const totalNumberOfCoHosts = coHostIds.length;
+    const currentLayout = getStreamLayoutKey({
+        coHostCount: totalNumberOfCoHosts,
+        isScreenSharing: isSomeoneSharingTheirScreen,
+    });
+
+    switch (currentLayout) {
+        case "host-only":
+            return <HostOnly />;
+        case "host-only-with-screen":
+            return <HostOnlyWithScreenShare />;
+        case "host-with-one-co-host":
+            return <HostWithOneCoHost />;
+        case "host-with-one-co-host-with-screen":
+            return <HostWithScreenShareAndOneCoHost />;
+        case "host-with-two-co-hosts":
+            return <HostWithTwoCoHosts />;
+        case "host-with-two-co-hosts-with-screen":
+            return <HostWithScreenShareAndTwoCoHosts />;
+        case "host-with-three-co-hosts":
+            return <HostWithThreeCoHosts />;
+        case "host-with-three-co-hosts-with-screen":
+            return <HostWithScreenShareAndThreeCoHosts />;
+        case "host-with-four-co-hosts":
+            return <HostWithFourCoHosts />;
+        case "host-with-four-co-hosts-with-screen":
+            return <HostWithScreenShareAndFourCoHosts />;
+        default:
+            return <>Unsupported layout</>;
+    }
 }
 
 function HostOnly() {
@@ -32,20 +61,38 @@ function HostOnly() {
     );
 }
 
-function HostOnlyWithScreenShare() {}
+function HostOnlyWithScreenShare() {
+    return <></>;
+}
 
-function HostWithOneCoHost() {}
+function HostWithOneCoHost() {
+    return <></>;
+}
 
-function HostWithScreenShareAndOneCoHost() {}
+function HostWithScreenShareAndOneCoHost() {
+    return <></>;
+}
 
-function HostWithTwoCoHosts() {}
+function HostWithTwoCoHosts() {
+    return <></>;
+}
 
-function HostWithScreenShareAndTwoCoHosts() {}
+function HostWithScreenShareAndTwoCoHosts() {
+    return <></>;
+}
 
-function HostWithThreeCoHosts() {}
+function HostWithThreeCoHosts() {
+    return <></>;
+}
 
-function HostWithScreenShareAndThreeCoHosts() {}
+function HostWithScreenShareAndThreeCoHosts() {
+    return <></>;
+}
 
-function HostWithFourCoHosts() {}
+function HostWithFourCoHosts() {
+    return <></>;
+}
 
-function HostWithScreenShareAndFourCoHosts() {}
+function HostWithScreenShareAndFourCoHosts() {
+    return <></>;
+}
