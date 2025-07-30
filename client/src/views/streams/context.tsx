@@ -1,4 +1,4 @@
-import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
+import { useLocalAudio, useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
 import { useScreenSharing } from "./hooks";
 
@@ -32,13 +32,12 @@ export function useStreamingUIContext() {
 export function StreamingUIContextProvider({ children }: { children: React.ReactNode }) {
     const { role } = useLocalPeer();
     const { peerIds } = usePeerIds();
-    const { isVideoOn, enableVideo, isProducing } = useLocalVideo();
+    const { isVideoOn, enableVideo } = useLocalVideo();
+    const { isAudioOn, enableAudio } = useLocalAudio();
 
-    const { state, room } = useRoom();
+    const { state } = useRoom();
 
     const { isSomeoneSharingTheirScreen, screenSharerPeerId } = useScreenSharing();
-
-    console.log({ role, peerIds, state, room, isVideoOn, isProducing });
 
     const typedRole: tRole = role as tRole;
     const permissions: iStreamingUIPermissions = React.useMemo(
@@ -62,8 +61,9 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     React.useEffect(
         function () {
             (async function () {
-                if (isHost && state === "connected" && !isVideoOn) {
+                if (isHost && state === "connected" && !isVideoOn && !isAudioOn) {
                     await enableVideo().catch((error) => console.error("Error enabling video:", error));
+                    await enableAudio().catch((error) => console.error("Error enabling audio:", error));
                 }
             })();
         },

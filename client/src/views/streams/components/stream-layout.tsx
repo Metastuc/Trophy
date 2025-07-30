@@ -1,5 +1,5 @@
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
-import { useLocalVideo, usePeerIds } from "@huddle01/react";
+import { useLocalAudio, useLocalVideo, usePeerIds } from "@huddle01/react";
 import { useStreamingUIContext } from "../context";
 import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
@@ -43,11 +43,19 @@ export function StreamLayout() {
 function HostOnly() {
     const { isHost } = useStreamingUIContext();
     const { peerIds: hostId } = usePeerIds({ roles: ["host"] });
-    const { stream: localStream, isVideoOn: localVideoOn } = useLocalVideo();
+    const { stream: localStream, isVideoOn } = useLocalVideo();
+    const { stream: localAudio, isAudioOn } = useLocalAudio();
 
     if (isHost) {
-        if (localVideoOn && localStream) {
-            return <StreamerVideoTile stream={localStream} />;
+        if (isVideoOn && localStream) {
+            return (
+                <StreamerVideoTile
+                    videoStream={localStream}
+                    videoStreamState={isVideoOn ? "playable" : "unavailable"}
+                    audioStream={localAudio}
+                    audioStreamState={isAudioOn ? "playable" : "unavailable"}
+                />
+            );
         }
         return <>Your video is off</>;
     }
