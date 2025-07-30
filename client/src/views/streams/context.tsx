@@ -1,4 +1,4 @@
-import { useLocalAudio, useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
+import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
 
 import { useScreenSharing } from "./hooks";
@@ -11,6 +11,7 @@ interface iStreamingUIContext {
     permissions: iStreamingUIPermissions;
     screenSharerPeerId: string | null;
     isSomeoneSharingTheirScreen: boolean;
+    setUserHasToggled: React.Dispatch<React.SetStateAction<{ audio: boolean; video: boolean }>>;
 }
 
 export const StreamingUIContext: React.Context<iStreamingUIContext> = React.createContext<iStreamingUIContext>(
@@ -33,11 +34,15 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     const { role } = useLocalPeer();
     const { peerIds } = usePeerIds();
     const { isVideoOn, enableVideo } = useLocalVideo();
-    const { isAudioOn, enableAudio } = useLocalAudio();
+    // const { isAudioOn, enableAudio } = useLocalAudio();
 
     const { state } = useRoom();
 
     const { isSomeoneSharingTheirScreen, screenSharerPeerId } = useScreenSharing();
+    const [userHasToggled, setUserHasToggled] = React.useState(() => ({
+        audio: false,
+        video: false,
+    }));
 
     const typedRole: tRole = role as tRole;
     const permissions: iStreamingUIPermissions = React.useMemo(
@@ -60,16 +65,25 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     React.useEffect(
         function () {
             (async function () {
-                if (isHost && state === "connected" && !isVideoOn && !isAudioOn) {
-                    await enableVideo().catch((error) => console.error("Error enabling video:", error));
-                    await enableAudio().catch((error) => console.error("Error enabling audio:", error));
+                if (isHost && state === "connected") {
+                    if (!isVideoOn && !userHasToggled.video) {
+                        await enableVideo().catch((error) => console.error("Error enabling video:", error));
+                    }
                 }
             })();
         },
         [typedRole, isVideoOn, state],
     );
 
-    // const value: iStreamingUIContext = React.useMemo(() => ({}), []);
+    React.useEffect(
+        function () {
+            if (state === "closed" || state === "left" || state === "failed") {
+                setUserHasToggled({ audio: false, video: false });
+            }
+        },
+        [state],
+    );
+
     const value: iStreamingUIContext = React.useMemo(
         () => ({
             isCoHost,
@@ -79,8 +93,18 @@ export function StreamingUIContextProvider({ children }: { children: React.React
             permissions,
             screenSharerPeerId,
             viewerCount,
+            setUserHasToggled,
         }),
-        [isCoHost, isHost, isListener, isSomeoneSharingTheirScreen, permissions, screenSharerPeerId, viewerCount],
+        [
+            isCoHost,
+            isHost,
+            isListener,
+            isSomeoneSharingTheirScreen,
+            permissions,
+            screenSharerPeerId,
+            viewerCount,
+            setUserHasToggled,
+        ],
     );
 
     return <StreamingUIContext.Provider value={value}>{children}</StreamingUIContext.Provider>;

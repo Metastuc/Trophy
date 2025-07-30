@@ -1,10 +1,11 @@
-import { Mic, MonitorUp, MonitorX, UserPlus, Video } from "lucide-react";
+import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
 import React from "react";
 
 import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
 
+import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { useStreamingUIContext, useStreamingUIPermissions } from "../context";
 
 export function StreamControls() {
@@ -33,6 +34,23 @@ export function StreamControls() {
 
 function RenderControlsBasedOnRole() {
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
+    const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
+    const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
+    const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
+    const { setUserHasToggled } = useStreamingUIContext();
+
+    async function handleToggleVideo() {
+        setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
+        isVideoOn ? await disableVideo() : await enableVideo();
+    }
+
+    async function handleToggleAudio() {
+        isAudioOn ? await disableAudio() : await enableAudio();
+    }
+
+    async function handleToggleScreenShare() {
+        shareStream ? await stopScreenShare() : await startScreenShare();
+    }
 
     return (
         <React.Fragment>
@@ -46,10 +64,8 @@ function RenderControlsBasedOnRole() {
             ) : null}
 
             {canShareScreen ? (
-                <ControlButton>
-                    <i className="size-4">
-                        <MonitorUp />
-                    </i>
+                <ControlButton onClick={handleToggleScreenShare}>
+                    <i className="size-4">{shareStream ? <MonitorDown /> : <MonitorUp />}</i>
                 </ControlButton>
             ) : null}
 
@@ -62,18 +78,14 @@ function RenderControlsBasedOnRole() {
             ) : null}
 
             {canToggleVideo ? (
-                <ControlButton className="">
-                    <i className="size-4">
-                        <Video />
-                    </i>
+                <ControlButton onClick={handleToggleVideo}>
+                    <i className="size-4">{isVideoOn ? <Video /> : <VideoOff />}</i>
                 </ControlButton>
             ) : null}
 
             {canToggleAudio ? (
-                <ControlButton className="">
-                    <i className="size-4">
-                        <Mic />
-                    </i>
+                <ControlButton onClick={handleToggleAudio}>
+                    <i className="size-4">{isAudioOn ? <Mic /> : <MicOff />}</i>
                 </ControlButton>
             ) : null}
         </React.Fragment>
