@@ -41,6 +41,8 @@ export function StreamLayout() {
 }
 
 function HostOnly() {
+    let content: React.ReactNode;
+
     const { isHost } = useStreamingUIContext();
     const { peerIds: hostId } = usePeerIds({ roles: ["host"] });
     const { stream: localStream, isVideoOn } = useLocalVideo();
@@ -48,31 +50,22 @@ function HostOnly() {
 
     if (isHost) {
         if (isVideoOn && localStream) {
-            return (
-                <div>
-                    <StreamerVideoTile
-                        videoStream={localStream}
-                        videoStreamState={isVideoOn ? "playable" : "unavailable"}
-                        audioStream={localAudio}
-                        audioStreamState={isAudioOn ? "playable" : "unavailable"}
-                    />
-                </div>
+            content = (
+                <StreamerVideoTile
+                    videoStream={localStream}
+                    videoStreamState={isVideoOn ? "playable" : "unavailable"}
+                    audioStream={localAudio}
+                    audioStreamState={isAudioOn ? "playable" : "unavailable"}
+                />
             );
+        } else {
+            content = <span className="text-white">Your video is off</span>;
         }
-        return (
-            <div className="flex size-full items-center justify-center">
-                <span className="text-white">Your video is off</span>
-            </div>
-        );
+    } else {
+        content = hostId.map((value, index) => <StreamerRemote peerId={value} key={index} />);
     }
 
-    return (
-        <div>
-            {hostId.map((value, index) => (
-                <StreamerRemote peerId={value} key={index} />
-            ))}
-        </div>
-    );
+    return <div className="flex size-full items-center justify-center">{content}</div>;
 }
 
 function HostOnlyWithScreenShare() {

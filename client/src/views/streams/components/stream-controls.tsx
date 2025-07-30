@@ -11,18 +11,18 @@ export function StreamControls() {
     console.log({ isHost });
 
     return (
-        <section className="absolute size-full border border-red-600 bg-gray-300">
-            <div className="relative size-full p-1.5">
+        <section className="absolute inset-0 z-10">
+            <div className="relative size-full">
                 <StreamerLiveSignal />
 
-                <div className="absolute bottom-0 flex w-full items-center justify-between">
-                    <aside className="flex h-5 w-[6.75rem] items-center justify-between rounded bg-white px-1">
-                        <i className="size-2.5">{WATCHING()}</i>
+                <div className="absolute bottom-0 flex w-full items-center justify-between p-1.5">
+                    <aside className="flex min-w-[6.75rem] max-w-[8rem] items-center justify-between rounded bg-white p-1">
+                        <i className="size-4">{WATCHING()}</i>
                         <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">{viewerCount} watching</span>
-                        <span className="pt-0.5 text-[.5rem]">10:12:13</span>
+                        <span className="pt-0.5 text-[.5rem] ml-1">10:12:13</span>
                     </aside>
 
-                    <aside className="flex h-3 gap-2">
+                    <aside className="flex gap-2">
                         <RenderControlsBasedOnRole />
                     </aside>
                 </div>
@@ -32,110 +32,59 @@ export function StreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
-    const { isHost, isListener } = useStreamingUIContext();
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
 
     return (
         <React.Fragment>
             {canEndStream ? (
-                <ControlButton>
-                    <i className="size-[.375rem]">
+                <ControlButton className="gap-1 text-red-600">
+                    <i className="size-4">
                         <MonitorX />
                     </i>
-                    <span className="text-[.375rem]">end</span>
+                    <span className="text-[.5rem]">end</span>
                 </ControlButton>
             ) : null}
 
             {canShareScreen ? (
                 <ControlButton>
-                    <i className="size-3">
+                    <i className="size-4">
                         <MonitorUp />
                     </i>
-                    <span>share screen</span>
                 </ControlButton>
             ) : null}
 
             {canInvite ? (
-                <ControlButton>
-                    <i className="size-3">
+                <ControlButton className="">
+                    <i className="size-4">
                         <UserPlus />
                     </i>
                 </ControlButton>
             ) : null}
 
             {canToggleVideo ? (
-                <ControlButton>
-                    <i className="size-3">
+                <ControlButton className="">
+                    <i className="size-4">
                         <Video />
                     </i>
                 </ControlButton>
             ) : null}
 
             {canToggleAudio ? (
-                <ControlButton>
-                    <i className="size-3">
+                <ControlButton className="">
+                    <i className="size-4">
                         <Mic />
                     </i>
                 </ControlButton>
             ) : null}
         </React.Fragment>
     );
-
-    switch (true) {
-        case isHost:
-            return (
-                <React.Fragment>
-                    {canEndStream ? (
-                        <ControlButton>
-                            <span>end</span>
-                        </ControlButton>
-                    ) : null}
-
-                    {canShareScreen ? (
-                        <ControlButton>
-                            <span>share screen</span>
-                        </ControlButton>
-                    ) : null}
-
-                    {canInvite ? (
-                        <ControlButton>
-                            <span>invite</span>
-                        </ControlButton>
-                    ) : null}
-
-                    {canToggleVideo ? (
-                        <ControlButton>
-                            <span>video</span>
-                        </ControlButton>
-                    ) : null}
-
-                    {canToggleAudio ? (
-                        <ControlButton>
-                            <span>mic</span>
-                        </ControlButton>
-                    ) : null}
-                </React.Fragment>
-            );
-
-        case isListener:
-            return (
-                <React.Fragment>
-                    <ControlButton>
-                        <i></i>
-                    </ControlButton>
-                </React.Fragment>
-            );
-
-        default:
-            return null;
-    }
 }
 
 type tControlButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>;
 
-function ControlButton({ children, ...props }: tControlButtonProps) {
+function ControlButton({ children, className, ...props }: tControlButtonProps) {
     return (
-        <button className={cn(props.className, "flex items-center justify-between bg-white")} {...props}>
+        <button className={cn(className, "flex items-center justify-center rounded bg-white p-1")} {...props}>
             {children}
         </button>
     );
