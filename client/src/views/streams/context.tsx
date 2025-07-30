@@ -1,10 +1,10 @@
 import { useLocalAudio, useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
+
 import { useScreenSharing } from "./hooks";
 
 interface iStreamingUIContext {
     isHost: boolean;
-    isGuest: boolean;
     isCoHost: boolean;
     isListener: boolean;
     viewerCount: number;
@@ -53,7 +53,6 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     );
 
     const isHost = typedRole === "host";
-    const isGuest = typedRole === "guest";
     const isCoHost = typedRole === "coHost";
     const isListener = typedRole === "listener";
     const viewerCount = peerIds.length;
@@ -73,16 +72,15 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     // const value: iStreamingUIContext = React.useMemo(() => ({}), []);
     const value: iStreamingUIContext = React.useMemo(
         () => ({
-            isHost,
-            isGuest,
             isCoHost,
+            isHost,
             isListener,
-            viewerCount,
-            permissions,
             isSomeoneSharingTheirScreen,
+            permissions,
             screenSharerPeerId,
+            viewerCount,
         }),
-        [isHost, isGuest, isCoHost, isListener, viewerCount, permissions],
+        [isCoHost, isHost, isListener, isSomeoneSharingTheirScreen, permissions, screenSharerPeerId, viewerCount],
     );
 
     return <StreamingUIContext.Provider value={value}>{children}</StreamingUIContext.Provider>;

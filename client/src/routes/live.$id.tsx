@@ -1,3 +1,7 @@
+import { useRoom } from "@huddle01/react";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import React from "react";
+
 import { getStream } from "@/api/get-stream";
 import { getUser } from "@/api/get-user";
 import { joinStream } from "@/api/join-stream";
@@ -6,9 +10,6 @@ import { logger } from "@/utils/logger";
 import { StreamContext } from "@/views/streams/components/stream-context";
 import { StreamScreen } from "@/views/streams/components/stream-screen";
 import { StreamingUIContextProvider } from "@/views/streams/context";
-import { useRoom } from "@huddle01/react";
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
-import React from "react";
 
 export const Route = createFileRoute("/live/$id")({
     async beforeLoad({ context, params }) {

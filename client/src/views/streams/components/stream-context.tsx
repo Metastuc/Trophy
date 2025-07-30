@@ -1,5 +1,6 @@
-import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { useRouteContext } from "@tanstack/react-router";
+
+import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 
 export function StreamContext() {
     const { streamCreator, streamResponse } = useRouteContext({

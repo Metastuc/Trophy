@@ -1,14 +1,14 @@
+import { Mic, MonitorUp, MonitorX, UserPlus, Video } from "lucide-react";
+import React from "react";
+
 import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
-import { Mic, MonitorUp, MonitorX, UserPlus, Video } from "lucide-react";
-import React from "react";
+
 import { useStreamingUIContext, useStreamingUIPermissions } from "../context";
 
 export function StreamControls() {
-    const { isHost, viewerCount } = useStreamingUIContext();
-
-    console.log({ isHost });
+    const { viewerCount } = useStreamingUIContext();
 
     return (
         <section className="absolute inset-0 z-10">
@@ -16,10 +16,10 @@ export function StreamControls() {
                 <StreamerLiveSignal />
 
                 <div className="absolute bottom-0 flex w-full items-center justify-between p-1.5">
-                    <aside className="flex min-w-[6.75rem] max-w-[8rem] items-center justify-between rounded bg-white p-1">
+                    <aside className="flex max-w-[8rem] min-w-[6.75rem] items-center justify-between rounded bg-white p-1">
                         <i className="size-4">{WATCHING()}</i>
                         <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">{viewerCount} watching</span>
-                        <span className="pt-0.5 text-[.5rem] ml-1">10:12:13</span>
+                        <span className="ml-1 pt-0.5 text-[.5rem]">10:12:13</span>
                     </aside>
 
                     <aside className="flex gap-2">
