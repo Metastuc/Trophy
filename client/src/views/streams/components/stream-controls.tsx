@@ -45,6 +45,7 @@ function RenderControlsBasedOnRole() {
     }
 
     async function handleToggleAudio() {
+        setUserHasToggled((previous) => ({ ...previous, audio: !previous.audio }));
         isAudioOn ? await disableAudio() : await enableAudio();
     }
 
