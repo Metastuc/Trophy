@@ -18,11 +18,8 @@ export const StreamingUIContext: React.Context<iStreamingUIContext> = React.crea
     {} as iStreamingUIContext,
 );
 
-// export const StreamingUIContext = React.createContext(null);
-
 export function useStreamingUIContext() {
     const context: iStreamingUIContext = React.useContext(StreamingUIContext);
-    // const context = React.useContext(StreamingUIContext);
 
     if (context === undefined || context === null || !context)
         throw new Error("useStreamingUIContext must be used within a StreamingUIContextProvider");
@@ -31,11 +28,9 @@ export function useStreamingUIContext() {
 }
 
 export function StreamingUIContextProvider({ children }: { children: React.ReactNode }) {
-    const { role } = useLocalPeer();
-    const { peerIds } = usePeerIds();
     const { isVideoOn, enableVideo } = useLocalVideo();
-    // const { isAudioOn, enableAudio } = useLocalAudio();
-
+    const { peerIds } = usePeerIds();
+    const { role } = useLocalPeer();
     const { state } = useRoom();
 
     const { isSomeoneSharingTheirScreen, screenSharerPeerId } = useScreenSharing();
@@ -65,10 +60,8 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     React.useEffect(
         function () {
             (async function () {
-                if (isHost && state === "connected") {
-                    if (!isVideoOn && !userHasToggled.video) {
-                        await enableVideo().catch((error) => console.error("Error enabling video:", error));
-                    }
+                if (isHost && state === "connected" && !isVideoOn && !userHasToggled.video) {
+                    await enableVideo().catch((error) => console.error("Error enabling video:", error));
                 }
             })();
         },
@@ -77,7 +70,7 @@ export function StreamingUIContextProvider({ children }: { children: React.React
 
     React.useEffect(
         function () {
-            if (state === "closed" || state === "left" || state === "failed") {
+            if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
             }
         },
