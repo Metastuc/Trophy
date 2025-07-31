@@ -67,7 +67,7 @@ export const getAccessToken = async (req: Request, res: Response) => {
   }
 };
 
-const generateAccessToken = async (roomId: string, role: Role) => {
+export const generateAccessToken = async (roomId: string, role: Role) => {
 
   const permissions = role === "host" ? {
     admin: true,
