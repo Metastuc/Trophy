@@ -1,4 +1,5 @@
 import { useDataMessage, useLocalPeer, useRemotePeer } from "@huddle01/react";
+import { CircleDollarSign, MessageCircle } from "lucide-react";
 import React from "react";
 
 export type TMessage = {
@@ -14,37 +15,44 @@ export function Chatroom() {
     const { sendData } = useDataMessage({
         onMessage: (payload, from, label) => {
             if (label === "chat") {
-                setMessages((prev) => [...prev, { text: payload, sender: from }]);
+                setMessages((previous) => [...previous, { text: payload, sender: from }]);
             }
         },
     });
 
-    const sendMessage = () => {
+    function sendMessage() {
         sendData({
             to: "*",
             payload: text,
             label: "chat",
         });
         setText("");
-    };
+    }
 
     return (
-        <section className="border border-green-600 flex-1">
-            <header>
-                <aside>
-                    <span>Chatroom</span>
-                    <i>icon</i>
+        <section className="flex flex-1 flex-col border border-green-600">
+            <header className="flex items-center gap-3">
+                <aside className="text-blue100 flex items-center gap-1">
+                    <span className="font-medium">Chatroom</span>
+                    <i className="size-4">
+                        <MessageCircle />
+                    </i>
                 </aside>
 
-                <aside>
-                    <button>Send Tip</button>
+                <aside className="flex items-center gap-3">
+                    <button className="flex h-6 w-20 items-center justify-center rounded bg-gradient-to-b from-[#2D57FF] to-[#1B3499] text-white gap-1">
+                        <i className="size-4">
+                            <CircleDollarSign />
+                        </i>
+                        <span className="text-xs pt-0.5">Send tip</span>
+                    </button>
+
                     <button>Trade</button>
                 </aside>
             </header>
 
-            <footer className="bg-black">
-                <div className="flex w-1/5 flex-col rounded-lg border-2 border-blue-400">
-                    <h1 className="my-2 border-b border-blue-400 text-center text-2xl">Chat Room</h1>
+            <footer className="relative flex-1">
+                <div className="flex flex-col rounded-lg border-2 border-blue-400">
                     <div className="flex-1 border-b border-blue-400 p-4">
                         {messages.map((message, index) =>
                             message.sender === peerId ? (
@@ -54,46 +62,27 @@ export function Chatroom() {
                             ),
                         )}
                     </div>
-                    <div className="flex p-1">
-                        <input
-                            type="text"
-                            className="w-full self-end bg-black p-2 text-sm text-white outline-none"
-                            placeholder="Type Message..."
-                            value={text}
-                            onChange={(event) => setText(event.target.value)}
-                            onKeyDown={(event) => {
-                                if (event.key === "Enter") {
-                                    sendMessage();
-                                }
-                            }}
-                        />
-                        <button
-                            onClick={() => {
+                </div>
+
+                <div className="bg-blue100/90 absolute bottom-0 flex w-full rounded-lg p-2">
+                    <input
+                        type="text"
+                        className="flex-1 bg-transparent p-2 text-sm text-white outline-none"
+                        placeholder="Send a message"
+                        value={text}
+                        onChange={(event) => setText(event.target.value)}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter") {
                                 sendMessage();
-                            }}
-                        >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="-2.4 -2.4 28.80 28.80"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                stroke="#000000"
-                                stroke-width="0.00024000000000000003"
-                            >
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M1.265 4.42619C1.04293 2.87167 2.6169 1.67931 4.05323 2.31397L21.8341 10.1706C23.423 10.8727 23.423 13.1273 21.8341 13.8294L4.05323 21.686C2.6169 22.3207 1.04293 21.1283 1.265 19.5738L1.99102 14.4917C2.06002 14.0087 2.41458 13.6156 2.88791 13.4972L8.87688 12L2.88791 10.5028C2.41458 10.3844 2.06002 9.99129 1.99102 9.50829L1.265 4.42619ZM21.0257 12L3.2449 4.14335L3.89484 8.69294L12.8545 10.9328C13.9654 11.2106 13.9654 12.7894 12.8545 13.0672L3.89484 15.3071L3.2449 19.8566L21.0257 12Z"
-                                        fill="#ffffff"
-                                    ></path>
-                                </g>
-                            </svg>
-                        </button>
-                    </div>
+                            }
+                        }}
+                    />
+                    <button
+                        onClick={sendMessage}
+                        className="flex size-10 items-center justify-center rounded-md bg-gradient-to-b from-[#2D57FF] to-[#1B3499]"
+                    >
+                        <img src="/send-message.svg" alt="send" />
+                    </button>
                 </div>
             </footer>
         </section>
