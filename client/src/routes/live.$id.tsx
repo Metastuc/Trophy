@@ -7,7 +7,7 @@ import { StreamContext } from "@/views/live/components/stream-context";
 import { StreamScreen } from "@/views/live/components/stream-screen";
 import { StreamingUIContextProvider } from "@/views/live/context";
 import { useRoom } from "@huddle01/react";
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 import React from "react";
 
 export const Route = createFileRoute("/live/$id")({
@@ -70,7 +70,9 @@ export const Route = createFileRoute("/live/$id")({
         return (
             <section className="flex min-h-screen flex-col">
                 <header className="flex h-11.5 items-center justify-start px-3">
-                    <img src="/trophy.svg" alt="trophy-logo" />
+                    <Link to="/">
+                        <img src="/trophy.svg" alt="trophy-logo" />
+                    </Link>
                 </header>
 
                 <footer className="flex flex-1">
