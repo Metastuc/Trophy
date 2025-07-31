@@ -12,11 +12,12 @@ const streamSchema = new mongoose.Schema({
   },
   date: {
     type: String,
+    default: null,
   },
   status: {
     type: String,
     required: true,
-    enum: ["Live", "Scheduled"],
+    enum: ["Live", "Scheduled", "Ended"],
   },
   streamer: {
     type: String,

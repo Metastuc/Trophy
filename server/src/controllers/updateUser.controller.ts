@@ -3,6 +3,7 @@ import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 import { DEFAULT_IMAGE } from "../utils/env";
 import { deletePfp } from "../utils/pfp";
+import { RedisClient } from "../config/db";
 
 export const updateProfile = async (req: Request, res: Response) => {
   const privyId = req.privyUser?.userId;
@@ -36,7 +37,13 @@ export const updateProfile = async (req: Request, res: Response) => {
       return;
     }
 
-    const streams = await Stream.find({ streamer: user.username, status: "Scheduled" });
+    const streams = await Stream.find({
+      streamer: user.username,
+      status: "Scheduled"
+    }).sort({ _id: -1 });
+
+    await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
+    await RedisClient.set(`stream:${user.username}`, JSON.stringify(streams));
 
     res.status(200).json({ message: "profile update success", user, streams });
   } catch (error) {
@@ -60,6 +67,8 @@ export const feesUpdate = async (req: Request, res: Response) => {
 
     user.totalFees += fees;
     await user.save();
+
+    await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 
     res.status(200).json({ message: "fees updated :)" });
   } catch (error: any) {
@@ -87,9 +96,11 @@ export const updatePfp = async (req: Request, res: Response) => {
     user.userPfp = imageToUpdate;
     await user.save();
 
+    await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
+
     res.status(200).json({ user });
   } catch (error) {
     console.error(error);
-    res.status(500);
+    res.status(500).json({ error: (error as Error).message });
   }
 };

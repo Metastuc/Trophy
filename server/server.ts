@@ -68,11 +68,10 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const recentFollow = now.getTime() - new Date(notification.follow!.followedAt).getTime() < 60 * 60 * 1000;
-    let content = notification.follow!.content;
+    const recentFollow = (now.getTime() - new Date(notification.follow!.followedAt).getTime()) < 60 * 60 * 1000;
 
     if (recentFollow) {
-      content = `${username} and ${notification.follow!.recentFollows} others followed you`;
+      const content = `${username} and ${notification.follow!.recentFollows} others followed you`;
       notification.follow!.recentFollows += 1;
       notification.follow!.followNots[0] = content;
     } else {

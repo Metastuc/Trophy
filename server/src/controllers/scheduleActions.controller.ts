@@ -34,7 +34,6 @@ export const scheduleActions = async (req: Request, res: Response) => {
     );
 
     res.status(200).json({
-      status: "success",
       message: "Stream updated successfully",
     });
   } catch (error) {
