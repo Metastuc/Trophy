@@ -1,15 +1,14 @@
-import { useRoom } from "@huddle01/react";
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
-import React from "react";
-
 import { getStream } from "@/api/get-stream";
 import { getUser } from "@/api/get-user";
 import { joinStream } from "@/api/join-stream";
 import { PageContentLayout } from "@/components/layouts/main-content";
-import { logger } from "@/utils/logger";
-import { StreamContext } from "@/views/streams/components/stream-context";
-import { StreamScreen } from "@/views/streams/components/stream-screen";
-import { StreamingUIContextProvider } from "@/views/streams/context";
+import { Chatroom } from "@/views/live/components/chatroom";
+import { StreamContext } from "@/views/live/components/stream-context";
+import { StreamScreen } from "@/views/live/components/stream-screen";
+import { StreamingUIContextProvider } from "@/views/live/context";
+import { useRoom } from "@huddle01/react";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import React from "react";
 
 export const Route = createFileRoute("/live/$id")({
     async beforeLoad({ context, params }) {
@@ -22,8 +21,6 @@ export const Route = createFileRoute("/live/$id")({
         if (!streamCreator) {
             throw new Error("Unable to get stream creator");
         }
-
-        logger(streamCreator);
 
         return { streamResponse, streamCreator };
     },
@@ -71,18 +68,17 @@ export const Route = createFileRoute("/live/$id")({
         );
 
         return (
-            <section className="">
-                <header>
+            <section className="flex min-h-screen flex-col">
+                <header className="flex h-11.5 items-center justify-start px-3">
                     <img src="/trophy.svg" alt="trophy-logo" />
                 </header>
 
-                <footer>
-                    <PageContentLayout>
+                <footer className="flex flex-1">
+                    <PageContentLayout className="flex flex-1 flex-col">
                         <StreamingUIContextProvider>
                             <StreamScreen />
                             <StreamContext />
-
-                            <div>chatroom</div>
+                            <Chatroom />
                         </StreamingUIContextProvider>
                     </PageContentLayout>
                 </footer>

@@ -1,6 +1,7 @@
 import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
 
+import { logger } from "@/utils/logger";
 import { useScreenSharing } from "./hooks";
 
 interface iStreamingUIContext {
@@ -9,8 +10,8 @@ interface iStreamingUIContext {
     isListener: boolean;
     viewerCount: number;
     permissions: iStreamingUIPermissions;
-    screenSharerPeerId: string | null;
-    isSomeoneSharingTheirScreen: boolean;
+    // screenSharerPeerId: string | null;
+    // isSomeoneSharingTheirScreen: boolean;
     setUserHasToggled: React.Dispatch<React.SetStateAction<{ audio: boolean; video: boolean }>>;
 }
 
@@ -34,6 +35,9 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     const { state } = useRoom();
 
     const { isSomeoneSharingTheirScreen, screenSharerPeerId } = useScreenSharing();
+
+    logger({ isSomeoneSharingTheirScreen, screenSharerPeerId });
+
     const [userHasToggled, setUserHasToggled] = React.useState(() => ({
         audio: false,
         video: false,
@@ -82,9 +86,9 @@ export function StreamingUIContextProvider({ children }: { children: React.React
             isCoHost,
             isHost,
             isListener,
-            isSomeoneSharingTheirScreen,
+            // isSomeoneSharingTheirScreen,
             permissions,
-            screenSharerPeerId,
+            // screenSharerPeerId,
             viewerCount,
             setUserHasToggled,
         }),
@@ -92,9 +96,9 @@ export function StreamingUIContextProvider({ children }: { children: React.React
             isCoHost,
             isHost,
             isListener,
-            isSomeoneSharingTheirScreen,
+            // isSomeoneSharingTheirScreen,
             permissions,
-            screenSharerPeerId,
+            // screenSharerPeerId,
             viewerCount,
             setUserHasToggled,
         ],

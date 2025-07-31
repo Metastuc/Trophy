@@ -2,19 +2,22 @@ import { useLocalAudio, useLocalVideo, usePeerIds } from "@huddle01/react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 
+import { logger } from "@/utils/logger";
 import { useStreamingUIContext } from "../context";
 import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { isSomeoneSharingTheirScreen } = useStreamingUIContext();
+    // const { isSomeoneSharingTheirScreen } = useStreamingUIContext();
     const { peerIds: coHostIds } = usePeerIds({ roles: ["coHost"] });
 
     const totalNumberOfCoHosts = coHostIds.length;
     const currentLayout = getStreamLayoutKey({
         coHostCount: totalNumberOfCoHosts,
-        isScreenSharing: isSomeoneSharingTheirScreen,
+        isScreenSharing: false,
     });
+
+    // logger({ currentLayout, isSomeoneSharingTheirScreen });
 
     switch (currentLayout) {
         case "host-only":
