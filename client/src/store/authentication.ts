@@ -1,7 +1,7 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
 
-export const useAuthenticationStore: UseBoundStore<StoreApi<tAuthenticatedState>> =
-    create<tAuthenticatedState>()((set) => ({
+export const useAuthenticationStore: UseBoundStore<StoreApi<tAuthenticatedState>> = create<tAuthenticatedState>()(
+    (set) => ({
         isAuthenticated: false,
 
         isLoading: true,
@@ -25,4 +25,5 @@ export const useAuthenticationStore: UseBoundStore<StoreApi<tAuthenticatedState>
         setUser(user) {
             set({ isAuthenticated: true, isLoading: false, user });
         },
-    }));
+    }),
+);

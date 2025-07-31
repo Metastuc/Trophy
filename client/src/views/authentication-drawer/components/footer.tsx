@@ -5,10 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DrawerClose, DrawerFooter } from "@/components/ui/drawer";
 import { sleep } from "@/lib/utils";
 
-import {
-    useAuthenticationDrawerNavigationStore,
-    useAuthenticationDrawerStateStore,
-} from "../store";
+import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "../store";
 
 export function AuthenticationDrawerFooter() {
     const { closeDrawer, isOpen, openDrawer } = useAuthenticationDrawerStateStore(
@@ -36,24 +33,15 @@ export function AuthenticationDrawerFooter() {
 
     return (
         <DrawerFooter className="flex flex-row items-center justify-between">
-            {!["default", "wallet", "finish"].includes(
-                useAuthenticationDrawerNavigationStore.getState().screen,
-            ) ? (
-                <Button
-                    variant="outline"
-                    className="bg-white200 mr-auto size-5 rounded-full p-0"
-                    onClick={goBack}
-                >
+            {!["default", "wallet", "finish"].includes(useAuthenticationDrawerNavigationStore.getState().screen) ? (
+                <Button variant="outline" className="bg-white200 mr-auto size-5 rounded-full p-0" onClick={goBack}>
                     <i className="size-3">{BACK()}</i>
                 </Button>
             ) : null}
 
             {!["finish"].includes(useAuthenticationDrawerNavigationStore.getState().screen) ? (
                 <DrawerClose asChild onClick={handleDrawerClose}>
-                    <Button
-                        variant="outline"
-                        className="bg-white200 ml-auto size-5 rounded-full p-0"
-                    >
+                    <Button variant="outline" className="bg-white200 ml-auto size-5 rounded-full p-0">
                         <i className="size-3">{CLOSE()}</i>
                     </Button>
                 </DrawerClose>

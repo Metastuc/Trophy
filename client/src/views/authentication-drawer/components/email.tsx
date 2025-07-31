@@ -43,10 +43,7 @@ export function AuthenticateWithEmail() {
             await sendCode({ email: formState.email as string });
             navigateToOtp(formState.email as string);
         } catch (error) {
-            if (
-                error instanceof Error &&
-                error.message.toLowerCase().includes("invalid email address")
-            ) {
+            if (error instanceof Error && error.message.toLowerCase().includes("invalid email address")) {
                 toast.error("Invalid email address");
             }
         } finally {
@@ -88,9 +85,7 @@ export function AuthenticateWithEmail() {
                     placeholder="your@email.com"
                     className={cn(
                         "flex-grow py-4 text-sm font-normal outline-none",
-                        formState.email
-                            ? "bg-blue-600 text-white placeholder-blue-300"
-                            : "bg-white",
+                        formState.email ? "bg-blue-600 text-white placeholder-blue-300" : "bg-white",
                     )}
                     disabled={formState.isLoading}
                     required

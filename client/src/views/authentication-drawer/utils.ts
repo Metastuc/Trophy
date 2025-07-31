@@ -12,10 +12,7 @@ export const AuthenticationProfileSchema = z.object({
         z
             .instanceof(File)
             .refine((file) => file.size < 10 * 1024 * 1024, "File size must be less than 10MB")
-            .refine(
-                (file) => ["image/jpeg", "image/png"].includes(file.type),
-                "Only JPEG and PNG formats are allowed",
-            )
+            .refine((file) => ["image/jpeg", "image/png"].includes(file.type), "Only JPEG and PNG formats are allowed")
             .optional(),
         z.literal("default-pfp.svg"),
     ]),

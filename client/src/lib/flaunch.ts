@@ -80,11 +80,7 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
     return hash;
 };
 
-export const buyCreatorToken = async (
-    coinAddress: Address,
-    amount: string,
-    provider: EIP1193Provider,
-) => {
+export const buyCreatorToken = async (coinAddress: Address, amount: string, provider: EIP1193Provider) => {
     const flaunch = await flaunchClient(provider);
     const hash = await flaunch.buyCoin({
         coinAddress,

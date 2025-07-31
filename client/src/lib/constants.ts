@@ -24,9 +24,7 @@ export const REVENUE_MANAGER_ADDRESS = `0x${""}`;
 export const BACKEND_URL = "http://localhost:4500";
 
 export const moralisChain =
-    environment === "development"
-        ? Moralis.EvmUtils.EvmChain.BASE_SEPOLIA
-        : Moralis.EvmUtils.EvmChain.BASE;
+    environment === "development" ? Moralis.EvmUtils.EvmChain.BASE_SEPOLIA : Moralis.EvmUtils.EvmChain.BASE;
 
 const addresses = {
     development: [""],

@@ -49,9 +49,7 @@ function RenderModal() {
                 <RenderUser />
             </AlertDialogTrigger>
 
-            <AlertDialogContent className="gap-8 rounded-none border-none p-0">
-                hello
-            </AlertDialogContent>
+            <AlertDialogContent className="gap-8 rounded-none border-none p-0">hello</AlertDialogContent>
         </AlertDialog>
     );
 }

@@ -68,14 +68,7 @@ export async function makeRequest<T>({
             ? await axios({ url, method, params, headers, data })
             : await axiosInstance({ url, method, params, headers, data });
 
-        const {
-            config,
-            data: responseData,
-            headers: responseHeaders,
-            request,
-            status,
-            statusText,
-        } = response;
+        const { config, data: responseData, headers: responseHeaders, request, status, statusText } = response;
 
         /**
          * Return the response data and status.

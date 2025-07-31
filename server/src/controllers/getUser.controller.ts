@@ -9,7 +9,6 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!username) {
       res.status(400).json({
-        status: "error",
         message: "username is required",
       });
       return;
@@ -46,7 +45,7 @@ export const getUser = async (req: Request, res: Response) => {
     await RedisClient.set(`stream:${username}`, JSON.stringify(streams));
 
     res.status(200).json({
-      status: "success",
+      message: "User data retrieved successfully",
       user,
       streams,
     });

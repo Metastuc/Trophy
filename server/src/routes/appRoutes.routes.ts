@@ -12,12 +12,14 @@ import { authenticate } from "../middlewares/authenticate";
 import { onboard } from "../controllers/onboard.controller";
 import { uploadPfp } from "../utils/pfp";
 import { getStream } from "../controllers/getStream.controller";
+import { createLiveStream } from "../controllers/createLiveStream";
 
 const router = Router();
 
 router
   .post("/onboard", uploadPfp.single("pfp"), authenticate, onboard)
   .post("/create-stream", authenticate, createStream)
+  .post("/create-live-stream", authenticate, createLiveStream)
   .post("/join-stream", getAccessToken)
   .post("/update-stream", authenticate, scheduleActions)
   .post("/update-fees", feesUpdate)

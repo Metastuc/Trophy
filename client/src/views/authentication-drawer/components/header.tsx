@@ -12,11 +12,7 @@ export function AuthenticationDrawerHeader() {
             return <DrawerTitle className="text-center font-normal">Log in or sign up</DrawerTitle>;
 
         case "email":
-            return (
-                <DrawerTitle className="text-center font-normal">
-                    Log in or sign up with email
-                </DrawerTitle>
-            );
+            return <DrawerTitle className="text-center font-normal">Log in or sign up with email</DrawerTitle>;
 
         case "farcaster":
             return;

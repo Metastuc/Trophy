@@ -36,13 +36,7 @@ export default function Component() {
 }
 
 const icon = (
-    <svg
-        width={360}
-        height={72}
-        viewBox="0 0 360 72"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width={360} height={72} viewBox="0 0 360 72" fill="none" xmlns="http://www.w3.org/2000/svg">
         <foreignObject x={-18.6518} y={-18.6518} width={397.304} height={109.304}>
             <svg
                 xmlns="http://www.w3.org/1999/xhtml"

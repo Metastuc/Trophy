@@ -11,11 +11,7 @@ export default defineConfig({
         "process.env": {},
     },
 
-    plugins: [
-        TanStackRouterVite({ target: "react", autoCodeSplitting: true }),
-        tailwindcss(),
-        react(),
-    ],
+    plugins: [TanStackRouterVite({ target: "react", autoCodeSplitting: true }), tailwindcss(), react()],
 
     resolve: {
         alias: {

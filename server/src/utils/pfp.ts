@@ -33,18 +33,20 @@ export const uploadPfp = multer({
   }),
 });
 
-export const deletePfp = async (pfpUrl: string) => { 
+export const deletePfp = async (pfpUrl: string) => {
   if (!pfpUrl) return;
 
   const s3 = getS3Client();
   const key = pfpUrl.split(".com/")[1];
 
   try {
-    await s3.send(new DeleteObjectCommand({
-      Bucket: AWS_S3_BUCKET,
-      Key: key,
-    }));
+    await s3.send(
+      new DeleteObjectCommand({
+        Bucket: AWS_S3_BUCKET,
+        Key: key,
+      }),
+    );
   } catch (error) {
     console.error("Failed to delete profile picture:", error);
   }
-}
+};

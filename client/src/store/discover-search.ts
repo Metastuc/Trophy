@@ -5,8 +5,9 @@ interface iUseDiscoverSearchStore {
     toggleIsVisible: () => void;
 }
 
-export const useDiscoverSearchStore: UseBoundStore<StoreApi<iUseDiscoverSearchStore>> =
-    create<iUseDiscoverSearchStore>((set) => ({
+export const useDiscoverSearchStore: UseBoundStore<StoreApi<iUseDiscoverSearchStore>> = create<iUseDiscoverSearchStore>(
+    (set) => ({
         isVisible: false,
         toggleIsVisible: () => set((state) => ({ isVisible: !state.isVisible })),
-    }));
+    }),
+);

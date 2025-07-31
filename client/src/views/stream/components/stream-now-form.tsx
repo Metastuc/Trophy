@@ -25,7 +25,7 @@ export function StreamNowForm() {
                 console.log(`token: ${response.data.token}`, `roomId: ${response.data.roomId}`);
 
                 toast.success(response.data.message);
-                navigate({ to: `/streams/$id`, params: { id: response.data.roomId } });
+                navigate({ to: `/live/$id`, params: { id: response.data.roomId } });
                 setSteamInfo({ roomId: response.data.roomId, roomToken: response.data.token });
             },
         },
@@ -84,8 +84,7 @@ export function StreamNowForm() {
                 </div>
 
                 <p className="text-xs">
-                    You can brodcast your livestreams to X and YouTube by including the RMTP URL to
-                    your{" "}
+                    You can brodcast your livestreams to X and YouTube by including the RMTP URL to your{" "}
                     <Link to="/profile" className="text-blue100">
                         profile
                     </Link>

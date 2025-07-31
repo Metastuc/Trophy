@@ -5,10 +5,7 @@ export const StreamArticleContext = React.createContext<iStreamArticle | null>(n
 export function useStreamArticleContext() {
     const context = React.useContext(StreamArticleContext);
 
-    if (!context)
-        throw new Error(
-            "useStreamArticleContext must be used within a StreamArticleContextProvider",
-        );
+    if (!context) throw new Error("useStreamArticleContext must be used within a StreamArticleContextProvider");
 
     return context;
 }
