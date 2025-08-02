@@ -1,14 +1,17 @@
+import { ARROW_DOWN_FILLED } from "@/assets/icons";
 import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
 
 export function UserWallet() {
     return (
-        <section>
-            <header>
-                <span className="text-xs">Total Money</span>
-                <b className="text-2xl">$0</b>
-                <div>
-                    <i></i>
-                    <span>0.00%</span>
+        <section className="my-4">
+            <header className="flex flex-col">
+                <span className="text-blue100 text-xs">Total Money</span>
+                <b className="text-2xl font-medium">${"0.00"}</b>
+                <div className=" flex items-center justify-start gap-1">
+                    <i className="size-2 rotate-180 text-[#2DC24E]">
+                        <ARROW_DOWN_FILLED />
+                    </i>
+                    <span className="pt-0.5 text-[.5rem] text-black/50">0.00%</span>
                 </div>
             </header>
 
@@ -40,4 +43,3 @@ export function UserWallet() {
         </section>
     );
 }
-// w-22 h-7.5
