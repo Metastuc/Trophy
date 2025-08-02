@@ -1,8 +1,8 @@
 import { useLocalAudio, useLocalVideo, usePeerIds } from "@huddle01/react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
-
 import { logger } from "@/utils/logger";
+
 import { useStreamingUIContext } from "../context";
 import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";

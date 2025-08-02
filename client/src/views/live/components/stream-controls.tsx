@@ -1,3 +1,4 @@
+import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
 import React from "react";
 
@@ -5,7 +6,6 @@ import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
 
-import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { useStreamingUIContext, useStreamingUIPermissions } from "../context";
 
 export function StreamControls() {

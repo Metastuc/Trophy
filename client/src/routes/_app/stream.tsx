@@ -4,10 +4,10 @@ import React from "react";
 
 import { SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
 import { PageContentLayout } from "@/components/layouts/main-content";
+import { useTabSwitcher } from "@/hooks/tab-switcher";
 import { TabButton } from "@/views/stream/components/button";
 import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-form";
 import { StreamNowForm } from "@/views/stream/components/stream-now-form";
-import { useTabSwitcher } from "@/views/stream/hooks";
 
 export const Route = createFileRoute("/_app/stream")({
     beforeLoad({ context }) {
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_app/stream")({
 
     component() {
         const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
-        const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher("now");
+        const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<tStreamAction>("now");
         const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
             left: "0px",
             width: "0px",
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/_app/stream")({
                     <img src="/go-live.svg" alt="go-live" />
                 </figure>
 
-                <section className="space-y-3">
+                <footer className="space-y-3">
                     <aside className="flex items-center justify-center overflow-hidden">
                         <ul className="bg-blue100 relative flex w-full items-center justify-between rounded-lg p-1">
                             <TabButton
@@ -116,7 +116,7 @@ export const Route = createFileRoute("/_app/stream")({
                             ) : null}
                         </AnimatePresence>
                     </aside>
-                </section>
+                </footer>
             </PageContentLayout>
         );
     },

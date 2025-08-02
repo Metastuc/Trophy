@@ -1,5 +1,6 @@
-import { logger } from "@/utils/logger";
 import { usePeerIds, useRemoteScreenShare } from "@huddle01/react";
+
+import { logger } from "@/utils/logger";
 
 export function useScreenSharing() {
     const { peerIds } = usePeerIds({ roles: ["host", "cohost"] });
