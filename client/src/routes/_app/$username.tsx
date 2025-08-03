@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_app/$username")({
     },
 
     component() {
-        return <Page />;
+        return Page();
     },
 
     async loader({ context, params }) {
