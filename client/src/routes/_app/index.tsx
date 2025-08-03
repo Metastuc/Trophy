@@ -17,24 +17,28 @@ export const Route = createFileRoute("/_app/")({
     },
 
     component() {
-        const [content, setContent] = React.useState<tContent>("all");
-        const { dropdownButtons } = useLoaderData({ from: "/_app/" });
-
-        return (
-            <PageContentLayout className="space-y-10.5">
-                <Dropdown
-                    onChange={(value) => setContent(value as tContent)}
-                    options={dropdownButtons}
-                    icon="outlined"
-                    value={content}
-                />
-
-                <footer className="space-y-6.5">
-                    {[...Array(1)].map((_, index) => (
-                        <StreamArticle key={index} />
-                    ))}
-                </footer>
-            </PageContentLayout>
-        );
+        return Page();
     },
 });
+
+function Page() {
+    const [content, setContent] = React.useState<tContent>("all");
+    const { dropdownButtons } = useLoaderData({ from: "/_app/" });
+
+    return (
+        <PageContentLayout className="space-y-10.5">
+            <Dropdown
+                onChange={(value) => setContent(value as tContent)}
+                options={dropdownButtons}
+                icon="outlined"
+                value={content}
+            />
+
+            <footer className="space-y-6.5">
+                {[...Array(1)].map((_, index) => (
+                    <StreamArticle key={index} />
+                ))}
+            </footer>
+        </PageContentLayout>
+    );
+}

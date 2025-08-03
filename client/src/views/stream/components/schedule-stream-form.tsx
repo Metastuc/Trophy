@@ -1,16 +1,16 @@
 import { Link } from "@tanstack/react-router";
+import { Loader } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
+import { useServer } from "@/hooks/server";
+import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
 import { logger } from "@/utils/logger";
 
-import { useServer } from "@/hooks/server";
-import { cn } from "@/lib/utils";
-import { Loader } from "lucide-react";
-import { toast } from "sonner";
 import { DateTimePicker } from "./date-time-picker";
 
 export function ScheduleStreamForm() {

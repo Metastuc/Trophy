@@ -1,5 +1,6 @@
-import { ARROW_DOWN_FILLED } from "@/assets/icons";
 import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
+
+import { ARROW_DOWN_FILLED } from "@/assets/icons";
 
 export function UserWallet() {
     return (

@@ -1,14 +1,29 @@
 import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_app/$username")({
-    component: RouteComponent,
+import { getUser } from "@/api/get-user";
+import { logger } from "@/utils/logger";
 
-    loader({ context, params }) {
+export const Route = createFileRoute("/_app/$username")({
+    beforeLoad({ context, params }) {
         if (context.authenticationStore?.user?.backendUserData.user.username === params.username) {
             throw redirect({ to: "/profile" });
         }
+    },
 
-        return { username: params.username };
+    component() {
+        return <Page />;
+    },
+
+    async loader({ context, params }) {
+        const response = await context.queryClient.ensureQueryData(getUser({ username: params.username }));
+
+        if (!response) {
+            throw new Error("Unable to get user profile");
+        }
+
+        logger({ response });
+
+        return { user: response.user, streams: response.stream };
     },
 
     params: {
@@ -24,8 +39,8 @@ export const Route = createFileRoute("/_app/$username")({
     },
 });
 
-function RouteComponent() {
-    const { username } = useLoaderData({ from: "/_app/$username" });
+function Page() {
+    const { user, streams } = useLoaderData({ from: "/_app/$username" });
 
-    return <div>Hello "/_app/$username"! {username}</div>;
+    return <div>Hello "/_app/$username"! {user.username}</div>;
 }

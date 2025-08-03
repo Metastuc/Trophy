@@ -40,56 +40,60 @@ export const Route = createFileRoute("/live/$id")({
     },
 
     component() {
-        const { token, roomId } = useLoaderData({ from: "/live/$id" });
-
-        const { joinRoom, state } = useRoom({
-            onFailed(data) {},
-            onJoin(data) {
-                console.log("Joined room successfully", data);
-            },
-            onLeave(data) {},
-            onPeerJoin(data) {
-                console.log("Peer joined", data);
-            },
-            onPeerLeft(data) {},
-            onWaiting(data) {},
-        });
-
-        console.log({ state });
-
-        React.useEffect(
-            function () {
-                (async function () {
-                    if (state === "idle") {
-                        await joinRoom({ roomId, token });
-                    }
-                })();
-            },
-            [roomId, token],
-        );
-
-        return (
-            <section className="flex min-h-screen flex-col">
-                <header className="flex h-11.5 items-center justify-start px-3">
-                    <Link to="/">
-                        <img src="/trophy.svg" alt="trophy-logo" />
-                    </Link>
-                </header>
-
-                <footer className="flex flex-1">
-                    <PageContentLayout className="flex flex-1 flex-col">
-                        <StreamingUIContextProvider>
-                            <StreamScreen />
-                            <StreamContext />
-                            <Chatroom />
-                        </StreamingUIContextProvider>
-                    </PageContentLayout>
-                </footer>
-            </section>
-        );
+        return Page();
     },
 
     pendingComponent() {
         return <>loading...</>;
     },
 });
+
+function Page() {
+    const { token, roomId } = useLoaderData({ from: "/live/$id" });
+
+    const { joinRoom, state } = useRoom({
+        onFailed(data) {},
+        onJoin(data) {
+            console.log("Joined room successfully", data);
+        },
+        onLeave(data) {},
+        onPeerJoin(data) {
+            console.log("Peer joined", data);
+        },
+        onPeerLeft(data) {},
+        onWaiting(data) {},
+    });
+
+    console.log({ state });
+
+    React.useEffect(
+        function () {
+            (async function () {
+                if (state === "idle") {
+                    await joinRoom({ roomId, token });
+                }
+            })();
+        },
+        [roomId, token],
+    );
+
+    return (
+        <section className="flex min-h-screen flex-col">
+            <header className="flex h-11.5 items-center justify-start px-3">
+                <Link to="/">
+                    <img src="/trophy.svg" alt="trophy-logo" />
+                </Link>
+            </header>
+
+            <footer className="flex flex-1">
+                <PageContentLayout className="flex flex-1 flex-col">
+                    <StreamingUIContextProvider>
+                        <StreamScreen />
+                        <StreamContext />
+                        <Chatroom />
+                    </StreamingUIContextProvider>
+                </PageContentLayout>
+            </footer>
+        </section>
+    );
+}
