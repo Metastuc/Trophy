@@ -50,16 +50,24 @@ function Page() {
     const { token, roomId } = useLoaderData({ from: "/live/$id" });
 
     const { joinRoom, state } = useRoom({
-        onFailed(data) {},
+        onFailed(data) {
+            console.log("Failed to join room", data);
+        },
         onJoin(data) {
             console.log("Joined room successfully", data);
         },
-        onLeave(data) {},
+        onLeave(data) {
+            console.log("Left room", data);
+        },
         onPeerJoin(data) {
             console.log("Peer joined", data);
         },
-        onPeerLeft(data) {},
-        onWaiting(data) {},
+        onPeerLeft(data) {
+            console.log("Peer left", data);
+        },
+        onWaiting(data) {
+            console.log("Waiting for peers", data);
+        },
     });
 
     console.log({ state });

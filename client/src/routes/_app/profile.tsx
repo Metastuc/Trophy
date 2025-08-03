@@ -1,7 +1,6 @@
 import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
 import { TvMinimalPlay, Wallet } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import React from "react";
 import { toast } from "sonner";
 
 import { getUser } from "@/api/get-user";
@@ -37,12 +36,12 @@ export const Route = createFileRoute("/_app/profile")({
 
 function Page() {
     const { user } = useLoaderData({ from: "/_app/profile" });
-    const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
-    const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<tProfileScreens>("wallet");
-    const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
-        left: "0px",
-        width: "0px",
-    });
+    // const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
+    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("wallet");
+    // const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
+    //     left: "0px",
+    //     width: "0px",
+    // });
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
@@ -69,8 +68,8 @@ function Page() {
                             <b className="text-blue100 font-normal">{user.followers.length}</b> Followers
                         </span>
 
-                        <button>
-                            <span>Edit Profile</span>
+                        <button className="bg-blue100 ml-auto flex items-center justify-center rounded px-2">
+                            <span className="text-[0.5rem] text-white">Edit Profile</span>
                         </button>
                     </div>
                 </aside>

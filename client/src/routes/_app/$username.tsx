@@ -38,7 +38,7 @@ export const Route = createFileRoute("/_app/$username")({
 });
 
 function Page() {
-    const { user, streams } = useLoaderData({ from: "/_app/$username" });
+    const { user } = useLoaderData({ from: "/_app/$username" });
 
     return <div>Hello "/_app/$username"! {user.username}</div>;
 }

@@ -31,11 +31,11 @@ export function Swap() {
         (async () => setProvider(await wallet.getEthereumProvider()))();
     }, [wallet, provider]);
 
-    function handleSellAmountChange() {}
+    // function handleSellAmountChange() {}
 
-    function handleBuyAmountChange() {}
+    // function handleBuyAmountChange() {}
 
-    function handleSwap() {}
+    // function handleSwap() {}
 
     return (
         <section className="mx-auto max-w-md p-4">

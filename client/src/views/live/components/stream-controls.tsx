@@ -41,16 +41,21 @@ function RenderControlsBasedOnRole() {
 
     async function handleToggleVideo() {
         setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
-        isVideoOn ? await disableVideo() : await enableVideo();
+
+        if (isVideoOn) await disableVideo();
+        else await enableVideo();
     }
 
     async function handleToggleAudio() {
         setUserHasToggled((previous) => ({ ...previous, audio: !previous.audio }));
-        isAudioOn ? await disableAudio() : await enableAudio();
+
+        if (isAudioOn) await disableAudio();
+        else await enableAudio();
     }
 
     async function handleToggleScreenShare() {
-        shareStream ? await stopScreenShare() : await startScreenShare();
+        if (shareStream) await stopScreenShare();
+        else await startScreenShare();
     }
 
     return (
