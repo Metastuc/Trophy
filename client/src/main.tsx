@@ -1,7 +1,7 @@
 import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { createRouter, Link, RouterProvider } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { StrictMode } from "react";
@@ -19,6 +19,14 @@ const router = createRouter({
     context: {
         queryClient,
         authenticationStore: undefined,
+    },
+    defaultErrorComponent() {
+        return (
+            <div>
+                <p>An error has occured!</p>
+                <Link to="/">Go home</Link>
+            </div>
+        );
     },
     scrollRestoration: true,
     getScrollRestorationKey(location) {

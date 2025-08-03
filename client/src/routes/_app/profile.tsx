@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { getUser } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { useTabSwitcher } from "@/hooks/tab-switcher";
+import { logger } from "@/utils/logger";
 import { UserWallet } from "@/views/user-profile/components/wallet";
 
 export const Route = createFileRoute("/_app/profile")({
@@ -26,6 +27,8 @@ export const Route = createFileRoute("/_app/profile")({
             throw new Error("Unable to get user profile");
         }
 
+        logger({ response });
+
         return { user: response.user, streams: response.stream };
     },
 
@@ -37,6 +40,7 @@ export const Route = createFileRoute("/_app/profile")({
             left: "0px",
             width: "0px",
         });
+
         return (
             <PageContentLayout className="space-y-16.5 !px-0">
                 <header className="flex gap-1 px-4">
@@ -65,7 +69,7 @@ export const Route = createFileRoute("/_app/profile")({
                     </aside>
                 </header>
 
-                <footer className="rounded-t-xl border-t border-blue100">
+                <footer className="border-blue100 rounded-t-xl border-t">
                     <div className="relative flex items-center justify-center px-4">
                         <aside className="absolute -top-6.5 w-4/5 overflow-hidden">
                             <ul className="flex items-center justify-between">
