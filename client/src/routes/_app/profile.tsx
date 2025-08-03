@@ -32,9 +32,7 @@ export const Route = createFileRoute("/_app/profile")({
         return { user: response.user, streams: response.stream };
     },
 
-    component() {
-        return Page();
-    },
+    component: () => <Page />,
 });
 
 function Page() {
@@ -48,7 +46,7 @@ function Page() {
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
-            <header className="flex gap-1 px-4">
+            <header className="flex items-start gap-1 px-4">
                 <aside className="flex w-15 items-center justify-center">
                     {/* <img alt="user-pfp" className="size-14 rounded-full" src={user.userPfp} /> */}
                     <img
@@ -70,6 +68,10 @@ function Page() {
                         <span className="">
                             <b className="text-blue100 font-normal">{user.followers.length}</b> Followers
                         </span>
+
+                        <button>
+                            <span>Edit Profile</span>
+                        </button>
                     </div>
                 </aside>
             </header>

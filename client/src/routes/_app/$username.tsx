@@ -10,9 +10,7 @@ export const Route = createFileRoute("/_app/$username")({
         }
     },
 
-    component() {
-        return Page();
-    },
+    component: () => <Page />,
 
     async loader({ context, params }) {
         const response = await context.queryClient.ensureQueryData(getUser({ username: params.username }));

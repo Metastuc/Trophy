@@ -6,9 +6,7 @@ import StreamerBoard from "@/components/streamer-board";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 
 export const Route = createFileRoute("/_app/discover")({
-    component() {
-        return Page();
-    },
+    component: () => <Page />,
 });
 
 function Page() {

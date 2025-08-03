@@ -39,9 +39,7 @@ export const Route = createFileRoute("/live/$id")({
         return { token: response.token, roomId: params.id };
     },
 
-    component() {
-        return Page();
-    },
+    component: () => <Page />,
 
     pendingComponent() {
         return <>loading...</>;

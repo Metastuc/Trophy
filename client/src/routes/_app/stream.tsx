@@ -16,9 +16,7 @@ export const Route = createFileRoute("/_app/stream")({
         }
     },
 
-    component() {
-        return Page();
-    },
+    component: () => <Page />,
 });
 
 function Page() {
