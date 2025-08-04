@@ -61,6 +61,7 @@ export function StreamNowForm() {
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <input type="hidden" name="username" value={formState.username} />
+                <input type="hidden" name="walletAddress" value={formState.walletAddress} />
 
                 <div className="flex flex-col">
                     <label htmlFor="title">Title</label>

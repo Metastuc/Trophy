@@ -1,4 +1,5 @@
 import { BadgeDollarSign, Receipt } from "lucide-react";
+
 import { useUserProfileContext } from "../context";
 
 export function About() {
