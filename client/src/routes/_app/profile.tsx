@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_app/profile")({
 function Page() {
     const { user, streams } = useLoaderData({ from: "/_app/profile" });
     // const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
-    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("streams");
+    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("wallet");
     // const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
     //     left: "0px",
     //     width: "0px",

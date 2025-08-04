@@ -41,7 +41,7 @@ export function About() {
                     </span>
 
                     {isCurrentUser ? (
-                        <button className="bg-blue100 ml-auto flex items-center justify-center rounded px-2">
+                        <button className="bg-blue100 ml-auto flex items-center justify-center rounded-xs px-2">
                             <span className="text-[0.5rem] text-white">Edit Profile</span>
                         </button>
                     ) : null}
@@ -49,11 +49,11 @@ export function About() {
 
                 {!isCurrentUser ? (
                     <div className="flex items-center gap-5 mt-2">
-                        <button className="bg-blue100 w-22 py-1 flex items-center justify-center gap-1 rounded">
+                        <button className="bg-blue100 w-22 py-1 flex items-center justify-center gap-1 rounded-xs">
                             <span className="text-xs text-white pt-0.5">Follow</span>
                         </button>
 
-                        <button className="bg-blue100 flex w-22 items-center justify-center gap-1 rounded py-1 text-white">
+                        <button className="bg-blue100 flex w-22 items-center justify-center gap-1 rounded-xs py-1 text-white">
                             <i className="size-3">
                                 <Receipt />
                             </i>

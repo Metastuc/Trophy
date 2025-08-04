@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
-import { TvMinimalPlay, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
 import { getUser } from "@/api/get-user";
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/_app/$username")({
 
 function Page() {
     const { user, streams } = useLoaderData({ from: "/_app/$username" });
-    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("streams");
+    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("holdings");
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
@@ -73,10 +73,7 @@ function Page() {
                                         className="text-blue100 flex items-center justify-center gap-1"
                                         onClick={() => handleTabClick("streams")}
                                     >
-                                        <span>Streams</span>
-                                        <i className="size-4">
-                                            <TvMinimalPlay />
-                                        </i>
+                                        <span>Scheduled Streams</span>
                                     </button>
                                 </li>
                             </ul>
