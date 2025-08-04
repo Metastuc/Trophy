@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_app/$username")({
             }
 
             return {
-                username: data.username.slice(1), // remove the '@'
+                username: data.username.slice(1),
             };
         },
     },
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/_app/$username")({
 
 function Page() {
     const { user, streams } = useLoaderData({ from: "/_app/$username" });
-    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("holdings");
+    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("streams");
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">

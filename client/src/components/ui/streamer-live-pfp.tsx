@@ -1,9 +1,10 @@
 interface iProps {
     imageSrc: string;
     imageAlt: string;
+    isLive?: boolean;
 }
 
-export function StreamerLivePFP({ imageSrc, imageAlt }: iProps) {
+export function StreamerLivePFP({ imageSrc, imageAlt, isLive }: iProps) {
     return (
         <section className="relative flex size-full items-center justify-center">
             <div className="size-full rounded-full bg-gradient-to-br from-[#7638FA] via-[#D300C5] to-[#2B55E2] p-0.25">
@@ -18,11 +19,13 @@ export function StreamerLivePFP({ imageSrc, imageAlt }: iProps) {
                 </div>
             </div>
 
-            <div className="absolute -bottom-[.1875rem] flex items-center justify-center rounded-xs bg-white p-[1px]">
-                <div className="bg-blue100 flex h-[.3125rem] w-[.5625rem] items-center justify-center rounded-[1px]">
-                    <span className="ml-[.0625rem] h-[4px] text-[.1875rem] text-white">Live</span>
+            {isLive ? (
+                <div className="absolute -bottom-[.1875rem] flex items-center justify-center rounded-xs bg-white p-[1px]">
+                    <div className="bg-blue100 flex h-[.3125rem] w-[.5625rem] items-center justify-center rounded-[1px]">
+                        <span className="ml-[.0625rem] h-[4px] text-[.1875rem] text-white">Live</span>
+                    </div>
                 </div>
-            </div>
+            ) : null}
         </section>
     );
 }
