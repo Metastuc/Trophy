@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  streamKey: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   email: {
     type: String,
     unique: true,
