@@ -1,1 +1,1 @@
-type tProfileScreens = "wallet" | "streams";
+type tProfileScreens = "wallet" | "streams" | "holdings";
