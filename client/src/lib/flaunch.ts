@@ -1,5 +1,5 @@
 /* eslint-disable simple-import-sort/imports */
-import { ReadWriteFlaunchSDK, createFlaunch } from "@flaunch/sdk";
+import { createFlaunch, ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, parseEther } from "viem";
 
@@ -16,7 +16,7 @@ const flaunchClient = async (provider: EIP1193Provider) => {
     if (!fClient) {
         const walletClient = getWalletClient(provider);
 
-        fClient = new createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
+        fClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }
 
     return fClient;
@@ -26,7 +26,7 @@ const flaunchClient = async (provider: EIP1193Provider) => {
 const sFlaunchClient = async (provider: EIP1193Provider) => {
     const walletClient = await getSmartAccount(provider);
 
-    const sClient = new createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
+    const sClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
 
     return sClient;
 };
