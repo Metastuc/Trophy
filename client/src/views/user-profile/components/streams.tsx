@@ -1,25 +1,45 @@
+import { Dropdown } from "@/components/ui/dropdown";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarPlus, Link, Projector, SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import React from "react";
 import { useUserProfileContext } from "../context";
 
 export function Streams() {
+    let content: React.ReactNode;
     const { isCurrentUser, streams } = useUserProfileContext();
 
-    if (isCurrentUser) return <UserStreams />;
+    switch (true) {
+        case isCurrentUser:
+            content = <UserStreams />;
+            break;
 
-    return streams.map(function (value, index) {
-        return <StreamArticle key={index} {...value} />;
-    });
+        default:
+            content = streams.map((value, index) => <StreamArticle key={index} {...value} />);
+            break;
+    }
+
+    return <div className="py-4">{content}</div>;
 }
 
 function UserStreams() {
     const { streams } = useUserProfileContext();
+    const [content, setContent] = React.useState<tStreamSelection>("scheduled");
 
     return (
-        <section>
-            <header>scheduled streams</header>
+        <section className="space-y-6">
+            <header>
+                <Dropdown
+                    onChange={(value) => setContent(value as tStreamSelection)}
+                    options={[
+                        { title: "Scheduled", value: "scheduled" },
+                        { title: "Recorded", value: "recorded" },
+                    ]}
+                    icon="outlined"
+                    value={content}
+                />
+            </header>
 
             <footer className="space-y-3.5">
                 {streams.map(function (value, index) {
