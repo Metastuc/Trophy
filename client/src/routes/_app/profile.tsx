@@ -7,6 +7,7 @@ import { getUser } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { useTabSwitcher } from "@/hooks/tab-switcher";
 import { logger } from "@/utils/logger";
+import { About } from "@/views/user-profile/components/about";
 import { Streams } from "@/views/user-profile/components/streams";
 import { UserWallet } from "@/views/user-profile/components/wallet";
 import { UserProfileContextProvider } from "@/views/user-profile/context";
@@ -48,35 +49,7 @@ function Page() {
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
             <UserProfileContextProvider streams={streams} user={user} isCurrentUser={true}>
-                <header className="flex items-start gap-1 px-4">
-                    <aside className="flex w-15 items-center justify-center">
-                        {/* <img alt="user-pfp" className="size-14 rounded-full" src={user.userPfp} /> */}
-                        <img
-                            alt="user-pfp"
-                            className="size-14 rounded-full object-cover"
-                            src="https://www.dummyimage.com/200x200/000/fff"
-                        />
-                    </aside>
-
-                    <aside className="flex-1 space-y-1">
-                        <h3 className="font-medium">@{user.username}</h3>
-
-                        {user.bio ? <p className="max-h-16 min-h-8 w-48 overflow-hidden text-sm">{user.bio}</p> : null}
-
-                        <div className="flex gap-2">
-                            <span className="">
-                                <b className="text-blue100 font-normal">{user.following.length}</b> Following
-                            </span>
-                            <span className="">
-                                <b className="text-blue100 font-normal">{user.followers.length}</b> Followers
-                            </span>
-
-                            <button className="bg-blue100 ml-auto flex items-center justify-center rounded px-2">
-                                <span className="text-[0.5rem] text-white">Edit Profile</span>
-                            </button>
-                        </div>
-                    </aside>
-                </header>
+                <About />
 
                 <footer className="border-blue100 rounded-t-xl border-t">
                     <div className="relative flex items-center justify-center px-4">
