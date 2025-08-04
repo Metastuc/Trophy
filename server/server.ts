@@ -38,10 +38,10 @@ io.on("connection", (socket) => {
 
   function formatNumber(num: string) {
     const amount = Number(num);
-    if (amount >= 1000000000000) return (amount / 1000000000000).toFixed(1).replace(/\.0$/, "") + "T";
-    if (amount >= 1000000000) return (amount / 1000000000).toFixed(1).replace(/\.0$/, "") + "B";
-    if (amount >= 1000000) return (amount / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-    if (amount >= 1000) return (amount / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    if (amount >= 1_000_000_000_000) return (amount / 1_000_000_000_000).toFixed(1).replace(/\.0$/, "") + "T";
+    if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+    if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (amount >= 1_000) return (amount / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
     return amount.toString();
   }
 
@@ -143,6 +143,10 @@ io.on("connection", (socket) => {
   socket.on("join-chat", (data) => {
     socket.join(data.roomId);
   });
+
+  socket.on("livestream-started", (data) => {
+    
+  })
 
   socket.on("chat-message", (data) => {
     console.log(`💬 Message from ${data.username}: ${data.message}`);

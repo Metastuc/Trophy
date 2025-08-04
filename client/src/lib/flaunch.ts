@@ -1,10 +1,9 @@
-import { createDrift } from "@delvtech/drift";
-import { viemAdapter } from "@delvtech/drift-viem";
-import { ReadWriteFlaunchSDK } from "@flaunch/sdk";
+/* eslint-disable simple-import-sort/imports */
+import { ReadWriteFlaunchSDK, createFlaunch } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, parseEther } from "viem";
 
-import { ENV_SCHEMA, network, REVENUE_MANAGER_ADDRESS } from "./constants";
+import { ENV_SCHEMA, REVENUE_MANAGER_ADDRESS } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getPublicClient, getWalletClient } from "./viem";
@@ -15,12 +14,9 @@ const publicClient = getPublicClient();
 
 const flaunchClient = async (provider: EIP1193Provider) => {
     if (!fClient) {
-        const walletClient = await getWalletClient(provider);
-        const drift = createDrift({
-            adapter: viemAdapter({ publicClient, walletClient }),
-        });
+        const walletClient = getWalletClient(provider);
 
-        fClient = new ReadWriteFlaunchSDK(network.id, drift);
+        fClient = new createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }
 
     return fClient;
@@ -29,11 +25,8 @@ const flaunchClient = async (provider: EIP1193Provider) => {
 // The sFlaunch means sponsored flaunch (We're sponsoring deployment gas for creator tokens)
 const sFlaunchClient = async (provider: EIP1193Provider) => {
     const walletClient = await getSmartAccount(provider);
-    const drift = createDrift({
-        adapter: viemAdapter({ publicClient, walletClient }),
-    });
 
-    const sClient = new ReadWriteFlaunchSDK(network.id, drift);
+    const sClient = new createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
 
     return sClient;
 };

@@ -6,6 +6,8 @@ import { Stream } from "../models/streamSchema.js";
 import { User } from "../models/userSchema.js";
 import { sendScheduleEmail } from "../utils/emailNotis.js";
 import { RedisClient } from "../config/db.js";
+import Janus from "janus-gateway";
+import ws from "ws";
 
 const formatDate = (date: Date) => {
   const year = date.getUTCFullYear();
@@ -20,7 +22,7 @@ const formatDate = (date: Date) => {
 
 export const createStream = async (req: Request, res: Response) => {
   try {
-    const { title, date, username } = req.body;
+    const { title, date, username, liveStream } = req.body;
 
     if (!username) {
       res.status(400).json({ error: "Username is required!" });
@@ -95,6 +97,10 @@ export const createStream = async (req: Request, res: Response) => {
         roomId,
         token,
       });
+
+      setTimeout(async () => {
+        await startLiveStream(roomId, user.streamKey, "rtmps://ca.pscp.tv:443/x/gw4t5gbe8245", user.YTUrl)
+      }, 30000)
     }
   } catch (error) {
     console.error(error);
@@ -104,6 +110,70 @@ export const createStream = async (req: Request, res: Response) => {
   }
 };
 
+let janusClient: Janus | undefined = undefined;
+
+export const startLiveStream = async (room: string, streamKey: string, xUrl: string | null | undefined, ytUrl: string | null | undefined) => {
+  try {
+    return new Promise((resolve, reject) => {
+
+      if (!janusClient) {
+        Janus.init({ debug: "all" });
+
+        janusClient = new Janus({
+          server: "wss://zcgw8oook4wsc4gc4k8s0og4.31.97.115.84.sslip.io:8088",
+          success: () => console.log("Janus client initialized successfully"),
+          error: (error: any) => {
+            console.error("Error initializing Janus client:", error);
+            throw new Error("Failed to initialize Janus client");
+          },
+        })
+      }
+
+      janusClient.attach({
+        plugin: "janus.plugin.videoroom",
+        success: (pluginHandle: any) => {
+
+          pluginHandle.send({
+            message: {
+              request: "join",
+              room,
+              ptype: "publisher",
+              display: streamKey
+            },
+            success: () => {
+              pluginHandle.createOffer({
+                media: { audio: true, video: true },
+                success: (jsep: any) => {
+                  const rtmpUrl = `rtmp://localhost/live/${streamKey}?yt_url=${encodeURIComponent(ytUrl || '')}&x_url=${encodeURIComponent(xUrl || '')}`;
+                  pluginHandle.send({
+                    message: {
+                      request: 'configure',
+                      audio: true,
+                      video: true,
+                      rtmp: { url: rtmpUrl }
+                    },
+                    jsep,
+                    success: async () => {
+                      await RedisClient.set(streamKey, JSON.stringify({ pluginHandle }));
+                    },
+                    error: reject
+                  });
+                },
+                error: reject
+              });
+            },
+            error: reject
+          });
+        },
+        error: reject
+      })
+    });
+  } catch (error: any) {
+    console.error(error)
+    throw new Error(error.message)
+  }
+}
+
 export const stopStream = async (req: Request, res: Response) => {
   try {
     const { roomId, username } = req.body;
@@ -112,6 +182,9 @@ export const stopStream = async (req: Request, res: Response) => {
       res.status(400).json({ error: "room id and username is required!" });
       return;
     }
+
+    const userFetch = await RedisClient.get(`user:${username}`);
+    const { streamKey } = JSON.parse(userFetch!)
 
     const liveStream = await Stream.findOne({ roomId });
     if (!liveStream) {
@@ -124,6 +197,8 @@ export const stopStream = async (req: Request, res: Response) => {
       return;
     }
 
+    await stopLiveStream(streamKey);
+
     liveStream.status = "Ended";
     await liveStream.save();
 
@@ -131,4 +206,22 @@ export const stopStream = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ error: error.message })
   }
+}
+
+async function stopLiveStream(streamKey: string): Promise<void> {
+  const session = await RedisClient.get(streamKey);
+  if (!session) return;
+
+  const { pluginHandle } = JSON.parse(session);
+  pluginHandle.send({
+    message: { request: 'leave' },
+    success: () => {
+      pluginHandle.detach({
+        success: async () => {
+          await RedisClient.del(streamKey);
+          console.log(`Stream ${streamKey} stopped`);
+        }
+      });
+    }
+  });
 }

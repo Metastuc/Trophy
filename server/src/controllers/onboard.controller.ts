@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { RedisClient } from "../config/db";
+import cryptoRandomString from "crypto-random-string";
 
 export async function onboard(request: Request, response: Response) {
   const privyId = request.privyUser?.userId;
@@ -16,7 +17,11 @@ export async function onboard(request: Request, response: Response) {
         return;
       }
 
-      const user = await User.create({ bio, email, privyId, username, userPfp, walletAddress });
+      const randString = cryptoRandomString({ length: 8, type: "alphanumeric" });
+
+      const streamKey = `trophy:${randString}`;
+
+      const user = await User.create({ bio, email, privyId, username, userPfp, walletAddress, streamKey });
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 
