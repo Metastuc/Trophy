@@ -35,8 +35,8 @@ function UserStreams() {
                 <Dropdown
                     onChange={(value) => setContent(value as tStreamSelection)}
                     options={[
-                        { title: "Scheduled", value: "scheduled" },
-                        { title: "Recorded", value: "recorded" },
+                        { title: "Scheduled streams", value: "scheduled" },
+                        { title: "Recorded streams", value: "recorded" },
                     ]}
                     icon="outlined"
                     value={content}
