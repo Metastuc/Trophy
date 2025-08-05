@@ -13,6 +13,8 @@ export async function authenticate(request: Request, response: Response, next: N
     return;
   }
 
+  console.log(authorizationHeader);
+
   try {
     request.privyUser = await privy.verifyAuthToken(authorizationHeader.split(" ")[1], PRIVY_KEY);
 
