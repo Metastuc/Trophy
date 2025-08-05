@@ -15,15 +15,6 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
     const { authenticated, ready, user: privyUser } = usePrivy();
     const lastFetchedUserIdRef = React.useRef<string | null>(null);
 
-    // logger({ authenticated, ready, privyUser });
-    console.log();
-    console.log();
-    console.log();
-    console.log({ authenticated, ready, privyUser });
-    console.log();
-    console.log();
-    console.log();
-
     const goToFinish = useAuthenticationDrawerNavigationStore((state) => state.goToFinish);
     const openDrawer = useAuthenticationDrawerStateStore((state) => state.openDrawer);
 
@@ -59,6 +50,15 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
 
             (async function () {
                 const accessToken = await getAccessToken();
+
+                console.log();
+                console.log();
+                console.log();
+                console.log({ authenticated, ready, privyUser, accessToken });
+                console.log();
+                console.log();
+                console.log();
+
                 setToken(accessToken as string);
 
                 const response = await fetchUser();
