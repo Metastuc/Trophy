@@ -9,23 +9,19 @@ import { useStreamingUIRoles } from "../hooks";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { screenSharing } = useStreamingUIContext();
-    const { peerIds: coHostIds } = usePeerIds({ roles: ["coHost"] });
+    const { screenSharing, setScreenSharing } = useStreamingUIContext();
     const { shareStream } = useLocalScreenShare();
     const isScreenSharing = screenSharing.someoneIsSharingTheirScreen || !!shareStream;
 
+    React.useEffect(() => {
+        if (isScreenSharing) setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: true }));
+        else setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: false }));
+    }, [isScreenSharing]);
+
     return (
-        <div className={cn("grid h-full", "streamer-grid", isScreenSharing && "grid-row-3 grid-cols-8")}>
+        <div className={cn("grid size-full", "streamer-grid", isScreenSharing && "grid-row-3 grid-cols-8")}>
             <RenderStreamers role="host" />
             <RenderStreamers role="coHost" />
-            {/* <p className="aspect-video text-white">screen</p>
-            <p className="aspect-video text-white">host</p>
-            <p className="aspect-video text-white">co 1</p>
-            <p className="aspect-video text-white">co 2</p>
-            <p className="aspect-video text-white">co 3</p>
-            <p className="aspect-video text-white">co 4</p> */}
-            {/* <p className="aspect-video text-white"></p> */}
-            {/* <p className="aspect-video text-white"></p> */}
         </div>
     );
 }
