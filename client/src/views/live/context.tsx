@@ -1,6 +1,7 @@
-import { logger } from "@/utils/logger";
 import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
+
+import { logger } from "@/utils/logger";
 
 export const StreamingUIContext: React.Context<iStreamingUIContext> = React.createContext<iStreamingUIContext>(
     {} as iStreamingUIContext,

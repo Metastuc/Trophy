@@ -1,7 +1,8 @@
 import { useRemoteAudio, useRemoteScreenShare, useRemoteVideo } from "@huddle01/react/hooks";
+import React from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
-import React from "react";
+
 import { useStreamingUIContext } from "../context";
 
 export function StreamerRemote({ peerId }: { peerId: string }) {

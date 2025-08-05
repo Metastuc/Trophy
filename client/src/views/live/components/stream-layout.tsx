@@ -1,9 +1,9 @@
 import { useLocalAudio, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
+import React from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
-
 import { cn } from "@/lib/utils";
-import React from "react";
+
 import { useStreamingUIContext } from "../context";
 import { useStreamingUIRoles } from "../hooks";
 import { StreamerRemote } from "./streamer-remote";
