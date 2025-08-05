@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 import { createFlaunch, ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, parseEther } from "viem";

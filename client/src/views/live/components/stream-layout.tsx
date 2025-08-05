@@ -2,12 +2,11 @@ import { useLocalAudio, useLocalVideo, usePeerIds } from "@huddle01/react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 
-import { useStreamingUIContext } from "../context";
+import { useStreamingUIRoles } from "../hooks";
 import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    // const { isSomeoneSharingTheirScreen } = useStreamingUIContext();
     const { peerIds: coHostIds } = usePeerIds({ roles: ["coHost"] });
 
     const totalNumberOfCoHosts = coHostIds.length;
@@ -47,12 +46,13 @@ export function StreamLayout() {
 function HostOnly() {
     let content: React.ReactNode;
 
-    const { isHost } = useStreamingUIContext();
+    const { host } = useStreamingUIRoles();
     const { peerIds: hostId } = usePeerIds({ roles: ["host"] });
+
     const { stream: localStream, isVideoOn } = useLocalVideo();
     const { stream: localAudio, isAudioOn } = useLocalAudio();
 
-    if (isHost) {
+    if (host) {
         if (isVideoOn && localStream) {
             content = (
                 <StreamerVideoTile

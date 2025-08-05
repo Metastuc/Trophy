@@ -1,6 +1,9 @@
 import { usePeerIds, useRemoteScreenShare } from "@huddle01/react";
+import React from "react";
 
 import { logger } from "@/utils/logger";
+
+import { StreamingUIContext } from "./context";
 
 export function useScreenSharing() {
     const { peerIds } = usePeerIds({ roles: ["host", "cohost"] });
@@ -27,4 +30,23 @@ export function useScreenSharing() {
         isSomeoneSharingTheirScreen: !!whatPeerIsPresentlySharing?.peerId,
         screenSharerPeerId: whatPeerIsPresentlySharing?.peerId || null,
     };
+}
+
+// import React from "react";
+
+// export function useScreenSharing() {
+//     const [screenSharing, setScreenSharing] = React.useState(() => ({
+//         someoneIsSharingTheirScreen: false,
+//         whoIsSharingTheirScreen: null,
+//     }));
+// }
+
+export function useStreamingUIPermissions() {
+    const context: iStreamingUIContext = React.useContext(StreamingUIContext);
+    return context.permissions;
+}
+
+export function useStreamingUIRoles() {
+    const context: iStreamingUIContext = React.useContext(StreamingUIContext);
+    return context.roomRoles;
 }

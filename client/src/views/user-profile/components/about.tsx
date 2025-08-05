@@ -49,9 +49,9 @@ export function About() {
                 </div>
 
                 {!isCurrentUser ? (
-                    <div className="flex items-center gap-5 mt-2">
-                        <button className="bg-blue100 w-22 py-1 flex items-center justify-center gap-1 rounded-xs">
-                            <span className="text-xs text-white pt-0.5">Follow</span>
+                    <div className="mt-2 flex items-center gap-5">
+                        <button className="bg-blue100 flex w-22 items-center justify-center gap-1 rounded-xs py-1">
+                            <span className="pt-0.5 text-xs text-white">Follow</span>
                         </button>
 
                         <button className="bg-blue100 flex w-22 items-center justify-center gap-1 rounded-xs py-1 text-white">

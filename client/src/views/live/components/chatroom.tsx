@@ -40,11 +40,11 @@ export function Chatroom() {
                 </aside>
 
                 <aside className="flex items-center gap-3">
-                    <button className="flex h-6 w-20 items-center justify-center rounded bg-gradient-to-b from-[#2D57FF] to-[#1B3499] text-white gap-1">
+                    <button className="flex h-6 w-20 items-center justify-center gap-1 rounded bg-gradient-to-b from-[#2D57FF] to-[#1B3499] text-white">
                         <i className="size-4">
                             <CircleDollarSign />
                         </i>
-                        <span className="text-xs pt-0.5">Send tip</span>
+                        <span className="pt-0.5 text-xs">Send tip</span>
                     </button>
 
                     <button>Trade</button>

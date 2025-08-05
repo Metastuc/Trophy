@@ -6,9 +6,10 @@ import { logger } from "@/utils/logger";
 export function StreamerRemote({ peerId }: { peerId: string }) {
     const { stream: audioStream, state: audioState } = useRemoteAudio({ peerId });
     const { stream: videoStream, state: videoStreamState } = useRemoteVideo({ peerId });
-    const { videoStream: screenVideo, audioStream: screenAudio } = useRemoteScreenShare({ peerId });
+    const { videoStream: screenVideo, audioStream: screenAudio, state: screenState } = useRemoteScreenShare({ peerId });
 
-    logger({ screenShare: useRemoteScreenShare({ peerId }) });
+    const isSharingScreen = !!screenVideo && screenState === "playable";
+    logger({ isSharingScreen });
 
     return (
         <StreamerVideoTile

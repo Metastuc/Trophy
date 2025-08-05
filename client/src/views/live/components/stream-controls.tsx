@@ -6,7 +6,8 @@ import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
 
-import { useStreamingUIContext, useStreamingUIPermissions } from "../context";
+import { useStreamingUIContext } from "../context";
+import { useStreamingUIPermissions } from "../hooks";
 
 export function StreamControls() {
     const { viewerCount } = useStreamingUIContext();

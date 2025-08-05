@@ -29,3 +29,22 @@ interface iStreamingUIPermissions {
     canToggleChat: boolean;
     canToggleVideo: boolean;
 }
+
+interface iRoomRoles {
+    host: boolean;
+    coHost: boolean;
+    speaker: boolean;
+    listener: boolean;
+    guest: boolean;
+    bot: boolean;
+}
+
+interface iStreamingUIContext {
+    viewerCount: number;
+    permissions: iStreamingUIPermissions;
+    roomRoles: iRoomRoles;
+    setUserHasToggled: React.Dispatch<React.SetStateAction<{ audio: boolean; video: boolean }>>;
+    // setScreenSharing: React.Dispatch<
+    //     React.SetStateAction<{ someoneIsSharingTheirScreen: boolean; whoIsSharingTheirScreen: string | null }>
+    // >;
+}
