@@ -18,8 +18,9 @@ export async function authenticate(request: Request, response: Response, next: N
 
     next();
   } catch (error) {
+    console.error(error);
     response.status(403).json({
-      status: "error",
+      error: (error as Error).message,
       message: "invalid token",
     });
   }
