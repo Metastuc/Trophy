@@ -11,8 +11,9 @@ import { useStreamingUIPermissions } from "../hooks";
 
 export function StreamControls() {
     const { viewerCount } = useStreamingUIContext();
-    const hideTimeout = React.useRef<NodeJS.Timeout | null>(null);
     const [isControlsVisible, setIsControlsVisible] = React.useState(true);
+    const hideTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const streamControlsRef = React.useRef<HTMLDivElement>(null);
 
     function toggleControls() {
         setIsControlsVisible(true);
@@ -21,21 +22,24 @@ export function StreamControls() {
     }
 
     React.useEffect(function () {
+        let el = streamControlsRef.current;
+        if (!el) return;
+
         toggleControls();
 
-        window.addEventListener("mousemove", toggleControls);
-        window.addEventListener("touchstart", toggleControls);
+        el.addEventListener("mousemove", toggleControls);
+        el.addEventListener("touchstart", toggleControls);
 
         return () => {
-            window.removeEventListener("mousemove", toggleControls);
-            window.removeEventListener("touchstart", toggleControls);
+            el.removeEventListener("mousemove", toggleControls);
+            el.removeEventListener("touchstart", toggleControls);
 
             if (hideTimeout.current) clearTimeout(hideTimeout.current);
         };
     }, []);
 
     return (
-        <section className="absolute inset-0 z-10">
+        <section className="absolute inset-0 z-10" ref={streamControlsRef}>
             <div
                 className={cn(
                     "relative size-full transition-opacity",
