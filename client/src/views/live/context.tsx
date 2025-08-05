@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
 import React from "react";
 
@@ -57,6 +58,8 @@ export function StreamingUIContextProvider({ children }: { children: React.React
     );
 
     const viewerCount = peerIds.length;
+
+    logger({ peerIds });
 
     React.useEffect(
         function () {

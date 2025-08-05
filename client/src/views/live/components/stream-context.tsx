@@ -3,7 +3,7 @@ import { useRouteContext } from "@tanstack/react-router";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 
 export function StreamContext() {
-    const { streamCreator, streamResponse } = useRouteContext({
+    const { streamCreator, streamResponse, isCreator } = useRouteContext({
         from: "/live/$id",
     });
 
@@ -18,9 +18,11 @@ export function StreamContext() {
                 </div>
                 <span className="text-sm">@{streamCreator.user.username}</span>
 
-                <button className="bg-blue100 ml-2 rounded px-3 py-0.5">
-                    <span className="text-xs text-white">Follow</span>
-                </button>
+                {!isCreator ? (
+                    <button className="bg-blue100 ml-2 rounded px-3 py-0.5">
+                        <span className="text-xs text-white">Follow</span>
+                    </button>
+                ) : null}
             </aside>
 
             <aside>

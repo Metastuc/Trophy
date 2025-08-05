@@ -11,14 +11,11 @@ interface iStreamerVideoTile {
 
     screenVideo?: MediaStream | null;
     screenAudio?: MediaStream | null;
-
-    className?: string;
 }
 
 export function StreamerVideoTile({
     audioStream,
     audioStreamState,
-    className,
     screenAudio,
     screenVideo,
     videoStream,

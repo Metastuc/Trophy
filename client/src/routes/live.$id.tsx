@@ -23,7 +23,11 @@ export const Route = createFileRoute("/live/$id")({
             throw new Error("Unable to get stream creator");
         }
 
-        return { streamResponse, streamCreator };
+        return {
+            streamResponse,
+            streamCreator,
+            isCreator: streamCreator.user.username === context.authenticationStore?.user?.backendUserData.user.username,
+        };
     },
 
     async loader({ params, context }) {
@@ -40,37 +44,11 @@ export const Route = createFileRoute("/live/$id")({
     },
 
     component: () => <Page />,
-
-    pendingComponent() {
-        return <>loading...</>;
-    },
 });
 
 function Page() {
     const { token, roomId } = useLoaderData({ from: "/live/$id" });
-
-    const { joinRoom, state } = useRoom({
-        onFailed(data) {
-            console.log("Failed to join room", data);
-        },
-        onJoin(data) {
-            console.log("Joined room successfully", data);
-        },
-        onLeave(data) {
-            console.log("Left room", data);
-        },
-        onPeerJoin(data) {
-            console.log("Peer joined", data);
-        },
-        onPeerLeft(data) {
-            console.log("Peer left", data);
-        },
-        onWaiting(data) {
-            console.log("Waiting for peers", data);
-        },
-    });
-
-    console.log({ state });
+    const { joinRoom, state, leaveRoom } = useRoom();
 
     React.useEffect(
         function () {
@@ -79,8 +57,14 @@ function Page() {
                     await joinRoom({ roomId, token });
                 }
             })();
+
+            return () => {
+                if (state === "connected") {
+                    leaveRoom();
+                }
+            };
         },
-        [roomId, token],
+        [roomId, token, state],
     );
 
     return (
