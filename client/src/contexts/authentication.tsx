@@ -50,15 +50,6 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
 
             (async function () {
                 const accessToken = await getAccessToken();
-
-                console.log();
-                console.log();
-                console.log();
-                console.log({ authenticated, ready, privyUser, accessToken });
-                console.log();
-                console.log();
-                console.log();
-
                 setToken(accessToken as string);
 
                 const response = await fetchUser();
