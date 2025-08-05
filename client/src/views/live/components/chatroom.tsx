@@ -52,7 +52,7 @@ export function Chatroom() {
             </header>
 
             <footer className="relative flex-1">
-                <div className="flex flex-col rounded-lg border-2 border-blue-400">
+                <div className="flex flex-col rounded-lg border-2 border-blue-400 bg-black">
                     <div className="flex-1 border-b border-blue-400 p-4">
                         {messages.map((message, index) =>
                             message.sender === peerId ? (

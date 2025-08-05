@@ -17,6 +17,8 @@ export const HUDDLE_API_KEY = process.env.HUDDLE_API_KEY!;
 export const HUDDLE_PROJECT_ID = process.env.HUDDLE_PROJECT_ID!;
 export const LIVEPEER_API_KEY = process.env.LIVEPEER_API_KEY!;
 export const PORT = process.env.PORT || 4500;
+export const CORS_ORIGINS =
+  ENVIRONMENT === "development" ? "http://localhost:5173" : process.env.CORS_ORIGINS!.split(",");
 export const PRIVY_APP_ID = process.env.PRIVY_APP_ID!;
 export const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET!;
 export const PRIVY_KEY = process.env.PRIVY_KEY!.replace(/\\n/g, "\n");
