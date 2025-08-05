@@ -2,13 +2,13 @@ import express from "express";
 import cors from "cors";
 import appRoutes from "./src/routes/appRoutes.routes";
 import DB from "./src/config/db";
-import { PORT } from "./src/utils/env";
+import { CORS_ORIGINS, PORT } from "./src/utils/env";
 import { Server } from "socket.io";
 import { User, Notification } from "./src/models/userSchema";
 
 const server = express();
 
-server.use(cors({ origin: ["http://localhost:5173", "deployed-url"] }));
+server.use(cors({ origin: CORS_ORIGINS }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 

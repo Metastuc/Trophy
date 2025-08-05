@@ -14,36 +14,3 @@ export function getUser(data: tGetUserRequest) {
         },
     });
 }
-
-type tGetUserRequest = {
-    username: string;
-};
-
-type tGetUserResponse = {
-    message: string;
-
-    user: {
-        privyId: string;
-        username: string;
-        email: string;
-        userPfp: string;
-        walletAddress: string;
-        totalStreams: number;
-        bio: string;
-        totalFees: number;
-        xUrl?: string;
-        YTUrl?: string;
-        followers: string[];
-        following: string[];
-        creatorToken?: string;
-        videoTokenAddresses: string[];
-    };
-
-    stream: {
-        roomId: string;
-        title: string;
-        date?: string;
-        status: "Live" | "Scheduled";
-        streamer: string;
-    };
-};

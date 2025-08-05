@@ -11,14 +11,11 @@ interface iStreamerVideoTile {
 
     screenVideo?: MediaStream | null;
     screenAudio?: MediaStream | null;
-
-    className?: string;
 }
 
 export function StreamerVideoTile({
     audioStream,
     audioStreamState,
-    className,
     screenAudio,
     screenVideo,
     videoStream,
@@ -115,11 +112,17 @@ export function StreamerVideoTile({
 
     return (
         <React.Fragment>
-            <video autoPlay className={cn(className, "size-full object-cover")} muted ref={videoRef} />
-            <audio autoPlay ref={audioRef} />
+            {videoStream && videoStreamState === "playable" ? (
+                <div className={cn("streamer-video", "flex items-center justify-center bg-black")}>
+                    <video autoPlay className="aspect-video" muted ref={videoRef} />
+                </div>
+            ) : null}
+            {audioStream && audioStreamState === "playable" ? <audio autoPlay ref={audioRef} /> : null}
 
             {screenVideo ? (
-                <video autoPlay className={cn(className, "size-full object-cover")} muted ref={screenVideoRef} />
+                <div className={cn("streamer-screen", "flex items-center justify-center bg-black")}>
+                    <video autoPlay className="aspect-video" muted ref={screenVideoRef} />
+                </div>
             ) : null}
             {screenAudio ? <audio autoPlay ref={screenAudioRef} /> : null}
         </React.Fragment>

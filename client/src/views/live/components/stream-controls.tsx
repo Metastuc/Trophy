@@ -1,3 +1,4 @@
+import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
 import React from "react";
 
@@ -5,15 +6,46 @@ import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
 
-import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
-import { useStreamingUIContext, useStreamingUIPermissions } from "../context";
+import { useStreamingUIContext } from "../context";
+import { useStreamingUIPermissions } from "../hooks";
 
 export function StreamControls() {
     const { viewerCount } = useStreamingUIContext();
+    const [isControlsVisible, setIsControlsVisible] = React.useState(true);
+    const hideTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const streamControlsRef = React.useRef<HTMLDivElement>(null);
+
+    function toggleControls() {
+        setIsControlsVisible(true);
+        if (hideTimeout.current) clearTimeout(hideTimeout.current);
+        hideTimeout.current = setTimeout(() => setIsControlsVisible(false), 5000);
+    }
+
+    React.useEffect(function () {
+        let el = streamControlsRef.current;
+        if (!el) return;
+
+        toggleControls();
+
+        el.addEventListener("mousemove", toggleControls);
+        el.addEventListener("touchstart", toggleControls);
+
+        return () => {
+            el.removeEventListener("mousemove", toggleControls);
+            el.removeEventListener("touchstart", toggleControls);
+
+            if (hideTimeout.current) clearTimeout(hideTimeout.current);
+        };
+    }, []);
 
     return (
-        <section className="absolute inset-0 z-10">
-            <div className="relative size-full">
+        <section className="absolute inset-0 z-10" ref={streamControlsRef}>
+            <div
+                className={cn(
+                    "relative size-full transition-opacity",
+                    isControlsVisible ? "opacity-100" : "opacity-20",
+                )}
+            >
                 <StreamerLiveSignal />
 
                 <div className="absolute bottom-0 flex w-full items-center justify-between p-1.5">
@@ -41,16 +73,21 @@ function RenderControlsBasedOnRole() {
 
     async function handleToggleVideo() {
         setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
-        isVideoOn ? await disableVideo() : await enableVideo();
+
+        if (isVideoOn) await disableVideo();
+        else await enableVideo();
     }
 
     async function handleToggleAudio() {
         setUserHasToggled((previous) => ({ ...previous, audio: !previous.audio }));
-        isAudioOn ? await disableAudio() : await enableAudio();
+
+        if (isAudioOn) await disableAudio();
+        else await enableAudio();
     }
 
     async function handleToggleScreenShare() {
-        shareStream ? await stopScreenShare() : await startScreenShare();
+        if (shareStream) await stopScreenShare();
+        else await startScreenShare();
     }
 
     return (

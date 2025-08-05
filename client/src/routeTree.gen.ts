@@ -15,6 +15,7 @@ import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as AppStreamRouteImport } from './routes/_app/stream'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppDiscoverRouteImport } from './routes/_app/discover'
+import { Route as AppUsernameRouteImport } from './routes/_app/$username'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -45,8 +46,14 @@ const AppDiscoverRoute = AppDiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppUsernameRoute = AppUsernameRouteImport.update({
+  id: '/$username',
+  path: '/$username',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/$username': typeof AppUsernameRoute
   '/discover': typeof AppDiscoverRoute
   '/profile': typeof AppProfileRoute
   '/stream': typeof AppStreamRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
+  '/$username': typeof AppUsernameRoute
   '/discover': typeof AppDiscoverRoute
   '/profile': typeof AppProfileRoute
   '/stream': typeof AppStreamRoute
@@ -63,6 +71,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteRouteWithChildren
+  '/_app/$username': typeof AppUsernameRoute
   '/_app/discover': typeof AppDiscoverRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/stream': typeof AppStreamRoute
@@ -71,12 +80,19 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/discover' | '/profile' | '/stream' | '/live/$id' | '/'
+  fullPaths:
+    | '/$username'
+    | '/discover'
+    | '/profile'
+    | '/stream'
+    | '/live/$id'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/discover' | '/profile' | '/stream' | '/live/$id' | '/'
+  to: '/$username' | '/discover' | '/profile' | '/stream' | '/live/$id' | '/'
   id:
     | '__root__'
     | '/_app'
+    | '/_app/$username'
     | '/_app/discover'
     | '/_app/profile'
     | '/_app/stream'
@@ -133,10 +149,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDiscoverRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/$username': {
+      id: '/_app/$username'
+      path: '/$username'
+      fullPath: '/$username'
+      preLoaderRoute: typeof AppUsernameRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface AppRouteRouteChildren {
+  AppUsernameRoute: typeof AppUsernameRoute
   AppDiscoverRoute: typeof AppDiscoverRoute
   AppProfileRoute: typeof AppProfileRoute
   AppStreamRoute: typeof AppStreamRoute
@@ -144,6 +168,7 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppUsernameRoute: AppUsernameRoute,
   AppDiscoverRoute: AppDiscoverRoute,
   AppProfileRoute: AppProfileRoute,
   AppStreamRoute: AppStreamRoute,

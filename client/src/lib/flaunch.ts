@@ -1,7 +1,6 @@
-/* eslint-disable simple-import-sort/imports */
-import { ReadWriteFlaunchSDK, createFlaunch } from "@flaunch/sdk";
+import { createFlaunch, ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, parseEther, type WalletClient } from "viem";
+import { Address, parseEther } from "viem";
 
 import { ENV_SCHEMA, REVENUE_MANAGER_ADDRESS } from "./constants";
 import { getSmartAccount } from "./smart-account";
@@ -14,7 +13,7 @@ const publicClient = getPublicClient();
 
 const flaunchClient = async (provider: EIP1193Provider) => {
     if (!fClient) {
-        const walletClient = getWalletClient(provider) as WalletClient;
+        const walletClient = await getWalletClient(provider);
 
         fClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }
@@ -24,7 +23,7 @@ const flaunchClient = async (provider: EIP1193Provider) => {
 
 // The sFlaunch means sponsored flaunch (We're sponsoring deployment gas for creator tokens)
 const sFlaunchClient = async (provider: EIP1193Provider) => {
-    const walletClient = await getSmartAccount(provider) as WalletClient;
+    const walletClient = await getSmartAccount(provider);
 
     const sClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
 

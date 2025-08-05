@@ -1,7 +1,6 @@
 import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
-import { TvMinimalPlay, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { toast } from "sonner";
 
 import { getUser } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layouts/main-content";
@@ -9,21 +8,19 @@ import { useTabSwitcher } from "@/hooks/tab-switcher";
 import { logger } from "@/utils/logger";
 import { About } from "@/views/user-profile/components/about";
 import { Streams } from "@/views/user-profile/components/streams";
-import { UserWallet } from "@/views/user-profile/components/wallet";
 import { UserProfileContextProvider } from "@/views/user-profile/context";
 
-export const Route = createFileRoute("/_app/profile")({
-    async beforeLoad({ context }) {
-        if (!context.authenticationStore?.isAuthenticated) {
-            toast.error("You must be logged in to view your profile");
-            throw redirect({ to: "/" });
+export const Route = createFileRoute("/_app/$username")({
+    beforeLoad({ context, params }) {
+        if (context.authenticationStore?.user?.backendUserData.user.username === params.username) {
+            throw redirect({ to: "/profile" });
         }
     },
 
-    async loader({ context }) {
-        const response = await context.queryClient.ensureQueryData(
-            getUser({ username: context.authenticationStore?.user?.backendUserData.user.username as string }),
-        );
+    component: () => <Page />,
+
+    async loader({ context, params }) {
+        const response = await context.queryClient.ensureQueryData(getUser({ username: params.username }));
 
         if (!response) {
             throw new Error("Unable to get user profile");
@@ -31,24 +28,29 @@ export const Route = createFileRoute("/_app/profile")({
 
         logger({ response });
 
-        return { user: response.user, streams: response.streams, isCurrentUser: true };
+        return { user: response.user, streams: response.streams };
     },
 
-    component: () => <Page />,
+    params: {
+        parse(data) {
+            if (!data.username?.startsWith("@")) {
+                throw new Error("An error occurred");
+            }
+
+            return {
+                username: data.username.slice(1),
+            };
+        },
+    },
 });
 
 function Page() {
-    const { user, streams } = useLoaderData({ from: "/_app/profile" });
-    // const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
-    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("wallet");
-    // const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
-    //     left: "0px",
-    //     width: "0px",
-    // });
+    const { user, streams } = useLoaderData({ from: "/_app/$username" });
+    const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("holdings");
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
-            <UserProfileContextProvider streams={streams} user={user} isCurrentUser={true}>
+            <UserProfileContextProvider streams={streams} user={user} isCurrentUser={false}>
                 <About />
 
                 <footer className="border-blue100 rounded-t-xl border-t">
@@ -58,12 +60,12 @@ function Page() {
                                 <li>
                                     <button
                                         className="text-blue100 flex items-center justify-center gap-1"
-                                        onClick={() => handleTabClick("wallet")}
+                                        onClick={() => handleTabClick("holdings")}
                                     >
                                         <i className="size-4">
                                             <Wallet />
                                         </i>
-                                        <span>Wallet</span>
+                                        <span>Holdings</span>
                                     </button>
                                 </li>
                                 <li>
@@ -71,10 +73,7 @@ function Page() {
                                         className="text-blue100 flex items-center justify-center gap-1"
                                         onClick={() => handleTabClick("streams")}
                                     >
-                                        <span>Streams</span>
-                                        <i className="size-4">
-                                            <TvMinimalPlay />
-                                        </i>
+                                        <span>Scheduled Streams</span>
                                     </button>
                                 </li>
                             </ul>
@@ -82,7 +81,7 @@ function Page() {
 
                         <aside className="w-full overflow-hidden">
                             <AnimatePresence mode="wait" initial={false}>
-                                {activeTab === "wallet" ? (
+                                {activeTab === "holdings" ? (
                                     <motion.div
                                         key="wallet"
                                         initial={{ opacity: 0, x: 20 }}
@@ -90,7 +89,26 @@ function Page() {
                                         exit={{ opacity: 0, x: -20 }}
                                         transition={{ duration: 0.15 }}
                                     >
-                                        <UserWallet />
+                                        {/* <UserWallet /> */}
+                                        holdings
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
+                                        <p>hello</p>
                                     </motion.div>
                                 ) : null}
 

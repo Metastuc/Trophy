@@ -9,13 +9,10 @@ import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
-import { useStreamStore } from "@/store/streams";
 
 export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
-
     const user = useAuthenticationStore((state) => state.user);
-    const setSteamInfo = useStreamStore((state) => state.setSession);
 
     const { isPending, mutate } = useServer<tCreateStreamFormRequest, tCreateStreamFormResponse>(
         { METHOD: "POST", URL: "/create-stream" },
@@ -26,18 +23,12 @@ export function StreamNowForm() {
 
                 toast.success(response.data.message);
                 navigate({ to: `/live/$id`, params: { id: response.data.roomId } });
-                setSteamInfo({ roomId: response.data.roomId, roomToken: response.data.token });
             },
         },
     );
 
     async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
-
-        if (!user) {
-            toast.error("You must be logged in to start a livestream.");
-            return;
-        }
 
         const formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData.entries());
@@ -70,6 +61,7 @@ export function StreamNowForm() {
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <input type="hidden" name="username" value={formState.username} />
+                <input type="hidden" name="walletAddress" value={formState.walletAddress} />
 
                 <div className="flex flex-col">
                     <label htmlFor="title">Title</label>

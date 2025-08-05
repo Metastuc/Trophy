@@ -81,7 +81,7 @@ export function Dropdown<T extends string>({ icon, onChange, options, styles, va
     return (
         <section ref={parentWrapperRef} className={cn(styles?.parentWrapper, "relative w-max")}>
             <Button
-                className={cn(styles?.parentButton, "h-7 w-28 rounded-xs text-white", isOpen && "bg-primary/90")}
+                className={cn(styles?.parentButton, "h-7 min-w-28 rounded-xs text-white", isOpen && "bg-primary/90")}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <span className="text-xs capitalize">{options.find((item) => item.value === value)?.title}</span>
@@ -107,7 +107,7 @@ export function Dropdown<T extends string>({ icon, onChange, options, styles, va
                                 className="bg-black100 flex h-7 items-center justify-start"
                             >
                                 <button onClick={() => handleSelect(item.value)} className="size-full">
-                                    <span className="ml-5 flex items-center justify-start text-xs text-white capitalize">
+                                    <span className="ml-5 flex items-center justify-start text-xs text-white">
                                         {item.render ?? item.title}
                                     </span>
                                 </button>
