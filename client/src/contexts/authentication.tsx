@@ -66,6 +66,8 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                     await sleep(3000);
                     goToFinish();
                     openDrawer();
+
+                    setIsLoading(false);
                     return;
                 }
 
