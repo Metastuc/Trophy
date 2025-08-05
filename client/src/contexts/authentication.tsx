@@ -5,7 +5,6 @@ import { useShallow } from "zustand/shallow";
 import { fetchUser } from "@/api/fetch-user";
 import { sleep } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
-import { logger } from "@/utils/logger";
 import {
     useAuthenticationDrawerFormStore,
     useAuthenticationDrawerNavigationStore,
@@ -16,7 +15,14 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
     const { authenticated, ready, user: privyUser } = usePrivy();
     const lastFetchedUserIdRef = React.useRef<string | null>(null);
 
-    logger({ authenticated, ready, privyUser });
+    // logger({ authenticated, ready, privyUser });
+    console.log();
+    console.log();
+    console.log();
+    console.log({ authenticated, ready, privyUser });
+    console.log();
+    console.log();
+    console.log();
 
     const goToFinish = useAuthenticationDrawerNavigationStore((state) => state.goToFinish);
     const openDrawer = useAuthenticationDrawerStateStore((state) => state.openDrawer);
