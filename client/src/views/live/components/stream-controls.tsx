@@ -11,10 +11,37 @@ import { useStreamingUIPermissions } from "../hooks";
 
 export function StreamControls() {
     const { viewerCount } = useStreamingUIContext();
+    const hideTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const [isControlsVisible, setIsControlsVisible] = React.useState(true);
+
+    function toggleControls() {
+        setIsControlsVisible(true);
+        if (hideTimeout.current) clearTimeout(hideTimeout.current);
+        hideTimeout.current = setTimeout(() => setIsControlsVisible(false), 5000);
+    }
+
+    React.useEffect(function () {
+        toggleControls();
+
+        window.addEventListener("mousemove", toggleControls);
+        window.addEventListener("touchstart", toggleControls);
+
+        return () => {
+            window.removeEventListener("mousemove", toggleControls);
+            window.removeEventListener("touchstart", toggleControls);
+
+            if (hideTimeout.current) clearTimeout(hideTimeout.current);
+        };
+    }, []);
 
     return (
         <section className="absolute inset-0 z-10">
-            <div className="relative size-full">
+            <div
+                className={cn(
+                    "relative size-full transition-opacity",
+                    isControlsVisible ? "opacity-100" : "opacity-20",
+                )}
+            >
                 <StreamerLiveSignal />
 
                 <div className="absolute bottom-0 flex w-full items-center justify-between p-1.5">
