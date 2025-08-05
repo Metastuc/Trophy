@@ -22,12 +22,12 @@ export function StreamingUIContextProvider({ children }: { children: React.React
 
     const typedRole: tRole = role as tRole;
 
-    const [userHasToggled, setUserHasToggled] = React.useState(() => ({
+    const [userHasToggled, setUserHasToggled] = React.useState<tUserHasToggled>(() => ({
         audio: false,
         video: false,
     }));
 
-    const [screenSharing, setScreenSharing] = React.useState(() => ({
+    const [screenSharing, setScreenSharing] = React.useState<tScreenSharing>(() => ({
         someoneIsSharingTheirScreen: false,
         whoIsSharingTheirScreen: null,
     }));
@@ -83,9 +83,11 @@ export function StreamingUIContextProvider({ children }: { children: React.React
             permissions,
             roomRoles,
             setUserHasToggled,
+            screenSharing,
+            setScreenSharing,
             viewerCount,
         }),
-        [permissions, viewerCount, setUserHasToggled, roomRoles],
+        [permissions, viewerCount, setUserHasToggled, roomRoles, setScreenSharing, screenSharing],
     );
 
     return <StreamingUIContext.Provider value={value}>{children}</StreamingUIContext.Provider>;

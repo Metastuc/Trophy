@@ -115,8 +115,11 @@ export function StreamerVideoTile({
 
     return (
         <React.Fragment>
-            <video autoPlay className={cn(className, "size-full object-cover")} muted ref={videoRef} />
-            <audio autoPlay ref={audioRef} />
+            {videoStream && videoStreamState === "playable" ? (
+                <video autoPlay className={cn(className, "size-full object-cover")} muted ref={videoRef} />
+            ) : null}
+
+            {audioStream && audioStreamState === "playable" ? <audio autoPlay ref={audioRef} /> : null}
 
             {screenVideo ? (
                 <video autoPlay className={cn(className, "size-full object-cover")} muted ref={screenVideoRef} />

@@ -1,13 +1,16 @@
-import { useLocalAudio, useLocalVideo, usePeerIds } from "@huddle01/react";
+import { useLocalAudio, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 
+import { logger } from "@/utils/logger";
+import { useStreamingUIContext } from "../context";
 import { useStreamingUIRoles } from "../hooks";
 import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
     const { peerIds: coHostIds } = usePeerIds({ roles: ["coHost"] });
+    const { screenSharing } = useStreamingUIContext();
 
     const totalNumberOfCoHosts = coHostIds.length;
     const currentLayout = getStreamLayoutKey({
@@ -15,7 +18,7 @@ export function StreamLayout() {
         isScreenSharing: false,
     });
 
-    // logger({ currentLayout, isSomeoneSharingTheirScreen });
+    logger({ currentLayout, totalNumberOfCoHosts, isScreenSharing: screenSharing.someoneIsSharingTheirScreen });
 
     switch (currentLayout) {
         case "host-only":
@@ -51,15 +54,17 @@ function HostOnly() {
 
     const { stream: localStream, isVideoOn } = useLocalVideo();
     const { stream: localAudio, isAudioOn } = useLocalAudio();
+    const { shareStream } = useLocalScreenShare();
 
     if (host) {
-        if (isVideoOn && localStream) {
+        if ((isVideoOn && localStream) || shareStream) {
             content = (
                 <StreamerVideoTile
                     videoStream={localStream}
                     videoStreamState={isVideoOn ? "playable" : "unavailable"}
                     audioStream={localAudio}
                     audioStreamState={isAudioOn ? "playable" : "unavailable"}
+                    screenVideo={shareStream && shareStream}
                 />
             );
         } else {
@@ -73,6 +78,8 @@ function HostOnly() {
 }
 
 function HostOnlyWithScreenShare() {
+    let content: React.ReactNode;
+
     return <></>;
 }
 

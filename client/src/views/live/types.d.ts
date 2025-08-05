@@ -21,6 +21,16 @@ type tGetStreamResponse = {
 
 type tRole = "host" | "coHost" | "speaker" | "listener" | "guest" | "bot";
 
+type tUserHasToggled = {
+    audio: boolean;
+    video: boolean;
+};
+
+type tScreenSharing = {
+    someoneIsSharingTheirScreen: boolean;
+    whoIsSharingTheirScreen: string | null;
+};
+
 interface iStreamingUIPermissions {
     canEndStream: boolean;
     canInvite: boolean;
@@ -31,20 +41,19 @@ interface iStreamingUIPermissions {
 }
 
 interface iRoomRoles {
-    host: boolean;
-    coHost: boolean;
-    speaker: boolean;
-    listener: boolean;
-    guest: boolean;
     bot: boolean;
+    coHost: boolean;
+    guest: boolean;
+    host: boolean;
+    listener: boolean;
+    speaker: boolean;
 }
 
 interface iStreamingUIContext {
-    viewerCount: number;
     permissions: iStreamingUIPermissions;
     roomRoles: iRoomRoles;
-    setUserHasToggled: React.Dispatch<React.SetStateAction<{ audio: boolean; video: boolean }>>;
-    // setScreenSharing: React.Dispatch<
-    //     React.SetStateAction<{ someoneIsSharingTheirScreen: boolean; whoIsSharingTheirScreen: string | null }>
-    // >;
+    screenSharing: tScreenSharing;
+    setScreenSharing: React.Dispatch<React.SetStateAction<tScreenSharing>>;
+    setUserHasToggled: React.Dispatch<React.SetStateAction<tUserHasToggled>>;
+    viewerCount: number;
 }

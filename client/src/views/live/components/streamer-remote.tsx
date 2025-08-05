@@ -1,15 +1,41 @@
 import { useRemoteAudio, useRemoteScreenShare, useRemoteVideo } from "@huddle01/react/hooks";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
-import { logger } from "@/utils/logger";
+import React from "react";
+import { useStreamingUIContext } from "../context";
 
 export function StreamerRemote({ peerId }: { peerId: string }) {
+    const { screenSharing, setScreenSharing } = useStreamingUIContext();
+
     const { stream: audioStream, state: audioState } = useRemoteAudio({ peerId });
     const { stream: videoStream, state: videoStreamState } = useRemoteVideo({ peerId });
     const { videoStream: screenVideo, audioStream: screenAudio, state: screenState } = useRemoteScreenShare({ peerId });
 
     const isSharingScreen = !!screenVideo && screenState === "playable";
-    logger({ isSharingScreen });
+
+    React.useEffect(() => {
+        if (isSharingScreen) {
+            if (!screenSharing.someoneIsSharingTheirScreen) {
+                setScreenSharing({
+                    someoneIsSharingTheirScreen: true,
+                    whoIsSharingTheirScreen: peerId,
+                });
+            }
+        } else {
+            if (screenSharing.whoIsSharingTheirScreen === peerId) {
+                setScreenSharing({
+                    someoneIsSharingTheirScreen: false,
+                    whoIsSharingTheirScreen: null,
+                });
+            }
+        }
+    }, [
+        isSharingScreen,
+        peerId,
+        screenSharing.someoneIsSharingTheirScreen,
+        screenSharing.whoIsSharingTheirScreen,
+        setScreenSharing,
+    ]);
 
     return (
         <StreamerVideoTile
