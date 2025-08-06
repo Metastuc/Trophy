@@ -202,7 +202,9 @@ export function CompleteProfile() {
                     placeholder="enter email"
                     type="email"
                     value={email || ""}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormField("email", event.target.value)}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        setFormField("email", event.target.value.trim())
+                    }
                     disabled={isEmailPreFilled.current}
                 />
 
@@ -215,7 +217,7 @@ export function CompleteProfile() {
                     placeholder="enter username"
                     value={username || ""}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormField("username", event.target.value)
+                        setFormField("username", event.target.value.trim())
                     }
                     required
                     disabled={isUsernamePreFilled.current}
@@ -228,7 +230,7 @@ export function CompleteProfile() {
                     type="textarea"
                     value={bio || ""}
                     onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setFormField("bio", event.target.value)
+                        setFormField("bio", event.target.value.trim())
                     }
                 />
             </section>
