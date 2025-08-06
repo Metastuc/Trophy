@@ -113,15 +113,19 @@ export function StreamerVideoTile({
     return (
         <React.Fragment>
             {videoStream && videoStreamState === "playable" ? (
-                <div className={cn("streamer-video", "flex items-center justify-center bg-black")}>
-                    <video autoPlay className="aspect-video" muted ref={videoRef} />
+                <div className={cn("streamer-video", "flex w-full items-center justify-center bg-black")}>
+                    <div className="aspect-video">
+                        <video autoPlay className="size-full" muted ref={videoRef} />
+                    </div>
                 </div>
             ) : null}
             {audioStream && audioStreamState === "playable" ? <audio autoPlay ref={audioRef} /> : null}
 
             {screenVideo ? (
                 <div className={cn("streamer-screen", "flex items-center justify-center bg-black")}>
-                    <video autoPlay className="aspect-video" muted ref={screenVideoRef} />
+                    <div className="aspect-video">
+                        <video autoPlay className="size-full" muted ref={screenVideoRef} />
+                    </div>
                 </div>
             ) : null}
             {screenAudio ? <audio autoPlay ref={screenAudioRef} /> : null}

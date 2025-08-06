@@ -52,7 +52,7 @@ export function StreamControls() {
                     <aside className="flex max-w-[8rem] min-w-[6.75rem] items-center justify-between rounded bg-white p-1">
                         <i className="size-4">{WATCHING()}</i>
                         <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">{viewerCount} watching</span>
-                        <span className="ml-1 pt-0.5 text-[.5rem]">10:12:13</span>
+                        {/* <span className="ml-1 pt-0.5 text-[.5rem]">10:12:13</span> */}
                     </aside>
 
                     <aside className="flex gap-2">
