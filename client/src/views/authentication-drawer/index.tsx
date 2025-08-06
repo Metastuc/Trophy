@@ -47,6 +47,27 @@ export function AuthenticationDrawer() {
         }
     }
 
+    const formContainerRef = React.useRef<HTMLDivElement | null>(null);
+
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (formContainerRef.current) {
+                formContainerRef.current.style.setProperty("bottom", `env(safe-area-inset-bottom)`);
+            }
+        };
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener("resize", handleResize);
+            handleResize();
+        }
+
+        return () => {
+            if (window.visualViewport) {
+                window.visualViewport.removeEventListener("resize", handleResize);
+            }
+        };
+    }, []);
+
     return (
         <Drawer
             dismissible={false}
@@ -65,7 +86,7 @@ export function AuthenticationDrawer() {
                 )}
             </Button>
 
-            <DrawerContent>
+            <DrawerContent ref={formContainerRef}>
                 <AuthenticationDrawerFooter />
 
                 {/* <button onClick={() => logout()}>logout</button> */}
