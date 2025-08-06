@@ -47,32 +47,12 @@ export function AuthenticationDrawer() {
         }
     }
 
-    const formContainerRef = React.useRef<HTMLDivElement | null>(null);
-
-    React.useEffect(() => {
-        const handleResize = () => {
-            if (formContainerRef.current) {
-                formContainerRef.current.style.setProperty("bottom", `env(safe-area-inset-bottom)`);
-            }
-        };
-
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener("resize", handleResize);
-            handleResize();
-        }
-
-        return () => {
-            if (window.visualViewport) {
-                window.visualViewport.removeEventListener("resize", handleResize);
-            }
-        };
-    }, []);
-
     return (
         <Drawer
             dismissible={false}
             open={isOpen}
             onOpenChange={(isDrawerOpen) => (isDrawerOpen ? openDrawer() : closeDrawer())}
+            repositionInputs={false}
         >
             <Button className="bg-blue100 h-6 w-15 rounded-xs" onClick={handleAuthentication} disabled={isLoggingOut}>
                 {isLoggingOut ? (
@@ -86,7 +66,7 @@ export function AuthenticationDrawer() {
                 )}
             </Button>
 
-            <DrawerContent ref={formContainerRef}>
+            <DrawerContent>
                 <AuthenticationDrawerFooter />
 
                 {/* <button onClick={() => logout()}>logout</button> */}
