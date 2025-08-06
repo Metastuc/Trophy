@@ -115,7 +115,7 @@ export function StreamerVideoTile({
             {videoStream && videoStreamState === "playable" ? (
                 <div className={cn("streamer-video", "flex w-full items-center justify-center bg-black")}>
                     <div className="aspect-video">
-                        <video autoPlay className="size-full" muted ref={videoRef} />
+                        <video autoPlay className="size-full object-cover" muted ref={videoRef} />
                     </div>
                 </div>
             ) : null}
@@ -124,7 +124,7 @@ export function StreamerVideoTile({
             {screenVideo ? (
                 <div className={cn("streamer-screen", "flex items-center justify-center bg-black")}>
                     <div className="aspect-video">
-                        <video autoPlay className="size-full" muted ref={screenVideoRef} />
+                        <video autoPlay className="size-full object-cover" muted ref={screenVideoRef} />
                     </div>
                 </div>
             ) : null}
