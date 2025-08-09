@@ -98,9 +98,9 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      setTimeout(async () => {
-        await startLiveStream(roomId, user.streamKey, "rtmps://ca.pscp.tv:443/x/gw4t5gbe8245", user.YTUrl)
-      }, 30000)
+      // setTimeout(async () => {
+      //   await startLiveStream(roomId, user.streamKey, "rtmps://ca.pscp.tv:443/x/gw4t5gbe8245", user.YTUrl)
+      // }, 30000)
     }
   } catch (error) {
     console.error(error);

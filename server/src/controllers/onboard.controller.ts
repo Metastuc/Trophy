@@ -4,12 +4,16 @@ import { RedisClient } from "../config/db";
 import cryptoRandomString from "crypto-random-string";
 
 export async function onboard(request: Request, response: Response) {
+  let userPfp = (request.file as any)?.location;
   const privyId = request.privyUser?.userId;
-  const userPfp = (request.file as any)?.location;
 
   try {
-    const { bio, email, username, walletAddress } = request.body;
+    const { bio, email, username, profilePicture, walletAddress } = request.body;
     const existingUser = await User.findOne({ privyId });
+
+    if (!userPfp && profilePicture) {
+      userPfp = profilePicture;
+    }
 
     if (!existingUser) {
       if (!username) {

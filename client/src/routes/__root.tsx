@@ -1,5 +1,6 @@
 import { type QueryClient } from "@tanstack/react-query";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Outlet } from "@tanstack/react-router";
+import { Fragment } from "react";
 
 export type RouterContext = {
     queryClient: QueryClient;
@@ -7,5 +8,22 @@ export type RouterContext = {
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-    component: () => <Outlet />,
+    component: () => (
+        <Fragment>
+            <HeadContent />
+            <Outlet />;
+        </Fragment>
+    ),
+
+    head() {
+        return {
+            meta: [
+                {
+                    name: "description",
+                    content: "Creators are the best",
+                },
+                { title: "Trophy" },
+            ],
+        };
+    },
 });

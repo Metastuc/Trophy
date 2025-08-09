@@ -15,6 +15,7 @@ export const AuthenticationProfileSchema = z.object({
             .refine((file) => ["image/jpeg", "image/png"].includes(file.type), "Only JPEG and PNG formats are allowed")
             .optional(),
         z.literal("default-pfp.svg"),
+        z.url("Invalid image URL"),
     ]),
 
     username: z.string().min(3, "Username must be at least 3 characters"),

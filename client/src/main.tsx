@@ -65,8 +65,7 @@ function App() {
     );
 }
 
-const root = createRoot(document.getElementById("root")!);
-root.render(
+createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
             <AppContextProviders>

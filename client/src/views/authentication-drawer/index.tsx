@@ -1,6 +1,6 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { Loader } from "lucide-react";
-import React from "react";
+import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ export function AuthenticationDrawer() {
     );
 
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
-    const [isLoggingOut, setIsLoggingOut] = React.useState<boolean>(false);
+    const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
 
     const currentScreen = useAuthenticationDrawerNavigationStore((state) => state.screen);
     const showPrivyLogo = currentScreen === "default" || currentScreen === "email" || currentScreen === "otp";

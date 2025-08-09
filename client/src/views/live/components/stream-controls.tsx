@@ -22,7 +22,7 @@ export function StreamControls() {
     }
 
     React.useEffect(function () {
-        let el = streamControlsRef.current;
+        const el = streamControlsRef.current;
         if (!el) return;
 
         toggleControls();

@@ -1,7 +1,8 @@
 import { useUser } from "@privy-io/react-auth";
 import { Loader, PencilLine } from "lucide-react";
-import React from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { useShallow } from "zustand/shallow";
 
 import { fetchUser } from "@/api/fetch-user";
@@ -20,8 +21,8 @@ export function CompleteProfile() {
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
     const setAuthenticatedUser = useAuthenticationStore((state) => state.setUser);
 
-    const fileInputRef = React.useRef<HTMLInputElement>(null);
-    const [profileImagePreview, setProfileImagePreview] = React.useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
 
     const { bio, email, isNewUser, profilePicture, setFormField, username, walletAddress } =
         useAuthenticationDrawerFormStore(
@@ -37,10 +38,10 @@ export function CompleteProfile() {
             })),
         );
 
-    const isEmailPreFilled = React.useRef(Boolean(email));
-    const isUsernamePreFilled = React.useRef(Boolean(username));
+    const isEmailPreFilled = useRef(Boolean(email));
+    const isUsernamePreFilled = useRef(Boolean(username));
 
-    function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -91,7 +92,7 @@ export function CompleteProfile() {
         },
     );
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const request = AuthenticationProfileSchema.safeParse({
@@ -104,7 +105,7 @@ export function CompleteProfile() {
         });
 
         if (!request.success) {
-            const errors = request.error.flatten().fieldErrors;
+            const errors = z.flattenError(request.error).fieldErrors;
 
             toast.error("Form Submission Error", {
                 description: (
@@ -136,7 +137,7 @@ export function CompleteProfile() {
         }
     }
 
-    React.useEffect(
+    useEffect(
         function () {
             if (typeof profilePicture === "string") {
                 setProfileImagePreview(profilePicture);
@@ -147,7 +148,7 @@ export function CompleteProfile() {
         [profilePicture],
     );
 
-    React.useEffect(() => {
+    useEffect(() => {
         return () => {
             if (profileImagePreview?.startsWith("blob:")) {
                 URL.revokeObjectURL(profileImagePreview);
@@ -202,7 +203,7 @@ export function CompleteProfile() {
                     placeholder="enter email"
                     type="email"
                     value={email || ""}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormField("email", event.target.value)}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => setFormField("email", event.target.value)}
                     disabled={isEmailPreFilled.current}
                 />
 
@@ -214,9 +215,7 @@ export function CompleteProfile() {
                     name="username"
                     placeholder="enter username"
                     value={username || ""}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormField("username", event.target.value)
-                    }
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => setFormField("username", event.target.value)}
                     required
                     disabled={isUsernamePreFilled.current}
                 />
@@ -227,9 +226,7 @@ export function CompleteProfile() {
                     placeholder="enter bio (say something about yourself, this is optional)"
                     type="textarea"
                     value={bio || ""}
-                    onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setFormField("bio", event.target.value)
-                    }
+                    onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setFormField("bio", event.target.value)}
                 />
             </section>
 
