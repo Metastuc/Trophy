@@ -1,6 +1,4 @@
-import { useRoom } from "@huddle01/react";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 import { getStream } from "@/api/get-stream";
 import { getUser } from "@/api/get-user";
@@ -50,26 +48,7 @@ export const Route = createFileRoute("/live/$id")({
 
 function Page() {
     const { token, roomId } = useLoaderData({ from: "/live/$id" });
-    const { joinRoom, state, leaveRoom } = useRoom();
-
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
-
-    useEffect(
-        function () {
-            (async function () {
-                if (state === "idle") {
-                    await joinRoom({ roomId, token });
-                }
-            })();
-
-            return () => {
-                if (state === "connected") {
-                    leaveRoom();
-                }
-            };
-        },
-        [roomId, token, state, joinRoom, leaveRoom],
-    );
 
     return (
         <section className="flex min-h-dvh flex-col">
@@ -82,7 +61,7 @@ function Page() {
             </header>
 
             <footer className="flex flex-1 flex-col">
-                <StreamingUIContextProvider>
+                <StreamingUIContextProvider roomId={roomId} token={token}>
                     <StreamScreen />
                     <PageContentLayout className="flex flex-1 flex-col">
                         <StreamContext />

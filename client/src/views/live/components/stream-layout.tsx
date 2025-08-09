@@ -4,8 +4,7 @@ import React from "react";
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
 
-import { useStreamingUIContext } from "../context";
-import { useStreamingUIRoles } from "../hooks";
+import { useStreamingUIContext, useStreamingUIRoles } from "../hooks";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
@@ -15,7 +14,7 @@ export function StreamLayout() {
     React.useEffect(() => {
         if (shareStream) setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: true }));
         else setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: false }));
-    }, [shareStream]);
+    }, [shareStream, setScreenSharing]);
 
     return (
         <div

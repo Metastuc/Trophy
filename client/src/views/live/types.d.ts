@@ -21,6 +21,8 @@ type tGetStreamResponse = {
 
 type tRole = "host" | "coHost" | "speaker" | "listener" | "guest" | "bot";
 
+type tRoomStates = "idle" | "connecting" | "connected" | "failed" | "left" | "closed";
+
 type tUserHasToggled = {
     audio: boolean;
     video: boolean;

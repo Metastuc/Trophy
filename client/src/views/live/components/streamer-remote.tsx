@@ -1,9 +1,9 @@
 import { useRemoteAudio, useRemoteScreenShare, useRemoteVideo } from "@huddle01/react/hooks";
-import React from "react";
+import { useEffect } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 
-import { useStreamingUIContext } from "../context";
+import { useStreamingUIContext } from "../hooks";
 
 export function StreamerRemote({ peerId }: { peerId: string }) {
     const { screenSharing, setScreenSharing } = useStreamingUIContext();
@@ -14,7 +14,7 @@ export function StreamerRemote({ peerId }: { peerId: string }) {
 
     const isSharingScreen = !!screenVideo && screenState === "playable";
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (isSharingScreen) {
             if (!screenSharing.someoneIsSharingTheirScreen) {
                 setScreenSharing({

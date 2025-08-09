@@ -1,19 +1,18 @@
 import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
-import React from "react";
+import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 
 import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
 
-import { useStreamingUIContext } from "../context";
-import { useStreamingUIPermissions } from "../hooks";
+import { useStreamingUIContext, useStreamingUIPermissions } from "../hooks";
 
 export function StreamControls() {
     const { viewerCount } = useStreamingUIContext();
-    const [isControlsVisible, setIsControlsVisible] = React.useState(true);
-    const hideTimeout = React.useRef<NodeJS.Timeout | null>(null);
-    const streamControlsRef = React.useRef<HTMLDivElement>(null);
+    const [isControlsVisible, setIsControlsVisible] = useState(true);
+    const hideTimeout = useRef<NodeJS.Timeout | null>(null);
+    const streamControlsRef = useRef<HTMLDivElement>(null);
 
     function toggleControls() {
         setIsControlsVisible(true);
@@ -21,7 +20,7 @@ export function StreamControls() {
         hideTimeout.current = setTimeout(() => setIsControlsVisible(false), 5000);
     }
 
-    React.useEffect(function () {
+    useEffect(function () {
         const el = streamControlsRef.current;
         if (!el) return;
 
@@ -91,7 +90,7 @@ function RenderControlsBasedOnRole() {
     }
 
     return (
-        <React.Fragment>
+        <Fragment>
             {canEndStream ? (
                 <ControlButton className="gap-1 text-red-600">
                     <i className="size-4">
@@ -126,11 +125,11 @@ function RenderControlsBasedOnRole() {
                     <i className="size-4">{isAudioOn ? <Mic /> : <MicOff />}</i>
                 </ControlButton>
             ) : null}
-        </React.Fragment>
+        </Fragment>
     );
 }
 
-type tControlButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>;
+type tControlButtonProps = PropsWithChildren<HTMLAttributes<HTMLButtonElement>>;
 
 function ControlButton({ children, className, ...props }: tControlButtonProps) {
     return (
