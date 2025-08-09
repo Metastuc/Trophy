@@ -89,7 +89,18 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                 setUser({ ...privyUser, backendUserData: response.data });
             })();
         },
-        [authenticated, ready, privyUser, setIsLoading, setUser],
+        [
+            authenticated,
+            privyUser,
+            ready,
+            goToFinish,
+            openDrawer,
+            setFormField,
+            setIsLoading,
+            setIsNewUser,
+            setToken,
+            setUser,
+        ],
     );
 
     return children;

@@ -160,7 +160,7 @@ export function CompleteProfile() {
             <section className="space-y-4">
                 <div className="flex items-center justify-start gap-2">
                     <aside
-                        // onClick={() => fileInputRef.current?.click()}
+                        onClick={() => fileInputRef.current?.click()}
                         className="bg-blue100 relative flex size-11 cursor-pointer items-center justify-center rounded-full p-0.25"
                     >
                         <img
