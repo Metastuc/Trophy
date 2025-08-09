@@ -95,11 +95,11 @@ export function CompleteProfile() {
         event.preventDefault();
 
         const request = AuthenticationProfileSchema.safeParse({
-            bio,
-            email,
+            bio: bio?.trim(),
+            email: email?.trim(),
             isNewUser,
             profilePicture,
-            username,
+            username: username?.trim(),
             walletAddress,
         });
 
@@ -202,9 +202,7 @@ export function CompleteProfile() {
                     placeholder="enter email"
                     type="email"
                     value={email || ""}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormField("email", event.target.value.trim())
-                    }
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormField("email", event.target.value)}
                     disabled={isEmailPreFilled.current}
                 />
 
@@ -217,7 +215,7 @@ export function CompleteProfile() {
                     placeholder="enter username"
                     value={username || ""}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormField("username", event.target.value.trim())
+                        setFormField("username", event.target.value)
                     }
                     required
                     disabled={isUsernamePreFilled.current}
@@ -230,7 +228,7 @@ export function CompleteProfile() {
                     type="textarea"
                     value={bio || ""}
                     onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setFormField("bio", event.target.value.trim())
+                        setFormField("bio", event.target.value)
                     }
                 />
             </section>
