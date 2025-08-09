@@ -8,12 +8,7 @@ export function About() {
     return (
         <header className="flex items-start gap-1 px-4">
             <aside className="flex w-15 items-center justify-center">
-                {/* <img alt="user-pfp" className="size-14 rounded-full" src={user.userPfp} /> */}
-                <img
-                    alt="user-pfp"
-                    className="size-14 rounded-full object-cover"
-                    src="https://www.dummyimage.com/200x200/000/fff"
-                />
+                <img alt="user-pfp" className="size-14 rounded-full object-cover" src={user.userPfp} />
             </aside>
 
             <aside className="flex-1 space-y-1">
