@@ -72,7 +72,7 @@ function Page() {
     );
 
     return (
-        <section className="flex min-h-svh flex-col">
+        <section className="flex min-h-dvh flex-col">
             <header className="flex h-11.5 items-center justify-between px-3">
                 <Link to="/">
                     <img src="/trophy.svg" alt="trophy-logo" />

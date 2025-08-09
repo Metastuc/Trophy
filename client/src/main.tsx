@@ -46,7 +46,7 @@ function App() {
 
     if (authenticationStore.isLoading)
         return (
-            <section className="flex h-svh w-screen items-center justify-center">
+            <section className="flex h-dvh w-screen items-center justify-center">
                 <Loader className="animate-spin" />
             </section>
         );
