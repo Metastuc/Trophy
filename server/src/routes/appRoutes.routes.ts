@@ -17,7 +17,7 @@ import { createLiveStream } from "../controllers/createLiveStream";
 const router = Router();
 
 router
-  .post("/onboard", uploadPfp.single("pfp"), authenticate, onboard)
+  .post("/onboard", uploadPfp.single("profilePicture"), authenticate, onboard)
   .post("/create-stream", authenticate, createStream)
   .post("/create-live-stream", authenticate, createLiveStream)
   .post("/join-stream", getAccessToken)

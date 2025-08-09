@@ -1,5 +1,5 @@
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
-import React from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { fetchUser } from "@/api/fetch-user";
@@ -11,9 +11,9 @@ import {
     useAuthenticationDrawerStateStore,
 } from "@/views/authentication-drawer/store";
 
-export function AuthenticationProvider({ children }: { children: React.ReactNode }) {
+export function AuthenticationProvider({ children }: { children: ReactNode }) {
     const { authenticated, ready, user: privyUser } = usePrivy();
-    const lastFetchedUserIdRef = React.useRef<string | null>(null);
+    const lastFetchedUserIdRef = useRef<string | null>(null);
 
     const goToFinish = useAuthenticationDrawerNavigationStore((state) => state.goToFinish);
     const openDrawer = useAuthenticationDrawerStateStore((state) => state.openDrawer);
@@ -30,7 +30,7 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
         })),
     );
 
-    React.useEffect(
+    useEffect(
         function () {
             if (!ready) return;
 
@@ -66,6 +66,8 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                     await sleep(3000);
                     goToFinish();
                     openDrawer();
+
+                    setIsLoading(false);
                     return;
                 }
 
@@ -87,7 +89,18 @@ export function AuthenticationProvider({ children }: { children: React.ReactNode
                 setUser({ ...privyUser, backendUserData: response.data });
             })();
         },
-        [authenticated, ready, privyUser, setIsLoading, setUser],
+        [
+            authenticated,
+            privyUser,
+            ready,
+            goToFinish,
+            openDrawer,
+            setFormField,
+            setIsLoading,
+            setIsNewUser,
+            setToken,
+            setUser,
+        ],
     );
 
     return children;

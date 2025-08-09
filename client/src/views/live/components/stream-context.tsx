@@ -14,6 +14,7 @@ export function StreamContext() {
                     <StreamerLivePFP
                         imageSrc="https://placehold.co/400x400/pink/blue"
                         imageAlt={`${streamCreator.user.username}-pfp`}
+                        isLive
                     />
                 </div>
                 <span className="text-sm">@{streamCreator.user.username}</span>

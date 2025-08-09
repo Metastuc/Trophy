@@ -11,15 +11,19 @@ import { StreamerRemote } from "./streamer-remote";
 export function StreamLayout() {
     const { screenSharing, setScreenSharing } = useStreamingUIContext();
     const { shareStream } = useLocalScreenShare();
-    const isScreenSharing = screenSharing.someoneIsSharingTheirScreen || !!shareStream;
 
     React.useEffect(() => {
-        if (isScreenSharing) setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: true }));
+        if (shareStream) setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: true }));
         else setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: false }));
-    }, [isScreenSharing]);
+    }, [shareStream]);
 
     return (
-        <div className={cn("grid size-full", "streamer-grid", isScreenSharing && "grid-row-3 grid-cols-8")}>
+        <div
+            className={cn(
+                "grid size-full",
+                screenSharing.someoneIsSharingTheirScreen && "grid-row-3 streamer-grid grid-cols-8",
+            )}
+        >
             <RenderStreamers role="host" />
             <RenderStreamers role="coHost" />
         </div>
@@ -45,7 +49,7 @@ function RenderStreamers({ role }: { role: tRole }) {
                     videoStreamState={isVideoOn ? "playable" : "unavailable"}
                     audioStream={localAudio}
                     audioStreamState={isAudioOn ? "playable" : "unavailable"}
-                    screenVideo={shareStream && shareStream}
+                    screenVideo={shareStream || null}
                 />
             ) : null}
 

@@ -95,11 +95,11 @@ export function CompleteProfile() {
         event.preventDefault();
 
         const request = AuthenticationProfileSchema.safeParse({
-            bio,
-            email,
+            bio: bio?.trim(),
+            email: email?.trim(),
             isNewUser,
             profilePicture,
-            username,
+            username: username?.trim(),
             walletAddress,
         });
 

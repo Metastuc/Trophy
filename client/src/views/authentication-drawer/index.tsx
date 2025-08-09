@@ -52,6 +52,7 @@ export function AuthenticationDrawer() {
             dismissible={false}
             open={isOpen}
             onOpenChange={(isDrawerOpen) => (isDrawerOpen ? openDrawer() : closeDrawer())}
+            repositionInputs={false}
         >
             <Button className="bg-blue100 h-6 w-15 rounded-xs" onClick={handleAuthentication} disabled={isLoggingOut}>
                 {isLoggingOut ? (
