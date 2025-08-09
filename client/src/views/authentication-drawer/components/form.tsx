@@ -2,6 +2,7 @@ import { useUser } from "@privy-io/react-auth";
 import { Loader, PencilLine } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { useShallow } from "zustand/shallow";
 
 import { fetchUser } from "@/api/fetch-user";
@@ -103,10 +104,8 @@ export function CompleteProfile() {
             walletAddress,
         });
 
-        console.log({ request });
-
         if (!request.success) {
-            const errors = request.error.flatten().fieldErrors;
+            const errors = z.flattenError(request.error).fieldErrors;
 
             toast.error("Form Submission Error", {
                 description: (
