@@ -11,7 +11,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <Fragment>
             <HeadContent />
-            <Outlet />;
+            <Outlet />
         </Fragment>
     ),
 

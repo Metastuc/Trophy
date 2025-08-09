@@ -1,3 +1,7 @@
+type tRole = "host" | "coHost" | "speaker" | "listener" | "guest" | "bot";
+
+type tRoomStates = "idle" | "connecting" | "connected" | "failed" | "left" | "closed";
+
 type tJoinStreamRequest = {
     roomId: string;
     username?: string;
@@ -19,10 +23,6 @@ type tGetStreamResponse = {
     title: string;
 };
 
-type tRole = "host" | "coHost" | "speaker" | "listener" | "guest" | "bot";
-
-type tRoomStates = "idle" | "connecting" | "connected" | "failed" | "left" | "closed";
-
 type tUserHasToggled = {
     audio: boolean;
     video: boolean;
@@ -31,6 +31,12 @@ type tUserHasToggled = {
 type tScreenSharing = {
     someoneIsSharingTheirScreen: boolean;
     whoIsSharingTheirScreen: string | null;
+};
+
+type tStreamUIMetadata = {
+    username: string;
+    userPFP: string;
+    userPeerID: string;
 };
 
 interface iStreamingUIPermissions {
@@ -52,6 +58,7 @@ interface iRoomRoles {
 }
 
 interface iStreamingUIContext {
+    allPeers: string[];
     isCoHostDrawerOpen: boolean;
     permissions: iStreamingUIPermissions;
     roomRoles: iRoomRoles;

@@ -2,6 +2,8 @@ import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/reac
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { useAuthenticationStore } from "@/store/authentication";
+
 import { StreamingUIContext } from "./hooks";
 
 interface iStreamingUIContextProvider extends PropsWithChildren {
@@ -10,13 +12,22 @@ interface iStreamingUIContextProvider extends PropsWithChildren {
 }
 
 export function StreamingUIContextProvider({ children, roomId, token }: iStreamingUIContextProvider) {
+    const authenticationStore = useAuthenticationStore((state) => state);
+
     const { isVideoOn, enableVideo } = useLocalVideo();
-    const { joinRoom, state } = useRoom();
+    const { role, updateMetadata, peerId } = useLocalPeer();
     const { peerIds } = usePeerIds();
-    const { role } = useLocalPeer();
+    const { joinRoom, state } = useRoom({
+        onJoin() {
+            updateMetadata({
+                username: authenticationStore.user?.backendUserData.user.username ?? "anon",
+                userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
+                userPeerID: peerId,
+            });
+        },
+    });
 
     const typedRole: tRole = role as tRole;
-    const viewerCount = peerIds.length;
 
     const permissions: iStreamingUIPermissions = useMemo(
         () => ({
@@ -52,7 +63,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         whoIsSharingTheirScreen: null,
     }));
 
-    const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
+    const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(true);
 
     useEffect(
         function () {
@@ -75,7 +86,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
                 });
             }
         },
-        [enableVideo, isVideoOn, roomRoles, state, userHasToggled],
+        [enableVideo, isVideoOn, roomRoles, state, userHasToggled.video],
     );
 
     useEffect(
@@ -89,6 +100,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
 
     const value: iStreamingUIContext = useMemo(
         () => ({
+            allPeers: peerIds,
             isCoHostDrawerOpen,
             permissions,
             roomRoles,
@@ -96,17 +108,17 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             setIsCoHostDrawerOpen,
             setScreenSharing,
             setUserHasToggled,
-            viewerCount,
+            viewerCount: peerIds.length,
         }),
         [
             isCoHostDrawerOpen,
+            peerIds,
             permissions,
             roomRoles,
             screenSharing,
             setIsCoHostDrawerOpen,
             setScreenSharing,
             setUserHasToggled,
-            viewerCount,
         ],
     );
 

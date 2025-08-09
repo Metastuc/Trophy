@@ -1,18 +1,21 @@
+import { useRemotePeer } from "@huddle01/react";
+import { X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer";
+import { logger } from "@/utils/logger";
 
 import { useStreamingUIContext } from "../hooks";
 
-export default function CoHostDrawer() {
-    const { isCoHostDrawerOpen, setIsCoHostDrawerOpen } = useStreamingUIContext();
+export function CoHostDrawer() {
+    const { isCoHostDrawerOpen, setIsCoHostDrawerOpen, allPeers } = useStreamingUIContext();
 
     return (
         <Drawer
@@ -22,17 +25,52 @@ export default function CoHostDrawer() {
             repositionInputs={false}
         >
             <DrawerContent>
-                <DrawerHeader>
-                    <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                    <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                <DrawerHeader className="flex flex-row items-center justify-start">
+                    <DrawerTitle className="flex">
+                        <Button variant="ghost" onClick={() => setIsCoHostDrawerOpen(false)}>
+                            <X />
+                        </Button>
+                    </DrawerTitle>
+                    <DrawerDescription className="text-blue100 text-base font-medium">
+                        Add co-streamers
+                    </DrawerDescription>
                 </DrawerHeader>
+
                 <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
+                    <header>search</header>
+
+                    <footer>
+                        <div>
+                            <span>People on your livestream</span>
+                            <i>icon</i>
+                        </div>
+
+                        <section>
+                            {allPeers.map((value, index) => (
+                                <AuthenticatedPeer key={index} peerId={value} />
+                            ))}
+                        </section>
+                    </footer>
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>
+    );
+}
+
+function AuthenticatedPeer({ peerId }: { peerId: string }) {
+    const { metadata } = useRemotePeer({ peerId }) as { metadata: tStreamUIMetadata };
+    const isAuthenticated = Boolean(metadata?.username && metadata.username !== "anon");
+
+    logger({ peerId, metadata });
+
+    if (!isAuthenticated) return null;
+
+    return (
+        <article>
+            <i className="flex size-7 items-center justify-center rounded-full">
+                <img src="" alt="" />
+            </i>
+            <span>{metadata.username}</span>
+        </article>
     );
 }
