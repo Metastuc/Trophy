@@ -1,10 +1,6 @@
 import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
-import { usePrevious } from "@uidotdev/usehooks";
-import { PropsWithChildren, useEffect, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-
-import { useAuthenticationStore } from "@/store/authentication";
-import { logger } from "@/utils/logger";
 
 import { StreamingUIContext } from "./hooks";
 
@@ -14,15 +10,8 @@ interface iStreamingUIContextProvider extends PropsWithChildren {
 }
 
 export function StreamingUIContextProvider({ children, roomId, token }: iStreamingUIContextProvider) {
-    const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
-    const previousIsAuthenticated = usePrevious(isAuthenticated);
-
-    const { isVideoOn, enableVideo } = useLocalVideo({
-        onProduceClose(reason) {
-            console.log("Video stream closed:", reason);
-        },
-    });
-    const { joinRoom, state, leaveRoom } = useRoom();
+    const { isVideoOn, enableVideo } = useLocalVideo();
+    const { joinRoom, state } = useRoom();
     const { peerIds } = usePeerIds();
     const { role } = useLocalPeer();
 
@@ -63,19 +52,10 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         whoIsSharingTheirScreen: null,
     }));
 
-    const roomConnectionRefs = useRef({
-        peerHasJoined: false,
-        peerIsJustJoining: true,
-        peerWasConnected: false,
-    });
+    const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
 
     useEffect(
-        /**
-         * join the room
-         */
         function () {
-            logger("Room state changed:", state);
-
             if (state === "idle") {
                 console.log("[intial] Joining room...");
 
@@ -88,9 +68,6 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     );
 
     useEffect(
-        /**
-         * enable video on connect if host
-         */
         function () {
             if (roomRoles.host && state === "connected" && !isVideoOn && !userHasToggled.video) {
                 enableVideo().catch((error) => {
@@ -103,9 +80,6 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
 
     useEffect(
         function () {
-            // console.log("fourth useEffect");
-            // debug();
-
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
             }
@@ -115,32 +89,26 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
 
     const value: iStreamingUIContext = useMemo(
         () => ({
+            isCoHostDrawerOpen,
             permissions,
             roomRoles,
-            setUserHasToggled,
             screenSharing,
+            setIsCoHostDrawerOpen,
             setScreenSharing,
+            setUserHasToggled,
             viewerCount,
         }),
-        [permissions, viewerCount, setUserHasToggled, roomRoles, setScreenSharing, screenSharing],
-    );
-
-    function debug() {
-        console.log("streaming UI context re-render");
-        logger({
-            isAuthenticated,
+        [
+            isCoHostDrawerOpen,
             permissions,
-            previousIsAuthenticated,
-            roomConnectionRefs: roomConnectionRefs.current,
             roomRoles,
             screenSharing,
-            state,
-            token,
-            typedRole,
-            userHasToggled,
+            setIsCoHostDrawerOpen,
+            setScreenSharing,
+            setUserHasToggled,
             viewerCount,
-        });
-    }
+        ],
+    );
 
     return <StreamingUIContext.Provider value={value}>{children}</StreamingUIContext.Provider>;
 }

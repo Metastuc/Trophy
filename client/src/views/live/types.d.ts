@@ -52,9 +52,11 @@ interface iRoomRoles {
 }
 
 interface iStreamingUIContext {
+    isCoHostDrawerOpen: boolean;
     permissions: iStreamingUIPermissions;
     roomRoles: iRoomRoles;
     screenSharing: tScreenSharing;
+    setIsCoHostDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setScreenSharing: React.Dispatch<React.SetStateAction<tScreenSharing>>;
     setUserHasToggled: React.Dispatch<React.SetStateAction<tUserHasToggled>>;
     viewerCount: number;

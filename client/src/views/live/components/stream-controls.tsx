@@ -68,7 +68,7 @@ function RenderControlsBasedOnRole() {
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
     const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
-    const { setUserHasToggled } = useStreamingUIContext();
+    const { setUserHasToggled, setIsCoHostDrawerOpen } = useStreamingUIContext();
 
     async function handleToggleVideo() {
         setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
@@ -89,6 +89,10 @@ function RenderControlsBasedOnRole() {
         else await startScreenShare();
     }
 
+    function toggleCoHostDrawer() {
+        setIsCoHostDrawerOpen((previous) => !previous);
+    }
+
     return (
         <Fragment>
             {canEndStream ? (
@@ -107,7 +111,7 @@ function RenderControlsBasedOnRole() {
             ) : null}
 
             {canInvite ? (
-                <ControlButton className="">
+                <ControlButton onClick={toggleCoHostDrawer}>
                     <i className="size-4">
                         <UserPlus />
                     </i>

@@ -7,6 +7,7 @@ import { PageContentLayout } from "@/components/layouts/main-content";
 import { useAuthenticationStore } from "@/store/authentication";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 import { Chatroom } from "@/views/live/components/chatroom";
+import CoHostDrawer from "@/views/live/components/cohost-drawer";
 import { StreamContext } from "@/views/live/components/stream-context";
 import { StreamScreen } from "@/views/live/components/stream-screen";
 import { StreamingUIContextProvider } from "@/views/live/context";
@@ -52,23 +53,25 @@ function Page() {
 
     return (
         <section className="flex min-h-dvh flex-col">
-            <header className="flex h-11.5 items-center justify-between px-3">
-                <Link to="/">
-                    <img src="/trophy.svg" alt="trophy-logo" />
-                </Link>
+            <StreamingUIContextProvider roomId={roomId} token={token}>
+                <header className="flex h-11.5 items-center justify-between px-3">
+                    <Link to="/">
+                        <img src="/trophy.svg" alt="trophy-logo" />
+                    </Link>
 
-                {!isAuthenticated ? <AuthenticationDrawer /> : null}
-            </header>
+                    {!isAuthenticated ? <AuthenticationDrawer /> : null}
+                </header>
 
-            <footer className="flex flex-1 flex-col">
-                <StreamingUIContextProvider roomId={roomId} token={token}>
+                <footer className="flex flex-1 flex-col">
                     <StreamScreen />
                     <PageContentLayout className="flex flex-1 flex-col">
                         <StreamContext />
                         <Chatroom />
                     </PageContentLayout>
-                </StreamingUIContextProvider>
-            </footer>
+                </footer>
+
+                <CoHostDrawer />
+            </StreamingUIContextProvider>
         </section>
     );
 }
