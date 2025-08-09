@@ -1,7 +1,8 @@
-import { useAuthenticationStore } from "@/store/authentication";
 import { useDataMessage, useLocalPeer, useRemotePeer } from "@huddle01/react";
 import { CircleDollarSign, MessageCircle } from "lucide-react";
 import React from "react";
+
+import { useAuthenticationStore } from "@/store/authentication";
 
 export type TMessage = {
     text: string;

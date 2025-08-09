@@ -1,11 +1,13 @@
 import { useRoom } from "@huddle01/react";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
-import React from "react";
+import { useEffect } from "react";
 
 import { getStream } from "@/api/get-stream";
 import { getUser } from "@/api/get-user";
 import { joinStream } from "@/api/join-stream";
 import { PageContentLayout } from "@/components/layouts/main-content";
+import { useAuthenticationStore } from "@/store/authentication";
+import { AuthenticationDrawer } from "@/views/authentication-drawer";
 import { Chatroom } from "@/views/live/components/chatroom";
 import { StreamContext } from "@/views/live/components/stream-context";
 import { StreamScreen } from "@/views/live/components/stream-screen";
@@ -43,14 +45,16 @@ export const Route = createFileRoute("/live/$id")({
         return { token: response.token, roomId: params.id };
     },
 
-    component: () => <Page />,
+    component: () => Page(),
 });
 
 function Page() {
     const { token, roomId } = useLoaderData({ from: "/live/$id" });
     const { joinRoom, state, leaveRoom } = useRoom();
 
-    React.useEffect(
+    const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
+
+    useEffect(
         function () {
             (async function () {
                 if (state === "idle") {
@@ -64,25 +68,27 @@ function Page() {
                 }
             };
         },
-        [roomId, token, state],
+        [roomId, token, state, joinRoom, leaveRoom],
     );
 
     return (
         <section className="flex min-h-screen flex-col">
-            <header className="flex h-11.5 items-center justify-start px-3">
+            <header className="flex h-11.5 items-center justify-between px-3">
                 <Link to="/">
                     <img src="/trophy.svg" alt="trophy-logo" />
                 </Link>
+
+                {!isAuthenticated ? <AuthenticationDrawer /> : null}
             </header>
 
-            <footer className="flex flex-1">
-                <PageContentLayout className="flex flex-1 flex-col">
-                    <StreamingUIContextProvider>
-                        <StreamScreen />
+            <footer className="flex flex-1 flex-col">
+                <StreamingUIContextProvider>
+                    <StreamScreen />
+                    <PageContentLayout className="flex flex-1 flex-col">
                         <StreamContext />
                         <Chatroom />
-                    </StreamingUIContextProvider>
-                </PageContentLayout>
+                    </PageContentLayout>
+                </StreamingUIContextProvider>
             </footer>
         </section>
     );

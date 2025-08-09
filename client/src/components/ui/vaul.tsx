@@ -1,6 +1,7 @@
-import { cn } from "@/lib/utils"; // optional utility for conditional classNames
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
+
+import { cn } from "@/lib/utils"; // optional utility for conditional classNames
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
     return <DrawerPrimitive.Root {...props} />;
