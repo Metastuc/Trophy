@@ -32,6 +32,7 @@ export function CoHostInvitation() {
 function RenderPopup({ peerId }: { peerId: string }) {
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(true);
+    const { denyCoHostInvite } = useStreamingUICoHostInvitation();
 
     function handleAccept() {
         console.log(`Viewer: Accepted invite from ${peerId} (${metadata?.username || "unknown"})`);
@@ -40,6 +41,7 @@ function RenderPopup({ peerId }: { peerId: string }) {
 
     function handleDecline() {
         console.log(`Viewer: Declined invite from ${peerId} (${metadata?.username || "unknown"})`);
+        denyCoHostInvite({ hostID: peerId });
         setIsPopupOpen(false);
     }
 

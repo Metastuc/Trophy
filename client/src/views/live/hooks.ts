@@ -58,6 +58,8 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * co-host denied invite
                      */
                     if (roles.host) {
+                        console.log(`Host: Peer ${from} denied co-host invite`);
+
                         setCoHostInvitationState((state) => ({
                             ...state,
                             pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
@@ -159,6 +161,7 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function denyCoHostInvite({ hostID }: { hostID: string }) {
         if (roles.host) return;
+        console.log(`Viewer: Sending deny to ${hostID}`);
 
         sendData({ to: [hostID], payload: "deny", label: "INVITE" });
         setCoHostInvitationState((state) => ({
