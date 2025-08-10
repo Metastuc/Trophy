@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { useStreamingUIContext } from "../hooks";
-import { AuthenticatedPeersList } from "./peers-in-list";
+import { AuthenticatedPeersList, SelectedPeersList } from "./peers-in-list";
 
 export function CoHostDrawer() {
     const { isCoHostDrawerOpen, setIsCoHostDrawerOpen, allPeers } = useStreamingUIContext();
@@ -56,7 +56,13 @@ export function CoHostDrawer() {
 
                 <DrawerFooter>
                     <header className="border-blue100 space-y-2 rounded-xs border px-3 py-2">
-                        <div>display</div>
+                        {drawerInternalState.selectedPeersAsCoHost.length ? (
+                            <div className="flex flex-wrap gap-2">
+                                {drawerInternalState.selectedPeersAsCoHost.map(
+                                    (value) => value && <SelectedPeersList key={value} peerId={value} />,
+                                )}
+                            </div>
+                        ) : null}
                         <div className="flex items-center justify-start gap-1 text-[#060606B2]">
                             <i className="size-4">
                                 <Search />
@@ -80,15 +86,18 @@ export function CoHostDrawer() {
                         </div>
 
                         <ul className="flex max-h-90 flex-col gap-2 overflow-auto">
-                            {allPeers.map((value, index) => (
-                                <AuthenticatedPeersList
-                                    key={index}
-                                    peerId={value}
-                                    search={drawerInternalState.searchQuery}
-                                    onToggle={() => handleTogglePeerAsCoHost(value)}
-                                    selected={drawerInternalState.selectedPeersAsCoHost.includes(value)}
-                                />
-                            ))}
+                            {allPeers.map(
+                                (value) =>
+                                    value && (
+                                        <AuthenticatedPeersList
+                                            key={value}
+                                            peerId={value}
+                                            search={drawerInternalState.searchQuery}
+                                            onToggle={() => handleTogglePeerAsCoHost(value)}
+                                            selected={drawerInternalState.selectedPeersAsCoHost.includes(value)}
+                                        />
+                                    ),
+                            )}
                         </ul>
                     </footer>
                 </DrawerFooter>
