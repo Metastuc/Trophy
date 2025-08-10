@@ -1,5 +1,5 @@
-import { useDataMessage, useRemotePeer } from "@huddle01/react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useDataMessage } from "@huddle01/react";
+import { createContext, useContext, useState } from "react";
 
 export const StreamingUIContext: React.Context<iStreamingUIContext> = createContext<iStreamingUIContext>(
     {} as iStreamingUIContext,
@@ -28,88 +28,151 @@ export function useStreamingUICoHostInvitation(): iCoHostInvitationHandler {
 
 export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitationHandler {
     const [coHostInvitationState, setCoHostInvitationState] = useState<iCoHostInvitationState>(() => ({
-        pendingInvitations: [],
         acceptedPeerId: null,
+        activeCoHosts: [],
+        pendingInvitations: [],
     }));
 
     const { sendData } = useDataMessage({
         onMessage(payload, from, label) {
             if (label !== "INVITE") return;
 
-            if (payload === "CO-HOST_INVITE") {
-                setCoHostInvitationState((state) => ({
-                    ...state,
-                    pendingInvitations: [...state.pendingInvitations, from],
-                }));
-            }
+            console.log("[DataMessage received]", { payload, from, label });
 
-            if (payload === "CO-HOST_ACCEPT" && roles.host) {
-                setCoHostInvitationState((state) => ({
-                    ...state,
-                    pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
-                    acceptedPeerId: from,
-                }));
-            }
+            switch (payload as tInviteActions) {
+                case "accept":
+                    /**
+                     * co-host accepted invite
+                     */
+                    if (roles.host) {
+                        setCoHostInvitationState((state) => ({
+                            ...state,
+                            pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
+                            activeCoHosts: [...state.activeCoHosts, from],
+                        }));
+                    }
+                    break;
 
-            if (label === "INVITE") {
-                return;
+                case "deny":
+                    /**
+                     * co-host denied invite
+                     */
+                    if (roles.host) {
+                        setCoHostInvitationState((state) => ({
+                            ...state,
+                            pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
+                        }));
+                    }
+                    break;
+
+                case "invite":
+                    /**
+                     * host sent invite
+                     */
+                    if (!roles.host) {
+                        setCoHostInvitationState(function (state: iCoHostInvitationState) {
+                            if (state.pendingInvitations.includes(from)) {
+                                return state;
+                            }
+
+                            console.log(`Viewer: Adding hostId ${from} to pendingInvitations`);
+
+                            return {
+                                ...state,
+                                pendingInvitations: [...state.pendingInvitations, from],
+                            };
+                        });
+                    }
+                    break;
+
+                case "cancel":
+                    /**
+                     * host cancelled invite
+                     */
+                    setCoHostInvitationState((state) => ({
+                        ...state,
+                        pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
+                    }));
+                    break;
+
+                case "revoke":
+                    /**
+                     * co-host revoked invite
+                     */
+                    if (roles.host) {
+                        setCoHostInvitationState((state) => ({
+                            ...state,
+                            activeCoHosts: state.activeCoHosts.filter((id) => id !== from),
+                        }));
+                    } else {
+                        setCoHostInvitationState((state) => ({
+                            ...state,
+                            acceptedPeerId: null,
+                        }));
+                    }
+                    break;
             }
         },
     });
 
-    const remotePeer = useRemotePeer({ peerId: coHostInvitationState.acceptedPeerId ?? "" });
+    // "accept" | "cancel" | "deny" | "invite" | "revoke";
 
-    function sendCoHostInvite(peerID: string) {
-        sendData({
-            to: [peerID],
-            payload: "CO-HOST_INVITE",
-            label: "INVITE",
-        });
+    function sendCoHostInvite({ peerID }: { peerID: string }) {
+        if (!roles.host) return;
+        console.log(`Host: Sending invite to ${peerID}`);
 
+        sendData({ to: [peerID], payload: "invite", label: "INVITE" });
+        setCoHostInvitationState((state) => ({ ...state, pendingInvitations: [...state.pendingInvitations, peerID] }));
+    }
+
+    function cancelCoHostInvite({ peerID }: { peerID: string }) {
+        if (!roles.host) return;
+
+        sendData({ to: [peerID], payload: "cancel", label: "INVITE" });
         setCoHostInvitationState((state) => ({
             ...state,
-            pendingInvitations: [...state.pendingInvitations, peerID],
+            pendingInvitations: state.pendingInvitations.filter((id) => id !== peerID),
         }));
     }
 
-    function acceptCoHostInvite(hostID: string) {
-        sendData({
-            to: [hostID],
-            payload: "CO-HOST_ACCEPT",
-            label: "INVITE",
-        });
+    function revokeCoHostInvite({ peerID }: { peerID: string }) {
+        if (!roles.host) return;
+
+        sendData({ to: [peerID], payload: "revoke", label: "INVITE" });
+        setCoHostInvitationState((state) => ({
+            ...state,
+            activeCoHosts: state.activeCoHosts.filter((id) => id !== peerID),
+        }));
     }
 
-    function denyCoHostInvite(hostID: string) {
-        sendData({
-            to: [hostID],
-            payload: "CO-HOST_DENY",
-            label: "INVITE",
-        });
+    function acceptCoHostInvite({ hostID }: { hostID: string }) {
+        if (roles.host) return;
 
+        sendData({ to: [hostID], payload: "accept", label: "INVITE" });
+
+        setCoHostInvitationState((state) => ({
+            ...state,
+            pendingInvitations: state.pendingInvitations.filter((id) => id !== hostID),
+            acceptedPeerId: hostID,
+        }));
+    }
+
+    function denyCoHostInvite({ hostID }: { hostID: string }) {
+        if (roles.host) return;
+
+        sendData({ to: [hostID], payload: "deny", label: "INVITE" });
         setCoHostInvitationState((state) => ({
             ...state,
             pendingInvitations: state.pendingInvitations.filter((id) => id !== hostID),
         }));
     }
 
-    useEffect(
-        function () {
-            if (coHostInvitationState.acceptedPeerId && roles.host) {
-                remotePeer.updateRole("coHost");
-                setCoHostInvitationState((state) => ({
-                    ...state,
-                    acceptedPeerId: null,
-                }));
-            }
-        },
-        [coHostInvitationState.acceptedPeerId, roles.host, remotePeer],
-    );
-
     return {
-        acceptCoHostInvite,
         coHostInvitationState,
-        denyCoHostInvite,
         sendCoHostInvite,
+        cancelCoHostInvite,
+        revokeCoHostInvite,
+        acceptCoHostInvite,
+        denyCoHostInvite,
     };
 }

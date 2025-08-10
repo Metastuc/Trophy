@@ -1,6 +1,8 @@
-type tRole = "host" | "coHost" | "speaker" | "listener" | "guest" | "bot";
+type tRole = "bot" | "coHost" | "guest" | "host" | "listener" | "speaker";
 
-type tRoomStates = "idle" | "connecting" | "connected" | "failed" | "left" | "closed";
+type tRoomStates = "closed" | "connecting" | "connected" | "failed" | "idle" | "left";
+
+type tInviteActions = "accept" | "cancel" | "deny" | "invite" | "revoke";
 
 type tJoinStreamRequest = {
     roomId: string;
@@ -83,13 +85,16 @@ interface iDrawerInternalState {
 }
 
 interface iCoHostInvitationState {
-    pendingInvitations: Array<string>;
     acceptedPeerId: string | null;
+    activeCoHosts: Array<string>;
+    pendingInvitations: Array<string>;
 }
 
 interface iCoHostInvitationHandler {
-    acceptCoHostInvite: (hostID: string) => void;
     coHostInvitationState: iCoHostInvitationState;
-    denyCoHostInvite: (hostID: string) => void;
-    sendCoHostInvite: (peerID: string) => void;
+    sendCoHostInvite: ({ peerID }: { peerID: string }) => void;
+    cancelCoHostInvite: ({ peerID }: { peerID: string }) => void;
+    revokeCoHostInvite: ({ peerID }: { peerID: string }) => void;
+    acceptCoHostInvite: ({ hostID }: { hostID: string }) => void;
+    denyCoHostInvite: ({ hostID }: { hostID: string }) => void;
 }

@@ -1,5 +1,5 @@
 import { Projector, Search, X } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +11,13 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer";
 
-import { useStreamingUIContext } from "../hooks";
+import { useStreamingUICoHostInvitation, useStreamingUIContext } from "../hooks";
 import { AuthenticatedPeersList, SelectedPeersList } from "./peers-in-list";
 
 export function CoHostDrawer() {
     const { isCoHostDrawerOpen, setIsCoHostDrawerOpen, allPeers } = useStreamingUIContext();
+    const { acceptCoHostInvite, coHostInvitationState, denyCoHostInvite, sendCoHostInvite } =
+        useStreamingUICoHostInvitation();
 
     const [drawerInternalState, setDrawerInternalState] = useState<iDrawerInternalState>(() => ({
         searchQuery: "",
@@ -23,17 +25,33 @@ export function CoHostDrawer() {
     }));
 
     function handleSearchQueryInputChange(event: ChangeEvent<HTMLInputElement>) {
-        setDrawerInternalState((previous) => ({ ...previous, searchQuery: event.target.value }));
+        setDrawerInternalState((state) => ({ ...state, searchQuery: event.target.value }));
     }
 
     function handleTogglePeerAsCoHost(peerId: string) {
-        setDrawerInternalState((previous) => ({
-            ...previous,
-            selectedPeersAsCoHost: previous.selectedPeersAsCoHost.includes(peerId)
-                ? previous.selectedPeersAsCoHost.filter((id) => id !== peerId)
-                : [...previous.selectedPeersAsCoHost, peerId],
-        }));
+        // const isPeerSelectedAsCoHost = drawerInternalState.selectedPeersAsCoHost.includes(peerId);
+
+        // setDrawerInternalState((state) => ({
+        //     ...state,
+        //     selectedPeersAsCoHost: isPeerSelectedAsCoHost
+        //         ? state.selectedPeersAsCoHost.filter((id) => id !== peerId)
+        //         : [...state.selectedPeersAsCoHost, peerId],
+        // }));
+
+        if (!drawerInternalState.selectedPeersAsCoHost.includes(peerId)) {
+            sendCoHostInvite({ peerID: peerId });
+        }
     }
+
+    useEffect(
+        function () {
+            setDrawerInternalState((state) => ({
+                ...state,
+                selectedPeersAsCoHost: coHostInvitationState.pendingInvitations,
+            }));
+        },
+        [coHostInvitationState.pendingInvitations],
+    );
 
     return (
         <Drawer

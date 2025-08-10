@@ -8,6 +8,7 @@ import { useAuthenticationStore } from "@/store/authentication";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 import { Chatroom } from "@/views/live/components/chatroom";
 import { CoHostDrawer } from "@/views/live/components/cohost-drawer";
+import { CoHostInvitation } from "@/views/live/components/invitation";
 import { StreamContext } from "@/views/live/components/stream-context";
 import { StreamScreen } from "@/views/live/components/stream-screen";
 import { StreamingUIContextProvider } from "@/views/live/context";
@@ -88,6 +89,7 @@ function Page() {
                 </footer>
 
                 <CoHostDrawer />
+                <CoHostInvitation />
             </StreamingUIContextProvider>
         </section>
     );
