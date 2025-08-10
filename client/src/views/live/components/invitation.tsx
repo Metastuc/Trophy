@@ -1,6 +1,6 @@
 import { useRemotePeer } from "@huddle01/react";
 import { PhoneCall } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     AlertDialog,
@@ -14,6 +14,20 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { useStreamingUICoHostInvitation, useStreamingUIRoles } from "../hooks";
+
+export function RoleUpdater({ peerId, role }: { peerId: string; role: tRole }) {
+    const { updateRole } = useRemotePeer({ peerId });
+
+    useEffect(
+        function () {
+            console.log(`Host: Updating role for ${peerId} to ${role}`);
+            updateRole(role);
+        },
+        [peerId, role, updateRole],
+    );
+
+    return null;
+}
 
 export function CoHostInvitation() {
     const { coHostInvitationState } = useStreamingUICoHostInvitation();
@@ -32,10 +46,11 @@ export function CoHostInvitation() {
 function RenderPopup({ peerId }: { peerId: string }) {
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(true);
-    const { denyCoHostInvite } = useStreamingUICoHostInvitation();
+    const { denyCoHostInvite, acceptCoHostInvite } = useStreamingUICoHostInvitation();
 
     function handleAccept() {
         console.log(`Viewer: Accepted invite from ${peerId} (${metadata?.username || "unknown"})`);
+        acceptCoHostInvite({ hostID: peerId });
         setIsPopupOpen(false);
     }
 

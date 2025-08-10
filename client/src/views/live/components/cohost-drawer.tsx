@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { useStreamingUICoHostInvitation, useStreamingUIContext } from "../hooks";
+import { RoleUpdater } from "./invitation";
 import { AuthenticatedPeersList, SelectedPeersList } from "./peers-in-list";
 
 export function CoHostDrawer() {
@@ -47,10 +48,13 @@ export function CoHostDrawer() {
         function () {
             setDrawerInternalState((state) => ({
                 ...state,
-                selectedPeersAsCoHost: coHostInvitationState.pendingInvitations,
+                selectedPeersAsCoHost: [
+                    ...coHostInvitationState.pendingInvitations,
+                    ...coHostInvitationState.activeCoHosts,
+                ],
             }));
         },
-        [coHostInvitationState.pendingInvitations],
+        [coHostInvitationState.pendingInvitations, coHostInvitationState.activeCoHosts],
     );
 
     return (
@@ -71,6 +75,12 @@ export function CoHostDrawer() {
                         Add co-streamers
                     </DrawerDescription>
                 </DrawerHeader>
+
+                {coHostInvitationState.activeCoHosts.length
+                    ? coHostInvitationState.activeCoHosts.map(
+                          (peerId) => peerId && <RoleUpdater key={peerId} peerId={peerId} role="coHost" />,
+                      )
+                    : null}
 
                 <DrawerFooter>
                     <header className="border-blue100 space-y-2 rounded-xs border px-3 py-2">

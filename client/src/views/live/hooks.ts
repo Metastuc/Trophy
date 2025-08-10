@@ -45,6 +45,7 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * co-host accepted invite
                      */
                     if (roles.host) {
+                        console.log(`Host: Peer ${from} accepted co-host invite`);
                         setCoHostInvitationState((state) => ({
                             ...state,
                             pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
@@ -149,9 +150,9 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function acceptCoHostInvite({ hostID }: { hostID: string }) {
         if (roles.host) return;
+        console.log(`Viewer: Sending accept to ${hostID}`);
 
         sendData({ to: [hostID], payload: "accept", label: "INVITE" });
-
         setCoHostInvitationState((state) => ({
             ...state,
             pendingInvitations: state.pendingInvitations.filter((id) => id !== hostID),

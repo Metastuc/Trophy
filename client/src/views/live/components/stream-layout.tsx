@@ -1,5 +1,5 @@
 import { useLocalAudio, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
-import React from "react";
+import { Fragment, useEffect } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ export function StreamLayout() {
     const { screenSharing, setScreenSharing } = useStreamingUIContext();
     const { shareStream } = useLocalScreenShare();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (shareStream) setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: true }));
         else setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: false }));
     }, [shareStream, setScreenSharing]);
@@ -44,7 +44,7 @@ function RenderStreamers({ role }: { role: tRole }) {
     const shouldShowLocal = isLocal && ((isVideoOn && localStream) || shareStream);
 
     return (
-        <React.Fragment>
+        <Fragment>
             {shouldShowLocal ? (
                 <StreamerVideoTile
                     videoStream={localStream}
@@ -56,6 +56,6 @@ function RenderStreamers({ role }: { role: tRole }) {
             ) : null}
 
             {peerIds.map((value, index) => (value ? <StreamerRemote peerId={value} key={index} /> : null))}
-        </React.Fragment>
+        </Fragment>
     );
 }
