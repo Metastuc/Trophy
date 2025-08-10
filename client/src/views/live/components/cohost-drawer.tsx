@@ -1,5 +1,6 @@
 import { useRemotePeer } from "@huddle01/react";
 import { X } from "lucide-react";
+import { ChangeEvent, JSX, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +17,9 @@ import { useStreamingUIContext } from "../hooks";
 
 export function CoHostDrawer() {
     const { isCoHostDrawerOpen, setIsCoHostDrawerOpen, allPeers } = useStreamingUIContext();
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
+    logger({ allPeers });
 
     return (
         <Drawer
@@ -37,7 +41,18 @@ export function CoHostDrawer() {
                 </DrawerHeader>
 
                 <DrawerFooter>
-                    <header>search</header>
+                    <header>
+                        <div>display</div>
+                        <div>
+                            <i></i>
+                            <input
+                                type="text"
+                                placeholder="Search by username"
+                                value={searchQuery.trim()}
+                                onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
+                            />
+                        </div>
+                    </header>
 
                     <footer>
                         <div>
@@ -45,10 +60,14 @@ export function CoHostDrawer() {
                             <i>icon</i>
                         </div>
 
-                        <section>
-                            {allPeers.map((value, index) => (
-                                <AuthenticatedPeer key={index} peerId={value} />
-                            ))}
+                        <section className="flex max-h-90 flex-col gap-2 overflow-auto">
+                            {allPeers
+                                .map((value, index) => <AuthenticatedPeer key={index} peerId={value} />)
+                                .filter(Boolean)
+                                .filter((peerElement: JSX.Element) => {
+                                    const username = peerElement.props?.metadata?.username ?? "";
+                                    return username.toLowerCase().includes(searchQuery.toLowerCase());
+                                })}
                         </section>
                     </footer>
                 </DrawerFooter>
@@ -61,16 +80,23 @@ function AuthenticatedPeer({ peerId }: { peerId: string }) {
     const { metadata } = useRemotePeer({ peerId }) as { metadata: tStreamUIMetadata };
     const isAuthenticated = Boolean(metadata?.username && metadata.username !== "anon");
 
-    logger({ peerId, metadata });
+    logger({ peerId, isAuthenticated });
 
     if (!isAuthenticated) return null;
 
     return (
-        <article>
-            <i className="flex size-7 items-center justify-center rounded-full">
-                <img src="" alt="" />
-            </i>
-            <span>{metadata.username}</span>
+        <article className="flex items-center gap-1">
+            <span className="flex size-8 items-center justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399FC]">
+                <i className="flex size-7 items-center justify-center">
+                    <img
+                        src={metadata.userPFP}
+                        alt={`${metadata.username}-pfp`}
+                        className="rounded-full object-cover"
+                    />
+                </i>
+            </span>
+            <span>@{metadata.username}</span>
+            <span>{peerId}</span>
         </article>
     );
 }
