@@ -4,7 +4,7 @@ export const StreamingUIContext: React.Context<iStreamingUIContext> = createCont
     {} as iStreamingUIContext,
 );
 
-export function useStreamingUIContext() {
+export function useStreamingUIContext(): iStreamingUIContext {
     const context: iStreamingUIContext = useContext(StreamingUIContext);
 
     if (context === undefined || context === null || !context)
@@ -13,12 +13,10 @@ export function useStreamingUIContext() {
     return context;
 }
 
-export function useStreamingUIPermissions() {
-    const context: iStreamingUIContext = useContext(StreamingUIContext);
-    return context.permissions;
+export function useStreamingUIPermissions(): iStreamingUIPermissions {
+    return useContext(StreamingUIContext).permissions;
 }
 
-export function useStreamingUIRoles() {
-    const context: iStreamingUIContext = useContext(StreamingUIContext);
-    return context.roomRoles;
+export function useStreamingUIRoles(): iRoomRoles {
+    return useContext(StreamingUIContext).roomRoles;
 }

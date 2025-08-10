@@ -26,7 +26,7 @@ export const createStream = async (req: Request, res: Response) => {
 
     if (!username) {
       res.status(400).json({ error: "Username is required!" });
-      return
+      return;
     }
 
     const user = await User.findOne({ username });
@@ -112,10 +112,14 @@ export const createStream = async (req: Request, res: Response) => {
 
 let janusClient: Janus | undefined = undefined;
 
-export const startLiveStream = async (room: string, streamKey: string, xUrl: string | null | undefined, ytUrl: string | null | undefined) => {
+export const startLiveStream = async (
+  room: string,
+  streamKey: string,
+  xUrl: string | null | undefined,
+  ytUrl: string | null | undefined,
+) => {
   try {
     return new Promise((resolve, reject) => {
-
       if (!janusClient) {
         Janus.init({ debug: "all" });
 
@@ -126,65 +130,64 @@ export const startLiveStream = async (room: string, streamKey: string, xUrl: str
             console.error("Error initializing Janus client:", error);
             throw new Error("Failed to initialize Janus client");
           },
-        })
+        });
       }
 
       janusClient.attach({
         plugin: "janus.plugin.videoroom",
         success: (pluginHandle: any) => {
-
           pluginHandle.send({
             message: {
               request: "join",
               room,
               ptype: "publisher",
-              display: streamKey
+              display: streamKey,
             },
             success: () => {
               pluginHandle.createOffer({
                 media: { audio: true, video: true },
                 success: (jsep: any) => {
-                  const rtmpUrl = `rtmp://localhost/live/${streamKey}?yt_url=${encodeURIComponent(ytUrl || '')}&x_url=${encodeURIComponent(xUrl || '')}`;
+                  const rtmpUrl = `rtmp://localhost/live/${streamKey}?yt_url=${encodeURIComponent(ytUrl || "")}&x_url=${encodeURIComponent(xUrl || "")}`;
                   pluginHandle.send({
                     message: {
-                      request: 'configure',
+                      request: "configure",
                       audio: true,
                       video: true,
-                      rtmp: { url: rtmpUrl }
+                      rtmp: { url: rtmpUrl },
                     },
                     jsep,
                     success: async () => {
                       await RedisClient.set(streamKey, JSON.stringify({ pluginHandle }));
                     },
-                    error: reject
+                    error: reject,
                   });
                 },
-                error: reject
+                error: reject,
               });
             },
-            error: reject
+            error: reject,
           });
         },
-        error: reject
-      })
+        error: reject,
+      });
     });
   } catch (error: any) {
-    console.error(error)
-    throw new Error(error.message)
+    console.error(error);
+    throw new Error(error.message);
   }
-}
+};
 
 export const stopStream = async (req: Request, res: Response) => {
   try {
     const { roomId, username } = req.body;
 
-    if (!roomId || username) {
-      res.status(400).json({ error: "room id and username is required!" });
+    if (!roomId || !username) {
+      res.status(422).json({ message: "room id and username is required!" });
       return;
     }
 
     const userFetch = await RedisClient.get(`user:${username}`);
-    const { streamKey } = JSON.parse(userFetch!)
+    const { streamKey } = JSON.parse(userFetch!);
 
     const liveStream = await Stream.findOne({ roomId });
     if (!liveStream) {
@@ -193,7 +196,7 @@ export const stopStream = async (req: Request, res: Response) => {
     }
 
     if (liveStream.status !== "Live") {
-      res.status(400).json({ message: "Stream is not live!" });
+      res.status(403).json({ message: "Stream is not live!" });
       return;
     }
 
@@ -204,9 +207,12 @@ export const stopStream = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Live stream ended" });
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({
+      error: (error as Error).message,
+      message: "Failed to end stream",
+    });
   }
-}
+};
 
 async function stopLiveStream(streamKey: string): Promise<void> {
   const session = await RedisClient.get(streamKey);
@@ -214,14 +220,14 @@ async function stopLiveStream(streamKey: string): Promise<void> {
 
   const { pluginHandle } = JSON.parse(session);
   pluginHandle.send({
-    message: { request: 'leave' },
+    message: { request: "leave" },
     success: () => {
       pluginHandle.detach({
         success: async () => {
           await RedisClient.del(streamKey);
           console.log(`Stream ${streamKey} stopped`);
-        }
+        },
       });
-    }
+    },
   });
 }
