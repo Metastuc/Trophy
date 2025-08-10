@@ -1,6 +1,6 @@
 import { useRemotePeer } from "@huddle01/react";
 import { X } from "lucide-react";
-import { ChangeEvent, JSX, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -61,13 +61,9 @@ export function CoHostDrawer() {
                         </div>
 
                         <section className="flex max-h-90 flex-col gap-2 overflow-auto">
-                            {allPeers
-                                .map((value, index) => <AuthenticatedPeer key={index} peerId={value} />)
-                                .filter(Boolean)
-                                .filter((peerElement: JSX.Element) => {
-                                    const username = peerElement.props?.metadata?.username ?? "";
-                                    return username.toLowerCase().includes(searchQuery.toLowerCase());
-                                })}
+                            {allPeers.map((value, index) => (
+                                <PeerMetadataFetcher key={index} peerId={value} search={searchQuery} />
+                            ))}
                         </section>
                     </footer>
                 </DrawerFooter>
@@ -76,27 +72,31 @@ export function CoHostDrawer() {
     );
 }
 
-function AuthenticatedPeer({ peerId }: { peerId: string }) {
+function PeerMetadataFetcher({ peerId, search }: { peerId: string; search: string }) {
     const { metadata } = useRemotePeer({ peerId }) as { metadata: tStreamUIMetadata };
     const isAuthenticated = Boolean(metadata?.username && metadata.username !== "anon");
 
-    logger({ peerId, isAuthenticated });
+    const queryMatches = useMemo(
+        function () {
+            return isAuthenticated && metadata.username.toLowerCase().includes(search.toLowerCase());
+        },
+        [isAuthenticated, metadata, search],
+    );
 
-    if (!isAuthenticated) return null;
+    if (!queryMatches || !isAuthenticated) return null;
 
+    return <AuthenticatedPeer {...metadata} />;
+}
+
+function AuthenticatedPeer({ userPFP, username }: tStreamUIMetadata) {
     return (
         <article className="flex items-center gap-1">
             <span className="flex size-8 items-center justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399FC]">
                 <i className="flex size-7 items-center justify-center">
-                    <img
-                        src={metadata.userPFP}
-                        alt={`${metadata.username}-pfp`}
-                        className="rounded-full object-cover"
-                    />
+                    <img src={userPFP} alt={`${username}-pfp`} className="rounded-full object-cover" />
                 </i>
             </span>
-            <span>@{metadata.username}</span>
-            <span>{peerId}</span>
+            <span>@{username}</span>
         </article>
     );
 }
