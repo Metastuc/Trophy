@@ -7,8 +7,12 @@ export function AuthenticatedPeersList({ onToggle, peerId, search, selected }: i
     const isAuthenticated = Boolean(metadata?.username !== "anon");
 
     const queryMatches = useMemo(
-        () => isAuthenticated && metadata?.username.toLowerCase().includes(search.toLowerCase()),
-        [isAuthenticated, metadata, search],
+        function () {
+            const username = (metadata?.username || "").toLowerCase();
+            const query = (search || "").toLowerCase();
+            return isAuthenticated && username.includes(query);
+        },
+        [isAuthenticated, metadata?.username, search],
     );
 
     if (!queryMatches || !isAuthenticated) return null;
