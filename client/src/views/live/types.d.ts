@@ -68,3 +68,15 @@ interface iStreamingUIContext {
     setUserHasToggled: React.Dispatch<React.SetStateAction<tUserHasToggled>>;
     viewerCount: number;
 }
+
+interface iAuthenticatedPeersList {
+    onToggle: () => void;
+    peerId: string;
+    search: string;
+    selected: boolean;
+}
+
+interface iDrawerInternalState {
+    searchQuery: string;
+    selectedPeersAsCoHost: Array<string>;
+}
