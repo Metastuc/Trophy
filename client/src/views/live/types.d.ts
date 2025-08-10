@@ -59,6 +59,7 @@ interface iRoomRoles {
 
 interface iStreamingUIContext {
     allPeers: string[];
+    coHostInvitationHandler: iCoHostInvitationHandler;
     isCoHostDrawerOpen: boolean;
     permissions: iStreamingUIPermissions;
     roomRoles: iRoomRoles;
@@ -79,4 +80,16 @@ interface iAuthenticatedPeersList {
 interface iDrawerInternalState {
     searchQuery: string;
     selectedPeersAsCoHost: Array<string>;
+}
+
+interface iCoHostInvitationState {
+    pendingInvitations: Array<string>;
+    acceptedPeerId: string | null;
+}
+
+interface iCoHostInvitationHandler {
+    acceptCoHostInvite: (hostID: string) => void;
+    coHostInvitationState: iCoHostInvitationState;
+    denyCoHostInvite: (hostID: string) => void;
+    sendCoHostInvite: (peerID: string) => void;
 }

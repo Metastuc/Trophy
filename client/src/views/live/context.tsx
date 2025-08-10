@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { useAuthenticationStore } from "@/store/authentication";
 
-import { StreamingUIContext } from "./hooks";
+import { StreamingUIContext, useCoHostInvitationHandler } from "./hooks";
 
 interface iStreamingUIContextProvider extends PropsWithChildren {
     roomId: string;
@@ -64,6 +64,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     }));
 
     const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
+    const coHostInvitationHandler: iCoHostInvitationHandler = useCoHostInvitationHandler(roomRoles);
 
     useEffect(
         function () {
@@ -101,6 +102,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     const value: iStreamingUIContext = useMemo(
         () => ({
             allPeers: peerIds,
+            coHostInvitationHandler,
             isCoHostDrawerOpen,
             permissions,
             roomRoles,
@@ -111,6 +113,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             viewerCount: peerIds.length,
         }),
         [
+            coHostInvitationHandler,
             isCoHostDrawerOpen,
             peerIds,
             permissions,
