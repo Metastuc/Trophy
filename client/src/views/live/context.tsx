@@ -63,7 +63,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         whoIsSharingTheirScreen: null,
     }));
 
-    const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(true);
+    const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
 
     useEffect(
         function () {
