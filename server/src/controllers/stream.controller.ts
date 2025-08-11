@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
 import { API } from "@huddle01/server-sdk/api";
-import { CLIENT_URL, HUDDLE_API_KEY } from "../utils/env.js";
-import { AccessToken, Role } from "@huddle01/server-sdk/auth";
-import { Stream } from "../models/streamSchema.js";
-import { User } from "../models/userSchema.js";
-import { sendScheduleEmail } from "../utils/emailNotis.js";
-import { RedisClient } from "../config/db.js";
+import { CLIENT_URL, HUDDLE_API_KEY, HUDDLE_PROJECT_ID } from "../utils/env";
+import { Stream } from "../models/streamSchema";
+import { User } from "../models/userSchema";
+import { generateAccessToken } from "./accessToken.controller";
+import { sendScheduleEmail } from "../utils/emailNotis";
+import { RedisClient } from "../config/db";
+import { Recorder } from "@huddle01/server-sdk/recorder";
 import Janus from "janus-gateway";
-import ws from "ws";
+
+export const recorder = new Recorder(HUDDLE_PROJECT_ID, HUDDLE_API_KEY);
 
 const formatDate = (date: Date) => {
   const year = date.getUTCFullYear();
@@ -22,7 +24,7 @@ const formatDate = (date: Date) => {
 
 export const createStream = async (req: Request, res: Response) => {
   try {
-    const { title, date, username, liveStream } = req.body;
+    const { title, date, username, xLive, ytLive } = req.body;
 
     if (!username) {
       res.status(400).json({ error: "Username is required!" });
@@ -69,24 +71,9 @@ export const createStream = async (req: Request, res: Response) => {
     } else {
       newStream.status = "Live";
 
-      const accessToken = new AccessToken({
-        apiKey: HUDDLE_API_KEY,
-        roomId,
-        role: Role.HOST,
-        permissions: {
-          admin: true,
-          canConsume: true,
-          canProduce: true,
-          canProduceSources: {
-            cam: true,
-            mic: true,
-            screen: true,
-          },
-          canSendData: true,
-        },
-      });
-
-      const token = await accessToken.toJwt();
+      const token = await generateAccessToken(roomId, "host");
+      const recordToken = await generateAccessToken(roomId, "bot");
+      const liveStreamToken = await generateAccessToken(roomId, "bot");
 
       user.totalStreams += 1;
       await newStream.save();
@@ -98,75 +85,46 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      // setTimeout(async () => {
-      //   await startLiveStream(roomId, user.streamKey, "rtmps://ca.pscp.tv:443/x/gw4t5gbe8245", user.YTUrl)
-      // }, 30000)
+      await recorder.startLivestream({
+        roomId,
+        token: liveStreamToken,
+        rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"]
+      })
+
+      // await recorder.startRecording({
+      //   roomId,
+      //   token: recordToken,
+      //   layout: "spotlight"
+      // });
+
+      // if (xLive && !ytLive) {
+      //   if (user.xUrl) {
+      //     await startLiveStream(roomId, liveStreamToken, [user.xUrl]);
+      //   }
+      // } else if (ytLive && !xLive) {
+      //   if (user.ytUrl) {
+      //     await startLiveStream(roomId, liveStreamToken, [user.ytUrl]);
+      //   }
+      // } else if (xLive && ytLive) {
+      //   if (user.xUrl && user.ytUrl) {
+      //     await startLiveStream(roomId, liveStreamToken, [user.xUrl, user.ytUrl]);
+      //   }
+      // }
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      error: (error as Error).message,
+      error: "Internal server error",
     });
   }
 };
 
-let janusClient: Janus | undefined = undefined;
-
-export const startLiveStream = async (room: string, streamKey: string, xUrl: string | null | undefined, ytUrl: string | null | undefined) => {
+const startLiveStream = async (roomId: string, token: string, rtmpUrls: string[]) => {
   try {
-    return new Promise((resolve, reject) => {
-
-      if (!janusClient) {
-        Janus.init({ debug: "all" });
-
-        janusClient = new Janus({
-          server: "wss://zcgw8oook4wsc4gc4k8s0og4.31.97.115.84.sslip.io:8088",
-          success: () => console.log("Janus client initialized successfully"),
-          error: (error: any) => {
-            console.error("Error initializing Janus client:", error);
-            throw new Error("Failed to initialize Janus client");
-          },
-        })
-      }
-
-      janusClient.attach({
-        plugin: "janus.plugin.videoroom",
-        success: (pluginHandle: any) => {
-
-          pluginHandle.send({
-            message: {
-              request: "join",
-              room,
-              ptype: "publisher",
-              display: streamKey
-            },
-            success: () => {
-              pluginHandle.createOffer({
-                media: { audio: true, video: true },
-                success: (jsep: any) => {
-                  const rtmpUrl = `rtmp://localhost/live/${streamKey}?yt_url=${encodeURIComponent(ytUrl || '')}&x_url=${encodeURIComponent(xUrl || '')}`;
-                  pluginHandle.send({
-                    message: {
-                      request: 'configure',
-                      audio: true,
-                      video: true,
-                      rtmp: { url: rtmpUrl }
-                    },
-                    jsep,
-                    success: async () => {
-                      await RedisClient.set(streamKey, JSON.stringify({ pluginHandle }));
-                    },
-                    error: reject
-                  });
-                },
-                error: reject
-              });
-            },
-            error: reject
-          });
-        },
-        error: reject
-      })
+    await recorder.startLivestream({
+      roomId,
+      token,
+      rtmpUrls
     });
   } catch (error: any) {
     console.error(error)
@@ -176,15 +134,19 @@ export const startLiveStream = async (room: string, streamKey: string, xUrl: str
 
 export const stopStream = async (req: Request, res: Response) => {
   try {
-    const { roomId, username } = req.body;
+    const { roomId, username, viewers } = req.body;
 
     if (!roomId || username) {
       res.status(400).json({ error: "room id and username is required!" });
       return;
     }
 
-    const userFetch = await RedisClient.get(`user:${username}`);
-    const { streamKey } = JSON.parse(userFetch!)
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found!" });
+      return;
+    }
 
     const liveStream = await Stream.findOne({ roomId });
     if (!liveStream) {
@@ -197,31 +159,19 @@ export const stopStream = async (req: Request, res: Response) => {
       return;
     }
 
-    await stopLiveStream(streamKey);
-
     liveStream.status = "Ended";
+
+    if (user.epicStreams < viewers) {
+      user.epicStreams = viewers;
+      await user.save();
+    }
+
     await liveStream.save();
+
+    await recorder.stop({ roomId });
 
     res.status(200).json({ message: "Live stream ended" });
   } catch (error: any) {
     res.status(500).json({ error: error.message })
   }
-}
-
-async function stopLiveStream(streamKey: string): Promise<void> {
-  const session = await RedisClient.get(streamKey);
-  if (!session) return;
-
-  const { pluginHandle } = JSON.parse(session);
-  pluginHandle.send({
-    message: { request: 'leave' },
-    success: () => {
-      pluginHandle.detach({
-        success: async () => {
-          await RedisClient.del(streamKey);
-          console.log(`Stream ${streamKey} stopped`);
-        }
-      });
-    }
-  });
 }
