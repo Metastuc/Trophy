@@ -1,9 +1,8 @@
-import { FormEvent } from "react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { ProfileForm } from "@/components/profile-form";
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerFooter,
@@ -12,13 +11,29 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 
+import { useUserProfileContext } from "../context";
+
 export function EditProfile() {
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+    const { user } = useUserProfileContext();
+
+    const [isOpen, setIsOpen] = useState<boolean>(true);
+
+    const formInitialValues: tProfileFormValues = {
+        bio: user?.bio || "",
+        email: user?.email || "",
+        profilePicture: user?.userPfp || "",
+        username: user?.username || "",
+        walletAddress: user?.walletAddress || "",
+        xUrl: user?.xUrl || "",
+        YTUrl: user?.YTUrl || "",
+    };
+
+    function handleSubmit() {
+        setIsOpen(false);
     }
 
     return (
-        <Drawer dismissible={false} open>
+        <Drawer dismissible={false} open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger className="bg-blue100 ml-auto flex items-center justify-center rounded-xs px-2">
                 <span className="text-[0.5rem] text-white">Edit Profile</span>
             </DrawerTrigger>
@@ -30,17 +45,13 @@ export function EditProfile() {
                     </DrawerDescription>
                 </DrawerHeader>
 
-                <form onSubmit={handleSubmit}>
-                    <fieldset>
-                        <div></div>
-                    </fieldset>
-                </form>
-
                 <DrawerFooter>
-                    <Button className="bg-blue100 h-13.5 text-base font-stretch-normal">Save changes</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
+                    <ProfileForm
+                        onSubmit={handleSubmit}
+                        fields={["profilePicture", "email", "bio", "xUrl", "YTUrl"] as const}
+                        initialValues={formInitialValues}
+                        isSubmitting={false}
+                    />
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>

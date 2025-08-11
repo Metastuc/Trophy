@@ -42,10 +42,19 @@ type tProfileFormFields = "bio" | "email" | "profilePicture" | "username" | "wal
 
 type tProfileFormValues = Partial<Record<tProfileFormFields, unknown>>;
 
-interface iProfileForm {
+interface iProfileForm<T extends readonly Array<tProfileFormFields>> {
     disabledFields?: Partial<Record<tProfileFormFields, boolean>>;
-    fields: Array<tProfileFormFields>;
+    fields: NoDuplicates<T>;
     initialValues: tProfileFormValues;
     isSubmitting?: boolean;
     onSubmit: (values: tProfileFormValues) => void;
 }
+
+type NoDuplicates<T extends readonly unknown[], Seen extends readonly unknown[] = []> = T extends [
+    infer Head,
+    ...infer Tail,
+]
+    ? Head extends Seen[number]
+        ? ["Duplicate field:", Head]
+        : [Head, ...NoDuplicates<Tail, [...Seen, Head]>]
+    : T;
