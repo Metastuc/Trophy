@@ -163,7 +163,7 @@
         @apply !size-7;
     }
 }
-
+/* 
 .streamer-grid {
     .streamer-screen {
         grid-column: 1/7;
@@ -215,7 +215,7 @@
             grid-row: 3/4;
         }
     }
-}
+} */
 
 .host-only,
 .host-only-with-screen,
@@ -230,6 +230,11 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(3, 1fr);
+
+    .streamer-screen {
+        grid-column: 1/7;
+        grid-row: 1/4;
+    }
 }
 
 .host-only {
@@ -240,7 +245,13 @@
     }
 }
 
-.host-only-with-screen {
+.host-only-with-screen,
+.host-with-one-co-host-with-screen {
+    .host-tile,
+    .host-tile-1 {
+        grid-column: 7/9;
+        grid-row: 1/2;
+    }
 }
 
 .host-with-one-co-host {
