@@ -29,6 +29,5 @@ export const REDIS_PORT = process.env.REDIS_PORT!;
 export const REDIS_USERNAME = process.env.REDIS_USERNAME!;
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD!;
 export const NETWORK = ENVIRONMENT === "development" ? baseSepolia : base;
-export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY!;
 export const THE_GRAPH_TOKEN = process.env.THE_GRAPH_TOKEN!;
 export const THE_GRAPH_URL = "https://token-api.thegraph.com";
