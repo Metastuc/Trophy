@@ -66,6 +66,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  tokenPrice: {
+    type: Number,
+    default: 0
+  },
   totalStreams: {
     type: Number,
     default: 0,
@@ -74,6 +78,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  epicStreams: {
+    type: Number,
+    default: 0
+  },
   totalFees: {
     type: Number,
     default: 0,
@@ -81,7 +89,7 @@ const userSchema = new mongoose.Schema({
   xUrl: {
     type: String,
   },
-  YTUrl: {
+  ytUrl: {
     type: String,
   },
   followers: [

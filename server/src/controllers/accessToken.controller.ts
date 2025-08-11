@@ -69,7 +69,7 @@ export const getAccessToken = async (req: Request, res: Response) => {
 
 export const generateAccessToken = async (roomId: string, role: Role) => {
 
-  const permissions = ["host", "guest"].includes(role) ? {
+  const permissions = ["host", "bot", "guest"].includes(role) ? {
     admin: true,
     canConsume: true,
     canProduce: true,
