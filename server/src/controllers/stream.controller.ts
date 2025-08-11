@@ -91,7 +91,7 @@ export const createStream = async (req: Request, res: Response) => {
           rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
         });
 
-        console.log(msg);
+        console.log("livestream message:", msg);
       }, 60000);
 
       // await recorder.startRecording({
