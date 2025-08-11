@@ -1,20 +1,52 @@
-import { useLocalAudio, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
+import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
 import { Fragment, useEffect } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
+import { logger } from "@/utils/logger";
 
-import { useStreamingUIContext, useStreamingUIRoles } from "../hooks";
+import { useStreamingUIRoles, useStreamingUIScreenShare } from "../hooks";
+import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { screenSharing, setScreenSharing } = useStreamingUIContext();
     const { shareStream } = useLocalScreenShare();
+    const { peerIds: coHostPeerIds } = usePeerIds({ roles: ["coHost"] });
+    const { peerId } = useLocalPeer();
 
-    useEffect(() => {
-        if (shareStream) setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: true }));
-        else setScreenSharing((previous) => ({ ...previous, someoneIsSharingTheirScreen: false }));
-    }, [shareStream, setScreenSharing]);
+    const { screenSharing, sendScreenShareMessage, setScreenSharing } = useStreamingUIScreenShare();
+    const { coHost } = useStreamingUIRoles();
+
+    const streamLayoutKey = getStreamLayoutKey({
+        coHostCount: coHost ? coHostPeerIds.length + 1 : coHostPeerIds.length,
+        isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
+    });
+
+    logger({
+        streamLayoutKey,
+        coHostPeerIds,
+        isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
+        whoIsSharing: screenSharing.whoIsSharingTheirScreen,
+    });
+
+    useEffect(
+        function () {
+            if (shareStream) {
+                setScreenSharing({
+                    someoneIsSharingTheirScreen: true,
+                    whoIsSharingTheirScreen: peerId,
+                });
+                sendScreenShareMessage("start");
+            } else {
+                setScreenSharing({
+                    someoneIsSharingTheirScreen: false,
+                    whoIsSharingTheirScreen: null,
+                });
+                sendScreenShareMessage("stop");
+            }
+        },
+        [shareStream, setScreenSharing, sendScreenShareMessage, peerId],
+    );
 
     return (
         <div

@@ -1,30 +1,5 @@
 import { useDataMessage } from "@huddle01/react";
-import { createContext, useContext, useState } from "react";
-
-export const StreamingUIContext: React.Context<iStreamingUIContext> = createContext<iStreamingUIContext>(
-    {} as iStreamingUIContext,
-);
-
-export function useStreamingUIContext(): iStreamingUIContext {
-    const context: iStreamingUIContext = useContext(StreamingUIContext);
-
-    if (context === undefined || context === null || !context)
-        throw new Error("useStreamingUIContext must be used within a StreamingUIContextProvider");
-
-    return context;
-}
-
-export function useStreamingUIPermissions(): iStreamingUIPermissions {
-    return useContext(StreamingUIContext).permissions;
-}
-
-export function useStreamingUIRoles(): iRoomRoles {
-    return useContext(StreamingUIContext).roomRoles;
-}
-
-export function useStreamingUICoHostInvitation(): iCoHostInvitationHandler {
-    return useContext(StreamingUIContext).coHostInvitationHandler;
-}
+import { useState } from "react";
 
 export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitationHandler {
     const [coHostInvitationState, setCoHostInvitationState] = useState<iCoHostInvitationState>(() => ({
@@ -72,7 +47,7 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * host sent invite
                      */
                     if (!roles.host) {
-                        setCoHostInvitationState(function (state: iCoHostInvitationState) {
+                        setCoHostInvitationState(function (state) {
                             if (state.pendingInvitations.includes(from)) {
                                 return state;
                             }
@@ -90,7 +65,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * host cancelled invite
                      */
                     if (!roles.host) {
-                        console.log(`Viewer: Host ${from} canceled co-host invite`);
                         setCoHostInvitationState((state) => ({
                             ...state,
                             pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
@@ -103,8 +77,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * co-host revoked invite
                      */
                     if (!roles.host) {
-                        console.log(`Viewer: Host ${from} revoked co-host status`);
-
                         setCoHostInvitationState((state) => ({
                             ...state,
                             acceptedPeerId: null,

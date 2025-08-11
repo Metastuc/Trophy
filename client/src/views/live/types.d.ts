@@ -6,6 +6,19 @@ type tInviteActions = "accept" | "cancel" | "deny" | "invite" | "revoke";
 
 type tUpdateRole = Record<string, (role: tRole) => void>;
 
+type tStreamLayoutKey =
+    | "host-only"
+    | "host-only-with-screen"
+    | "host-with-one-co-host"
+    | "host-with-one-co-host-with-screen"
+    | "host-with-two-co-hosts"
+    | "host-with-two-co-hosts-with-screen"
+    | "host-with-three-co-hosts"
+    | "host-with-three-co-hosts-with-screen"
+    | "host-with-four-co-hosts"
+    | "host-with-four-co-hosts-with-screen"
+    | "unsupported";
+
 type tJoinStreamRequest = {
     roomId: string;
     username?: string;
@@ -67,9 +80,8 @@ interface iStreamingUIContext {
     isCoHostDrawerOpen: boolean;
     permissions: iStreamingUIPermissions;
     roomRoles: iRoomRoles;
-    screenSharing: tScreenSharing;
+    screenShareHandler: iScreenShareHandler;
     setIsCoHostDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setScreenSharing: React.Dispatch<React.SetStateAction<tScreenSharing>>;
     setUserHasToggled: React.Dispatch<React.SetStateAction<tUserHasToggled>>;
     viewerCount: number;
 }
@@ -108,4 +120,10 @@ interface iRoleUpdater {
     peerId: string;
     role: tRole;
     onRoleUpdate: (peerID: string) => void;
+}
+
+interface iScreenShareHandler {
+    screenSharing: tScreenSharing;
+    setScreenSharing: React.Dispatch<React.SetStateAction<tScreenSharing>>;
+    sendScreenShareMessage: (action: "start" | "stop") => void;
 }

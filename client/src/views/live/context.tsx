@@ -4,7 +4,9 @@ import { toast } from "sonner";
 
 import { useAuthenticationStore } from "@/store/authentication";
 
-import { StreamingUIContext, useCoHostInvitationHandler } from "./hooks";
+import { StreamingUIContext } from "./hooks";
+import { useCoHostInvitationHandler } from "./hooks/co-hosts";
+import { useScreenShareSync } from "./hooks/screen-share";
 
 interface iStreamingUIContextProvider extends PropsWithChildren {
     roomId: string;
@@ -58,10 +60,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         video: false,
     }));
 
-    const [screenSharing, setScreenSharing] = useState<tScreenSharing>(() => ({
-        someoneIsSharingTheirScreen: false,
-        whoIsSharingTheirScreen: null,
-    }));
+    const screenShareHandler = useScreenShareSync({ peerIds });
 
     const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
     const coHostInvitationHandler: iCoHostInvitationHandler = useCoHostInvitationHandler(roomRoles);
@@ -94,9 +93,14 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         function () {
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
+
+                screenShareHandler.setScreenSharing({
+                    someoneIsSharingTheirScreen: false,
+                    whoIsSharingTheirScreen: null,
+                });
             }
         },
-        [state],
+        [state, screenShareHandler],
     );
 
     const value: iStreamingUIContext = useMemo(
@@ -106,9 +110,8 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             isCoHostDrawerOpen,
             permissions,
             roomRoles,
-            screenSharing,
+            screenShareHandler,
             setIsCoHostDrawerOpen,
-            setScreenSharing,
             setUserHasToggled,
             viewerCount: peerIds.length,
         }),
@@ -118,9 +121,8 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             peerIds,
             permissions,
             roomRoles,
-            screenSharing,
+            screenShareHandler,
             setIsCoHostDrawerOpen,
-            setScreenSharing,
             setUserHasToggled,
         ],
     );
