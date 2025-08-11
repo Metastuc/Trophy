@@ -39,10 +39,8 @@ export function CoHostDrawer() {
 
         if (isPeerSelectedAsCoHost) {
             if (coHostInvitationState.pendingInvitations.includes(peerId)) {
-                console.log(`Host: Canceling invite for ${peerId}`);
                 cancelCoHostInvite({ peerID: peerId });
             } else if (coHostInvitationState.activeCoHosts.includes(peerId)) {
-                console.log(`Host: Revoking co-host for ${peerId}`);
                 revokeCoHostInvite({ peerID: peerId });
             }
         } else {
@@ -51,8 +49,6 @@ export function CoHostDrawer() {
     }
 
     function handleRoleUpdate(peerId: string) {
-        console.log(`Host: Clearing pending role update for ${peerId}`);
-
         setCoHostInvitationState((state) => ({
             ...state,
             pendingRoleUpdates: state.pendingRoleUpdates.filter((update) => update.peerId !== peerId),

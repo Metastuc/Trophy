@@ -46,7 +46,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * co-host accepted invite
                      */
                     if (roles.host) {
-                        console.log(`Host: Peer ${from} accepted co-host invite`);
                         setCoHostInvitationState((state) => ({
                             ...state,
                             pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
@@ -61,8 +60,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                      * co-host denied invite
                      */
                     if (roles.host) {
-                        console.log(`Host: Peer ${from} denied co-host invite`);
-
                         setCoHostInvitationState((state) => ({
                             ...state,
                             pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
@@ -79,8 +76,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                             if (state.pendingInvitations.includes(from)) {
                                 return state;
                             }
-
-                            console.log(`Viewer: Adding hostId ${from} to pendingInvitations`);
 
                             return {
                                 ...state,
@@ -107,18 +102,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                     /**
                      * co-host revoked invite
                      */
-                    // if (roles.host) {
-                    //     setCoHostInvitationState((state) => ({
-                    //         ...state,
-                    //         activeCoHosts: state.activeCoHosts.filter((id) => id !== from),
-                    //     }));
-                    // } else {
-                    //     setCoHostInvitationState((state) => ({
-                    //         ...state,
-                    //         acceptedPeerId: null,
-                    //     }));
-                    // }
-
                     if (!roles.host) {
                         console.log(`Viewer: Host ${from} revoked co-host status`);
 
@@ -133,21 +116,30 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
         },
     });
 
-    // "accept" | "cancel" | "deny" | "invite" | "revoke";
-
     function sendCoHostInvite({ peerID }: { peerID: string }) {
         if (!roles.host) return;
-        console.log(`Host: Sending invite to ${peerID}`);
 
-        sendData({ to: [peerID], payload: "invite", label: "INVITE" });
-        setCoHostInvitationState((state) => ({ ...state, pendingInvitations: [...state.pendingInvitations, peerID] }));
+        sendData({
+            to: [peerID],
+            payload: "invite",
+            label: "INVITE",
+        });
+
+        setCoHostInvitationState((state) => ({
+            ...state,
+            pendingInvitations: [...state.pendingInvitations, peerID],
+        }));
     }
 
     function cancelCoHostInvite({ peerID }: { peerID: string }) {
         if (!roles.host) return;
-        console.log(`Host: Sending cancel to ${peerID}`);
 
-        sendData({ to: [peerID], payload: "cancel", label: "INVITE" });
+        sendData({
+            to: [peerID],
+            payload: "cancel",
+            label: "INVITE",
+        });
+
         setCoHostInvitationState((state) => ({
             ...state,
             pendingInvitations: state.pendingInvitations.filter((id) => id !== peerID),
@@ -156,9 +148,13 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function revokeCoHostInvite({ peerID }: { peerID: string }) {
         if (!roles.host) return;
-        console.log(`Host: Sending revoke to ${peerID}`);
 
-        sendData({ to: [peerID], payload: "revoke", label: "INVITE" });
+        sendData({
+            to: [peerID],
+            payload: "revoke",
+            label: "INVITE",
+        });
+
         setCoHostInvitationState((state) => ({
             ...state,
             activeCoHosts: state.activeCoHosts.filter((id) => id !== peerID),
@@ -168,9 +164,13 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function acceptCoHostInvite({ hostID }: { hostID: string }) {
         if (roles.host) return;
-        console.log(`Viewer: Sending accept to ${hostID}`);
 
-        sendData({ to: [hostID], payload: "accept", label: "INVITE" });
+        sendData({
+            to: [hostID],
+            payload: "accept",
+            label: "INVITE",
+        });
+
         setCoHostInvitationState((state) => ({
             ...state,
             pendingInvitations: state.pendingInvitations.filter((id) => id !== hostID),
@@ -180,9 +180,13 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function denyCoHostInvite({ hostID }: { hostID: string }) {
         if (roles.host) return;
-        console.log(`Viewer: Sending deny to ${hostID}`);
 
-        sendData({ to: [hostID], payload: "deny", label: "INVITE" });
+        sendData({
+            to: [hostID],
+            payload: "deny",
+            label: "INVITE",
+        });
+
         setCoHostInvitationState((state) => ({
             ...state,
             pendingInvitations: state.pendingInvitations.filter((id) => id !== hostID),

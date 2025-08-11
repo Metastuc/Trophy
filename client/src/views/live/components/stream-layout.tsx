@@ -3,7 +3,6 @@ import { Fragment, useEffect } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
-import { logger } from "@/utils/logger";
 
 import { useStreamingUIContext, useStreamingUIRoles } from "../hooks";
 import { StreamerRemote } from "./streamer-remote";
@@ -38,8 +37,6 @@ function RenderStreamers({ role }: { role: tRole }) {
     const { stream: localStream, isVideoOn } = useLocalVideo();
     const { stream: localAudio, isAudioOn } = useLocalAudio();
     const { shareStream } = useLocalScreenShare();
-
-    logger({ peerIds, role });
 
     const shouldShowLocal = isLocal && ((isVideoOn && localStream) || shareStream);
 

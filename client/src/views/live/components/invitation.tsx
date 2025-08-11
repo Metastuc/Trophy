@@ -21,12 +21,11 @@ export function RoleUpdater({ peerId, role, onRoleUpdate }: iRoleUpdater) {
     useEffect(
         function () {
             if (updateRole && role && currentRole !== role) {
-                console.log(`Host: Updating role for ${peerId} to ${role}`);
                 updateRole(role);
                 onRoleUpdate(peerId);
             }
         },
-        [currentRole,peerId, role, updateRole, onRoleUpdate],
+        [currentRole, peerId, role, updateRole, onRoleUpdate],
     );
 
     return null;
@@ -37,7 +36,6 @@ export function CoHostInvitation() {
     const { host } = useStreamingUIRoles();
 
     if (coHostInvitationState.pendingInvitations.length === 0 || host) {
-        console.log("Viewer: Popup not rendered - Host:", host, "Pending:", coHostInvitationState.pendingInvitations);
         return null;
     }
 
@@ -52,13 +50,11 @@ function RenderPopup({ peerId }: { peerId: string }) {
     const { denyCoHostInvite, acceptCoHostInvite } = useStreamingUICoHostInvitation();
 
     function handleAccept() {
-        console.log(`Viewer: Accepted invite from ${peerId} (${metadata?.username || "unknown"})`);
         acceptCoHostInvite({ hostID: peerId });
         setIsPopupOpen(false);
     }
 
     function handleDecline() {
-        console.log(`Viewer: Declined invite from ${peerId} (${metadata?.username || "unknown"})`);
         denyCoHostInvite({ hostID: peerId });
         setIsPopupOpen(false);
     }
