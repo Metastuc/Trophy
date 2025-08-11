@@ -10,12 +10,12 @@ import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { shareStream } = useLocalScreenShare();
-    const { peerIds: coHostPeerIds } = usePeerIds({ roles: ["coHost"] });
     const { peerId } = useLocalPeer();
+    const { peerIds: coHostPeerIds } = usePeerIds({ roles: ["coHost"] });
+    const { shareStream } = useLocalScreenShare();
 
-    const { screenSharing, sendScreenShareMessage, setScreenSharing } = useStreamingUIScreenShare();
     const { coHost } = useStreamingUIRoles();
+    const { screenSharing, sendScreenShareMessage, setScreenSharing } = useStreamingUIScreenShare();
 
     const streamLayoutKey = getStreamLayoutKey({
         coHostCount: coHost ? coHostPeerIds.length + 1 : coHostPeerIds.length,
@@ -50,10 +50,12 @@ export function StreamLayout() {
 
     return (
         <div
-            className={cn(
-                "grid size-full",
-                screenSharing.someoneIsSharingTheirScreen && "grid-row-3 streamer-grid grid-cols-8",
-            )}
+            // className={cn(
+            //     "grid size-full",
+            //     screenSharing.someoneIsSharingTheirScreen && "grid-row-3 streamer-grid grid-cols-8",
+            // )}
+
+            className={cn("stream-screen grid size-full grid-cols-8 grid-rows-3", streamLayoutKey)}
         >
             <RenderStreamers role="host" />
             <RenderStreamers role="coHost" />
@@ -62,15 +64,16 @@ export function StreamLayout() {
 }
 
 function RenderStreamers({ role }: { role: tRole }) {
-    const { coHost, host } = useStreamingUIRoles();
-    const isLocal = (role === "host" && host) || (role === "coHost" && coHost);
-
     const { peerIds } = usePeerIds({ roles: [role] });
     const { stream: localStream, isVideoOn } = useLocalVideo();
     const { stream: localAudio, isAudioOn } = useLocalAudio();
     const { shareStream } = useLocalScreenShare();
 
+    const { coHost, host } = useStreamingUIRoles();
+
+    const isLocal = (role === "host" && host) || (role === "coHost" && coHost);
     const shouldShowLocal = isLocal && ((isVideoOn && localStream) || shareStream);
+    const tileClass = role === "host" ? "host-tile" : "coHost-tile";
 
     return (
         <Fragment>
@@ -81,10 +84,13 @@ function RenderStreamers({ role }: { role: tRole }) {
                     audioStream={localAudio}
                     audioStreamState={isAudioOn ? "playable" : "unavailable"}
                     screenVideo={shareStream || null}
+                    tileClass={tileClass}
                 />
             ) : null}
 
-            {peerIds.map((peerId) => (peerId ? <StreamerRemote peerId={peerId} key={peerId} /> : null))}
+            {peerIds.map((peerId, index) =>
+                peerId ? <StreamerRemote peerId={peerId} key={peerId} tileClass={`${tileClass}-${index + 1}`} /> : null,
+            )}
         </Fragment>
     );
 }

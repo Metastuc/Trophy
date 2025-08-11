@@ -11,6 +11,8 @@ interface iStreamerVideoTile {
 
     screenVideo?: MediaStream | null;
     screenAudio?: MediaStream | null;
+
+    tileClass?: string;
 }
 
 export function StreamerVideoTile({
@@ -20,6 +22,7 @@ export function StreamerVideoTile({
     screenVideo,
     videoStream,
     videoStreamState,
+    tileClass,
 }: iStreamerVideoTile) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -113,7 +116,7 @@ export function StreamerVideoTile({
     return (
         <Fragment>
             {videoStream && videoStreamState === "playable" ? (
-                <div className={cn("streamer-video", "flex w-full items-center justify-center bg-black")}>
+                <div className={cn("streamer-video", "flex w-full items-center justify-center bg-black", tileClass)}>
                     <div className="aspect-video">
                         <video autoPlay className="size-full object-cover" muted ref={videoRef} />
                     </div>
