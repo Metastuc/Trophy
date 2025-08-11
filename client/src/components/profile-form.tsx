@@ -1,4 +1,4 @@
-import { Loader } from "lucide-react";
+import { Loader, PencilLine } from "lucide-react";
 import { ChangeEvent, FormEvent, Fragment, JSX, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -18,6 +18,8 @@ export function ProfileForm<T extends Array<tProfileFormFields>>({
     const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
         typeof initialValues.profilePicture === "string" ? initialValues.profilePicture : null,
     );
+
+    const isNewUser = !initialValues.profilePicture && !initialValues.username && !initialValues.email;
 
     function handleChange({ field, value }: { field: tProfileFormFields; value: unknown }) {
         setFormValues((state) => ({
@@ -61,11 +63,67 @@ export function ProfileForm<T extends Array<tProfileFormFields>>({
         },
 
         email() {
-            return <></>;
+            return (
+                <div>
+                    <FormLabel>Change your Email</FormLabel>
+
+                    <TextInput
+                        className={cn(
+                            "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                            disabledFields?.email && "opacity-50",
+                        )}
+                        name="email"
+                        placeholder="enter email"
+                        type="email"
+                        value={(formValues.email as string) || ""}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                            handleChange({ field: "email", value: event.target.value })
+                        }
+                        disabled={disabledFields?.email}
+                    />
+                </div>
+            );
         },
 
         profilePicture() {
-            return <></>;
+            return (
+                <div className="flex items-center justify-start gap-2">
+                    <aside
+                        onClick={() => fileInputRef.current?.click()}
+                        className="bg-blue100 relative flex size-11 cursor-pointer items-center justify-center rounded-full p-0.25"
+                    >
+                        <img
+                            src={
+                                profileImagePreview ||
+                                (typeof formValues.profilePicture === "string"
+                                    ? formValues.profilePicture
+                                    : "default-pfp.svg")
+                            }
+                            alt="profile-image"
+                            className="size-full rounded-full object-cover"
+                        />
+
+                        <div className="absolute right-0 bottom-0 flex size-4.5 items-center justify-center rounded-full bg-white shadow">
+                            <i className="size-2.5">
+                                <PencilLine className="flex" />
+                            </i>
+                        </div>
+                    </aside>
+
+                    <span className="text-black200 text-xs font-light">
+                        (c’mon {isNewUser ? "add a" : "update your"} <b className="font-normal">profile picture</b> fam)
+                    </span>
+
+                    <input
+                        accept="image/*"
+                        hidden
+                        name="profileImage"
+                        onChange={handleFileChange}
+                        ref={fileInputRef}
+                        type="file"
+                    />
+                </div>
+            );
         },
 
         username() {
@@ -88,7 +146,9 @@ export function ProfileForm<T extends Array<tProfileFormFields>>({
     return (
         <form onSubmit={handleSubmit}>
             <fieldset>
-                {fields.map((field) => field && <Fragment key={field}>{renderField[field]()}</Fragment>)}
+                <section className="space-y-3">
+                    {fields.map((field) => field && <Fragment key={field}>{renderField[field]()}</Fragment>)}
+                </section>
 
                 <Button
                     type="submit"
