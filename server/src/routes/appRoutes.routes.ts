@@ -23,7 +23,7 @@ router
   .post("/update-fees", authenticate, feesUpdate)
   .post("/stop-stream", authenticate, stopStream)
 
-  .get("/get-user", getUser)
+  .post("/get-user", getUser)
   .patch("/update-profile", authenticate, updateProfile)
   .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
