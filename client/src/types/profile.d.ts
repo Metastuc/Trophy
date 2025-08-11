@@ -37,3 +37,15 @@ type tGetUserResponse = {
         streamer: string;
     }[];
 };
+
+type tProfileFormFields = "bio" | "email" | "profilePicture" | "username" | "walletAddress" | "xUrl" | "YTUrl";
+
+type tProfileFormValues = Partial<Record<tProfileFormFields, unknown>>;
+
+interface iProfileForm {
+    disabledFields?: Partial<Record<tProfileFormFields, boolean>>;
+    fields: Array<tProfileFormFields>;
+    initialValues: tProfileFormValues;
+    isSubmitting?: boolean;
+    onSubmit: (values: tProfileFormValues) => void;
+}

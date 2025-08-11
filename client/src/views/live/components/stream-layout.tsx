@@ -52,7 +52,7 @@ function RenderStreamers({ role }: { role: tRole }) {
                 />
             ) : null}
 
-            {peerIds.map((value, index) => (value ? <StreamerRemote peerId={value} key={index} /> : null))}
+            {peerIds.map((peerId) => (peerId ? <StreamerRemote peerId={peerId} key={peerId} /> : null))}
         </Fragment>
     );
 }
