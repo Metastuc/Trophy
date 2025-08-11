@@ -76,7 +76,8 @@ interface iAuthenticatedPeersList {
     onToggle: () => void;
     peerId: string;
     search: string;
-    selected: boolean;
+    isPending: boolean;
+    isCoHost: boolean;
 }
 
 interface iDrawerInternalState {

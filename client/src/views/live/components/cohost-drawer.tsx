@@ -17,8 +17,7 @@ import { AuthenticatedPeersList, SelectedPeersList } from "./peers-in-list";
 
 export function CoHostDrawer() {
     const { isCoHostDrawerOpen, setIsCoHostDrawerOpen, allPeers } = useStreamingUIContext();
-    const { acceptCoHostInvite, coHostInvitationState, denyCoHostInvite, sendCoHostInvite } =
-        useStreamingUICoHostInvitation();
+    const { coHostInvitationState, cancelCoHostInvite, sendCoHostInvite } = useStreamingUICoHostInvitation();
 
     const [drawerInternalState, setDrawerInternalState] = useState<iDrawerInternalState>(() => ({
         searchQuery: "",
@@ -30,7 +29,7 @@ export function CoHostDrawer() {
     }
 
     function handleTogglePeerAsCoHost(peerId: string) {
-        // const isPeerSelectedAsCoHost = drawerInternalState.selectedPeersAsCoHost.includes(peerId);
+        const isPeerSelectedAsCoHost = drawerInternalState.selectedPeersAsCoHost.includes(peerId);
 
         // setDrawerInternalState((state) => ({
         //     ...state,
@@ -39,7 +38,11 @@ export function CoHostDrawer() {
         //         : [...state.selectedPeersAsCoHost, peerId],
         // }));
 
-        if (!drawerInternalState.selectedPeersAsCoHost.includes(peerId)) {
+        if (isPeerSelectedAsCoHost && coHostInvitationState.pendingInvitations.includes(peerId)) {
+            console.log(`Host: Canceling invite for ${peerId}`);
+            cancelCoHostInvite({ peerID: peerId });
+        } else if (!isPeerSelectedAsCoHost) {
+            console.log(`Host: Inviting ${peerId}`);
             sendCoHostInvite({ peerID: peerId });
         }
     }
@@ -122,7 +125,8 @@ export function CoHostDrawer() {
                                             peerId={value}
                                             search={drawerInternalState.searchQuery}
                                             onToggle={() => handleTogglePeerAsCoHost(value)}
-                                            selected={drawerInternalState.selectedPeersAsCoHost.includes(value)}
+                                            isPending={coHostInvitationState.pendingInvitations.includes(value)}
+                                            isCoHost={coHostInvitationState.activeCoHosts.includes(value)}
                                         />
                                     ),
                             )}

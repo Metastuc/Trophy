@@ -1,8 +1,8 @@
 import { useRemotePeer } from "@huddle01/react";
-import { UserCheck } from "lucide-react";
+import { UserCheck, UserX } from "lucide-react";
 import { useMemo } from "react";
 
-export function AuthenticatedPeersList({ onToggle, peerId, search, selected }: iAuthenticatedPeersList) {
+export function AuthenticatedPeersList({ isCoHost, isPending, onToggle, peerId, search }: iAuthenticatedPeersList) {
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
     const isAuthenticated = Boolean(metadata?.username !== "anon");
 
@@ -30,9 +30,15 @@ export function AuthenticatedPeersList({ onToggle, peerId, search, selected }: i
             </span>
             <span>@{metadata?.username}</span>
 
-            {selected ? (
-                <i className="text-blue100 ml-auto size-3.5">
+            {isCoHost ? (
+                <i className="text-blue100 ml-auto size-4">
                     <UserCheck />
+                </i>
+            ) : null}
+
+            {isPending ? (
+                <i className="text-blue100 ml-auto size-4">
+                    <UserX />
                 </i>
             ) : null}
         </li>

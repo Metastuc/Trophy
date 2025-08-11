@@ -92,10 +92,13 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                     /**
                      * host cancelled invite
                      */
-                    setCoHostInvitationState((state) => ({
-                        ...state,
-                        pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
-                    }));
+                    if (!roles.host) {
+                        console.log(`Viewer: Host ${from} canceled co-host invite`);
+                        setCoHostInvitationState((state) => ({
+                            ...state,
+                            pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
+                        }));
+                    }
                     break;
 
                 case "revoke":
@@ -130,6 +133,7 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function cancelCoHostInvite({ peerID }: { peerID: string }) {
         if (!roles.host) return;
+        console.log(`Host: Sending cancel to ${peerID}`);
 
         sendData({ to: [peerID], payload: "cancel", label: "INVITE" });
         setCoHostInvitationState((state) => ({
