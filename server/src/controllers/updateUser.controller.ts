@@ -6,6 +6,7 @@ import { deletePfp } from "../utils/pfp";
 import { RedisClient } from "../config/db";
 
 export const updateProfile = async (req: Request, res: Response) => {
+  const uploadedPfp = (req.file as any)?.location;
   const privyId = req.privyUser?.userId;
 
   const updateFields: Record<string, string> = {};
@@ -14,16 +15,24 @@ export const updateProfile = async (req: Request, res: Response) => {
     bio: "bio",
     xUrl: "xUrl",
     YTUrl: "YTUrl",
-    username: "username",
+    // username: "username",
     profilePicture: "userPfp",
   };
 
   try {
     for (const [clientField, dbField] of Object.entries(fieldMap)) {
+      if (clientField === "profilePicture") continue;
+
       const value = req.body[clientField];
       if (typeof value === "string" && value.trim() !== "") {
         updateFields[dbField] = value.trim();
       }
+    }
+
+    if (uploadedPfp && typeof uploadedPfp === "string") {
+      updateFields.userPfp = uploadedPfp;
+    } else if (typeof req.body.profilePicture === "string" && req.body.profilePicture.trim() !== "") {
+      updateFields.userPfp = req.body.profilePicture.trim();
     }
 
     if (Object.keys(updateFields).length === 0) {
@@ -39,7 +48,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     const streams = await Stream.find({
       streamer: user.username,
-      status: "Scheduled"
+      status: "Scheduled",
     }).sort({ _id: -1 });
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(user));

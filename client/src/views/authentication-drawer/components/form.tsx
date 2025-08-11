@@ -110,7 +110,15 @@ export function CompleteProfile() {
             toast.error("Form Submission Error", {
                 description: (
                     <pre className="mt-1 max-h-25 overflow-auto rounded bg-gray-950 text-left text-xs text-white">
-                        {JSON.stringify(errors, null, 1)}
+                        {Object.entries(errors).map(function ([field, message]) {
+                            return (
+                                <div key={field} className="whitespace-pre">
+                                    <span className="font-mono text-green-400">{`> ${field}`}</span>
+                                    <span className="font-mono text-gray-400">: </span>
+                                    <span className="font-mono text-red-400">{String(message)}</span>
+                                </div>
+                            );
+                        })}
                     </pre>
                 ),
                 duration: 5000,

@@ -26,7 +26,7 @@ router
   .post("/stop-stream", authenticate, stopStream)
 
   .post("/get-user", getUser)
-  .patch("/update-profile", authenticate, updateProfile)
+  .patch("/update-profile", authenticate, uploadPfp.single("profilePicture"), updateProfile)
   .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
   .post("/update-pfp", uploadPfp.single("pfp"), updatePfp)
