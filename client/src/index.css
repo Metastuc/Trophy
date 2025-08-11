@@ -245,8 +245,7 @@
     }
 }
 
-.host-only-with-screen,
-.host-with-one-co-host-with-screen {
+.host-only-with-screen {
     .host-tile,
     .host-tile-1 {
         grid-column: 7/9;
@@ -255,9 +254,31 @@
 }
 
 .host-with-one-co-host {
+    .host-tile,
+    host-tile-1 {
+        grid-column: 1/5;
+        grid-row: 1/4;
+    }
+
+    .coHost-tile,
+    .coHost-tile-1 {
+        grid-column: 5/9;
+        grid-row: 1/4;
+    }
 }
 
 .host-with-one-co-host-with-screen {
+    .host-tile,
+    .host-tile-1 {
+        grid-column: 7/9;
+        grid-row: 1/2;
+    }
+
+    .coHost-tile,
+    .coHost-tile-1 {
+        grid-column: 7/8;
+        grid-row: 2/3;
+    }
 }
 
 .host-with-two-co-hosts {

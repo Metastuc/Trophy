@@ -13,8 +13,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
         onMessage(payload, from, label) {
             if (label !== "INVITE") return;
 
-            console.log("[DataMessage received]", { payload, from, label });
-
             switch (payload as tInviteActions) {
                 case "accept":
                     /**
