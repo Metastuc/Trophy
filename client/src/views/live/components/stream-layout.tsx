@@ -67,7 +67,6 @@ function RenderStreamers({ role }: { role: tRole }) {
     const { coHost, host } = useStreamingUIRoles();
 
     const isLocal = (role === "host" && host) || (role === "coHost" && coHost);
-    const shouldShowLocal = isLocal && ((isVideoOn && localStream) || shareStream);
     const tileClass = role === "host" ? "host-tile" : "coHost-tile";
 
     logger({
