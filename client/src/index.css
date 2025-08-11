@@ -217,8 +217,27 @@
     }
 }
 
+.host-only,
+.host-only-with-screen,
+.host-with-one-co-host,
+.host-with-one-co-host-with-screen,
+.host-with-two-co-hosts,
+.host-with-two-co-hosts-with-screen,
+.host-with-three-co-hosts,
+.host-with-three-co-hosts-with-screen,
+.host-with-four-co-hosts,
+.host-with-four-co-hosts-with-screen {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
 .host-only {
-    grid-column: 1/4;
+    .host-tile,
+    .host-tile-1 {
+        grid-column: 1/9;
+        grid-row: 1/4;
+    }
 }
 
 .host-only-with-screen {

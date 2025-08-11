@@ -55,7 +55,7 @@ export function StreamLayout() {
             //     screenSharing.someoneIsSharingTheirScreen && "grid-row-3 streamer-grid grid-cols-8",
             // )}
 
-            className={cn("stream-screen grid size-full grid-cols-8 grid-rows-3", streamLayoutKey)}
+            className={cn("size-full", streamLayoutKey)}
         >
             <RenderStreamers role="host" />
             <RenderStreamers role="coHost" />

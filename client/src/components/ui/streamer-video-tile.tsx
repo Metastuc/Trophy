@@ -116,7 +116,7 @@ export function StreamerVideoTile({
     return (
         <Fragment>
             {videoStream && videoStreamState === "playable" ? (
-                <div className={cn("streamer-video", "flex w-full items-center justify-center bg-black", tileClass)}>
+                <div className={cn("streamer-video", "size-full bg-black", tileClass)}>
                     <div className="aspect-video">
                         <video autoPlay className="size-full object-cover" muted ref={videoRef} />
                     </div>
@@ -125,7 +125,7 @@ export function StreamerVideoTile({
             {audioStream && audioStreamState === "playable" ? <audio autoPlay ref={audioRef} /> : null}
 
             {screenVideo ? (
-                <div className={cn("streamer-screen", "flex items-center justify-center bg-black")}>
+                <div className={cn("streamer-screen", "size-full bg-black")}>
                     <div className="aspect-video">
                         <video autoPlay className="size-full object-cover" muted ref={screenVideoRef} />
                     </div>
