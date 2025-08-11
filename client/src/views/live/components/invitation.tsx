@@ -15,15 +15,18 @@ import {
 
 import { useStreamingUICoHostInvitation, useStreamingUIRoles } from "../hooks";
 
-export function RoleUpdater({ peerId, role }: { peerId: string; role: tRole }) {
-    const { updateRole } = useRemotePeer({ peerId });
+export function RoleUpdater({ peerId, role, onRoleUpdate }: iRoleUpdater) {
+    const { updateRole, role: currentRole } = useRemotePeer({ peerId });
 
     useEffect(
         function () {
-            console.log(`Host: Updating role for ${peerId} to ${role}`);
-            updateRole(role);
+            if (updateRole && role && currentRole !== role) {
+                console.log(`Host: Updating role for ${peerId} to ${role}`);
+                updateRole(role);
+                onRoleUpdate(peerId);
+            }
         },
-        [peerId, role, updateRole],
+        [currentRole,peerId, role, updateRole, onRoleUpdate],
     );
 
     return null;

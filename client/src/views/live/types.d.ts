@@ -4,6 +4,8 @@ type tRoomStates = "closed" | "connecting" | "connected" | "failed" | "idle" | "
 
 type tInviteActions = "accept" | "cancel" | "deny" | "invite" | "revoke";
 
+type tUpdateRole = Record<string, (role: tRole) => void>;
+
 type tJoinStreamRequest = {
     roomId: string;
     username?: string;
@@ -89,6 +91,7 @@ interface iCoHostInvitationState {
     acceptedPeerId: string | null;
     activeCoHosts: Array<string>;
     pendingInvitations: Array<string>;
+    pendingRoleUpdates: Array<{ peerId: string; role: tRole }>;
 }
 
 interface iCoHostInvitationHandler {
@@ -98,4 +101,11 @@ interface iCoHostInvitationHandler {
     revokeCoHostInvite: ({ peerID }: { peerID: string }) => void;
     acceptCoHostInvite: ({ hostID }: { hostID: string }) => void;
     denyCoHostInvite: ({ hostID }: { hostID: string }) => void;
+    setCoHostInvitationState: React.Dispatch<React.SetStateAction<iCoHostInvitationState>>;
+}
+
+interface iRoleUpdater {
+    peerId: string;
+    role: tRole;
+    onRoleUpdate: (peerID: string) => void;
 }

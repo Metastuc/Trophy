@@ -31,6 +31,7 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
         acceptedPeerId: null,
         activeCoHosts: [],
         pendingInvitations: [],
+        pendingRoleUpdates: [],
     }));
 
     const { sendData } = useDataMessage({
@@ -50,6 +51,7 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                             ...state,
                             pendingInvitations: state.pendingInvitations.filter((id) => id !== from),
                             activeCoHosts: [...state.activeCoHosts, from],
+                            pendingRoleUpdates: [...state.pendingRoleUpdates, { peerId: from, role: "coHost" }],
                         }));
                     }
                     break;
@@ -105,17 +107,27 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
                     /**
                      * co-host revoked invite
                      */
-                    if (roles.host) {
-                        setCoHostInvitationState((state) => ({
-                            ...state,
-                            activeCoHosts: state.activeCoHosts.filter((id) => id !== from),
-                        }));
-                    } else {
+                    // if (roles.host) {
+                    //     setCoHostInvitationState((state) => ({
+                    //         ...state,
+                    //         activeCoHosts: state.activeCoHosts.filter((id) => id !== from),
+                    //     }));
+                    // } else {
+                    //     setCoHostInvitationState((state) => ({
+                    //         ...state,
+                    //         acceptedPeerId: null,
+                    //     }));
+                    // }
+
+                    if (!roles.host) {
+                        console.log(`Viewer: Host ${from} revoked co-host status`);
+
                         setCoHostInvitationState((state) => ({
                             ...state,
                             acceptedPeerId: null,
                         }));
                     }
+
                     break;
             }
         },
@@ -144,11 +156,13 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
 
     function revokeCoHostInvite({ peerID }: { peerID: string }) {
         if (!roles.host) return;
+        console.log(`Host: Sending revoke to ${peerID}`);
 
         sendData({ to: [peerID], payload: "revoke", label: "INVITE" });
         setCoHostInvitationState((state) => ({
             ...state,
             activeCoHosts: state.activeCoHosts.filter((id) => id !== peerID),
+            pendingRoleUpdates: [...state.pendingRoleUpdates, { peerId: peerID, role: "listener" }],
         }));
     }
 
@@ -182,5 +196,6 @@ export function useCoHostInvitationHandler(roles: iRoomRoles): iCoHostInvitation
         revokeCoHostInvite,
         acceptCoHostInvite,
         denyCoHostInvite,
+        setCoHostInvitationState,
     };
 }

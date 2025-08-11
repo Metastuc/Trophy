@@ -17,7 +17,13 @@ import { AuthenticatedPeersList, SelectedPeersList } from "./peers-in-list";
 
 export function CoHostDrawer() {
     const { isCoHostDrawerOpen, setIsCoHostDrawerOpen, allPeers } = useStreamingUIContext();
-    const { coHostInvitationState, cancelCoHostInvite, sendCoHostInvite } = useStreamingUICoHostInvitation();
+    const {
+        coHostInvitationState,
+        cancelCoHostInvite,
+        sendCoHostInvite,
+        revokeCoHostInvite,
+        setCoHostInvitationState,
+    } = useStreamingUICoHostInvitation();
 
     const [drawerInternalState, setDrawerInternalState] = useState<iDrawerInternalState>(() => ({
         searchQuery: "",
@@ -31,20 +37,26 @@ export function CoHostDrawer() {
     function handleTogglePeerAsCoHost(peerId: string) {
         const isPeerSelectedAsCoHost = drawerInternalState.selectedPeersAsCoHost.includes(peerId);
 
-        // setDrawerInternalState((state) => ({
-        //     ...state,
-        //     selectedPeersAsCoHost: isPeerSelectedAsCoHost
-        //         ? state.selectedPeersAsCoHost.filter((id) => id !== peerId)
-        //         : [...state.selectedPeersAsCoHost, peerId],
-        // }));
-
-        if (isPeerSelectedAsCoHost && coHostInvitationState.pendingInvitations.includes(peerId)) {
-            console.log(`Host: Canceling invite for ${peerId}`);
-            cancelCoHostInvite({ peerID: peerId });
-        } else if (!isPeerSelectedAsCoHost) {
-            console.log(`Host: Inviting ${peerId}`);
+        if (isPeerSelectedAsCoHost) {
+            if (coHostInvitationState.pendingInvitations.includes(peerId)) {
+                console.log(`Host: Canceling invite for ${peerId}`);
+                cancelCoHostInvite({ peerID: peerId });
+            } else if (coHostInvitationState.activeCoHosts.includes(peerId)) {
+                console.log(`Host: Revoking co-host for ${peerId}`);
+                revokeCoHostInvite({ peerID: peerId });
+            }
+        } else {
             sendCoHostInvite({ peerID: peerId });
         }
+    }
+
+    function handleRoleUpdate(peerId: string) {
+        console.log(`Host: Clearing pending role update for ${peerId}`);
+
+        setCoHostInvitationState((state) => ({
+            ...state,
+            pendingRoleUpdates: state.pendingRoleUpdates.filter((update) => update.peerId !== peerId),
+        }));
     }
 
     useEffect(
@@ -79,9 +91,17 @@ export function CoHostDrawer() {
                     </DrawerDescription>
                 </DrawerHeader>
 
-                {coHostInvitationState.activeCoHosts.length
-                    ? coHostInvitationState.activeCoHosts.map(
-                          (peerId) => peerId && <RoleUpdater key={peerId} peerId={peerId} role="coHost" />,
+                {coHostInvitationState.pendingRoleUpdates.length
+                    ? coHostInvitationState.pendingRoleUpdates.map(
+                          ({ peerId, role }) =>
+                              peerId && (
+                                  <RoleUpdater
+                                      key={`${peerId}-${role}`}
+                                      peerId={peerId}
+                                      role={role}
+                                      onRoleUpdate={handleRoleUpdate}
+                                  />
+                              ),
                       )
                     : null}
 
