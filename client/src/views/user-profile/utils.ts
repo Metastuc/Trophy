@@ -1,14 +1,11 @@
-import { isAddress } from "viem";
 import { z } from "zod";
 
 import { APPLICATION_CONSTANTS } from "@/lib/constants";
 
-export const AuthenticationProfileSchema = z.object({
+export const EditProfileSchema = z.object({
     bio: z.string().optional().nullable(),
 
     email: z.email("Invalid email address"),
-
-    isNewUser: z.boolean(),
 
     profilePicture: z.union([
         z
@@ -26,15 +23,13 @@ export const AuthenticationProfileSchema = z.object({
         z.url("Invalid image URL"),
     ]),
 
-    username: z
-        .string()
-        .min(3, "Username must be at least 3 characters")
-        .regex(
-            /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
-            "Username must start with a letter or underscore, contain only letters, numbers, and underscores, and be 3 to 15 characters long.",
-        ),
+    xUrl: z.preprocess(
+        (val) => (typeof val === "string" && val.trim() === "" ? null : val),
+        z.url("Invalid URL").nullable().optional(),
+    ),
 
-    walletAddress: z.string().refine(isAddress, "Invalid wallet address"),
+    YTUrl: z.preprocess(
+        (val) => (typeof val === "string" && val.trim() === "" ? null : val),
+        z.url("Invalid URL").nullable().optional(),
+    ),
 });
-
-export type tAuthenticationProfileSchema = z.infer<typeof AuthenticationProfileSchema>;

@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,8 @@ interface iStreamerVideoTile {
 
     screenVideo?: MediaStream | null;
     screenAudio?: MediaStream | null;
+
+    tileClass?: string;
 }
 
 export function StreamerVideoTile({
@@ -20,13 +22,14 @@ export function StreamerVideoTile({
     screenVideo,
     videoStream,
     videoStreamState,
+    tileClass,
 }: iStreamerVideoTile) {
-    const videoRef = React.useRef<HTMLVideoElement | null>(null);
-    const audioRef = React.useRef<HTMLAudioElement | null>(null);
-    const screenVideoRef = React.useRef<HTMLVideoElement | null>(null);
-    const screenAudioRef = React.useRef<HTMLAudioElement | null>(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const screenVideoRef = useRef<HTMLVideoElement | null>(null);
+    const screenAudioRef = useRef<HTMLAudioElement | null>(null);
 
-    React.useEffect(
+    useEffect(
         function () {
             if (videoStream && videoRef.current && videoStreamState === "playable") {
                 videoRef.current.srcObject = videoStream;
@@ -47,7 +50,7 @@ export function StreamerVideoTile({
         [videoStream, videoStreamState],
     );
 
-    React.useEffect(
+    useEffect(
         function () {
             if (audioStream && audioRef.current && audioStreamState === "playable") {
                 audioRef.current.srcObject = audioStream;
@@ -68,7 +71,7 @@ export function StreamerVideoTile({
         [audioStream, audioStreamState],
     );
 
-    React.useEffect(
+    useEffect(
         function () {
             if (screenVideo && screenVideoRef.current) {
                 screenVideoRef.current.srcObject = screenVideo;
@@ -89,7 +92,7 @@ export function StreamerVideoTile({
         [screenVideo],
     );
 
-    React.useEffect(
+    useEffect(
         function () {
             if (screenAudio && screenAudioRef.current) {
                 screenAudioRef.current.srcObject = screenAudio;
@@ -111,24 +114,29 @@ export function StreamerVideoTile({
     );
 
     return (
-        <React.Fragment>
-            {videoStream && videoStreamState === "playable" ? (
-                <div className={cn("streamer-video", "flex w-full items-center justify-center bg-black")}>
+        <Fragment>
+            <div className={cn("streamer-video", "grid size-full place-items-center bg-black", tileClass)}>
+                {videoStream && videoStreamState === "playable" ? (
                     <div className="aspect-video">
+                        <span className="text-xl text-white">{tileClass}</span>
+
                         <video autoPlay className="size-full object-cover" muted ref={videoRef} />
                     </div>
-                </div>
-            ) : null}
+                ) : (
+                    <span className="text-xl text-white">{tileClass}</span>
+                )}
+            </div>
+
             {audioStream && audioStreamState === "playable" ? <audio autoPlay ref={audioRef} /> : null}
 
             {screenVideo ? (
-                <div className={cn("streamer-screen", "flex items-center justify-center bg-black")}>
+                <div className={cn("streamer-screen", "grid size-full place-items-center bg-black")}>
                     <div className="aspect-video">
-                        <video autoPlay className="size-full object-cover" muted ref={screenVideoRef} />
+                        <video autoPlay className="size-full" muted ref={screenVideoRef} />
                     </div>
                 </div>
             ) : null}
             {screenAudio ? <audio autoPlay ref={screenAudioRef} /> : null}
-        </React.Fragment>
+        </Fragment>
     );
 }

@@ -1,16 +1,3 @@
-type tStreamLayoutKey =
-    | "host-only"
-    | "host-only-with-screen"
-    | "host-with-one-co-host"
-    | "host-with-one-co-host-with-screen"
-    | "host-with-two-co-hosts"
-    | "host-with-two-co-hosts-with-screen"
-    | "host-with-three-co-hosts"
-    | "host-with-three-co-hosts-with-screen"
-    | "host-with-four-co-hosts"
-    | "host-with-four-co-hosts-with-screen"
-    | "unsupported";
-
 const layoutMap: Record<string, tStreamLayoutKey> = {
     "0-no-screen": "host-only",
     "0-screen": "host-only-with-screen",

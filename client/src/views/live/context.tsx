@@ -1,40 +1,37 @@
 import { useLocalPeer, useLocalVideo, usePeerIds, useRoom } from "@huddle01/react";
-import React from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
-import { logger } from "@/utils/logger";
+import { useAuthenticationStore } from "@/store/authentication";
 
-export const StreamingUIContext: React.Context<iStreamingUIContext> = React.createContext<iStreamingUIContext>(
-    {} as iStreamingUIContext,
-);
+import { StreamingUIContext } from "./hooks";
+import { useCoHostInvitationHandler } from "./hooks/co-hosts";
+import { useScreenShareSync } from "./hooks/screen-share";
 
-export function useStreamingUIContext() {
-    const context: iStreamingUIContext = React.useContext(StreamingUIContext);
-
-    if (context === undefined || context === null || !context)
-        throw new Error("useStreamingUIContext must be used within a StreamingUIContextProvider");
-
-    return context;
+interface iStreamingUIContextProvider extends PropsWithChildren {
+    roomId: string;
+    token: string;
 }
 
-export function StreamingUIContextProvider({ children }: { children: React.ReactNode }) {
+export function StreamingUIContextProvider({ children, roomId, token }: iStreamingUIContextProvider) {
+    const authenticationStore = useAuthenticationStore((state) => state);
+
     const { isVideoOn, enableVideo } = useLocalVideo();
+    const { role, updateMetadata, peerId } = useLocalPeer();
     const { peerIds } = usePeerIds();
-    const { role } = useLocalPeer();
-    const { state } = useRoom();
+    const { joinRoom, state } = useRoom({
+        onJoin() {
+            updateMetadata({
+                username: authenticationStore.user?.backendUserData.user.username ?? "anon",
+                userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
+                userPeerID: peerId,
+            });
+        },
+    });
 
     const typedRole: tRole = role as tRole;
 
-    const [userHasToggled, setUserHasToggled] = React.useState<tUserHasToggled>(() => ({
-        audio: false,
-        video: false,
-    }));
-
-    const [screenSharing, setScreenSharing] = React.useState<tScreenSharing>(() => ({
-        someoneIsSharingTheirScreen: false,
-        whoIsSharingTheirScreen: null,
-    }));
-
-    const permissions: iStreamingUIPermissions = React.useMemo(
+    const permissions: iStreamingUIPermissions = useMemo(
         () => ({
             canEndStream: typedRole === "host",
             canInvite: typedRole === "host",
@@ -46,7 +43,7 @@ export function StreamingUIContextProvider({ children }: { children: React.React
         [typedRole],
     );
 
-    const roomRoles: iRoomRoles = React.useMemo(
+    const roomRoles: iRoomRoles = useMemo(
         () => ({
             bot: typedRole === "bot",
             coHost: typedRole === "coHost",
@@ -58,40 +55,76 @@ export function StreamingUIContextProvider({ children }: { children: React.React
         [typedRole],
     );
 
-    const viewerCount = peerIds.length;
+    const [userHasToggled, setUserHasToggled] = useState<tUserHasToggled>(() => ({
+        audio: false,
+        video: false,
+    }));
 
-    logger({ peerIds });
+    const screenShareHandler = useScreenShareSync({ peerIds });
 
-    React.useEffect(
+    const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
+    const coHostInvitationHandler: iCoHostInvitationHandler = useCoHostInvitationHandler(roomRoles);
+
+    useEffect(
         function () {
-            (async function () {
-                if (roomRoles.host && state === "connected" && !isVideoOn && !userHasToggled.video) {
-                    await enableVideo().catch((error) => console.error("Error enabling video:", error));
-                }
-            })();
+            if (state === "idle") {
+                console.log("[intial] Joining room...");
+
+                joinRoom({ roomId, token }).catch((error) => {
+                    toast.error((error as Error).message);
+                });
+            }
         },
-        [typedRole, isVideoOn, state],
+        [joinRoom, roomId, state, token],
     );
 
-    React.useEffect(
+    useEffect(
+        function () {
+            if (roomRoles.host && state === "connected" && !isVideoOn && !userHasToggled.video) {
+                enableVideo().catch((error) => {
+                    toast.error((error as Error).message);
+                });
+            }
+        },
+        [enableVideo, isVideoOn, roomRoles, state, userHasToggled.video],
+    );
+
+    useEffect(
         function () {
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
+
+                screenShareHandler.setScreenSharing({
+                    someoneIsSharingTheirScreen: false,
+                    whoIsSharingTheirScreen: null,
+                });
             }
         },
-        [state],
+        [state, screenShareHandler],
     );
 
-    const value: iStreamingUIContext = React.useMemo(
+    const value: iStreamingUIContext = useMemo(
         () => ({
+            allPeers: peerIds,
+            coHostInvitationHandler,
+            isCoHostDrawerOpen,
             permissions,
             roomRoles,
+            screenShareHandler,
+            setIsCoHostDrawerOpen,
             setUserHasToggled,
-            screenSharing,
-            setScreenSharing,
-            viewerCount,
+            viewerCount: peerIds.length,
         }),
-        [permissions, viewerCount, setUserHasToggled, roomRoles, setScreenSharing, screenSharing],
+        [
+            coHostInvitationHandler,
+            isCoHostDrawerOpen,
+            peerIds,
+            permissions,
+            roomRoles,
+            screenShareHandler,
+            setIsCoHostDrawerOpen,
+            setUserHasToggled,
+        ],
     );
 
     return <StreamingUIContext.Provider value={value}>{children}</StreamingUIContext.Provider>;

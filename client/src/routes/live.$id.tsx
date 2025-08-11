@@ -1,6 +1,4 @@
-import { useRoom } from "@huddle01/react";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 import { getStream } from "@/api/get-stream";
 import { getUser } from "@/api/get-user";
@@ -9,6 +7,8 @@ import { PageContentLayout } from "@/components/layouts/main-content";
 import { useAuthenticationStore } from "@/store/authentication";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 import { Chatroom } from "@/views/live/components/chatroom";
+import { CoHostDrawer } from "@/views/live/components/cohost-drawer";
+import { CoHostInvitation } from "@/views/live/components/invitation";
 import { StreamContext } from "@/views/live/components/stream-context";
 import { StreamScreen } from "@/views/live/components/stream-screen";
 import { StreamingUIContextProvider } from "@/views/live/context";
@@ -46,50 +46,51 @@ export const Route = createFileRoute("/live/$id")({
     },
 
     component: () => Page(),
+
+    head({ match }) {
+        const { streamer } = match.context?.streamResponse ?? {};
+
+        return {
+            meta: [
+                {
+                    name: "description",
+                    content: "Live stream",
+                },
+
+                {
+                    title: `${streamer} Live Stream on Trophy`,
+                },
+            ],
+        };
+    },
 });
 
 function Page() {
     const { token, roomId } = useLoaderData({ from: "/live/$id" });
-    const { joinRoom, state, leaveRoom } = useRoom();
-
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
 
-    useEffect(
-        function () {
-            (async function () {
-                if (state === "idle") {
-                    await joinRoom({ roomId, token });
-                }
-            })();
-
-            return () => {
-                if (state === "connected") {
-                    leaveRoom();
-                }
-            };
-        },
-        [roomId, token, state, joinRoom, leaveRoom],
-    );
-
     return (
-        <section className="flex min-h-screen flex-col">
-            <header className="flex h-11.5 items-center justify-between px-3">
-                <Link to="/">
-                    <img src="/trophy.svg" alt="trophy-logo" />
-                </Link>
+        <section className="flex min-h-dvh flex-col">
+            <StreamingUIContextProvider roomId={roomId} token={token}>
+                <header className="flex h-11.5 items-center justify-between px-3">
+                    <Link to="/">
+                        <img src="/trophy.svg" alt="trophy-logo" />
+                    </Link>
 
-                {!isAuthenticated ? <AuthenticationDrawer /> : null}
-            </header>
+                    {!isAuthenticated ? <AuthenticationDrawer /> : null}
+                </header>
 
-            <footer className="flex flex-1 flex-col">
-                <StreamingUIContextProvider>
+                <footer className="flex flex-1 flex-col">
                     <StreamScreen />
                     <PageContentLayout className="flex flex-1 flex-col">
                         <StreamContext />
                         <Chatroom />
                     </PageContentLayout>
-                </StreamingUIContextProvider>
-            </footer>
+                </footer>
+
+                <CoHostDrawer />
+                <CoHostInvitation />
+            </StreamingUIContextProvider>
         </section>
     );
 }
