@@ -5,6 +5,7 @@ import DB from "./src/config/db";
 import { CORS_ORIGINS, PORT } from "./src/utils/env";
 import { Server } from "socket.io";
 import { User, Notification } from "./src/models/userSchema";
+import { formatNumber } from "./src/utils/utils";
 
 const server = express();
 
@@ -35,15 +36,6 @@ io.on("connection", (socket) => {
   const toLocaleString = (number: string) => {
     return Number(number).toFixed(1).toLocaleString();
   };
-
-  function formatNumber(num: string) {
-    const amount = Number(num);
-    if (amount >= 1_000_000_000_000) return (amount / 1_000_000_000_000).toFixed(1).replace(/\.0$/, "") + "T";
-    if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
-    if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-    if (amount >= 1_000) return (amount / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-    return amount.toString();
-  }
 
   socket.on("followed", async (data) => {
     const { email, username } = data;
