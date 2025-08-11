@@ -38,7 +38,7 @@ type tGetUserResponse = {
     }[];
 };
 
-type tProfileFormFields = "bio" | "email" | "profilePicture" | "username" | "walletAddress" | "xUrl" | "YTUrl";
+type tProfileFormFields = "bio" | "email" | "profilePicture" | "username" | "xUrl" | "YTUrl";
 
 type tProfileFormValues = Partial<Record<tProfileFormFields, unknown>>;
 

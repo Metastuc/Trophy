@@ -45,7 +45,7 @@ export function ProfileForm<T extends Array<tProfileFormFields>>({
         bio() {
             return (
                 <div>
-                    <FormLabel>Edit your Bio</FormLabel>
+                    <FormLabel htmlFor="bio">Edit your Bio</FormLabel>
 
                     <TextInput
                         className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-sm font-normal text-[#000000B2] lowercase"
@@ -65,11 +65,11 @@ export function ProfileForm<T extends Array<tProfileFormFields>>({
         email() {
             return (
                 <div>
-                    <FormLabel>Change your Email</FormLabel>
+                    <FormLabel htmlFor="email">Change your Email</FormLabel>
 
                     <TextInput
                         className={cn(
-                            "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                            "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-sm font-normal text-[#000000B2] lowercase",
                             disabledFields?.email && "opacity-50",
                         )}
                         name="email"
@@ -127,25 +127,78 @@ export function ProfileForm<T extends Array<tProfileFormFields>>({
         },
 
         username() {
-            return <></>;
-        },
+            return (
+                <div>
+                    <FormLabel>Change your Email</FormLabel>
 
-        walletAddress() {
-            return <></>;
+                    <TextInput
+                        className={cn(
+                            "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-sm font-normal text-[#000000B2] lowercase",
+                            disabledFields?.username && "opacity-50",
+                        )}
+                        name="username"
+                        placeholder="enter username"
+                        type="text"
+                        value={(formValues.username as string) || ""}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                            handleChange({ field: "username", value: event.target.value })
+                        }
+                        disabled={disabledFields?.username}
+                    />
+                </div>
+            );
         },
 
         xUrl() {
-            return <></>;
+            return (
+                <div>
+                    <FormLabel>X RMTP URL (optional)</FormLabel>
+
+                    <TextInput
+                        className={cn(
+                            "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-sm font-normal text-[#000000B2] lowercase",
+                            disabledFields?.xUrl && "opacity-50",
+                        )}
+                        name="xUrl"
+                        placeholder="enter X RMTP URL"
+                        type="text"
+                        value={(formValues.xUrl as string) || ""}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                            handleChange({ field: "xUrl", value: event.target.value })
+                        }
+                        disabled={disabledFields?.xUrl}
+                    />
+                </div>
+            );
         },
 
         YTUrl() {
-            return <></>;
+            return (
+                <div>
+                    <FormLabel>YouTube RMTP Url (optional)</FormLabel>
+
+                    <TextInput
+                        className={cn(
+                            "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-sm font-normal text-[#000000B2] lowercase",
+                            disabledFields?.YTUrl && "opacity-50",
+                        )}
+                        name="YTUrl"
+                        placeholder="enter YT RMTP URL"
+                        type="text"
+                        value={(formValues.YTUrl as string) || ""}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                            handleChange({ field: "YTUrl", value: event.target.value })
+                        }
+                        disabled={disabledFields?.YTUrl}
+                    />
+                </div>
+            );
         },
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <fieldset>
+            <fieldset className="space-y-5" disabled={isSubmitting}>
                 <section className="space-y-3">
                     {fields.map((field) => field && <Fragment key={field}>{renderField[field]()}</Fragment>)}
                 </section>

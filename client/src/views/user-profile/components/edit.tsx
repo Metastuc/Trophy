@@ -18,12 +18,10 @@ export function EditProfile() {
 
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
-    const formInitialValues: tProfileFormValues = {
+    const formInitialValues: Partial<tProfileFormValues> = {
         bio: user?.bio || "",
         email: user?.email || "",
         profilePicture: user?.userPfp || "",
-        username: user?.username || "",
-        walletAddress: user?.walletAddress || "",
         xUrl: user?.xUrl || "",
         YTUrl: user?.YTUrl || "",
     };
