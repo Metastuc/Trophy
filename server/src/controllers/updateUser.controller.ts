@@ -104,3 +104,29 @@ export const updatePfp = async (req: Request, res: Response) => {
     res.status(500).json({ error: (error as Error).message });
   }
 };
+
+export const creatorTokenCreated = async (req: Request, res: Response) => {
+  try {
+    const { username, creatorToken } = req.body;
+
+    if (!username || !creatorToken) {
+      res.status(400).json({ error: "username or creator token address cannot be empty" });
+      return;
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      res.status(404).json({ error: "User doesn't exist" });
+      return;
+    }
+
+    user.creatorToken = creatorToken;
+    await user.save();
+    await RedisClient.set(`user:${username}`, JSON.stringify(user));
+
+    res.status(200).json({ message: "creator token saved" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
