@@ -28,7 +28,7 @@ export const createStream = async (req: Request, res: Response) => {
 
     if (!username) {
       res.status(400).json({ error: "Username is required!" });
-      return
+      return;
     }
 
     const user = await User.findOne({ username });
@@ -85,11 +85,11 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      // await recorder.startLivestream({
-      //   roomId,
-      //   token: liveStreamToken,
-      //   rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"]
-      // })
+      await recorder.startLivestream({
+        roomId,
+        token: liveStreamToken,
+        rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
+      });
 
       // await recorder.startRecording({
       //   roomId,
@@ -124,13 +124,13 @@ const startLiveStream = async (roomId: string, token: string, rtmpUrls: string[]
     await recorder.startLivestream({
       roomId,
       token,
-      rtmpUrls
+      rtmpUrls,
     });
   } catch (error: any) {
-    console.error(error)
-    throw new Error(error.message)
+    console.error(error);
+    throw new Error(error.message);
   }
-}
+};
 
 export const stopStream = async (req: Request, res: Response) => {
   try {
@@ -172,6 +172,6 @@ export const stopStream = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Live stream ended" });
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-}
+};
