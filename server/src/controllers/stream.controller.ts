@@ -85,11 +85,11 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      await recorder.startLivestream({
-        roomId,
-        token: liveStreamToken,
-        rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"]
-      })
+      // await recorder.startLivestream({
+      //   roomId,
+      //   token: liveStreamToken,
+      //   rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"]
+      // })
 
       // await recorder.startRecording({
       //   roomId,
