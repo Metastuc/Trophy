@@ -5,7 +5,7 @@ import { RedisClient } from "../config/db";
 
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const { username } = req.body;
+    const { username } = req.query;
 
     if (!username) {
       res.status(400).json({
