@@ -7,7 +7,6 @@ import { generateAccessToken } from "./accessToken.controller";
 import { sendScheduleEmail } from "../utils/emailNotis";
 import { RedisClient } from "../config/db";
 import { Recorder } from "@huddle01/server-sdk/recorder";
-import Janus from "janus-gateway";
 
 export const recorder = new Recorder(HUDDLE_PROJECT_ID, HUDDLE_API_KEY);
 
@@ -85,11 +84,15 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      await recorder.startLivestream({
-        roomId,
-        token: liveStreamToken,
-        rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
-      });
+      setTimeout(async () => {
+        const { msg } = await recorder.startLivestream({
+          roomId,
+          token: liveStreamToken,
+          rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
+        });
+
+        console.log(msg);
+      }, 60000);
 
       // await recorder.startRecording({
       //   roomId,
