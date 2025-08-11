@@ -14,13 +14,15 @@ export function StreamLayout() {
     const { peerIds: coHostPeerIds } = usePeerIds({ roles: ["coHost"] });
     const { shareStream } = useLocalScreenShare();
 
-    const { coHost } = useStreamingUIRoles();
+    const { coHost, host } = useStreamingUIRoles();
     const { screenSharing, sendScreenShareMessage, setScreenSharing } = useStreamingUIScreenShare();
 
     const streamLayoutKey = getStreamLayoutKey({
         coHostCount: coHost ? coHostPeerIds.length + 1 : coHostPeerIds.length,
         isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
     });
+
+    const canTriggerShareScreen = coHost || host;
 
     logger({
         streamLayoutKey,
@@ -31,7 +33,7 @@ export function StreamLayout() {
 
     useEffect(
         function () {
-            if (shareStream) {
+            if (canTriggerShareScreen && shareStream) {
                 setScreenSharing({
                     someoneIsSharingTheirScreen: true,
                     whoIsSharingTheirScreen: peerId,
@@ -45,18 +47,11 @@ export function StreamLayout() {
                 sendScreenShareMessage("stop");
             }
         },
-        [shareStream, setScreenSharing, sendScreenShareMessage, peerId],
+        [canTriggerShareScreen, shareStream, setScreenSharing, sendScreenShareMessage, peerId],
     );
 
     return (
-        <div
-            // className={cn(
-            //     "grid size-full",
-            //     screenSharing.someoneIsSharingTheirScreen && "grid-row-3 streamer-grid grid-cols-8",
-            // )}
-
-            className={cn("size-full", streamLayoutKey)}
-        >
+        <div className={cn("size-full", streamLayoutKey)}>
             <RenderStreamers role="host" />
             <RenderStreamers role="coHost" />
         </div>
@@ -75,9 +70,13 @@ function RenderStreamers({ role }: { role: tRole }) {
     const shouldShowLocal = isLocal && ((isVideoOn && localStream) || shareStream);
     const tileClass = role === "host" ? "host-tile" : "coHost-tile";
 
+    logger({
+        peerIds,
+    });
+
     return (
         <Fragment>
-            {shouldShowLocal ? (
+            {isLocal ? (
                 <StreamerVideoTile
                     videoStream={localStream}
                     videoStreamState={isVideoOn ? "playable" : "unavailable"}
