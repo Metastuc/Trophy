@@ -25,7 +25,7 @@ router
 
   .get("/get-user", getUser)
   .patch("/update-profile", authenticate, updateProfile)
-  .get("/fetch-user", authenticate, authUser)
+  .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
   .post("/update-pfp", authenticate, uploadPfp.single("pfp"), updatePfp)
 
