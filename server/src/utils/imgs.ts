@@ -50,3 +50,16 @@ export const deletePfp = async (pfpUrl: string) => {
     console.error("Failed to delete profile picture:", error);
   }
 };
+
+export const saveThumbnail = multer({
+  storage: multerS3({
+    s3: getS3Client(),
+    bucket: AWS_S3_BUCKET,
+    acl: "public-read",
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (_req: any, file: { originalname: any }, cb: (arg0: null, arg1: string) => void) => {
+      const filename = `thumbnails/${uuid()}-${file.originalname}`;
+      cb(null, filename);
+    },
+  }),
+})
