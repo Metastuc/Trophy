@@ -1,19 +1,15 @@
 import { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { RedisClient } from "../config/db";
-import cryptoRandomString from "crypto-random-string";
+import { savePfp } from "../utils/imgs";
 
 export async function onboard(request: Request, response: Response) {
-  let userPfp = (request.file as any)?.location;
+  const userProfilePicture = request.file?.buffer;
   const privyId = request.privyUser?.userId;
 
   try {
     const { bio, email, username, profilePicture, walletAddress } = request.body;
     const existingUser = await User.findOne({ privyId });
-
-    if (!userPfp && profilePicture) {
-      userPfp = profilePicture;
-    }
 
     if (!existingUser) {
       if (!username) {
@@ -21,11 +17,15 @@ export async function onboard(request: Request, response: Response) {
         return;
       }
 
-      const randString = cryptoRandomString({ length: 8, type: "alphanumeric" });
+      let userPfp = "";
 
-      const streamKey = `trophy:${randString}`;
+      if (userProfilePicture) {
+        userPfp = await savePfp(userProfilePicture, request.file!.originalname);
+      } else {
+        userPfp = profilePicture;
+      }
 
-      const user = await User.create({ bio, email, privyId, username, userPfp, walletAddress, streamKey });
+      const user = await User.create({ bio, email, privyId, username, userPfp, walletAddress });
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 
