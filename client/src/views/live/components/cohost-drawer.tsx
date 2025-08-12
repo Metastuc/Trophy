@@ -26,8 +26,6 @@ export function CoHostDrawer() {
         setCoHostInvitationState,
     } = useStreamingUICoHostInvitation();
 
-    // useSyncCoHosts();
-
     const [drawerInternalState, setDrawerInternalState] = useState<iDrawerInternalState>(() => ({
         searchQuery: "",
         selectedPeersAsCoHost: [...coHostInvitationState.pendingInvitations, ...coHostInvitationState.activeCoHosts],

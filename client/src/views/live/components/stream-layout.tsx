@@ -1,6 +1,5 @@
 import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
-import { usePrevious } from "@uidotdev/usehooks";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
@@ -26,8 +25,8 @@ export function StreamLayout() {
         return a.localeCompare(b);
     });
 
-    const previousShareStream = usePrevious(shareStream);
-    const shareStreamRef = useRef(shareStream);
+    // const previousShareStream = usePrevious(shareStream);
+    // const shareStreamRef = useRef(shareStream);
 
     const streamLayoutKey = getStreamLayoutKey({
         coHostCount: allCoHostsPeerIds.length,
@@ -50,26 +49,26 @@ export function StreamLayout() {
             if (!(host || coHost)) return;
             logger("[StreamLayout] host or coHost");
 
-            if (shareStream !== shareStreamRef.current) {
-                logger("[StreamLayout] shareStream");
-                sendScreenShareMessage(shareStream ? "start" : "stop");
-                shareStreamRef.current = shareStream;
-
-                // setScreenSharing({
-                //     someoneIsSharingTheirScreen: true,
-                //     whoIsSharingTheirScreen: localPeerId,
-                // });
-                // sendScreenShareMessage("start");
-            }
-            //  else {
-            //     logger("[StreamLayout] !shareStream");
+            // if (shareStream !== shareStreamRef.current) {
+            //     logger("[StreamLayout] shareStream");
+            //     sendScreenShareMessage(shareStream ? "start" : "stop");
+            //     shareStreamRef.current = shareStream;
 
             //     // setScreenSharing({
-            //     //     someoneIsSharingTheirScreen: false,
-            //     //     whoIsSharingTheirScreen: null,
+            //     //     someoneIsSharingTheirScreen: true,
+            //     //     whoIsSharingTheirScreen: localPeerId,
             //     // });
-            //     sendScreenShareMessage("stop");
+            //     // sendScreenShareMessage("start");
             // }
+            // //  else {
+            // //     logger("[StreamLayout] !shareStream");
+
+            // //     // setScreenSharing({
+            // //     //     someoneIsSharingTheirScreen: false,
+            // //     //     whoIsSharingTheirScreen: null,
+            // //     // });
+            // //     sendScreenShareMessage("stop");
+            // // }
         },
         [coHost, host, shareStream, localPeerId, sendScreenShareMessage, setScreenSharing],
     );
