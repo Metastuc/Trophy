@@ -98,6 +98,8 @@ function RenderStreamers({ role }: { role: tRole }) {
         return a.localeCompare(b);
     });
 
+    console.log(peerIds)
+
     return sorted.map((peerId, index) =>
         peerId === localPeerId ? (
             <StreamerVideoTile

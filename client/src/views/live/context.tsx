@@ -74,13 +74,15 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         function () {
             if (state === "connected" && peerId) {
                 updateMetadata({
+                    isPeerAuthenticated: authenticationStore.isAuthenticated,
                     username: authenticationStore.user?.backendUserData.user.username ?? "anon",
-                    userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
                     userPeerID: peerId,
+                    userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
                 });
             }
         },
         [
+            authenticationStore.isAuthenticated,
             authenticationStore.user?.backendUserData.user.profilePicture,
             authenticationStore.user?.backendUserData.user.username,
             peerId,

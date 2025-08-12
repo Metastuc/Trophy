@@ -54,6 +54,7 @@ type tStreamUIMetadata = {
     username: string;
     userPFP: string;
     userPeerID: string;
+    isPeerAuthenticated: boolean;
 };
 
 interface iStreamingUIPermissions {

@@ -4,7 +4,9 @@ import { useMemo } from "react";
 
 export function AuthenticatedPeersList({ isCoHost, isPending, onToggle, peerId, search }: iAuthenticatedPeersList) {
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
-    const isAuthenticated = Boolean(metadata?.username !== "anon");
+    const isAuthenticated = metadata?.isPeerAuthenticated;
+
+    console.log(peerId, metadata, isAuthenticated);
 
     const queryMatches = useMemo(
         function () {
