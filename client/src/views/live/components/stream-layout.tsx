@@ -1,5 +1,5 @@
 import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
@@ -82,34 +82,34 @@ export function StreamLayout() {
 }
 
 function RenderStreamers({ role }: { role: tRole }) {
+    const { peerId: localPeerId } = useLocalPeer();
     const { peerIds } = usePeerIds({ roles: [role] });
-    const { stream: localStream, isVideoOn } = useLocalVideo();
-    const { stream: localAudio, isAudioOn } = useLocalAudio();
     const { shareStream } = useLocalScreenShare();
+    const { stream: localAudio, isAudioOn } = useLocalAudio();
+    const { stream: localStream, isVideoOn } = useLocalVideo();
 
     const { coHost, host } = useStreamingUIRoles();
 
     const isLocal = (role === "host" && host) || (role === "coHost" && coHost);
     const tileClass = role === "host" ? "host-tile" : "coHost-tile";
+    const peersWithRole = isLocal ? [localPeerId, ...peerIds] : peerIds;
+    const sorted = [...peersWithRole].sort(function (a, b) {
+        if (a === null || b === null) return 0;
+        return a.localeCompare(b);
+    });
 
-    // logger({ role, isLocal });
-
-    return (
-        <Fragment>
-            {isLocal ? (
-                <StreamerVideoTile
-                    videoStream={localStream}
-                    videoStreamState={isVideoOn ? "playable" : "unavailable"}
-                    audioStream={localAudio}
-                    audioStreamState={isAudioOn ? "playable" : "unavailable"}
-                    screenVideo={shareStream || null}
-                    tileClass={tileClass}
-                />
-            ) : null}
-
-            {peerIds.map((peerId, index) =>
-                peerId ? <StreamerRemote peerId={peerId} key={peerId} tileClass={`${tileClass}-${index + 1}`} /> : null,
-            )}
-        </Fragment>
+    return sorted.map((peerId, index) =>
+        peerId === localPeerId ? (
+            <StreamerVideoTile
+                videoStream={localStream}
+                videoStreamState={isVideoOn ? "playable" : "unavailable"}
+                audioStream={localAudio}
+                audioStreamState={isAudioOn ? "playable" : "unavailable"}
+                screenVideo={shareStream || null}
+                tileClass={`${tileClass}-${index + 1}`}
+            />
+        ) : (
+            peerId && <StreamerRemote peerId={peerId} key={peerId} tileClass={`${tileClass}-${index + 1}`} />
+        ),
     );
 }

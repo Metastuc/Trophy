@@ -234,7 +234,6 @@
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(1, 1fr);
 
-    .host-tile,
     .host-tile-1 {
         grid-column: 1/2;
         grid-row: 1/2;
@@ -245,13 +244,11 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(1, 1fr);
 
-    .host-tile,
     .host-tile-1 {
         grid-column: 1/2;
         grid-row: 1/2;
     }
 
-    .coHost-tile,
     .coHost-tile-1 {
         grid-column: 2/3;
         grid-row: 1/2;
@@ -262,13 +259,11 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
 
-    .host-tile,
     .host-tile-1 {
         grid-column: 1/2;
         grid-row: 1/3;
     }
 
-    .coHost-tile,
     .coHost-tile-1 {
         grid-column: 2/3;
         grid-row: 1/2;
