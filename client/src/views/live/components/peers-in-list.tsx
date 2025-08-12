@@ -47,8 +47,9 @@ export function AuthenticatedPeersList({ isCoHost, isPending, onToggle, peerId, 
 
 export function SelectedPeersList({ peerId }: { peerId: string }) {
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
+    const isAuthenticated = metadata?.isPeerAuthenticated;
 
-    return (
+    return isAuthenticated ? (
         <li className="flex w-max items-center gap-1 rounded-3xl bg-gray-200 p-1 pr-2">
             <span className="flex size-6 items-center justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399FC]">
                 <i className="flex size-5 items-center justify-center">
@@ -61,5 +62,5 @@ export function SelectedPeersList({ peerId }: { peerId: string }) {
             </span>
             <span className="text-sm">@{metadata?.username}</span>
         </li>
-    );
+    ) : null;
 }
