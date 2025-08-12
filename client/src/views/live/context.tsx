@@ -94,10 +94,10 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
 
-                screenShareHandler.setScreenSharing({
-                    someoneIsSharingTheirScreen: false,
-                    whoIsSharingTheirScreen: null,
-                });
+                // screenShareHandler.setScreenSharing({
+                //     someoneIsSharingTheirScreen: false,
+                //     whoIsSharingTheirScreen: null,
+                // });
             }
         },
         [state, screenShareHandler],

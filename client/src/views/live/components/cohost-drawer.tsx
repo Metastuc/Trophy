@@ -1,5 +1,5 @@
 import { Projector, Search, X } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { useStreamingUICoHostInvitation, useStreamingUIContext } from "../hooks";
+import { CheckAndUpdateCoHostList } from "../hooks/updater";
 import { RoleUpdater } from "./invitation";
 import { AuthenticatedPeersList, SelectedPeersList } from "./peers-in-list";
 
@@ -25,9 +26,11 @@ export function CoHostDrawer() {
         setCoHostInvitationState,
     } = useStreamingUICoHostInvitation();
 
+    // useSyncCoHosts();
+
     const [drawerInternalState, setDrawerInternalState] = useState<iDrawerInternalState>(() => ({
         searchQuery: "",
-        selectedPeersAsCoHost: [],
+        selectedPeersAsCoHost: [...coHostInvitationState.pendingInvitations, ...coHostInvitationState.activeCoHosts],
     }));
 
     function handleSearchQueryInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -136,14 +139,16 @@ export function CoHostDrawer() {
                             {allPeers.map(
                                 (value) =>
                                     value && (
-                                        <AuthenticatedPeersList
-                                            key={value}
-                                            peerId={value}
-                                            search={drawerInternalState.searchQuery}
-                                            onToggle={() => handleTogglePeerAsCoHost(value)}
-                                            isPending={coHostInvitationState.pendingInvitations.includes(value)}
-                                            isCoHost={coHostInvitationState.activeCoHosts.includes(value)}
-                                        />
+                                        <Fragment key={value}>
+                                            <CheckAndUpdateCoHostList peerId={value} />
+                                            <AuthenticatedPeersList
+                                                peerId={value}
+                                                search={drawerInternalState.searchQuery}
+                                                onToggle={() => handleTogglePeerAsCoHost(value)}
+                                                isPending={coHostInvitationState.pendingInvitations.includes(value)}
+                                                isCoHost={coHostInvitationState.activeCoHosts.includes(value)}
+                                            />
+                                        </Fragment>
                                     ),
                             )}
                         </ul>

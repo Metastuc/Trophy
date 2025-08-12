@@ -1,5 +1,6 @@
 import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo, usePeerIds } from "@huddle01/react";
-import { Fragment, useEffect } from "react";
+import { usePrevious } from "@uidotdev/usehooks";
+import { Fragment, useEffect, useRef } from "react";
 
 import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,9 @@ export function StreamLayout() {
         return a.localeCompare(b);
     });
 
+    const previousShareStream = usePrevious(shareStream);
+    const shareStreamRef = useRef(shareStream);
+
     const streamLayoutKey = getStreamLayoutKey({
         coHostCount: allCoHostsPeerIds.length,
         isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
@@ -38,25 +42,34 @@ export function StreamLayout() {
         hostPeerId,
         allCoHostsPeerIds,
         localPeerId,
+        shareStream: !!shareStream,
     });
 
     useEffect(
         function () {
-            if (host || coHost) {
-                if (shareStream) {
-                    setScreenSharing({
-                        someoneIsSharingTheirScreen: true,
-                        whoIsSharingTheirScreen: localPeerId,
-                    });
-                    sendScreenShareMessage("start");
-                } else {
-                    setScreenSharing({
-                        someoneIsSharingTheirScreen: false,
-                        whoIsSharingTheirScreen: null,
-                    });
-                    sendScreenShareMessage("stop");
-                }
+            if (!(host || coHost)) return;
+            logger("[StreamLayout] host or coHost");
+
+            if (shareStream !== shareStreamRef.current) {
+                logger("[StreamLayout] shareStream");
+                sendScreenShareMessage(shareStream ? "start" : "stop");
+                shareStreamRef.current = shareStream;
+
+                // setScreenSharing({
+                //     someoneIsSharingTheirScreen: true,
+                //     whoIsSharingTheirScreen: localPeerId,
+                // });
+                // sendScreenShareMessage("start");
             }
+            //  else {
+            //     logger("[StreamLayout] !shareStream");
+
+            //     // setScreenSharing({
+            //     //     someoneIsSharingTheirScreen: false,
+            //     //     whoIsSharingTheirScreen: null,
+            //     // });
+            //     sendScreenShareMessage("stop");
+            // }
         },
         [coHost, host, shareStream, localPeerId, sendScreenShareMessage, setScreenSharing],
     );
@@ -80,9 +93,7 @@ function RenderStreamers({ role }: { role: tRole }) {
     const isLocal = (role === "host" && host) || (role === "coHost" && coHost);
     const tileClass = role === "host" ? "host-tile" : "coHost-tile";
 
-    logger({
-        peerIds,
-    });
+    // logger({ role, isLocal });
 
     return (
         <Fragment>
