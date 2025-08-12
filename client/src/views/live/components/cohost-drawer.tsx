@@ -78,8 +78,6 @@ export function CoHostDrawer() {
         [coHostInvitationState.activeCoHosts],
     );
 
-    console.log(allPeers);
-
     return (
         <Drawer
             open={isCoHostDrawerOpen}

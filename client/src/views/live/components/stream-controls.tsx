@@ -67,7 +67,7 @@ export function StreamControls() {
 function RenderControlsBasedOnRole() {
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
-    const { peerId: localPeerId } = useLocalPeer();
+    const { peerId: localPeerId, metadata, updateMetadata } = useLocalPeer();
     const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
 
     const { screenSharing } = useStreamingUIScreenShare();
@@ -93,14 +93,27 @@ function RenderControlsBasedOnRole() {
     async function handleToggleAudio() {
         setUserHasToggled((previous) => ({ ...previous, audio: !previous.audio }));
 
-        if (isAudioOn) await disableAudio();
-        else await enableAudio();
+        try {
+            if (isAudioOn) {
+                await disableAudio();
+            } else {
+                await enableAudio();
+            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to toggle audio.";
+            toast.error(message);
+            console.error("Error toggling audio:", error);
+        }
     }
 
     async function handleToggleScreenShare() {
         try {
             if (shareStream) {
                 await stopScreenShare();
+                updateMetadata({
+                    ...(metadata as tStreamUIMetadata),
+                    isPeerSharingTheirScreen: false,
+                }).catch(console.error);
                 return;
             }
 
@@ -110,6 +123,10 @@ function RenderControlsBasedOnRole() {
             }
 
             await startScreenShare();
+            updateMetadata({
+                ...(metadata as tStreamUIMetadata),
+                isPeerSharingTheirScreen: true,
+            }).catch(console.error);
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to share screen.";
             toast.error(message);
@@ -120,6 +137,18 @@ function RenderControlsBasedOnRole() {
     function toggleCoHostDrawer() {
         setIsCoHostDrawerOpen((previous) => !previous);
     }
+
+    useEffect(
+        function () {
+            if (!shareStream && (metadata as tStreamUIMetadata)?.isPeerSharingTheirScreen) {
+                updateMetadata({
+                    ...(metadata as tStreamUIMetadata),
+                    isPeerSharingTheirScreen: false,
+                }).catch(console.error);
+            }
+        },
+        [shareStream, metadata, updateMetadata],
+    );
 
     return (
         <Fragment>
