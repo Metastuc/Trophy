@@ -6,8 +6,6 @@ export function AuthenticatedPeersList({ isCoHost, isPending, onToggle, peerId, 
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
     const isAuthenticated = metadata?.isPeerAuthenticated;
 
-    console.log(peerId, metadata, isAuthenticated);
-
     const queryMatches = useMemo(
         function () {
             const username = (metadata?.username || "").toLowerCase();
