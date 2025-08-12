@@ -19,15 +19,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     const { isVideoOn, enableVideo } = useLocalVideo();
     const { role, updateMetadata, peerId } = useLocalPeer();
     const { peerIds } = usePeerIds();
-    const { joinRoom, state } = useRoom({
-        onJoin() {
-            updateMetadata({
-                username: authenticationStore.user?.backendUserData.user.username ?? "anon",
-                userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
-                userPeerID: peerId,
-            });
-        },
-    });
+    const { joinRoom, state } = useRoom();
 
     const typedRole: tRole = role as tRole;
 
@@ -76,6 +68,26 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             }
         },
         [joinRoom, roomId, state, token],
+    );
+
+    useEffect(
+        function () {
+            if (state === "connected" && peerId) {
+                updateMetadata({
+                    username: authenticationStore.user?.backendUserData.user.username ?? "anon",
+                    userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
+                    userPeerID: peerId,
+                });
+            }
+        },
+        [
+            authenticationStore.user?.backendUserData.user.profilePicture,
+            authenticationStore.user?.backendUserData.user.username,
+            peerId,
+            peerIds,
+            state,
+            updateMetadata,
+        ],
     );
 
     useEffect(
