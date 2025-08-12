@@ -255,7 +255,7 @@
 
 .host-with-one-co-host {
     .host-tile,
-    host-tile-1 {
+    .host-tile-1 {
         grid-column: 1/5;
         grid-row: 1/4;
     }

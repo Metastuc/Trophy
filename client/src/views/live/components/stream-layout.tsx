@@ -10,44 +10,55 @@ import { getStreamLayoutKey } from "../utils";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
-    const { peerId } = useLocalPeer();
+    const { peerId: localPeerId } = useLocalPeer();
     const { peerIds: coHostPeerIds } = usePeerIds({ roles: ["coHost"] });
+    const { peerIds: hostPeerIds } = usePeerIds({ roles: ["host"] });
     const { shareStream } = useLocalScreenShare();
 
     const { coHost, host } = useStreamingUIRoles();
     const { screenSharing, sendScreenShareMessage, setScreenSharing } = useStreamingUIScreenShare();
 
-    const streamLayoutKey = getStreamLayoutKey({
-        coHostCount: coHost ? coHostPeerIds.length + 1 : coHostPeerIds.length,
-        isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
+    const hostPeerId = hostPeerIds[0];
+    const allCoHostsPeerIds = coHost ? [...coHostPeerIds, localPeerId] : coHostPeerIds;
+    allCoHostsPeerIds.sort(function (a, b) {
+        if (a === null || b === null) return 0;
+        return a.localeCompare(b);
     });
 
-    const canTriggerShareScreen = coHost || host;
+    const streamLayoutKey = getStreamLayoutKey({
+        coHostCount: allCoHostsPeerIds.length,
+        isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
+    });
 
     logger({
         streamLayoutKey,
         coHostPeerIds,
         isScreenSharing: screenSharing.someoneIsSharingTheirScreen,
         whoIsSharing: screenSharing.whoIsSharingTheirScreen,
+        hostPeerId,
+        allCoHostsPeerIds,
+        localPeerId,
     });
 
     useEffect(
         function () {
-            if (canTriggerShareScreen && shareStream) {
-                setScreenSharing({
-                    someoneIsSharingTheirScreen: true,
-                    whoIsSharingTheirScreen: peerId,
-                });
-                sendScreenShareMessage("start");
-            } else {
-                setScreenSharing({
-                    someoneIsSharingTheirScreen: false,
-                    whoIsSharingTheirScreen: null,
-                });
-                sendScreenShareMessage("stop");
+            if (host || coHost) {
+                if (shareStream) {
+                    setScreenSharing({
+                        someoneIsSharingTheirScreen: true,
+                        whoIsSharingTheirScreen: localPeerId,
+                    });
+                    sendScreenShareMessage("start");
+                } else {
+                    setScreenSharing({
+                        someoneIsSharingTheirScreen: false,
+                        whoIsSharingTheirScreen: null,
+                    });
+                    sendScreenShareMessage("stop");
+                }
             }
         },
-        [canTriggerShareScreen, shareStream, setScreenSharing, sendScreenShareMessage, peerId],
+        [coHost, host, shareStream, localPeerId, sendScreenShareMessage, setScreenSharing],
     );
 
     return (

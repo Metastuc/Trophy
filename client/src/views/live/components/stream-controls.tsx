@@ -1,6 +1,7 @@
 import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
@@ -73,8 +74,17 @@ function RenderControlsBasedOnRole() {
     async function handleToggleVideo() {
         setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
 
-        if (isVideoOn) await disableVideo();
-        else await enableVideo();
+        try {
+            if (isVideoOn) {
+                await disableVideo();
+            } else {
+                await enableVideo();
+            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to toggle video.";
+            toast.error(message);
+            console.error("Error toggling video:", error);
+        }
     }
 
     async function handleToggleAudio() {
