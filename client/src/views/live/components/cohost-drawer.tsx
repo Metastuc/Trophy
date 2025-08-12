@@ -52,7 +52,7 @@ export function CoHostDrawer() {
             const totalCoHosts =
                 coHostInvitationState.activeCoHosts.length + coHostInvitationState.pendingInvitations.length;
 
-            if (totalCoHosts > APPLICATION_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED) {
+            if (totalCoHosts >= APPLICATION_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED) {
                 toast.error(`You can have a maximum of ${APPLICATION_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED} co-hosts.`);
                 return;
             }
