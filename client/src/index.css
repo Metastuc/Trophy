@@ -275,6 +275,31 @@
     }
 }
 
+.host-with-three-co-hosts {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    .host-tile-1 {
+        grid-column: 1/2;
+        grid-row: 1/2;
+    }
+
+    .coHost-tile-1 {
+        grid-column: 2/3;
+        grid: 1/2;
+    }
+
+    .coHost-tile-2 {
+        grid-column: 1/2;
+        grid-row: 2/3;
+    }
+
+    .coHost-tile-3 {
+        grid-column: 2/3;
+        grid-row: 2/3;
+    }
+}
+
 .host-only-with-screen,
 .host-with-one-co-host-with-screen,
 .host-with-two-co-hosts-with-screen,
