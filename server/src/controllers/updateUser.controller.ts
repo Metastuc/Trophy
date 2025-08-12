@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 import { DEFAULT_IMAGE } from "../utils/env";
-import { deletePfp } from "../utils/imgs";
+import { deletePfp, savePfp } from "../utils/imgs";
 import { RedisClient } from "../config/db";
 
 export const updateProfile = async (req: Request, res: Response) => {
@@ -120,7 +120,7 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
 
 export const updatePfp = async (req: Request, res: Response) => {
   try {
-    const imageToUpdate = (req.file as any)?.location;
+    const imageToUpdate = req.file!.buffer;
     const privyId = req.privyUser;
 
     const user = await User.findOne({ privyId });
@@ -130,11 +130,13 @@ export const updatePfp = async (req: Request, res: Response) => {
       return;
     }
 
+    const updatedImage = await savePfp(imageToUpdate, req.file!.originalname);
+
     if (user.userPfp !== DEFAULT_IMAGE) {
       await deletePfp(user.userPfp);
     }
 
-    user.userPfp = imageToUpdate;
+    user.userPfp = updatedImage;
     await user.save();
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
