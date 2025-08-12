@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 import { DEFAULT_IMAGE } from "../utils/env";
-import { deletePfp } from "../utils/pfp";
+import { deletePfp } from "../utils/imgs";
 import { RedisClient } from "../config/db";
 
 export const updateProfile = async (req: Request, res: Response) => {
@@ -85,6 +85,38 @@ export const feesUpdate = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const saveStreamThumbnail = async (req: Request, res: Response) => { 
+  try {
+    const thumbnailUrl = (req.file as any)?.location;
+    const roomId = req.body.roomId;
+
+    if (!thumbnailUrl || !roomId) {
+      res.status(400).json({ error: "Thumbnail URL or room ID is missing" });
+      return;
+    };
+
+    const stream = await Stream.findOne({ roomId });
+
+    if (!stream) {
+      res.status(404).json({ error: "Stream not found" });
+      return;
+    }
+
+    if (stream.status === "Ended" || stream.status === "Scheduled") {
+      res.status(400).json({ error: "Cannot update thumbnail for ended or scheduled streams" });
+      return;
+    };
+
+    stream.thumbnail = thumbnailUrl;
+    await stream.save();
+
+    res.status(200).json({ message: "Thumbnail saved successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
 
 export const updatePfp = async (req: Request, res: Response) => {
   try {
