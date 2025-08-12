@@ -1,5 +1,6 @@
 import { Projector, Search, X } from "lucide-react";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,7 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer";
+import { APPLICATION_CONSTANTS } from "@/lib/constants";
 
 import { useStreamingUICoHostInvitation, useStreamingUIContext } from "../hooks";
 import { CheckAndUpdateCoHostList } from "../hooks/updater";
@@ -36,15 +38,26 @@ export function CoHostDrawer() {
     }
 
     function handleTogglePeerAsCoHost(peerId: string) {
-        const isPeerSelectedAsCoHost = drawerInternalState.selectedPeersAsCoHost.includes(peerId);
+        const isPending = coHostInvitationState.pendingInvitations.includes(peerId);
+        const isActive = coHostInvitationState.activeCoHosts.includes(peerId);
+
+        const isPeerSelectedAsCoHost = isPending || isActive;
 
         if (isPeerSelectedAsCoHost) {
-            if (coHostInvitationState.pendingInvitations.includes(peerId)) {
+            if (isPending) {
                 cancelCoHostInvite({ peerID: peerId });
-            } else if (coHostInvitationState.activeCoHosts.includes(peerId)) {
+            } else if (isActive) {
                 revokeCoHostInvite({ peerID: peerId });
             }
         } else {
+            const totalCoHosts =
+                coHostInvitationState.activeCoHosts.length + coHostInvitationState.pendingInvitations.length;
+
+            if (totalCoHosts > APPLICATION_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED) {
+                toast.error(`You can have a maximum of ${APPLICATION_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED} co-hosts.`);
+                return;
+            }
+
             sendCoHostInvite({ peerID: peerId });
         }
     }
@@ -60,13 +73,10 @@ export function CoHostDrawer() {
         function () {
             setDrawerInternalState((state) => ({
                 ...state,
-                selectedPeersAsCoHost: [
-                    ...coHostInvitationState.pendingInvitations,
-                    ...coHostInvitationState.activeCoHosts,
-                ],
+                selectedPeersAsCoHost: [...coHostInvitationState.activeCoHosts],
             }));
         },
-        [coHostInvitationState.pendingInvitations, coHostInvitationState.activeCoHosts],
+        [coHostInvitationState.activeCoHosts],
     );
 
     console.log(allPeers);
@@ -106,9 +116,9 @@ export function CoHostDrawer() {
 
                 <DrawerFooter>
                     <header className="border-blue100 space-y-2 rounded-xs border px-3 py-2">
-                        {drawerInternalState.selectedPeersAsCoHost.length ? (
+                        {coHostInvitationState.activeCoHosts.length ? (
                             <div className="flex flex-wrap gap-2">
-                                {drawerInternalState.selectedPeersAsCoHost.map(
+                                {coHostInvitationState.activeCoHosts.map(
                                     (value) => value && <SelectedPeersList key={value} peerId={value} />,
                                 )}
                             </div>

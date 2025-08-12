@@ -34,6 +34,8 @@ const addresses = {
 export const tokenAddresses = addresses[environment];
 
 export const APPLICATION_CONSTANTS = {
-    FILE_UPLOAD_MAX_SIZE: 10 * 1024 * 1024,
+    FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
+
+    TOTAL_CO_HOSTS_ALLOWED: 4,
 };
