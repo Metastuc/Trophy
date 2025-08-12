@@ -4,14 +4,14 @@ import { recorder } from "./stream.controller";
 
 export const fetchStreams = async (req: Request, res: Response) => {
   try {
-    const streams = await Stream.find({ status: "Live" }).sort({ createdAt: -1 });
+    const streams = await Stream.find({ status: "Live", thumbnails: { $exists: true, $ne: null } }).sort({ createdAt: -1 });
 
     const { data, error } = await recorder.getRecordings();
     const recorded = data?.recordings ? data.recordings : [];
 
     if (streams.length === 0) {
       if (error) {
-        res.status(200).json({ message: "No recordings and live streams found", streams: { live: [], recorded: [] } });
+        res.status(200).json({ streams: { live: [], recorded } });
 
         return;
       } else {
