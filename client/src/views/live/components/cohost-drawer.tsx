@@ -40,7 +40,6 @@ export function CoHostDrawer() {
     function handleTogglePeerAsCoHost(peerId: string) {
         const isPending = coHostInvitationState.pendingInvitations.includes(peerId);
         const isActive = coHostInvitationState.activeCoHosts.includes(peerId);
-
         const isPeerSelectedAsCoHost = isPending || isActive;
 
         if (isPeerSelectedAsCoHost) {

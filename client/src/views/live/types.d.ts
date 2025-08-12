@@ -55,6 +55,7 @@ type tStreamUIMetadata = {
     userPFP: string;
     userPeerID: string;
     isPeerAuthenticated: boolean;
+    isPeerSharingTheirScreen: boolean;
 };
 
 interface iStreamingUIPermissions {
@@ -126,5 +127,5 @@ interface iRoleUpdater {
 interface iScreenShareHandler {
     screenSharing: tScreenSharing;
     setScreenSharing: React.Dispatch<React.SetStateAction<tScreenSharing>>;
-    sendScreenShareMessage: (action: "start" | "stop") => void;
+    screenShareGuard: ({ peerIsSharing, whoIsSharing }: { peerIsSharing: boolean; whoIsSharing: string }) => void;
 }

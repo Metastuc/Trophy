@@ -1,46 +1,47 @@
-import { useDataMessage } from "@huddle01/react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
-import { logger } from "@/utils/logger";
-
-export function useScreenShareSync({ peerIds }: { peerIds: string[] }): iScreenShareHandler {
+export function useScreenShareSync(): iScreenShareHandler {
     const [screenSharing, setScreenSharing] = useState<tScreenSharing>(() => ({
         someoneIsSharingTheirScreen: false,
         whoIsSharingTheirScreen: null,
     }));
 
-    logger("this is running on init");
+    const stateRef = useRef(screenSharing);
 
-    const { sendData } = useDataMessage({
-        onMessage(payload, from, label) {
-            if (label !== "SCREEN_SHARE") return;
+    const setScreenSharingState = useCallback(function (nextState: tScreenSharing) {
+        stateRef.current = nextState;
+        setScreenSharing(nextState);
+    }, []);
 
-            logger("[Screen Share]", { from, payload, label });
+    const screenShareGuard = useCallback(
+        function ({ peerIsSharing, whoIsSharing }: { peerIsSharing: boolean; whoIsSharing: string }) {
+            if (!whoIsSharing) return;
 
-            if (payload === "start") {
-                // setScreenSharing({
-                //     someoneIsSharingTheirScreen: true,
-                //     whoIsSharingTheirScreen: from,
-                // });
-            } else if (payload === "stop") {
-                // setScreenSharing({
-                //     someoneIsSharingTheirScreen: false,
-                //     whoIsSharingTheirScreen: null,
-                // });
+            const currentState = stateRef.current;
+
+            if (peerIsSharing) {
+                if (
+                    !currentState.someoneIsSharingTheirScreen ||
+                    currentState.whoIsSharingTheirScreen === whoIsSharing
+                ) {
+                    setScreenSharingState({
+                        someoneIsSharingTheirScreen: true,
+                        whoIsSharingTheirScreen: whoIsSharing,
+                    });
+                }
+
+                return;
+            }
+
+            if (currentState.whoIsSharingTheirScreen === whoIsSharing) {
+                setScreenSharingState({
+                    someoneIsSharingTheirScreen: false,
+                    whoIsSharingTheirScreen: null,
+                });
             }
         },
-    });
-
-    const sendScreenShareMessage = useCallback(
-        function (action: "start" | "stop") {
-            sendData({
-                to: peerIds,
-                payload: action,
-                label: "SCREEN_SHARE",
-            });
-        },
-        [peerIds, sendData],
+        [setScreenSharingState],
     );
 
-    return { screenSharing, setScreenSharing, sendScreenShareMessage };
+    return { screenSharing, setScreenSharing, screenShareGuard };
 }

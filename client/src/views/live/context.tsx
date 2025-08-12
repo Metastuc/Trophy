@@ -52,7 +52,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         video: false,
     }));
 
-    const screenShareHandler = useScreenShareSync({ peerIds });
+    const screenShareHandler = useScreenShareSync();
 
     const [isCoHostDrawerOpen, setIsCoHostDrawerOpen] = useState<boolean>(false);
     const coHostInvitationHandler: iCoHostInvitationHandler = useCoHostInvitationHandler(roomRoles);
@@ -107,11 +107,6 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
         function () {
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
-
-                // screenShareHandler.setScreenSharing({
-                //     someoneIsSharingTheirScreen: false,
-                //     whoIsSharingTheirScreen: null,
-                // });
             }
         },
         [state, screenShareHandler],

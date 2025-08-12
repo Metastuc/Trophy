@@ -15,18 +15,11 @@ export function StreamLayout() {
     const { peerIds: hostPeerIds } = usePeerIds({ roles: ["host"] });
     const { shareStream } = useLocalScreenShare();
 
-    const { coHost, host } = useStreamingUIRoles();
-    const { screenSharing, sendScreenShareMessage, setScreenSharing } = useStreamingUIScreenShare();
+    const { coHost } = useStreamingUIRoles();
+    const { screenSharing } = useStreamingUIScreenShare();
 
     const hostPeerId = hostPeerIds[0];
     const allCoHostsPeerIds = coHost ? [...coHostPeerIds, localPeerId] : coHostPeerIds;
-    allCoHostsPeerIds.sort(function (a, b) {
-        if (a === null || b === null) return 0;
-        return a.localeCompare(b);
-    });
-
-    // const previousShareStream = usePrevious(shareStream);
-    // const shareStreamRef = useRef(shareStream);
 
     const streamLayoutKey = getStreamLayoutKey({
         coHostCount: allCoHostsPeerIds.length,
@@ -44,35 +37,6 @@ export function StreamLayout() {
         shareStream: !!shareStream,
     });
 
-    useEffect(
-        function () {
-            if (!(host || coHost)) return;
-            logger("[StreamLayout] host or coHost");
-
-            // if (shareStream !== shareStreamRef.current) {
-            //     logger("[StreamLayout] shareStream");
-            //     sendScreenShareMessage(shareStream ? "start" : "stop");
-            //     shareStreamRef.current = shareStream;
-
-            //     // setScreenSharing({
-            //     //     someoneIsSharingTheirScreen: true,
-            //     //     whoIsSharingTheirScreen: localPeerId,
-            //     // });
-            //     // sendScreenShareMessage("start");
-            // }
-            // //  else {
-            // //     logger("[StreamLayout] !shareStream");
-
-            // //     // setScreenSharing({
-            // //     //     someoneIsSharingTheirScreen: false,
-            // //     //     whoIsSharingTheirScreen: null,
-            // //     // });
-            // //     sendScreenShareMessage("stop");
-            // // }
-        },
-        [coHost, host, shareStream, localPeerId, sendScreenShareMessage, setScreenSharing],
-    );
-
     return (
         <div className={cn("size-full", streamLayoutKey)}>
             <RenderStreamers role="host" />
@@ -89,6 +53,7 @@ function RenderStreamers({ role }: { role: tRole }) {
     const { stream: localStream, isVideoOn } = useLocalVideo();
 
     const { coHost, host } = useStreamingUIRoles();
+    const { screenShareGuard } = useStreamingUIScreenShare();
 
     const isLocal = (role === "host" && host) || (role === "coHost" && coHost);
     const tileClass = role === "host" ? "host-tile" : "coHost-tile";
@@ -98,11 +63,22 @@ function RenderStreamers({ role }: { role: tRole }) {
         return a.localeCompare(b);
     });
 
-    console.log(peerIds)
+    useEffect(
+        function () {
+            if (!localPeerId) return;
+
+            screenShareGuard({
+                peerIsSharing: !!shareStream,
+                whoIsSharing: localPeerId as string,
+            });
+        },
+        [shareStream, localPeerId, screenShareGuard],
+    );
 
     return sorted.map((peerId, index) =>
-        peerId === localPeerId ? (
+        peerId && peerId === localPeerId ? (
             <StreamerVideoTile
+                key={peerId}
                 videoStream={localStream}
                 videoStreamState={isVideoOn ? "playable" : "unavailable"}
                 audioStream={localAudio}

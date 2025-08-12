@@ -1,4 +1,4 @@
-import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
+import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -7,7 +7,7 @@ import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
 import { cn } from "@/lib/utils";
 
-import { useStreamingUIContext, useStreamingUIPermissions } from "../hooks";
+import { useStreamingUIContext, useStreamingUIPermissions, useStreamingUIScreenShare } from "../hooks";
 
 export function StreamControls() {
     const { viewerCount } = useStreamingUIContext();
@@ -65,10 +65,13 @@ export function StreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
-    const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
+    const { peerId: localPeerId } = useLocalPeer();
     const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
+
+    const { screenSharing } = useStreamingUIScreenShare();
+    const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
     const { setUserHasToggled, setIsCoHostDrawerOpen } = useStreamingUIContext();
 
     async function handleToggleVideo() {
@@ -95,8 +98,23 @@ function RenderControlsBasedOnRole() {
     }
 
     async function handleToggleScreenShare() {
-        if (shareStream) await stopScreenShare();
-        else await startScreenShare();
+        try {
+            if (shareStream) {
+                await stopScreenShare();
+                return;
+            }
+
+            if (screenSharing.someoneIsSharingTheirScreen && screenSharing.whoIsSharingTheirScreen !== localPeerId) {
+                toast.error("Someone is already sharing their screen.");
+                return;
+            }
+
+            await startScreenShare();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to share screen.";
+            toast.error(message);
+            console.error("Error toggling screen share:", error);
+        }
     }
 
     function toggleCoHostDrawer() {
