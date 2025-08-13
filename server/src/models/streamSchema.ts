@@ -14,6 +14,9 @@ const streamSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  thumbnail: {
+    type: String
+  },
   status: {
     type: String,
     required: true,

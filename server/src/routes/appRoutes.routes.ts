@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { updateProfile, feesUpdate, creatorTokenCreated, updatePfp } from "../controllers/updateUser.controller";
+import {
+  updateProfile,
+  saveStreamThumbnail,
+  feesUpdate,
+  creatorTokenCreated,
+  updatePfp
+} from "../controllers/updateUser.controller";
 import { getUser } from "../controllers/getUser.controller";
 import { createStream, stopStream } from "../controllers/stream.controller";
 import { scheduleActions } from "../controllers/scheduleActions.controller";
@@ -8,7 +14,7 @@ import { getGuestAccessToken } from "../controllers/guest.controller";
 import { authUser } from "../controllers/authUser.controller";
 import { authenticate } from "../middlewares/authenticate";
 import { onboard } from "../controllers/onboard.controller";
-import { uploadPfp } from "../utils/pfp";
+import { uploadPfp, saveThumbnail } from "../utils/imgs";
 import { getStream } from "../controllers/getStream.controller";
 import { leaderboard } from "../controllers/leaderboard.controller";
 import { fetchStreams } from "../controllers/fetchStreams.controller";
@@ -28,6 +34,7 @@ router
   .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
   .post("/update-pfp", authenticate, uploadPfp.single("pfp"), updatePfp)
+  .post("/save-thumbnail", authenticate, saveThumbnail.single("thumbnail"), saveStreamThumbnail)
 
   .get("/stream/:roomId", getStream)
   .get("/fetch-streams", fetchStreams)
