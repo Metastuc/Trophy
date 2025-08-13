@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
-import React from "react";
+import { FormEvent, Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { STREAM_NOW } from "@/assets/icons";
@@ -19,15 +19,13 @@ export function StreamNowForm() {
 
         {
             onSuccess(response) {
-                console.log(`token: ${response.data.token}`, `roomId: ${response.data.roomId}`);
-
                 toast.success(response.data.message);
                 navigate({ to: `/live/$id`, params: { id: response.data.roomId } });
             },
         },
     );
 
-    async function handleSubmit(event: React.FormEvent) {
+    async function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
         const formData = new FormData(event.target as HTMLFormElement);
@@ -36,13 +34,13 @@ export function StreamNowForm() {
         mutate(data as tCreateStreamFormRequest);
     }
 
-    const [formState, setFormState] = React.useState<iFormState>(() => ({
+    const [formState, setFormState] = useState<iFormState>(() => ({
         date: "",
         username: "",
         walletAddress: "",
     }));
 
-    React.useEffect(
+    useEffect(
         function () {
             if (!user) return;
 
@@ -91,15 +89,15 @@ export function StreamNowForm() {
                     disabled={isPending}
                 >
                     {isPending ? (
-                        <React.Fragment>
+                        <Fragment>
                             <Loader className="animate-spin" />
                             <span>Please wait...</span>
-                        </React.Fragment>
+                        </Fragment>
                     ) : (
-                        <React.Fragment>
+                        <Fragment>
                             <i>{STREAM_NOW()}</i>
                             <span>Start stream</span>
-                        </React.Fragment>
+                        </Fragment>
                     )}
                 </Button>
             </form>

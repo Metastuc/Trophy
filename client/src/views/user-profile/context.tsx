@@ -1,4 +1,4 @@
-import React from "react";
+import { Context, createContext, PropsWithChildren, useContext } from "react";
 
 interface iUserProfileContext {
     isCurrentUser: boolean;
@@ -6,12 +6,12 @@ interface iUserProfileContext {
     user: tGetUserResponse["user"];
 }
 
-export const UserProfileContext: React.Context<iUserProfileContext> = React.createContext<iUserProfileContext>(
+export const UserProfileContext: Context<iUserProfileContext> = createContext<iUserProfileContext>(
     {} as iUserProfileContext,
 );
 
 export function useUserProfileContext() {
-    const context: iUserProfileContext = React.useContext(UserProfileContext);
+    const context: iUserProfileContext = useContext(UserProfileContext);
 
     if (context === undefined || context === null || !context)
         throw new Error("useUserProfileContext must be used within a UserProfileContextProvider");
@@ -19,7 +19,7 @@ export function useUserProfileContext() {
     return context;
 }
 
-interface iUserProfileContextProvider extends React.PropsWithChildren {
+interface iUserProfileContextProvider extends PropsWithChildren {
     isCurrentUser: boolean;
     streams: tGetUserResponse["streams"];
     user: tGetUserResponse["user"];

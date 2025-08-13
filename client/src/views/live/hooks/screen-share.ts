@@ -6,7 +6,7 @@ export function useScreenShareSync(): iScreenShareHandler {
         whoIsSharingTheirScreen: null,
     }));
 
-    const stateRef = useRef(screenSharing);
+    const stateRef = useRef<tScreenSharing>(screenSharing);
 
     const setScreenSharingState = useCallback(function (nextState: tScreenSharing) {
         stateRef.current = nextState;
