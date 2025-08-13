@@ -89,6 +89,7 @@ export const createStream = async (req: Request, res: Response) => {
           roomId,
           token: liveStreamToken,
           rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
+          recordLivestream: false
         });
 
         console.log("livestream message:", msg);
