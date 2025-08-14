@@ -19,7 +19,16 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     const { isVideoOn, enableVideo } = useLocalVideo();
     const { role, updateMetadata, peerId } = useLocalPeer();
     const { peerIds } = usePeerIds();
-    const { joinRoom, state } = useRoom();
+    const { joinRoom, state } = useRoom({
+        onJoin() {
+            updateMetadata({
+                isPeerAuthenticated: authenticationStore.isAuthenticated,
+                username: authenticationStore.user?.backendUserData.user.username ?? "anon",
+                userPeerID: peerId,
+                userPFP: authenticationStore.user?.backendUserData.user.profilePicture ?? "",
+            });
+        },
+    });
 
     const typedRole: tRole = role as tRole;
 
