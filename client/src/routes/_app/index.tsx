@@ -1,4 +1,4 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, useLoaderData, useRouteContext } from "@tanstack/react-router";
 import React from "react";
 
 import { getFeed } from "@/api/get-feed";
@@ -29,6 +29,9 @@ function Page() {
     const [content, setContent] = React.useState<tContent>("all");
     const { dropdownButtons } = useLoaderData({ from: "/_app/" });
 
+    const { liveStreams, recordedStreams } = useRouteContext({ from: "/_app/" });
+    const allStreams = [...liveStreams, ...recordedStreams];
+
     return (
         <PageContentLayout className="space-y-10.5">
             <Dropdown
@@ -39,7 +42,7 @@ function Page() {
             />
 
             <footer className="space-y-6.5">
-                {[...Array(1)].map((_, index) => (
+                {[...allStreams].map((_, index) => (
                     <StreamArticle key={index} />
                 ))}
             </footer>

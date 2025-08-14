@@ -1,16 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
+import { getLeaderboard } from "@/api/get-leaderboard";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import StreamerBoard from "@/components/streamer-board";
 import { useDiscoverSearchStore } from "@/store/discover-search";
+import { logger } from "@/utils/logger";
 
 export const Route = createFileRoute("/_app/discover")({
+    async beforeLoad({ context }) {
+        const { leaderboard } = await context.queryClient.ensureQueryData(getLeaderboard());
+        return { leaderboard };
+    },
+
     component: () => <Page />,
 });
 
 function Page() {
     const { isVisible } = useDiscoverSearchStore();
+    const { leaderboard } = useRouteContext({ from: "/_app/discover" });
+
+    logger({ leaderboard });
 
     return (
         <PageContentLayout>
