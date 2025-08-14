@@ -115,7 +115,13 @@ export function StreamerVideoTile({
 
     return (
         <Fragment>
-            <div className={cn("streamer-video", "grid size-full place-items-center bg-black", tileClass)}>
+            <div
+                className={cn(
+                    "streamer-video",
+                    "grid size-full place-items-center border-2 border-red-700 bg-black",
+                    tileClass,
+                )}
+            >
                 {videoStream && videoStreamState === "playable" ? (
                     // <div className="aspect-video">
                     <video autoPlay className="size-full object-cover" muted ref={videoRef} />

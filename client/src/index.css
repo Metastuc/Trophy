@@ -405,3 +405,17 @@
         grid-row: 3/4;
     }
 }
+
+@media (orientation: landscape) {
+    .streamer-video video {
+        height: 100%;
+        width: auto;
+    }
+}
+
+@media (orientation: portrait) {
+    .streamer-video video {
+        height: auto;
+        width: 100%;
+    }
+}
