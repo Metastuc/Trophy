@@ -2,6 +2,16 @@ import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 import { RedisClient } from "../config/db";
+import { getTokenDetails } from "../utils/flaunch";
+import type { Address } from "viem";
+import { UdummyData } from "../utils/utils";
+
+interface IHoldings {
+  tokenSymbol: string;
+  tokenImage: string;
+  mcap: string;
+  price: string;
+}
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -16,12 +26,13 @@ export const getUser = async (req: Request, res: Response) => {
 
     const userCache = await RedisClient.get(`user:${username}`);
     const streamCache = await RedisClient.get(`stream:${username}`);
-    if (userCache && streamCache) {
-      const userProp = JSON.parse(userCache);
+    const holdingsCache = await RedisClient.get(`holding:${username}`);
+    if (userCache && streamCache && holdingsCache) {
 
       res.status(200).json({
-        user: userProp,
-        streams: streamCache ? JSON.parse(streamCache) : [],
+        user: JSON.parse(userCache),
+        streams: JSON.parse(streamCache),
+        holdings: JSON.parse(holdingsCache)
       });
 
       return
@@ -41,18 +52,25 @@ export const getUser = async (req: Request, res: Response) => {
       status: "Scheduled",
     }).sort({ _id: -1 });
 
+    const holdings: IHoldings[] = [];
+
+    for (const holding of user.holdings) {
+      const { mcap, tokenSymbol, price, tokenImage } = await getTokenDetails(holding as Address, true);
+      holdings.push({ mcap, price, tokenImage: tokenImage!, tokenSymbol: tokenSymbol! });
+    }
+
     await RedisClient.set(`user:${username}`, JSON.stringify(user));
     await RedisClient.set(`stream:${username}`, JSON.stringify(streams));
+    await RedisClient.set(`holding:${username}`, JSON.stringify(holdings));
 
     res.status(200).json({
       message: "User data retrieved successfully",
       user,
       streams,
+      dummyData: UdummyData
     });
   } catch (error) {
     console.error("Error in getUser:", error);
-    res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to get user data",
-    });
+    res.status(500).json({ error: "internal server error" });
   }
 };

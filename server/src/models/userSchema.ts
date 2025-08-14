@@ -81,6 +81,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  role: {
+    type: String,
+    default: "viewer"
+  },
   xUrl: {
     type: String,
   },
@@ -100,7 +104,7 @@ const userSchema = new mongoose.Schema({
   creatorToken: {
     type: String,
   },
-  videoTokenAddresses: [
+  holdings: [
     {
       type: String,
     },
