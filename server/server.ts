@@ -3,7 +3,7 @@ import cors from "cors";
 import appRoutes from "./src/routes/appRoutes.routes";
 import DB from "./src/config/db";
 import { CORS_ORIGINS, PORT } from "./src/utils/env";
-import { Socket } from "socket.io";
+import { Socket, Server } from "socket.io";
 import { User, Notification } from "./src/models/userSchema";
 import { formatNumber } from "./src/utils/utils";
 import { Stream } from "./src/models/streamSchema";
@@ -16,7 +16,7 @@ server.use(express.urlencoded({ extended: true }));
 
 server.use("/api", appRoutes);
 
-const io = require("socket.io").Server(
+const io = new Server(
   server.listen(PORT, async () => {
     console.log(`✅ Server is running on port ${PORT}`);
     await DB();
