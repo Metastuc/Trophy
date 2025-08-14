@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
-import { getMcapAndPrice } from "../utils/flaunch";
+import { getTokenDetails } from "../utils/flaunch";
 import type { Address } from "viem";
-import { formatNumber, getHolders } from "../utils/utils";
+import { formatNumber, getHolders, LdummyData } from "../utils/utils";
+import { DEFAULT_IMAGE } from "../utils/env";
 
 interface ILeaderboard {
   price: string | number,
@@ -40,7 +41,7 @@ export const leaderboard = async (req: Request, res: Response) => {
         for (const creator of creators) {
           const creatorToken = creator.creatorToken;
 
-          const { mcap, price } = await getMcapAndPrice(creatorToken as Address);
+          const { mcap, price } = await getTokenDetails(creatorToken as Address);
           let arrow: "up" | "down" = "up";
           const topHolders: IHolders[] = [];
 
@@ -90,7 +91,7 @@ export const leaderboard = async (req: Request, res: Response) => {
         }
 
         leaderboard.sort((a, b) => Number(b.mcap) - Number(a.mcap));
-        res.status(200).json({ message: "leaderboard fetched", leaderboard: leaderboard.slice(0, 20) });
+        res.status(200).json({ message: "leaderboard fetched", leaderboard: leaderboard.slice(0, 20), dummyData: LdummyData });
 
         return true;
     }
