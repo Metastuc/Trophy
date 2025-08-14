@@ -2,7 +2,10 @@ import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
 import { http, createPublicClient, type PublicClient, type Address } from "viem";
 import { NETWORK } from "./env";
 
-export const getMcapAndPrice = async (coinAddress: Address) => {
+export const getTokenDetails = async (coinAddress: Address, profile = false) => {
+  let tokenImage: string | undefined = undefined;
+  let tokenSymbol: string | undefined = undefined;
+
   const publicClient = createPublicClient({
     chain: NETWORK,
     transport: http()
@@ -14,6 +17,13 @@ export const getMcapAndPrice = async (coinAddress: Address) => {
 
   const price = await flaunchClient.coinPriceInUSD({ coinAddress });
 
-  return { mcap, price };
+  if (profile) {
+    const { symbol, image } = await flaunchClient.getCoinMetadata(coinAddress);
+    tokenImage = image;
+    tokenSymbol = symbol;
+  }
+
+
+  return { mcap, price, tokenSymbol, tokenImage };
 }
 
