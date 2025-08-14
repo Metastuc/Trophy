@@ -1,11 +1,17 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import React from "react";
 
+import { getFeed } from "@/api/get-feed";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import StreamArticle from "@/components/streamer-article";
 import { Dropdown } from "@/components/ui/dropdown";
 
 export const Route = createFileRoute("/_app/")({
+    async beforeLoad({ context }) {
+        const { streams } = await context.queryClient.ensureQueryData(getFeed());
+        return { liveStreams: streams.live, recordedStreams: streams.recorded };
+    },
+
     loader() {
         return {
             dropdownButtons: [
