@@ -4,6 +4,7 @@ import { Stream } from "../models/streamSchema";
 import { RedisClient } from "../config/db";
 import { getTokenDetails } from "../utils/flaunch";
 import type { Address } from "viem";
+import { UdummyData } from "../utils/utils";
 
 interface IHoldings {
   tokenSymbol: string;
@@ -66,6 +67,7 @@ export const getUser = async (req: Request, res: Response) => {
       message: "User data retrieved successfully",
       user,
       streams,
+      dummyData: UdummyData
     });
   } catch (error) {
     console.error("Error in getUser:", error);

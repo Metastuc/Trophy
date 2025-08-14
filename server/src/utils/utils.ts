@@ -326,6 +326,130 @@ export const LdummyData = {
   ]
 };
 
+export const UdummyData = [
+  {
+    tokenSymbol: "trinityandtruth",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "56.2M",
+    price: "0.67",
+  },
+  {
+    tokenSymbol: "moonrise",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "120.5M",
+    price: "1.23",
+  },
+  {
+    tokenSymbol: "degenlord",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "78.9M",
+    price: "0.45",
+  },
+  {
+    tokenSymbol: "blockbunny",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "34.8M",
+    price: "0.12",
+  },
+  {
+    tokenSymbol: "cryptokitty",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "210.4M",
+    price: "2.11",
+  },
+  {
+    tokenSymbol: "etherduck",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "89.1M",
+    price: "0.76",
+  },
+  {
+    tokenSymbol: "solpunk",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "45.3M",
+    price: "0.34",
+  },
+  {
+    tokenSymbol: "dao_dragon",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "67.8M",
+    price: "0.98",
+  },
+  {
+    tokenSymbol: "pixelpanda",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "25.9M",
+    price: "0.08",
+  },
+  {
+    tokenSymbol: "meta_mole",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "102.4M",
+    price: "1.05",
+  },
+  {
+    tokenSymbol: "apealpha",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "340.7M",
+    price: "5.12",
+  },
+  {
+    tokenSymbol: "whale_wave",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "76.6M",
+    price: "0.54",
+  },
+  {
+    tokenSymbol: "luna_lion",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "98.3M",
+    price: "0.87",
+  },
+  {
+    tokenSymbol: "shiba_shark",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "12.4M",
+    price: "0.02",
+  },
+  {
+    tokenSymbol: "fomo_falcon",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "49.2M",
+    price: "0.39",
+  },
+  {
+    tokenSymbol: "rekt_rabbit",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "8.5M",
+    price: "0.005",
+  },
+  {
+    tokenSymbol: "pump_pelican",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "18.1M",
+    price: "0.14",
+  },
+  {
+    tokenSymbol: "bagholder_bear",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "4.9M",
+    price: "0.002",
+  },
+  {
+    tokenSymbol: "diamond_dolphin",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "65.7M",
+    price: "0.42",
+  },
+  {
+    tokenSymbol: "giga_goat",
+    tokenImage: DEFAULT_IMAGE,
+    mcap: "140.2M",
+    price: "1.78",
+  },
+];
+
+
 export const FdummyData = {
   live: [
     {
