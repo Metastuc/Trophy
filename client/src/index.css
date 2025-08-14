@@ -163,7 +163,7 @@
         @apply !size-7;
     }
 
-    .streamer-video {
+    .streamer-video video {
         transform: scaleX(-1);
     }
 }
