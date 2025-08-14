@@ -26,13 +26,11 @@ export const AuthenticationProfileSchema = z.object({
         z.url("Invalid image URL"),
     ]),
 
-    username: z
-        .string()
-        .min(3, "Username must be at least 3 characters")
-        .regex(
-            APPLICATION_CONSTANTS.USERNAME_REGEX,
-            "Username must start with a letter or underscore, contain only letters, numbers, and underscores, and be 3 to 15 characters long.",
-        ),
+    username: z.string().min(3, "Username must be at least 3 characters"),
+    // .regex(
+    //     APPLICATION_CONSTANTS.USERNAME_REGEX,
+    //     "Username must start with a letter or underscore, contain only letters, numbers, and underscores, and be 3 to 15 characters long.",
+    // ),
 
     walletAddress: z.string().refine(isAddress, "Invalid wallet address"),
 });
