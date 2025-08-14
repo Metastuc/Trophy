@@ -3,9 +3,10 @@ import cors from "cors";
 import appRoutes from "./src/routes/appRoutes.routes";
 import DB from "./src/config/db";
 import { CORS_ORIGINS, PORT } from "./src/utils/env";
-import { Server } from "socket.io";
+import { Socket } from "socket.io";
 import { User, Notification } from "./src/models/userSchema";
 import { formatNumber } from "./src/utils/utils";
+import { Stream } from "./src/models/streamSchema";
 
 const server = express();
 
@@ -15,7 +16,7 @@ server.use(express.urlencoded({ extended: true }));
 
 server.use("/api", appRoutes);
 
-const io = new Server(
+const io = require("socket.io").Server(
   server.listen(PORT, async () => {
     console.log(`✅ Server is running on port ${PORT}`);
     await DB();
@@ -25,10 +26,10 @@ const io = new Server(
 
 const userSocketIds = new Map();
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket) => {
   console.log(`🔗 User connected: ${socket.id}`);
 
-  socket.on("registered", (data) => {
+  socket.on("registered", (data: { username: string }) => {
     console.log(`🔔 User registered: ${data}`);
     userSocketIds.set(data.username, socket.id);
   });
@@ -37,7 +38,7 @@ io.on("connection", (socket) => {
     return Number(number).toFixed(1).toLocaleString();
   };
 
-  socket.on("followed", async (data) => {
+  socket.on("followed", async (data: { email: string, username: string }) => {
     const { email, username } = data;
     const follower = await User.findOne({ email });
     const reciever = await User.findOne({ username });
@@ -80,7 +81,7 @@ io.on("connection", (socket) => {
     io.to(recieverSocketId).emit("followed");
   });
 
-  socket.on("send-tip-notis", async (tipData) => {
+  socket.on("send-tip-notis", async (tipData: { email: string, username: string, token: string, amount: string }) => {
     const { email, username, token, amount } = tipData;
 
     const sender = await User.findOne({ email });
@@ -114,7 +115,7 @@ io.on("connection", (socket) => {
     io.to(recieverSocketId).emit("tipped");
   });
 
-  socket.on("buy", async (data) => {
+  socket.on("buy", async(data: { buyer: string, streamer: string, amount: string }) => {
     const { buyer, streamer, amount } = data;
     const notification = await Notification.findOne({ username: streamer });
 
@@ -132,15 +133,44 @@ io.on("connection", (socket) => {
     io.to(recieverSocketId).emit("buy");
   });
 
-  socket.on("join-chat", (data) => {
+  socket.on("join-chat", (data: {roomId: string}) => {
     socket.join(data.roomId);
   });
 
-  socket.on("livestream-started", (data) => {
-    
+  socket.on("update-role", async (username: string) => {
+    const user = await User.findOne({ username });
+    if (!user) return
+
+    user.role = "guest";
+
+    await user.save();
+
+    socket.emit("saved", user);
+  });
+
+  socket.on("save-viewers", async (data: { username: string, roomId: string, viewers: number }) => {
+    const { username, viewers, roomId } = data;
+
+    const user = await User.findOne({ username });
+    const room = await Stream.findOne({ roomId });
+
+    if (!user || !room) {
+      return
+    }
+
+    if (user.epicStreams > viewers) {
+      return
+    }
+
+    room.viewers = viewers;
+
+    user.epicStreams = viewers;
+
+    await room.save();
+    await user.save();
   })
 
-  socket.on("chat-message", (data) => {
+  socket.on("chat-message", (data: { username: string, message: string, roomId: string }) => {
     console.log(`💬 Message from ${data.username}: ${data.message}`);
     io.to(data.roomId).emit("chat-message", data);
   });
