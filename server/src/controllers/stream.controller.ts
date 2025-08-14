@@ -43,7 +43,7 @@ export const createStream = async (req: Request, res: Response) => {
       metadata: JSON.stringify({ title }),
     });
 
-    const newStream = new Stream({ roomId, title, streamer: username });
+    const newStream = new Stream({ roomId, title, streamer: username, pfp: user.userPfp, creatorToken: user.creatorToken });
 
     if (date) {
       newStream.status = "Scheduled";
@@ -84,16 +84,16 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      setTimeout(async () => {
-        const { msg } = await recorder.startLivestream({
-          roomId,
-          token: liveStreamToken,
-          rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
-          recordLivestream: false
-        });
+      // setTimeout(async () => {
+      //   const { msg } = await recorder.startLivestream({
+      //     roomId,
+      //     token: liveStreamToken,
+      //     rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
+      //     recordLivestream: false
+      //   });
 
-        console.log("livestream message:", msg);
-      }, 60000);
+      //   console.log("livestream message:", msg);
+      // }, 60000);
 
       // await recorder.startRecording({
       //   roomId,
@@ -101,19 +101,19 @@ export const createStream = async (req: Request, res: Response) => {
       //   layout: "spotlight"
       // });
 
-      // if (xLive && !ytLive) {
-      //   if (user.xUrl) {
-      //     await startLiveStream(roomId, liveStreamToken, [user.xUrl]);
-      //   }
-      // } else if (ytLive && !xLive) {
-      //   if (user.ytUrl) {
-      //     await startLiveStream(roomId, liveStreamToken, [user.ytUrl]);
-      //   }
-      // } else if (xLive && ytLive) {
-      //   if (user.xUrl && user.ytUrl) {
-      //     await startLiveStream(roomId, liveStreamToken, [user.xUrl, user.ytUrl]);
-      //   }
-      // }
+      if (xLive && !ytLive) {
+        if (user.xUrl) {
+          await startLiveStream(roomId, liveStreamToken, [user.xUrl]);
+        }
+      } else if (ytLive && !xLive) {
+        if (user.ytUrl) {
+          await startLiveStream(roomId, liveStreamToken, [user.ytUrl]);
+        }
+      } else if (xLive && ytLive) {
+        if (user.xUrl && user.ytUrl) {
+          await startLiveStream(roomId, liveStreamToken, [user.xUrl, user.ytUrl]);
+        }
+      }
     }
   } catch (error) {
     console.error(error);
