@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 export const getAccessToken = async (req: Request, res: Response) => {
   try {
-    const { username, roomId } = req.body;
+    const { username, roomId, userRole } = req.body;
 
     if (!roomId || !username) {
       res.status(400).json({
@@ -52,9 +52,10 @@ export const getAccessToken = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = await generateAccessToken(roomId, role);
+    const joiningRole = userRole === "guest" ? userRole : role;
 
-    // await recordStreamJoin(address, roomId);
+    const token = await generateAccessToken(roomId, joiningRole);
+
     res.status(200).json({
       message: "Access token generated successfully",
       token,
@@ -62,7 +63,7 @@ export const getAccessToken = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      error: (error as Error).message,
+      error: "Internal server error",
     });
   }
 };
