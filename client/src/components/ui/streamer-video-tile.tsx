@@ -123,10 +123,8 @@ export function StreamerVideoTile({
                 )}
             >
                 {videoStream && videoStreamState === "playable" ? (
-                    // <div className="">
-                    <video autoPlay className="object-cover size-full" muted ref={videoRef} />
+                    <video autoPlay className="size-full object-cover" muted ref={videoRef} />
                 ) : (
-                    // </div>
                     <span className="text-xl text-white">{tileClass}</span>
                 )}
             </div>
