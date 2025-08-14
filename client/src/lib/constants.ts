@@ -38,4 +38,6 @@ export const APPLICATION_CONSTANTS = {
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
 
     TOTAL_CO_HOSTS_ALLOWED: 4,
+
+    USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
 };

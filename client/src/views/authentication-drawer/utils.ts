@@ -30,7 +30,7 @@ export const AuthenticationProfileSchema = z.object({
         .string()
         .min(3, "Username must be at least 3 characters")
         .regex(
-            /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
+            APPLICATION_CONSTANTS.USERNAME_REGEX,
             "Username must start with a letter or underscore, contain only letters, numbers, and underscores, and be 3 to 15 characters long.",
         ),
 

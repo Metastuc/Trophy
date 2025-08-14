@@ -24,12 +24,12 @@ export const EditProfileSchema = z.object({
     ]),
 
     xUrl: z.preprocess(
-        (val) => (typeof val === "string" && val.trim() === "" ? null : val),
+        (value) => (typeof value === "string" && value.trim() === "" ? null : value),
         z.url("Invalid URL").nullable().optional(),
     ),
 
     YTUrl: z.preprocess(
-        (val) => (typeof val === "string" && val.trim() === "" ? null : val),
+        (value) => (typeof value === "string" && value.trim() === "" ? null : value),
         z.url("Invalid URL").nullable().optional(),
     ),
 });

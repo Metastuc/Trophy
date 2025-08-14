@@ -38,6 +38,7 @@ export function EditProfile() {
 
     const { mutate, isPending } = useServer<tProfileFormValues, unknown>(
         { METHOD: "PATCH", URL: "/update-profile" },
+
         {
             async onSuccess() {
                 toast.success("Profile updated successfully!", {
