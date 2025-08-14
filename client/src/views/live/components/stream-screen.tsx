@@ -5,7 +5,7 @@ export function StreamScreen() {
     return (
         <section
             style={{ backgroundImage: "url(/tv-bg.svg)", backgroundSize: "cover" }}
-            className="aspect-video overflow-hidden"
+            className="aspect-video"
         >
             <div className="relative aspect-video">
                 <StreamControls />
