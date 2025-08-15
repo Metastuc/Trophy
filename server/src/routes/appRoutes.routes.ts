@@ -4,7 +4,7 @@ import {
   saveStreamThumbnail,
   feesUpdate,
   creatorTokenCreated,
-  updatePfp
+  updatePfp,
 } from "../controllers/updateUser.controller";
 import { getUser } from "../controllers/getUser.controller";
 import { createStream, stopStream } from "../controllers/stream.controller";

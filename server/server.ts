@@ -38,7 +38,7 @@ io.on("connection", (socket: Socket) => {
     return Number(number).toFixed(1).toLocaleString();
   };
 
-  socket.on("followed", async (data: { email: string, username: string }) => {
+  socket.on("followed", async (data: { email: string; username: string }) => {
     const { email, username } = data;
     const follower = await User.findOne({ email });
     const reciever = await User.findOne({ username });
@@ -61,7 +61,7 @@ io.on("connection", (socket: Socket) => {
       return;
     }
 
-    const recentFollow = (now.getTime() - new Date(notification.follow!.followedAt).getTime()) < 60 * 60 * 1000;
+    const recentFollow = now.getTime() - new Date(notification.follow!.followedAt).getTime() < 60 * 60 * 1000;
 
     if (recentFollow) {
       const content = `${username} and ${notification.follow!.recentFollows} others followed you`;
@@ -81,7 +81,7 @@ io.on("connection", (socket: Socket) => {
     io.to(recieverSocketId).emit("followed");
   });
 
-  socket.on("send-tip-notis", async (tipData: { email: string, username: string, token: string, amount: string }) => {
+  socket.on("send-tip-notis", async (tipData: { email: string; username: string; token: string; amount: string }) => {
     const { email, username, token, amount } = tipData;
 
     const sender = await User.findOne({ email });
@@ -115,7 +115,7 @@ io.on("connection", (socket: Socket) => {
     io.to(recieverSocketId).emit("tipped");
   });
 
-  socket.on("buy", async(data: { buyer: string, streamer: string, amount: string }) => {
+  socket.on("buy", async (data: { buyer: string; streamer: string; amount: string }) => {
     const { buyer, streamer, amount } = data;
     const notification = await Notification.findOne({ username: streamer });
 
@@ -133,13 +133,13 @@ io.on("connection", (socket: Socket) => {
     io.to(recieverSocketId).emit("buy");
   });
 
-  socket.on("join-chat", (data: {roomId: string}) => {
+  socket.on("join-chat", (data: { roomId: string }) => {
     socket.join(data.roomId);
   });
 
   socket.on("update-role", async (username: string) => {
     const user = await User.findOne({ username });
-    if (!user) return
+    if (!user) return;
 
     user.role = "guest";
 
@@ -148,18 +148,18 @@ io.on("connection", (socket: Socket) => {
     socket.emit("saved", user);
   });
 
-  socket.on("save-viewers", async (data: { username: string, roomId: string, viewers: number }) => {
+  socket.on("save-viewers", async (data: { username: string; roomId: string; viewers: number }) => {
     const { username, viewers, roomId } = data;
 
     const user = await User.findOne({ username });
     const room = await Stream.findOne({ roomId });
 
     if (!user || !room) {
-      return
+      return;
     }
 
     if (user.epicStreams > viewers) {
-      return
+      return;
     }
 
     room.viewers = viewers;
@@ -168,9 +168,9 @@ io.on("connection", (socket: Socket) => {
 
     await room.save();
     await user.save();
-  })
+  });
 
-  socket.on("chat-message", (data: { username: string, message: string, roomId: string }) => {
+  socket.on("chat-message", (data: { username: string; message: string; roomId: string }) => {
     console.log(`💬 Message from ${data.username}: ${data.message}`);
     io.to(data.roomId).emit("chat-message", data);
   });

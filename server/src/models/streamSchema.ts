@@ -15,18 +15,18 @@ const streamSchema = new mongoose.Schema({
     default: null,
   },
   creatorToken: {
-    type: String
+    type: String,
   },
   viewers: {
     type: Number,
-    default: 0
+    default: 0,
   },
   pfp: {
     type: String,
-    required: true
+    required: true,
   },
   thumbnail: {
-    type: String
+    type: String,
   },
   status: {
     type: String,

@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema({
   },
   tokenPrice: {
     type: Number,
-    default: 0
+    default: 0,
   },
   totalStreams: {
     type: Number,
@@ -75,7 +75,7 @@ const userSchema = new mongoose.Schema({
   },
   epicStreams: {
     type: Number,
-    default: 0
+    default: 0,
   },
   totalFees: {
     type: Number,
@@ -83,7 +83,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: "viewer"
+    default: "viewer",
   },
   xUrl: {
     type: String,

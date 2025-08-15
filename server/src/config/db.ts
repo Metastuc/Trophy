@@ -16,7 +16,6 @@ const DB = async () => {
 let redisClient: RedisClientType | null;
 
 export const getRedisClient = async () => {
-  
   if (redisClient) return redisClient;
 
   redisClient = createClient({
@@ -25,18 +24,18 @@ export const getRedisClient = async () => {
     socket: {
       host: REDIS_URI,
       port: Number(REDIS_PORT),
-    }
+    },
   });
 
   redisClient.on("error", (err) => {
     console.log("Redis Client Error", err);
-    return
+    return;
   });
 
   await redisClient.connect();
 
   return redisClient;
-}
+};
 
 export const RedisClient = await getRedisClient();
 

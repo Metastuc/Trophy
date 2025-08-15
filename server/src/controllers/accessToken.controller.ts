@@ -69,31 +69,32 @@ export const getAccessToken = async (req: Request, res: Response) => {
 };
 
 export const generateAccessToken = async (roomId: string, role: Role) => {
-
-  const permissions = ["host", "bot", "guest"].includes(role) ? {
-    admin: true,
-    canConsume: true,
-    canProduce: true,
-    canProduceSources: {
-      cam: true,
-      mic: true,
-      screen: true,
-    },
-    canSendData: true,
-    canRecvData: true,
-  } : {
-    admin: false,
-    canConsume: true,
-    canProduce: true,
-    canRecvData: true,
-    canSendData: true,
-  };
+  const permissions = ["host", "bot", "guest"].includes(role)
+    ? {
+        admin: true,
+        canConsume: true,
+        canProduce: true,
+        canProduceSources: {
+          cam: true,
+          mic: true,
+          screen: true,
+        },
+        canSendData: true,
+        canRecvData: true,
+      }
+    : {
+        admin: false,
+        canConsume: true,
+        canProduce: true,
+        canRecvData: true,
+        canSendData: true,
+      };
 
   const token = new AccessToken({
     apiKey: HUDDLE_API_KEY,
     roomId,
     role,
-    permissions
+    permissions,
   });
 
   return await token.toJwt();

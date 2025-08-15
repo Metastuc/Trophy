@@ -86,7 +86,7 @@ export const feesUpdate = async (req: Request, res: Response) => {
   }
 };
 
-export const saveStreamThumbnail = async (req: Request, res: Response) => { 
+export const saveStreamThumbnail = async (req: Request, res: Response) => {
   try {
     const thumbnailUrl = (req.file as any)?.location;
     const roomId = req.body.roomId;
@@ -94,7 +94,7 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
     if (!thumbnailUrl || !roomId) {
       res.status(400).json({ error: "Thumbnail URL or room ID is missing" });
       return;
-    };
+    }
 
     const stream = await Stream.findOne({ roomId });
 
@@ -106,7 +106,7 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
     if (stream.status === "Ended" || stream.status === "Scheduled") {
       res.status(400).json({ error: "Cannot update thumbnail for ended or scheduled streams" });
       return;
-    };
+    }
 
     stream.thumbnail = thumbnailUrl;
     await stream.save();
@@ -116,7 +116,7 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 export const updatePfp = async (req: Request, res: Response) => {
   try {
@@ -172,4 +172,4 @@ export const creatorTokenCreated = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};

@@ -28,14 +28,13 @@ export const getUser = async (req: Request, res: Response) => {
     const streamCache = await RedisClient.get(`stream:${username}`);
     const holdingsCache = await RedisClient.get(`holding:${username}`);
     if (userCache && streamCache && holdingsCache) {
-
       res.status(200).json({
         user: JSON.parse(userCache),
         streams: JSON.parse(streamCache),
-        holdings: JSON.parse(holdingsCache)
+        holdings: JSON.parse(holdingsCache),
       });
 
-      return
+      return;
     }
 
     const user = await User.findOne({ username });
@@ -67,7 +66,7 @@ export const getUser = async (req: Request, res: Response) => {
       message: "User data retrieved successfully",
       user,
       streams,
-      dummyData: UdummyData
+      dummyData: UdummyData,
     });
   } catch (error) {
     console.error("Error in getUser:", error);

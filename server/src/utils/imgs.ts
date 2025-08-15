@@ -1,14 +1,5 @@
-import {
-  DeleteObjectCommand,
-  PutObjectCommand,
-  S3Client
-} from "@aws-sdk/client-s3";
-import {
-  AWS_REGION,
-  AWS_ACCESS_KEY_ID, 
-  AWS_SECRET_ACCESS_KEY,
-  AWS_S3_BUCKET
-} from "./env";
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET } from "./env";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { v4 as uuid } from "uuid";
@@ -37,15 +28,11 @@ export const uploadPfp = multer({
 
 export const savePfp = async (pfpBuffer: Buffer, originalName: string) => {
   let quality = 80;
-  let compressedBuffer = await sharp(pfpBuffer)
-    .jpeg({ quality })
-    .toBuffer();
+  let compressedBuffer = await sharp(pfpBuffer).jpeg({ quality }).toBuffer();
 
   while (compressedBuffer.length > 1024 * 1024 && quality > 10) {
     quality -= 10;
-    compressedBuffer = await sharp(pfpBuffer)
-      .jpeg({ quality })
-      .toBuffer();
+    compressedBuffer = await sharp(pfpBuffer).jpeg({ quality }).toBuffer();
   }
 
   const key = `profile-pics/${uuid()}-${originalName}`;
@@ -57,11 +44,11 @@ export const savePfp = async (pfpBuffer: Buffer, originalName: string) => {
       Body: compressedBuffer,
       ACL: "public-read",
       ContentType: "image/jpeg",
-    })
+    }),
   );
 
   return `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
-}
+};
 
 export const deletePfp = async (pfpUrl: string) => {
   if (!pfpUrl) return;

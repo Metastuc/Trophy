@@ -43,7 +43,13 @@ export const createStream = async (req: Request, res: Response) => {
       metadata: JSON.stringify({ title }),
     });
 
-    const newStream = new Stream({ roomId, title, streamer: username, pfp: user.userPfp, creatorToken: user.creatorToken });
+    const newStream = new Stream({
+      roomId,
+      title,
+      streamer: username,
+      pfp: user.userPfp,
+      creatorToken: user.creatorToken,
+    });
 
     if (date) {
       newStream.status = "Scheduled";

@@ -6,14 +6,14 @@ import { formatNumber, getHolders, LdummyData } from "../utils/utils";
 import { DEFAULT_IMAGE } from "../utils/env";
 
 interface ILeaderboard {
-  price: string | number,
-  pfp: string,
-  username: string,
-  totalStreams: number,
-  epicStreams: string,
-  arrow: string,
+  price: string | number;
+  pfp: string;
+  username: string;
+  totalStreams: number;
+  epicStreams: string;
+  arrow: string;
   topHolders: IHolders[];
-  mcap: string
+  mcap: string;
 }
 
 interface IHolders {
@@ -33,11 +33,10 @@ export const leaderboard = async (req: Request, res: Response) => {
 
     switch (filter) {
       case "price":
-        return true
+        return true;
       case "streams":
-        return true
+        return true;
       default:
-
         for (const creator of creators) {
           const creatorToken = creator.creatorToken;
 
@@ -64,12 +63,14 @@ export const leaderboard = async (req: Request, res: Response) => {
 
           if (creator.tokenPrice <= Number(price)) {
             leaderboard.push({
-              price, arrow, mcap: tokenMcap,
+              price,
+              arrow,
+              mcap: tokenMcap,
               totalStreams: creator.totalStreams,
               epicStreams,
               username: creator.username,
               topHolders,
-              pfp: creator.userPfp
+              pfp: creator.userPfp,
             });
             creator.tokenPrice = Number(price);
             creator.save();
@@ -77,12 +78,14 @@ export const leaderboard = async (req: Request, res: Response) => {
             arrow = "down";
 
             leaderboard.push({
-              price, arrow, mcap: tokenMcap, 
-              totalStreams: creator.totalStreams, 
+              price,
+              arrow,
+              mcap: tokenMcap,
+              totalStreams: creator.totalStreams,
               epicStreams,
               username: creator.username,
               topHolders,
-              pfp: creator.userPfp
+              pfp: creator.userPfp,
             });
 
             creator.tokenPrice = Number(price);
@@ -91,11 +94,12 @@ export const leaderboard = async (req: Request, res: Response) => {
         }
 
         leaderboard.sort((a, b) => Number(b.mcap) - Number(a.mcap));
-        res.status(200).json({ message: "leaderboard fetched", leaderboard: leaderboard.slice(0, 20), dummyData: LdummyData });
+        res
+          .status(200)
+          .json({ message: "leaderboard fetched", leaderboard: leaderboard.slice(0, 20), dummyData: LdummyData });
 
         return true;
     }
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

@@ -8,7 +8,7 @@ export const getTokenDetails = async (coinAddress: Address, profile = false) => 
 
   const publicClient = createPublicClient({
     chain: NETWORK,
-    transport: http()
+    transport: http(),
   }) as PublicClient;
 
   const flaunchClient = createFlaunch({ publicClient }) as ReadFlaunchSDK;
@@ -23,7 +23,5 @@ export const getTokenDetails = async (coinAddress: Address, profile = false) => 
     tokenSymbol = symbol;
   }
 
-
   return { mcap, price, tokenSymbol, tokenImage };
-}
-
+};
