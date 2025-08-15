@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { SCHEDULE_STREAM, STREAM_NOW } from "@/assets/icons";
 import { PageContentLayout } from "@/components/layouts/main-content";
@@ -20,14 +20,14 @@ export const Route = createFileRoute("/_app/stream")({
 });
 
 function Page() {
-    const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
+    const tabRefs = useRef<(HTMLLIElement | null)[]>([]);
     const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<tStreamAction>("now");
-    const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
+    const [tabIndicator, setTabIndicator] = useState<{ left: string; width: string }>({
         left: "0px",
         width: "0px",
     });
 
-    React.useEffect(
+    useEffect(
         function () {
             const index = activeTab === "now" ? 0 : 1;
             const tabEl = tabRefs.current[index];

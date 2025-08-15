@@ -2,13 +2,13 @@ import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, Link, RouterProvider } from "@tanstack/react-router";
-import { Loader } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { useShallow } from "zustand/shallow";
 
+import { LoadingScreen } from "./components/layouts/loading.tsx";
 import { AppContextProviders } from "./contexts/index.tsx";
 import { routeTree } from "./routeTree.gen.ts";
 import { useAuthenticationStore } from "./store/authentication.ts";
@@ -28,6 +28,9 @@ const router = createRouter({
             </div>
         );
     },
+    defaultPendingComponent() {
+        return <LoadingScreen />;
+    },
     scrollRestoration: true,
     getScrollRestorationKey(location) {
         const paths = ["/"];
@@ -44,12 +47,7 @@ declare module "@tanstack/react-router" {
 function App() {
     const authenticationStore = useAuthenticationStore(useShallow((state) => state));
 
-    if (authenticationStore.isLoading)
-        return (
-            <section className="flex h-dvh w-screen items-center justify-center">
-                <Loader className="animate-spin" />
-            </section>
-        );
+    if (authenticationStore.isLoading) return <LoadingScreen />;
 
     return (
         <AnimatePresence mode="wait">

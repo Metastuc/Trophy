@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import React from "react";
 
 import { BottomNavigationBar } from "@/components/bottom-navigation-bar";
+import { MobileOnlyView } from "@/components/layouts/mobile-only-wrapper";
 import { TopNavigationBar } from "@/components/top-navigation-bar";
 
 export const Route = createFileRoute("/_app")({
@@ -10,12 +10,12 @@ export const Route = createFileRoute("/_app")({
 
 function Page() {
     return (
-        <React.Fragment>
+        <MobileOnlyView>
             <TopNavigationBar />
             <main className="pb-20">
                 <Outlet />
             </main>
             <BottomNavigationBar />
-        </React.Fragment>
+        </MobileOnlyView>
     );
 }
