@@ -1,20 +1,20 @@
-import React from "react";
+import { Fragment, ReactNode } from "react";
 
 import { AuthenticationProvider } from "./authentication";
-import { FarcasterMiniAppProvider } from "./farcaster";
+import { CoinbaseMiniKitProvider } from "./coinbase-mini-kit";
 import { HuddleContextProvider } from "./huddle";
 import { PrivyContextProvider } from "./privy";
 
-export function AppContextProviders({ children }: { children: React.ReactNode }) {
+export function AppContextProviders({ children }: { children: ReactNode }) {
     return (
-        <FarcasterMiniAppProvider>
+        <CoinbaseMiniKitProvider>
             <HuddleContextProvider>
                 <PrivyContextProvider>
                     <AuthenticationProvider>
-                        <React.Fragment>{children}</React.Fragment>
+                        <Fragment>{children}</Fragment>
                     </AuthenticationProvider>
                 </PrivyContextProvider>
             </HuddleContextProvider>
-        </FarcasterMiniAppProvider>
+        </CoinbaseMiniKitProvider>
     );
 }

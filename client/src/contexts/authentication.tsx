@@ -1,3 +1,4 @@
+import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
@@ -13,6 +14,8 @@ import {
 
 export function AuthenticationProvider({ children }: { children: ReactNode }) {
     const { authenticated, ready, user: privyUser } = usePrivy();
+    const { setFrameReady, isFrameReady } = useMiniKit();
+
     const lastFetchedUserIdRef = useRef<string | null>(null);
 
     const goToFinish = useAuthenticationDrawerNavigationStore((state) => state.goToFinish);
@@ -29,6 +32,10 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
             setUser: state.setUser,
         })),
     );
+
+    useEffect(() => {
+        if (!isFrameReady) setFrameReady();
+    }, [isFrameReady, setFrameReady]);
 
     useEffect(
         function () {
