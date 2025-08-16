@@ -146,7 +146,7 @@ export const stopStream = async (req: Request, res: Response) => {
   try {
     const { roomId, username, viewers } = req.body;
 
-    if (!roomId || username) {
+    if (!roomId || !username) {
       res.status(400).json({ error: "room id and username is required!" });
       return;
     }

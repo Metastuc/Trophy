@@ -40,6 +40,12 @@ type tGetStreamResponse = {
     title: string;
 };
 
+type tEndStreamRequest = {
+    roomId: string;
+    username: string;
+    viewers: number;
+};
+
 type tUserHasToggled = {
     audio: boolean;
     video: boolean;
@@ -81,10 +87,12 @@ interface iStreamingUIContext {
     coHostInvitationHandler: iCoHostInvitationHandler;
     isCoHostDrawerOpen: boolean;
     permissions: iStreamingUIPermissions;
+    roomId: string;
     roomRoles: iRoomRoles;
     screenShareHandler: iScreenShareHandler;
     setIsCoHostDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setUserHasToggled: React.Dispatch<React.SetStateAction<tUserHasToggled>>;
+    username: string;
     viewerCount: number;
 }
 
