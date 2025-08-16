@@ -5,10 +5,10 @@ import { savePfp } from "../utils/imgs";
 
 export async function onboard(request: Request, response: Response) {
   const userProfilePicture = request.file?.buffer;
-  // const privyId = request.privyUser?.userId;
+  const privyId = request.privyUser?.userId;
 
   try {
-    const { bio, email, username, profilePicture, privyId, walletAddress }: { bio: string, email: string, username: string, profilePicture: string, privyId: string, walletAddress: string } = request.body;
+    const { bio, email, username, profilePicture, walletAddress } = request.body;
     console.log(request.body)
     const existingUser = await prisma.user.findUnique({ where: { privyId } });
 
