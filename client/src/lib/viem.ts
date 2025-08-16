@@ -12,7 +12,7 @@ export const getPublicClient = () => {
     }) as PublicClient;
 };
 
-export const getWalletClient = async (provider: EIP1193Provider) => {
+export const getWalletClient = (provider: EIP1193Provider): WalletClient => {
     if (!walletClient) {
         walletClient = createWalletClient({
             chain: network,

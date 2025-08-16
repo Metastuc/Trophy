@@ -41,7 +41,7 @@ export default async function GetTokenBalances(address: string): Promise<balance
             totalMoney: "",
         };
         let arrow = "down";
-        let portfolioArrow = "down";
+        let portfolioArrow = "";
         let portfolioPercent = 0;
         let totalMoney = 0;
 
@@ -59,7 +59,11 @@ export default async function GetTokenBalances(address: string): Promise<balance
             portfolioPercent += token.portfolioPercentage;
         }
 
-        if (portfolioPercent > 0) portfolioArrow = "up";
+        if (portfolioPercent > 0) {
+            portfolioArrow = "up"
+        } else if (portfolioPercent < 0) {
+            portfolioArrow = "down"
+        };
 
         balances.portfolio_percent = toFixed(portfolioPercent);
         balances.portfolioArrow = portfolioArrow;

@@ -13,7 +13,7 @@ const publicClient = getPublicClient();
 
 const flaunchClient = async (provider: EIP1193Provider) => {
     if (!fClient) {
-        const walletClient = await getWalletClient(provider);
+        const walletClient = getWalletClient(provider);
 
         fClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }

@@ -1,7 +1,7 @@
 import Moralis from "moralis";
 import { base, baseSepolia } from "viem/chains";
 
-import { DEGEN, USDC, ZORA } from "./tipContracts";
+import { DEGEN, USDC, ZORA, BANKR } from "./contracts";
 
 export const ENV_SCHEMA = {
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
@@ -28,7 +28,7 @@ export const moralisChain =
 
 const addresses = {
     development: [""],
-    production: [DEGEN, USDC, ZORA],
+    production: [DEGEN, USDC, ZORA, BANKR],
 };
 
 export const tokenAddresses = addresses[environment];
