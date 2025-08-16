@@ -9,12 +9,12 @@ export const fetchStreams = async (req: Request, res: Response) => {
     const streams = await await prisma.stream.findMany({
       where: {
         status: "Live",
-        thumbnails: {
+        thumbnail: {
           not: null,
         },
       },
       orderBy: {
-        createdAt: "desc",
+        date: "desc",
       },
     });
 
