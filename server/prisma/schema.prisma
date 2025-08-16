@@ -81,10 +81,7 @@ model User {
 }
 
 enum StreamerRole {
-  bot
-  coHost
   guest
   host
   listener
-  speaker
 }

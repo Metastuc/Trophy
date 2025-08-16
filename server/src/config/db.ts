@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { DB_URI, REDIS_PASSWORD, REDIS_PORT, REDIS_URI, REDIS_USERNAME } from "../utils/env";
 import { createClient, type RedisClientType } from "redis";
+import { PrismaClient } from '../../generated/prisma';
+
+export const prisma = new PrismaClient();
 
 // General container
 const DB = async () => {
@@ -15,7 +18,7 @@ const DB = async () => {
 
 let redisClient: RedisClientType | null;
 
-export const getRedisClient = async () => {
+const getRedisClient = async () => {
   if (redisClient) return redisClient;
 
   redisClient = createClient({
@@ -28,7 +31,7 @@ export const getRedisClient = async () => {
   });
 
   redisClient.on("error", (err) => {
-    console.log("Redis Client Error", err);
+    console.log("Redis Client Error:", err);
     return;
   });
 
