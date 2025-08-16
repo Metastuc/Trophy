@@ -3,7 +3,6 @@ import Header from "./components/header";
 import Main from "./components/main";
 import { StreamArticleContext } from "./hooks";
 
-// export default function Component({}: iStreamArticle) {
 export default function Component() {
     const contextValue: iStreamArticle = {
         username: "@defaultUser",

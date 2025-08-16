@@ -21,8 +21,8 @@ export function StreamerLivePFP({ imageSrc, imageAlt, isLive }: iProps) {
 
             {isLive ? (
                 <div className="absolute -bottom-[.1875rem] flex items-center justify-center rounded-xs bg-white p-[1px]">
-                    <div className="bg-blue100 flex h-[.3125rem] w-[.5625rem] items-center justify-center rounded-[1px]">
-                        <span className="ml-[.0625rem] h-[4px] text-[.1875rem] text-white">Live</span>
+                    <div className="bg-blue100 flex items-center justify-center rounded-[1px] px-0.5">
+                        <span className="ml-[.0625rem] text-[.375rem] text-white not-italic">Live</span>
                     </div>
                 </div>
             ) : null}

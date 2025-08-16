@@ -1,40 +1,36 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getFeed } from "@/api/get-feed";
 import { PageContentLayout } from "@/components/layouts/main-content";
-import StreamArticle from "@/components/streamer-article";
 import { Dropdown } from "@/components/ui/dropdown";
+import { logger } from "@/utils/logger";
+import { StreamArticle } from "@/views/feed/components/article";
 
 export const Route = createFileRoute("/_app/")({
-    // async beforeLoad({ context }) {
-    //     const { streams } = await context.queryClient.ensureQueryData(getFeed());
-    //     return { liveStreams: streams.live, recordedStreams: streams.recorded };
-    // },
-
-    async loader({ context }) {
-        const { streams } = await context.queryClient.ensureQueryData(getFeed());
-        return {
-            liveStreams: streams.live,
-            recordedStreams: streams.recorded,
-            dropdownButtons: [
-                // { title: "Trending", value: "trending" },
-                // { title: "Following", value: "following" },
-                { title: "All", value: "all" },
-            ] as tDROPDOWN_BUTTON[],
-        };
-    },
-
     component: () => <Page />,
-
-    pendingComponent: () => <PageSkeleton />,
 });
 
 function Page() {
-    const [content, setContent] = useState<tContent>("all");
-    const { dropdownButtons, liveStreams, recordedStreams } = useLoaderData({ from: "/_app/" });
+    const dropdownButtons = [
+        // { title: "Trending", value: "trending" },
+        // { title: "Following", value: "following" },
+        { title: "All", value: "all" },
+    ] as tDROPDOWN_BUTTON[];
 
-    const allStreams = [...liveStreams, ...recordedStreams];
+    const [content, setContent] = useState<tContent>("all");
+
+    const { data, error, isPending } = useQuery(getFeed());
+
+    logger({ isPending, data });
+
+    if (error) {
+        return <>error</>;
+    }
+
+    // const dummy = data?.dummyData.live ?? [];
+    const allStreams = [...(data?.streams.live ?? []), ...(data?.streams.recorded ?? [])];
 
     return (
         <PageContentLayout className="space-y-10.5">
@@ -44,16 +40,11 @@ function Page() {
                 icon="outlined"
                 value={content}
             />
-
-            <footer className="space-y-6.5">
-                {[...allStreams].map((_, index) => (
-                    <StreamArticle key={index} />
+            <section className="space-y-6.5">
+                {[...allStreams].map((value, index) => (
+                    <StreamArticle key={index} {...value} />
                 ))}
-            </footer>
+            </section>
         </PageContentLayout>
     );
-}
-
-function PageSkeleton() {
-    return <div>loading</div>;
 }

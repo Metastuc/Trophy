@@ -456,7 +456,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "beardless",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...001",
       pfp: DEFAULT_IMAGE,
       roomId: "room-001",
@@ -466,7 +466,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "cryptobabe",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...002",
       pfp: DEFAULT_IMAGE,
       roomId: "room-002",
@@ -476,7 +476,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "gamefi_guru",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...003",
       pfp: DEFAULT_IMAGE,
       roomId: "room-003",
@@ -486,7 +486,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "defi_dan",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...004",
       pfp: DEFAULT_IMAGE,
       roomId: "room-004",
@@ -496,7 +496,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "meta_mary",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...005",
       pfp: DEFAULT_IMAGE,
       roomId: "room-005",
@@ -506,7 +506,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "token_tom",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...006",
       pfp: DEFAULT_IMAGE,
       roomId: "room-006",
@@ -516,7 +516,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "dao_daisy",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...007",
       pfp: DEFAULT_IMAGE,
       roomId: "room-007",
@@ -526,7 +526,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "pixel_pete",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...008",
       pfp: DEFAULT_IMAGE,
       roomId: "room-008",
@@ -536,7 +536,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "web3_wanda",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...009",
       pfp: DEFAULT_IMAGE,
       roomId: "room-009",
@@ -546,7 +546,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "minter_mike",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...010",
       pfp: DEFAULT_IMAGE,
       roomId: "room-010",
@@ -556,7 +556,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "vr_val",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...011",
       pfp: DEFAULT_IMAGE,
       roomId: "room-011",
@@ -566,7 +566,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "streamer_sam",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...012",
       pfp: DEFAULT_IMAGE,
       roomId: "room-012",
@@ -576,7 +576,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "alpha_amy",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...013",
       pfp: DEFAULT_IMAGE,
       roomId: "room-013",
@@ -586,7 +586,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "blockchain_bob",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...014",
       pfp: DEFAULT_IMAGE,
       roomId: "room-014",
@@ -596,7 +596,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "nft_nancy",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...015",
       pfp: DEFAULT_IMAGE,
       roomId: "room-015",
@@ -606,7 +606,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "gameplay_gary",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...016",
       pfp: DEFAULT_IMAGE,
       roomId: "room-016",
@@ -616,7 +616,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "crypto_claire",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...017",
       pfp: DEFAULT_IMAGE,
       roomId: "room-017",
@@ -626,7 +626,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "metaverse_moe",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...018",
       pfp: DEFAULT_IMAGE,
       roomId: "room-018",
@@ -636,7 +636,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "artist_ava",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...019",
       pfp: DEFAULT_IMAGE,
       roomId: "room-019",
@@ -646,7 +646,7 @@ export const FdummyData = {
     {
       status: "Live",
       streamer: "whale_will",
-      thumbnails: DEFAULT_IMAGE,
+      thumbnail: DEFAULT_IMAGE,
       creatorToken: "0xabc123...020",
       pfp: DEFAULT_IMAGE,
       roomId: "room-020",

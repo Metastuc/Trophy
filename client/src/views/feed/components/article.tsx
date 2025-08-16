@@ -1,0 +1,80 @@
+import { useNavigate } from "@tanstack/react-router";
+
+import { LIVE, WATCHING } from "@/assets/icons";
+import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
+import { TradeDrawer } from "@/views/trade-modal";
+
+export function StreamArticle({
+    creatorToken,
+    pfp,
+    roomId,
+    status,
+    streamer,
+    thumbnail,
+    title,
+    viewers,
+}: Partial<iStream>) {
+    const navigate = useNavigate();
+
+    return (
+        <article className="h-72 space-y-2" onClick={() => navigate({ to: `/live/${roomId}`, params: { id: roomId } })}>
+            <RenderHeader pfp={pfp as string} streamer={streamer as string} creatorToken={creatorToken as string} />
+            <RenderMain thumbnail={thumbnail as string} status={status as "Live" | "Scheduled" | "Ended"} />
+            <RenderFooter title={title as string} viewers={viewers as number} />
+        </article>
+    );
+}
+
+function RenderHeader({ pfp, streamer }: { streamer: string; pfp: string; creatorToken: string }) {
+    return (
+        <header className="flex h-8 items-center justify-between">
+            <aside className="flex items-center justify-center gap-1">
+                <i className="size-9">
+                    <StreamerLivePFP imageSrc={pfp} imageAlt={`${streamer}-pfp`} isLive />
+                </i>
+
+                <span className="text-sm">@{streamer}</span>
+            </aside>
+
+            <TradeDrawer />
+        </header>
+    );
+}
+
+function RenderMain({ status, thumbnail }: { thumbnail: string; status: "Live" | "Scheduled" | "Ended" }) {
+    return (
+        <main className="relative h-53 w-full">
+            {status === "Live" ? (
+                <aside className="absolute top-2 right-2 z-10 flex h-7 w-15 items-center justify-center gap-2 rounded-full bg-white/90">
+                    <i className="animate-pulse">{LIVE()}</i>
+                    <span className="text-[.625rem] font-semibold uppercase">live</span>
+                </aside>
+            ) : null}
+
+            <div
+                className="size-full rounded-none"
+                style={{
+                    backgroundImage: `url(${thumbnail})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center center",
+                }}
+            />
+        </main>
+    );
+}
+
+function RenderFooter({ title, viewers }: { title: string; viewers: number }) {
+    return (
+        <footer className="flex items-center justify-between">
+            <aside>
+                <span>{title}</span>
+            </aside>
+
+            <aside className="bg-black100 flex gap-1 rounded-xs p-2">
+                <i className="size-2.5">{WATCHING()}</i>
+                <span className="text-[.5rem] text-white">{viewers} watching</span>
+            </aside>
+        </footer>
+    );
+}
