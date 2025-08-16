@@ -9,13 +9,14 @@ import {
 
 import { useLeaderboardStreamerContext } from "../hooks";
 import { MarketCapHeader } from "./market-cap-header";
+import { MarketCapMain } from "./market-cap-main";
 import { User } from "./user";
 
 export function LeaderboardStreamerProfile() {
     const { isModalOpen, setIsModalOpen } = useLeaderboardStreamerContext();
 
     return (
-        <section>
+        <section className="flex items-center">
             <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <AlertDialogTrigger>
                     <User />
@@ -23,6 +24,8 @@ export function LeaderboardStreamerProfile() {
 
                 <AlertDialogContent className="gap-8 rounded-none border-none p-0">
                     <MarketCapHeader />
+
+                    <MarketCapMain />
 
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
