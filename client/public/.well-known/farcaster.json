@@ -1,9 +1,4 @@
 {
-  "accountAssociation": {
-    "header": "eyJmaWQiOjc3NjkyNCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEFDNGFEMTNEMWU5ODE2QWZlZEU1MDI3MkM2OEVBMGM5RDBFMUY4YTIifQ",
-    "payload": "eyJkb21haW4iOiJ0cm9waHl0di5jbyJ9",
-    "signature": "MHg5MmE3MzI1ZGRjYTkxMmRjZjRjOGYxMDYwZDljMWJlNWVkNjRkMDJkOTEwMDE3ZTU3NjE5MjU0MGMwODc2YTA5MzgyYmU5Njk1MDE3NTEyYWY3NzE1NzRkOGY3MjFlNGIwZGE1OWM0OTYzNDI2Yzk1ZjU4NjIwM2RiYzkxYzVlYzFj"
-  },
   "frame": {
     "version": "1",
     "name": "Trophy Tv",
