@@ -1,0 +1,23 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjc3NjkyNCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEFDNGFEMTNEMWU5ODE2QWZlZEU1MDI3MkM2OEVBMGM5RDBFMUY4YTIifQ",
+    "payload": "eyJkb21haW4iOiJ0cm9waHl0di5jbyJ9",
+    "signature": "MHg5MmE3MzI1ZGRjYTkxMmRjZjRjOGYxMDYwZDljMWJlNWVkNjRkMDJkOTEwMDE3ZTU3NjE5MjU0MGMwODc2YTA5MzgyYmU5Njk1MDE3NTEyYWY3NzE1NzRkOGY3MjFlNGIwZGE1OWM0OTYzNDI2Yzk1ZjU4NjIwM2RiYzkxYzVlYzFj"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Trophy Tv",
+    "iconUrl": "https://o332km3538mj93z9.trophytv.co/tLogo.png",
+    "homeUrl": "https://o332km3538mj93z9.trophytv.co",
+    "splashImageUrl": "https://o332km3538mj93z9.trophytv.co/splash.jpg",
+    "splashBackgroundColor": "#000000",
+    "subtitle": "Creators who go live should earn streams",
+    "description": "Creator first livestream app on base. Go live--own your stream--earn.",
+    "primaryCategory": "social",
+    "tags": ["tip", "content", "stream", "ethereum", "base", "livestream"],
+    "ogTitle": "Trophy",
+    "ogDescription": "Stream on your terms with trophy",
+    "ogImageUrl": "https://o332km3538mj93z9.trophytv.co/splash.jpg",
+    "tagline": "Livestream Like A Boss"
+  }
+}
