@@ -1,11 +1,4 @@
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 import { useLeaderboardStreamerContext } from "../hooks";
 import { MarketCapHeader } from "./market-cap-header";
@@ -22,14 +15,11 @@ export function LeaderboardStreamerProfile() {
                     <User />
                 </AlertDialogTrigger>
 
-                <AlertDialogContent className="gap-8 rounded-none border-none p-0">
+                <AlertDialogContent className="max-w-screen gap-8 rounded-none border-none p-0">
                     <MarketCapHeader />
 
-                    <MarketCapMain />
-
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
+                        <MarketCapMain />
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

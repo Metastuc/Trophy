@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 import { useLeaderboardStreamerContext } from "../hooks";
 
-export function User() {
+export function User({ styles }: { styles?: Record<string, string> }) {
     const { pfp, username } = useLeaderboardStreamerContext();
 
     return (
@@ -11,7 +11,7 @@ export function User() {
                 <img className={cn("user-pfp", "rounded-full")} src={pfp} alt={`${username}-pfp`} />
             </i>
 
-            <span className="text-xs">@{username}</span>
+            <span className={cn("text-sm", styles?.text)}>@{username}</span>
         </aside>
     );
 }

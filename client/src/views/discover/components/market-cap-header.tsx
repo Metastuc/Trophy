@@ -15,8 +15,8 @@ export function MarketCapHeader() {
             />
 
             <div className="z-10 flex h-[4.5rem] w-full items-center justify-between px-6">
-                <AlertDialogTitle className="text-white">
-                    <User />
+                <AlertDialogTitle>
+                    <User styles={{ text: "text-base font-normal text-white" }} />
                 </AlertDialogTitle>
 
                 <AlertDialogDescription onClick={() => setIsModalOpen(false)}>
