@@ -14,12 +14,14 @@ export function StreamArticle({
     title,
     viewers,
 }: Partial<iStream>) {
-    const navigate = useNavigate();
-
     return (
-        <article className="h-72 space-y-2" onClick={() => navigate({ to: `/live/${roomId}`, params: { id: roomId } })}>
+        <article className="h-72 space-y-2">
             <RenderHeader pfp={pfp as string} streamer={streamer as string} creatorToken={creatorToken as string} />
-            <RenderMain thumbnail={thumbnail as string} status={status as "Live" | "Scheduled" | "Ended"} />
+            <RenderMain
+                thumbnail={thumbnail as string}
+                status={status as "Live" | "Scheduled" | "Ended"}
+                roomId={roomId as string}
+            />
             <RenderFooter title={title as string} viewers={viewers as number} />
         </article>
     );
@@ -41,9 +43,22 @@ function RenderHeader({ pfp, streamer }: { streamer: string; pfp: string; creato
     );
 }
 
-function RenderMain({ status, thumbnail }: { thumbnail: string; status: "Live" | "Scheduled" | "Ended" }) {
+function RenderMain({
+    status,
+    thumbnail,
+    roomId,
+}: {
+    thumbnail: string;
+    status: "Live" | "Scheduled" | "Ended";
+    roomId: string;
+}) {
+    const navigate = useNavigate();
+
     return (
-        <main className="relative h-53 w-full">
+        <main
+            className="relative h-53 w-full"
+            onClick={() => navigate({ to: `/live/${roomId}`, params: { id: roomId } })}
+        >
             {status === "Live" ? (
                 <aside className="absolute top-2 right-2 z-10 flex h-7 w-15 items-center justify-center gap-2 rounded-full bg-white/90">
                     <i className="animate-pulse">{LIVE()}</i>
