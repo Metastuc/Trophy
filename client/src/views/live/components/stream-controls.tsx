@@ -145,8 +145,8 @@ function RenderControlsBasedOnRole() {
 
     async function handleEndStream() {
         try {
-            closeRoom();
-            navigate({ to: "/" });
+            // closeRoom();
+            // navigate({ to: "/" });
             await endStream({ roomId, username, viewers: viewerCount });
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to end stream.";
