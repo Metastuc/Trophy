@@ -1,26 +1,28 @@
-import { createFileRoute, useRouteContext } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
 import { getLeaderboard } from "@/api/get-leaderboard";
 import { PageContentLayout } from "@/components/layouts/main-content";
-import StreamerBoard from "@/components/streamer-board";
 import { useDiscoverSearchStore } from "@/store/discover-search";
 import { logger } from "@/utils/logger";
+import { StreamLeader } from "@/views/discover/components/article";
+import { LeaderboardStreamerContextProvider } from "@/views/discover/context";
 
 export const Route = createFileRoute("/_app/discover")({
-    async beforeLoad({ context }) {
-        const { leaderboard } = await context.queryClient.ensureQueryData(getLeaderboard());
-        return { leaderboard };
-    },
-
     component: () => <Page />,
 });
 
 function Page() {
     const { isVisible } = useDiscoverSearchStore();
-    const { leaderboard } = useRouteContext({ from: "/_app/discover" });
 
-    logger({ leaderboard });
+    const { data, error, isPending } = useQuery(getLeaderboard());
+
+    if (error) return <>error</>;
+
+    logger({ data, isPending });
+
+    const dummy = data?.dummyData.leaderboard ?? [];
 
     return (
         <PageContentLayout>
@@ -42,8 +44,10 @@ function Page() {
             </motion.main>
 
             <motion.footer layout className="space-y-5">
-                {[...Array(10)].map((_, index) => (
-                    <StreamerBoard key={index} counter={index + 1} />
+                {[...dummy].map((value, index) => (
+                    <LeaderboardStreamerContextProvider key={index} {...value}>
+                        <StreamLeader counter={index + 1} />
+                    </LeaderboardStreamerContextProvider>
                 ))}
             </motion.footer>
         </PageContentLayout>

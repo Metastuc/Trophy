@@ -1,5 +1,8 @@
+type tArrow = "up" | "down";
+
 type tGetLeaderboardResponse = {
     leaderboard: Array<iLeaderboard>;
+    dummyData: { leaderboard: Array<iLeaderboard> };
 };
 
 interface iHolders {
@@ -10,12 +13,26 @@ interface iHolders {
 }
 
 interface iLeaderboard {
-    arrow: string;
+    arrow: tArrow;
     epicStreams: string;
-    mcap: string;
     pfp: string;
-    price: string | number;
-    topHolders: Array<iHolders>;
-    totalStreams: number;
+    price: string;
+    totalStreams: string;
     username: string;
+    topHolders: Array<iHolders>;
+    mcap: string;
+}
+
+interface iStreamLeader extends Partial<iLeaderboard> {
+    counter: number;
+}
+
+interface iOutcome {
+    outcome: tArrow;
+    value: string;
+}
+
+interface iLeaderboardStreamerContext extends Partial<iLeaderboard> {
+    isModalOpen: boolean;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
