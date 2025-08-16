@@ -1,11 +1,12 @@
 import { type Request, type Response } from "express";
 import { User } from "../models/userSchema";
+import { prisma } from "../config/db";
 
 export const authUser = async (req: Request, res: Response) => {
   const privyId = req.privyUser?.userId;
 
   try {
-    const user = await User.findOne({ privyId });
+    const user = await prisma.user.findUnique({ where: { privyId } });
 
     if (!user) {
       res.status(404).json({

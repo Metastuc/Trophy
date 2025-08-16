@@ -1,7 +1,5 @@
 import type { Request, Response } from "express";
-import { User } from "../models/userSchema";
-import { Stream } from "../models/streamSchema";
-import { RedisClient } from "../config/db";
+import { RedisClient, prisma } from "../config/db";
 import { getTokenDetails } from "../utils/flaunch";
 import type { Address } from "viem";
 import { UdummyData } from "../utils/utils";
@@ -18,44 +16,52 @@ export const getUser = async (req: Request, res: Response) => {
     const { username } = req.body;
 
     if (!username) {
-      res.status(400).json({
-        message: "username is required",
-      });
+      res.status(400).json({ message: "username is required" });
       return;
     }
 
     const userCache = await RedisClient.get(`user:${username}`);
     const streamCache = await RedisClient.get(`stream:${username}`);
     const holdingsCache = await RedisClient.get(`holding:${username}`);
+
     if (userCache && streamCache && holdingsCache) {
       res.status(200).json({
         user: JSON.parse(userCache),
         streams: JSON.parse(streamCache),
         holdings: JSON.parse(holdingsCache),
       });
-
       return;
     }
 
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({
+      where: { username }
+    });
 
     if (!user) {
-      res.status(404).json({
-        message: "User not found",
-      });
+      res.status(404).json({ message: "User not found" });
       return;
     }
 
-    const streams = await Stream.find({
-      streamer: username,
-      status: "Scheduled",
-    }).sort({ _id: -1 });
+    const streams = await prisma.stream.findMany({
+      where: {
+        streamer: username,
+        status: "Scheduled",
+      },
+      orderBy: { id: "desc" },
+    });
 
     const holdings: IHoldings[] = [];
-
     for (const holding of user.holdings) {
-      const { mcap, tokenSymbol, price, tokenImage } = await getTokenDetails(holding as Address, true);
-      holdings.push({ mcap, price, tokenImage: tokenImage!, tokenSymbol: tokenSymbol! });
+      const { mcap, tokenSymbol, price, tokenImage } = await getTokenDetails(
+        holding as Address,
+        true
+      );
+      holdings.push({
+        mcap,
+        price,
+        tokenImage: tokenImage!,
+        tokenSymbol: tokenSymbol!,
+      });
     }
 
     await RedisClient.set(`user:${username}`, JSON.stringify(user));
@@ -70,6 +76,6 @@ export const getUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error in getUser:", error);
-    res.status(500).json({ error: "internal server error" });
+    res.status(500).json({ error: "error fetching user data" });
   }
 };

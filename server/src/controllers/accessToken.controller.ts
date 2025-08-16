@@ -3,6 +3,7 @@ import { HUDDLE_API_KEY } from "../utils/env";
 import { AccessToken, Role, Permissions } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema";
 import { format } from "date-fns";
+import { prisma } from "../config/db";
 
 export const getAccessToken = async (req: Request, res: Response) => {
   try {
@@ -16,7 +17,9 @@ export const getAccessToken = async (req: Request, res: Response) => {
       return;
     }
 
-    const stream = await Stream.findOne({ roomId });
+    const stream = await prisma.stream.findUnique({
+      where: { roomId }
+    });
 
     if (!stream) {
       res.status(404).json({
@@ -38,8 +41,10 @@ export const getAccessToken = async (req: Request, res: Response) => {
         token,
       });
 
-      stream.status = "Live";
-      await stream.save();
+      await prisma.stream.update({
+        where: { roomId },
+        data: { status: "Live" }
+      });
       return;
     }
 
@@ -71,24 +76,24 @@ export const getAccessToken = async (req: Request, res: Response) => {
 export const generateAccessToken = async (roomId: string, role: Role) => {
   const permissions = ["host", "bot", "guest"].includes(role)
     ? {
-        admin: true,
-        canConsume: true,
-        canProduce: true,
-        canProduceSources: {
-          cam: true,
-          mic: true,
-          screen: true,
-        },
-        canSendData: true,
-        canRecvData: true,
-      }
+      admin: true,
+      canConsume: true,
+      canProduce: true,
+      canProduceSources: {
+        cam: true,
+        mic: true,
+        screen: true,
+      },
+      canSendData: true,
+      canRecvData: true,
+    }
     : {
-        admin: false,
-        canConsume: true,
-        canProduce: true,
-        canRecvData: true,
-        canSendData: true,
-      };
+      admin: false,
+      canConsume: true,
+      canProduce: true,
+      canRecvData: true,
+      canSendData: true,
+    };
 
   const token = new AccessToken({
     apiKey: HUDDLE_API_KEY,

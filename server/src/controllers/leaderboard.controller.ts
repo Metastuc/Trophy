@@ -3,7 +3,7 @@ import { User } from "../models/userSchema";
 import { getTokenDetails } from "../utils/flaunch";
 import type { Address } from "viem";
 import { formatNumber, getHolders, LdummyData } from "../utils/utils";
-import { DEFAULT_IMAGE } from "../utils/env";
+import { prisma } from "../config/db";
 
 interface ILeaderboard {
   price: string | number;
@@ -27,7 +27,13 @@ export const leaderboard = async (req: Request, res: Response) => {
   try {
     const { filter } = req.query;
 
-    const creators = await User.find({ creatorToken: { $exists: true, $ne: null } });
+    const creators = await prisma.user.findMany({
+      where: {
+        creatorToken: {
+          not: null
+        }
+      }
+    });
 
     const leaderboard: ILeaderboard[] = [];
 
@@ -102,6 +108,6 @@ export const leaderboard = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "error getting leaderboard info" });
   }
 };

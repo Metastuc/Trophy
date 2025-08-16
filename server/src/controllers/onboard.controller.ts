@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 import { User } from "../models/userSchema";
-import { RedisClient } from "../config/db";
+import { RedisClient, prisma } from "../config/db";
 import { savePfp } from "../utils/imgs";
 
 export async function onboard(request: Request, response: Response) {
   const userProfilePicture = request.file?.buffer;
-  const privyId = request.privyUser?.userId;
+  // const privyId = request.privyUser?.userId;
 
   try {
-    const { bio, email, username, profilePicture, walletAddress } = request.body;
-    const existingUser = await User.findOne({ privyId });
+    const { bio, email, username, profilePicture, privyId, walletAddress }: { bio: string, email: string, username: string, profilePicture: string, privyId: string, walletAddress: string } = request.body;
+    console.log(request.body)
+    const existingUser = await prisma.user.findUnique({ where: { privyId } });
 
     if (!existingUser) {
       if (!username) {
@@ -25,7 +26,7 @@ export async function onboard(request: Request, response: Response) {
         userPfp = profilePicture;
       }
 
-      const user = await User.create({ bio, email, privyId, username, userPfp, walletAddress });
+      const user = await prisma.user.create({ data: { bio, email, privyId, username, userPfp, walletAddress }});
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 

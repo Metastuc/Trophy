@@ -2,11 +2,20 @@ import type { Request, Response } from "express";
 import { Stream } from "../models/streamSchema";
 import { recorder } from "./stream.controller";
 import { FdummyData } from "../utils/utils";
+import { prisma } from "../config/db";
 
 export const fetchStreams = async (req: Request, res: Response) => {
   try {
-    const streams = await Stream.find({ status: "Live", thumbnails: { $exists: true, $ne: null } }).sort({
-      createdAt: -1,
+    const streams = await await prisma.stream.findMany({
+      where: {
+        status: "Live",
+        thumbnails: {
+          not: null,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     const { data, error } = await recorder.getRecordings();
