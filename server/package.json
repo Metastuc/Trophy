@@ -3,8 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bunx prisma generate && bun --watch server.ts",
-    "start": "bun server.ts",
+    "dev": "bun --watch server.ts",
+    "start": "bunx prisma generate && bun server.ts",
     "migrate": "prisma db push && bun prisma/db-notis-ttl.ts"
   },
   "devDependencies": {
