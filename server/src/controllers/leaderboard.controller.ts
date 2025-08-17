@@ -14,6 +14,7 @@ interface ILeaderboard {
   arrow: string;
   topHolders: IHolders[];
   mcap: string;
+  tokenPercentage: string;
 }
 
 interface IHolders {
@@ -67,7 +68,11 @@ export const leaderboard = async (req: Request, res: Response) => {
           const epicStreams = formatNumber(creator.epicStreams.toString());
           const tokenMcap = formatNumber(mcap);
 
-          if (creator.tokenPrice <= Number(price)) {
+          const currentTokenPrice = creator.tokenPrice;
+          const newTokenPrice = Number(price);
+          const tokenPercentage = (((newTokenPrice - currentTokenPrice) / currentTokenPrice) * 100).toFixed(2).replace(/\.0$/, "") + "%";
+
+          if (currentTokenPrice <= newTokenPrice) {
             leaderboard.push({
               price,
               arrow,
@@ -77,9 +82,8 @@ export const leaderboard = async (req: Request, res: Response) => {
               username: creator.username,
               topHolders,
               pfp: creator.userPfp,
+              tokenPercentage
             });
-            creator.tokenPrice = Number(price);
-            creator.save();
           } else {
             arrow = "down";
 
@@ -92,11 +96,16 @@ export const leaderboard = async (req: Request, res: Response) => {
               username: creator.username,
               topHolders,
               pfp: creator.userPfp,
+              tokenPercentage
             });
-
-            creator.tokenPrice = Number(price);
-            creator.save();
           }
+
+          await prisma.user.update({
+            where: { username: creator.username },
+            data: {
+              tokenPrice: newTokenPrice
+            }
+          });
         }
 
         leaderboard.sort((a, b) => Number(b.mcap) - Number(a.mcap));

@@ -5,7 +5,7 @@ import { savePfp } from "../utils/imgs";
 
 export async function onboard(request: Request, response: Response) {
   const userProfilePicture = request.file?.buffer;
-  const privyId = request.privyUser?.userId;
+  const privyId = request.privyUser?.userId as string;
 
   try {
     const { bio, email, username, profilePicture, walletAddress } = request.body;
@@ -15,6 +15,12 @@ export async function onboard(request: Request, response: Response) {
     if (!existingUser) {
       if (!username) {
         response.status(422).json({ message: "username is required" });
+        return;
+      }
+
+      const usernameExists = await prisma.user.findUnique({ where: { username } });
+      if (usernameExists) {
+        response.status(400).json({ message: "username exists" });
         return;
       }
 
