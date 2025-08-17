@@ -40,6 +40,7 @@
         "date-fns": "^4.1.0",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "ethers": "^6.15.0",
+        "html2canvas-pro": "^1.5.11",
         "input-otp": "^1.4.2",
         "lucide-react": "^0.539.0",
         "moralis": "^2.27.2",
