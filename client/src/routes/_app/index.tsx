@@ -5,7 +5,6 @@ import { useState } from "react";
 import { getFeed } from "@/api/get-feed";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { Dropdown } from "@/components/ui/dropdown";
-import { logger } from "@/utils/logger";
 import { StreamArticle } from "@/views/feed/components/article";
 
 export const Route = createFileRoute("/_app/")({
@@ -21,15 +20,12 @@ function Page() {
 
     const [content, setContent] = useState<tContent>("all");
 
-    const { data, error, isPending } = useQuery(getFeed());
-
-    logger({ isPending, data });
+    const { data, error } = useQuery(getFeed());
 
     if (error) {
         return <>error</>;
     }
 
-    // const dummy = data?.dummyData.live ?? [];
     const allStreams = [...(data?.streams.live ?? []), ...(data?.streams.recorded ?? [])];
 
     return (
