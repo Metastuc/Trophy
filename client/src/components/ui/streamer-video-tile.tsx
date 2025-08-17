@@ -13,6 +13,7 @@ interface iStreamerVideoTile {
     screenAudio?: MediaStream | null;
 
     tileClass?: string;
+    isLocal?: boolean;
 }
 
 export function StreamerVideoTile({
@@ -23,6 +24,7 @@ export function StreamerVideoTile({
     videoStream,
     videoStreamState,
     tileClass,
+    isLocal,
 }: iStreamerVideoTile) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -129,7 +131,7 @@ export function StreamerVideoTile({
                 )}
             </div>
 
-            {audioStream && audioStreamState === "playable" ? <audio autoPlay ref={audioRef} /> : null}
+            {audioStream && audioStreamState === "playable" && !isLocal ? <audio autoPlay ref={audioRef} /> : null}
 
             {screenVideo ? (
                 <div className={cn("streamer-screen", "grid size-full place-items-center bg-black")}>
@@ -138,7 +140,7 @@ export function StreamerVideoTile({
                     </div>
                 </div>
             ) : null}
-            {screenAudio ? <audio autoPlay ref={screenAudioRef} /> : null}
+            {screenAudio && !isLocal ? <audio autoPlay ref={screenAudioRef} /> : null}
         </Fragment>
     );
 }

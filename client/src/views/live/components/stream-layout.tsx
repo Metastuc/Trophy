@@ -85,9 +85,17 @@ function RenderStreamers({ role }: { role: tRole }) {
                 audioStreamState={isAudioOn ? "playable" : "unavailable"}
                 screenVideo={shareStream || null}
                 tileClass={`${tileClass}-${index + 1}`}
+                isLocal={isLocal}
             />
         ) : (
-            peerId && <StreamerRemote peerId={peerId} key={peerId} tileClass={`${tileClass}-${index + 1}`} />
+            peerId && (
+                <StreamerRemote
+                    peerId={peerId}
+                    key={peerId}
+                    tileClass={`${tileClass}-${index + 1}`}
+                    isLocal={isLocal}
+                />
+            )
         ),
     );
 }

@@ -1,10 +1,12 @@
-import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
+import { useLocalAudio, useLocalPeer, useLocalScreenShare, useLocalVideo, useRoom } from "@huddle01/react";
+import { useNavigate } from "@tanstack/react-router";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOff } from "lucide-react";
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
+import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
 
 import { useStreamingUIContext, useStreamingUIPermissions, useStreamingUIScreenShare } from "../hooks";
@@ -65,6 +67,9 @@ export function StreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
+    const navigate = useNavigate();
+
+    const { closeRoom } = useRoom();
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
     const { peerId: localPeerId, metadata, updateMetadata } = useLocalPeer();
@@ -72,7 +77,17 @@ function RenderControlsBasedOnRole() {
 
     const { screenSharing } = useStreamingUIScreenShare();
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
-    const { setUserHasToggled, setIsCoHostDrawerOpen } = useStreamingUIContext();
+    const { setUserHasToggled, setIsCoHostDrawerOpen, roomId, username, viewerCount } = useStreamingUIContext();
+
+    const { mutate } = useServer<tEndStreamRequest, tEndStreamResponse>(
+        { METHOD: "POST", URL: "/stop-stream" },
+
+        {
+            onSuccess(response) {
+                toast.success(response.data.message);
+            },
+        },
+    );
 
     async function handleToggleVideo() {
         setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
@@ -138,6 +153,18 @@ function RenderControlsBasedOnRole() {
         setIsCoHostDrawerOpen((previous) => !previous);
     }
 
+    async function handleEndStream() {
+        try {
+            closeRoom();
+            navigate({ to: "/" });
+            mutate({ roomId, username, viewers: viewerCount });
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to end stream.";
+            toast.error(message);
+            console.error("Error ending the stream:", error);
+        }
+    }
+
     useEffect(
         function () {
             if (!shareStream && (metadata as tStreamUIMetadata)?.isPeerSharingTheirScreen) {
@@ -153,7 +180,7 @@ function RenderControlsBasedOnRole() {
     return (
         <Fragment>
             {canEndStream ? (
-                <ControlButton className="gap-1 text-red-600">
+                <ControlButton className="gap-1 text-red-600" onClick={handleEndStream}>
                     <i className="size-4">
                         <MonitorX />
                     </i>

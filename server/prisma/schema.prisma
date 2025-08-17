@@ -24,7 +24,7 @@ model Stream {
   @@index([status])
   @@index([streamer])
   @@index([title])
-  @@map("Streams")
+  @@map("streams")
 }
 
 enum Status {
@@ -77,7 +77,7 @@ model User {
   creatorToken  String?
   holdings      String[]
 
-  @@map("Users")
+  @@map("users")
 }
 
 enum StreamerRole {

@@ -1,7 +1,7 @@
 import Moralis from "moralis";
 import { base, baseSepolia } from "viem/chains";
 
-import { DEGEN, USDC, ZORA, BANKR } from "./contracts";
+import { BANKR,DEGEN, USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
@@ -11,6 +11,7 @@ export const ENV_SCHEMA = {
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
+    CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string,
 };
 
 export const PUBLIC_ROUTES = ["/auth"];

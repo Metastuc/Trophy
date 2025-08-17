@@ -5,7 +5,15 @@ import { StreamerVideoTile } from "@/components/ui/streamer-video-tile";
 
 import { useStreamingUIScreenShare } from "../hooks";
 
-export function StreamerRemote({ peerId, tileClass }: { peerId: string; tileClass?: string }) {
+export function StreamerRemote({
+    peerId,
+    tileClass,
+    isLocal,
+}: {
+    peerId: string;
+    tileClass?: string;
+    isLocal?: boolean;
+}) {
     const { metadata } = useRemotePeer<tStreamUIMetadata>({ peerId });
     const { stream: audioStream, state: audioState } = useRemoteAudio({ peerId });
     const { stream: videoStream, state: videoStreamState } = useRemoteVideo({ peerId });
@@ -42,6 +50,7 @@ export function StreamerRemote({ peerId, tileClass }: { peerId: string; tileClas
             videoStream={videoStream}
             videoStreamState={videoStreamState}
             tileClass={tileClass}
+            isLocal={isLocal}
         />
     );
 }

@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { getUser } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { useTabSwitcher } from "@/hooks/tab-switcher";
-import { logger } from "@/utils/logger";
 import { About } from "@/views/user-profile/components/about";
 import { Streams } from "@/views/user-profile/components/streams";
 import { UserProfileContextProvider } from "@/views/user-profile/context";
@@ -26,21 +25,7 @@ export const Route = createFileRoute("/_app/$username")({
             throw new Error("Unable to get user profile");
         }
 
-        logger({ response });
-
         return { user: response.user, streams: response.streams };
-    },
-
-    params: {
-        parse(data) {
-            if (!data.username?.startsWith("@")) {
-                throw new Error("An error occurred");
-            }
-
-            return {
-                username: data.username.slice(1),
-            };
-        },
     },
 });
 

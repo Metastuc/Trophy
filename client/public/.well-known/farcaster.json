@@ -1,0 +1,22 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjY1NDQxOCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDIxODIyQzFERjg0MjI0MDg1MWIzYzdCOTk1ODI2Y2M5QTdkNjM1NzQifQ",
+    "payload": "eyJkb21haW4iOiJvMzMya20zNTM4bWo5M3o5LnRyb3BoeXR2LmNvIn0",
+    "signature": "MHhiOGE4ZmNiNTdmNjRlNGQyMDg0NjNkMDdiZmFhZTBjNTM0Y2I5ZWVhY2MyODAwMGNmOTRkYjQyNzAwNjFmY2E0MDVhMzQ1YjQxZTliNTQzNWY1NWJmYjZjMDlkYjM2YjI2NmY4MzIzODRhNmVlYzU4ZTZmMDY1Njk5NjQwOWE2ODFj"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Trophy",
+    "iconUrl": "https://o332km3538mj93z9.trophytv.co/tLogo.jpg",
+    "homeUrl": "https://o332km3538mj93z9.trophytv.co",
+    "splashImageUrl": "https://o332km3538mj93z9.trophytv.co/splash.jpg",
+    "subtitle": "Livestream Like A Boss",
+    "description": "Creator first livestream app on base. Go live, own your stream and earn.",
+    "primaryCategory": "social",
+    "tags": ["content", "stream", "baseapp", "base", "livestream"],
+    "ogTitle": "Trophy",
+    "ogDescription": "Stream on your terms with trophy",
+    "ogImageUrl": "https://o332km3538mj93z9.trophytv.co/splash.jpg",
+    "tagline": "Livestream Like A Boss"
+  }
+}
