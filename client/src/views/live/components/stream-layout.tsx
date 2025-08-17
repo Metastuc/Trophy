@@ -7,6 +7,7 @@ import { logger } from "@/utils/logger";
 
 import { useStreamingUIRoles, useStreamingUIScreenShare } from "../hooks";
 import { getStreamLayoutKey } from "../utils";
+import { StreamThumbnailCapture } from "./stream-thumbnails";
 import { StreamerRemote } from "./streamer-remote";
 
 export function StreamLayout() {
@@ -38,9 +39,10 @@ export function StreamLayout() {
     });
 
     return (
-        <div className={cn("size-full", streamLayoutKey)}>
+        <div className={cn("size-full", streamLayoutKey)} id="stream-layout">
             <RenderStreamers role="host" />
             <RenderStreamers role="coHost" />
+            <StreamThumbnailCapture />
         </div>
     );
 }

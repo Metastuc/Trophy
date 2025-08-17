@@ -162,10 +162,6 @@
     :is(.user-pfp) {
         @apply !size-7;
     }
-
-    .streamer-video video {
-        transform: scaleX(-1);
-    }
 }
 
 .host-only,

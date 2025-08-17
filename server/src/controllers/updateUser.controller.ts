@@ -3,7 +3,7 @@ import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 import { DEFAULT_IMAGE } from "../utils/env";
 import { deletePfp, savePfp } from "../utils/imgs";
-import { RedisClient } from "../config/db";
+import { prisma, RedisClient } from "../config/db";
 
 export const updateProfile = async (req: Request, res: Response) => {
   const uploadedPfp = (req.file as any)?.location;
