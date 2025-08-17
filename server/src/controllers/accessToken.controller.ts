@@ -28,8 +28,13 @@ export const getAccessToken = async (req: Request, res: Response) => {
       return;
     }
 
+    if (stream.status !== "Live") {
+      res.status(401).json({ message: "stream is not live or is ended" });
+      return
+    }
+
     const now = new Date();
-    const startTime = new Date(stream.date);
+    const startTime = new Date(stream.date!);
 
     const isOwner = stream.streamer.toLowerCase() === username.toLowerCase();
     const role: Role = isOwner ? "host" : "listener";
