@@ -173,7 +173,10 @@ export const stopStream = async (req: Request, res: Response) => {
       return;
     }
 
+    console.log(liveStream);
+
     if (liveStream.status !== "Live") {
+      console.log(liveStream.status)
       res.status(400).json({ message: "Stream is not live!" });
       return;
     }
