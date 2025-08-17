@@ -6,12 +6,12 @@ import { prisma } from "../config/db";
 
 export const fetchStreams = async (req: Request, res: Response) => {
   try {
-    const streams = await await prisma.stream.findMany({
+    const streams = await prisma.stream.findMany({
       where: {
         status: "Live",
-        thumbnail: {
-          not: null,
-        },
+        // thumbnail: {
+        //   not: null,
+        // },
       },
       orderBy: {
         date: "desc",
