@@ -1,7 +1,7 @@
 import Moralis from "moralis";
 import { base, baseSepolia } from "viem/chains";
 
-import { DEGEN, USDC, ZORA, BANKR } from "./contracts";
+import { BANKR,DEGEN, USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",

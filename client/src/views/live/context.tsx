@@ -19,7 +19,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     const { isVideoOn, enableVideo } = useLocalVideo();
     const { role, updateMetadata, peerId } = useLocalPeer();
     const { peerIds } = usePeerIds();
-    const { joinRoom, state } = useRoom({
+    const { joinRoom, state, leaveRoom } = useRoom({
         onJoin() {
             updateMetadata({
                 isPeerAuthenticated: authenticationStore.isAuthenticated,
@@ -117,8 +117,14 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
             }
+
+            return () => {
+                if (state === "connected") {
+                    leaveRoom();
+                }
+            };
         },
-        [state, screenShareHandler],
+        [state, leaveRoom],
     );
 
     const value: iStreamingUIContext = useMemo(

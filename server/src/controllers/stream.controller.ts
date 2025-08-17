@@ -52,8 +52,8 @@ export const createStream = async (req: Request, res: Response) => {
           pfp: user.userPfp,
           creatorToken: user.creatorToken,
           date,
-          status: "Scheduled"
-        }
+          status: "Scheduled",
+        },
       });
 
       const dtStamp = formatDate(new Date());
@@ -80,8 +80,8 @@ export const createStream = async (req: Request, res: Response) => {
           streamer: username,
           pfp: user.userPfp,
           creatorToken: user.creatorToken,
-          status: "Live"
-        }
+          status: "Live",
+        },
       });
 
       const token = await generateAccessToken(roomId, "host");
@@ -90,7 +90,7 @@ export const createStream = async (req: Request, res: Response) => {
 
       await prisma.user.update({
         where: { username },
-        data: { totalStreams: user.totalStreams + 1 }
+        data: { totalStreams: user.totalStreams + 1 },
       });
 
       res.status(200).json({
@@ -98,23 +98,6 @@ export const createStream = async (req: Request, res: Response) => {
         roomId,
         token,
       });
-
-      // setTimeout(async () => {
-      //   const { msg } = await recorder.startLivestream({
-      //     roomId,
-      //     token: liveStreamToken,
-      //     rtmpUrls: ["rtmps://ca.pscp.tv:443/x/gw4t5gbe8245"],
-      //     recordLivestream: false
-      //   });
-
-      //   console.log("livestream message:", msg);
-      // }, 60000);
-
-      // await recorder.startRecording({
-      //   roomId,
-      //   token: recordToken,
-      //   layout: "spotlight"
-      // });
 
       if (xLive && !ytLive) {
         if (user.xUrl) {
@@ -183,16 +166,16 @@ export const stopStream = async (req: Request, res: Response) => {
       await prisma.user.update({
         where: { username },
         data: {
-          epicStreams: Viewers
-        }
+          epicStreams: Viewers,
+        },
       });
     }
 
     await prisma.stream.update({
       where: { roomId },
       data: {
-        status: "Ended"
-      }
+        status: "Ended",
+      },
     });
 
     await recorder.stop({ roomId });

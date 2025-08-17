@@ -46,6 +46,10 @@ type tEndStreamRequest = {
     viewers: number;
 };
 
+type tEndStreamResponse = {
+    message: string;
+};
+
 type tUserHasToggled = {
     audio: boolean;
     video: boolean;

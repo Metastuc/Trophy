@@ -4,9 +4,9 @@ import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Video, VideoOf
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { endStream } from "@/api/end-stream";
 import { WATCHING } from "@/assets/icons";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
+import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
 
 import { useStreamingUIContext, useStreamingUIPermissions, useStreamingUIScreenShare } from "../hooks";
@@ -79,6 +79,16 @@ function RenderControlsBasedOnRole() {
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useStreamingUIPermissions();
     const { setUserHasToggled, setIsCoHostDrawerOpen, roomId, username, viewerCount } = useStreamingUIContext();
 
+    const { mutate } = useServer<tEndStreamRequest, tEndStreamResponse>(
+        { METHOD: "POST", URL: "/stop-stream" },
+
+        {
+            onSuccess(response) {
+                toast.success(response.data.message);
+            },
+        },
+    );
+
     async function handleToggleVideo() {
         setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
 
@@ -145,9 +155,9 @@ function RenderControlsBasedOnRole() {
 
     async function handleEndStream() {
         try {
-            // closeRoom();
-            // navigate({ to: "/" });
-            await endStream({ roomId, username, viewers: viewerCount });
+            closeRoom();
+            navigate({ to: "/" });
+            mutate({ roomId, username, viewers: viewerCount });
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to end stream.";
             toast.error(message);
