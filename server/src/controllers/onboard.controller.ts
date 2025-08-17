@@ -24,12 +24,13 @@ export async function onboard(request: Request, response: Response) {
         return;
       }
 
-      let userPfp = "";
+      let userPfp;
 
       if (userProfilePicture) {
         userPfp = await savePfp(userProfilePicture, request.file!.originalname);
       } else {
-        userPfp = profilePicture;
+        userPfp = profilePicture !== "default-pfp.svg" ? profilePicture : undefined;
+        console.log(userPfp)
       }
 
       const user = await prisma.user.create({ data: { bio, email, privyId, username, userPfp, walletAddress }});
