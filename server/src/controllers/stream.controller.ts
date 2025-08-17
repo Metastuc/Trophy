@@ -5,7 +5,7 @@ import { Stream } from "../models/streamSchema";
 import { User } from "../models/userSchema";
 import { generateAccessToken } from "./accessToken.controller";
 import { sendScheduleEmail } from "../utils/emailNotis";
-import { RedisClient } from "../config/db";
+import { RedisClient, prisma } from "../config/db";
 import { Recorder } from "@huddle01/server-sdk/recorder";
 
 export const recorder = new Recorder(HUDDLE_PROJECT_ID, HUDDLE_API_KEY);
@@ -30,7 +30,7 @@ export const createStream = async (req: Request, res: Response) => {
       return;
     }
 
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
       res.status(404).json({ message: "user doesn't exist!" });
       return;
@@ -43,25 +43,24 @@ export const createStream = async (req: Request, res: Response) => {
       metadata: JSON.stringify({ title }),
     });
 
-    const newStream = new Stream({
-      roomId,
-      title,
-      streamer: username,
-      pfp: user.userPfp,
-      creatorToken: user.creatorToken,
-    });
-
     if (date) {
-      newStream.status = "Scheduled";
-      newStream.date = date;
+      await prisma.stream.create({
+        data: {
+          roomId,
+          title,
+          streamer: username,
+          pfp: user.userPfp,
+          creatorToken: user.creatorToken,
+          date,
+          status: "Scheduled"
+        }
+      });
 
       const dtStamp = formatDate(new Date());
       const dateIsoString = new Date(date).toISOString();
       const calendarDate = formatDate(new Date(dateIsoString));
 
       const calendarProps = { dtStamp, date: calendarDate, streamTitle: title, streamLink: `${CLIENT_URL}/${roomId}` };
-
-      await newStream.save();
 
       const streams = await Stream.find({ streamer: username, status: "Scheduled" }).sort({ _id: -1 });
       if (streams.length > 0) {
@@ -74,15 +73,25 @@ export const createStream = async (req: Request, res: Response) => {
         message: "Stream scheduled successfully",
       });
     } else {
-      newStream.status = "Live";
+      await prisma.stream.create({
+        data: {
+          roomId,
+          title,
+          streamer: username,
+          pfp: user.userPfp,
+          creatorToken: user.creatorToken,
+          status: "Live"
+        }
+      });
 
       const token = await generateAccessToken(roomId, "host");
       const recordToken = await generateAccessToken(roomId, "bot");
       const liveStreamToken = await generateAccessToken(roomId, "bot");
 
-      user.totalStreams += 1;
-      await newStream.save();
-      await user.save();
+      await prisma.user.update({
+        where: { username },
+        data: { totalStreams: user.totalStreams + 1 }
+      });
 
       res.status(200).json({
         message: "Room created!",
@@ -151,14 +160,14 @@ export const stopStream = async (req: Request, res: Response) => {
       return;
     }
 
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({ where: { username } });
 
     if (!user) {
       res.status(404).json({ message: "User not found!" });
       return;
     }
 
-    const liveStream = await Stream.findOne({ roomId });
+    const liveStream = await prisma.stream.findUnique({ where: { roomId } });
     if (!liveStream) {
       res.status(404).json({ message: "Stream not found!" });
       return;
@@ -169,19 +178,28 @@ export const stopStream = async (req: Request, res: Response) => {
       return;
     }
 
-    liveStream.status = "Ended";
-
-    if (user.epicStreams < viewers) {
-      user.epicStreams = viewers;
-      await user.save();
+    const Viewers = Number(viewers);
+    if (user.epicStreams < Viewers) {
+      await prisma.user.update({
+        where: { username },
+        data: {
+          epicStreams: Viewers
+        }
+      });
     }
 
-    await liveStream.save();
+    await prisma.stream.update({
+      where: { roomId },
+      data: {
+        status: "Ended"
+      }
+    });
 
     await recorder.stop({ roomId });
 
     res.status(200).json({ message: "Live stream ended" });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Error ending stream" });
   }
 };

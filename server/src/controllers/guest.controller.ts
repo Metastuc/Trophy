@@ -42,7 +42,6 @@ export const getGuestAccessToken = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error generating guest access token:", error);
     res.status(500).json({
-      status: "error",
       message: "Internal server error",
     });
   }

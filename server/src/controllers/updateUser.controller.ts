@@ -40,16 +40,22 @@ export const updateProfile = async (req: Request, res: Response) => {
       return;
     }
 
-    const user = await User.findOneAndUpdate({ privyId }, { $set: updateFields }, { new: true });
+    const user = await prisma.user.update({
+      where: { privyId },
+      data: updateFields
+    });
     if (!user) {
       res.status(404).json({ message: "user not found" });
       return;
     }
 
-    const streams = await Stream.find({
-      streamer: user.username,
-      status: "Scheduled",
-    }).sort({ _id: -1 });
+    const streams = await prisma.stream.findMany({
+      where: {
+        streamer: user.username,
+        status: "Scheduled"
+      },
+      orderBy: { id: "desc" }
+    });
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
     await RedisClient.set(`stream:${user.username}`, JSON.stringify(streams));
@@ -68,14 +74,18 @@ export const updateProfile = async (req: Request, res: Response) => {
 export const feesUpdate = async (req: Request, res: Response) => {
   try {
     const { username, fees } = req.body;
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
       res.status(404).json({ message: "user not found :(" });
       return;
     }
 
-    user.totalFees += fees;
-    await user.save();
+    await prisma.user.update({
+      where: { username },
+      data: {
+        totalFees: user.totalFees + Number(fees)
+      }
+    })
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 
@@ -96,7 +106,7 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
       return;
     }
 
-    const stream = await Stream.findOne({ roomId });
+    const stream = await prisma.stream.findUnique({ where: { roomId } });
 
     if (!stream) {
       res.status(404).json({ error: "Stream not found" });
@@ -108,8 +118,12 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
       return;
     }
 
-    stream.thumbnail = thumbnailUrl;
-    await stream.save();
+    await prisma.stream.update({
+      where: { roomId },
+      data: {
+        thumbnail: thumbnailUrl
+      }
+    })
 
     res.status(200).json({ message: "Thumbnail saved successfully" });
   } catch (error) {
@@ -123,7 +137,7 @@ export const updatePfp = async (req: Request, res: Response) => {
     const imageToUpdate = req.file!.buffer;
     const privyId = req.privyUser;
 
-    const user = await User.findOne({ privyId });
+    const user = await prisma.user.findUnique({ where: { privyId } });
 
     if (!user) {
       res.status(404).json({ message: "user not found" });
@@ -136,12 +150,16 @@ export const updatePfp = async (req: Request, res: Response) => {
       await deletePfp(user.userPfp);
     }
 
-    user.userPfp = updatedImage;
-    await user.save();
+    const uUser = await prisma.user.update({
+      where: { privyId },
+      data: {
+        userPfp: updatedImage
+      }
+    })
 
-    await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
+    await RedisClient.set(`user:${user.username}`, JSON.stringify(uUser));
 
-    res.status(200).json({ user });
+    res.status(200).json({ user: uUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: (error as Error).message });
@@ -157,15 +175,20 @@ export const creatorTokenCreated = async (req: Request, res: Response) => {
       return;
     }
 
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
       res.status(404).json({ error: "User doesn't exist" });
       return;
     }
 
-    user.creatorToken = creatorToken;
-    await user.save();
-    await RedisClient.set(`user:${username}`, JSON.stringify(user));
+    const uUser = await prisma.user.update({
+      where: { username },
+      data: {
+        creatorToken
+      }
+    });
+
+    await RedisClient.set(`user:${username}`, JSON.stringify(uUser));
 
     res.status(200).json({ message: "creator token saved" });
   } catch (error) {

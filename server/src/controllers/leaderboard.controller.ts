@@ -3,7 +3,7 @@ import { User } from "../models/userSchema";
 import { getTokenDetails } from "../utils/flaunch";
 import type { Address } from "viem";
 import { formatNumber, getHolders, LdummyData } from "../utils/utils";
-import { DEFAULT_IMAGE } from "../utils/env";
+import { prisma } from "../config/db";
 
 interface ILeaderboard {
   price: string | number;
@@ -14,6 +14,7 @@ interface ILeaderboard {
   arrow: string;
   topHolders: IHolders[];
   mcap: string;
+  tokenPercentage: string;
 }
 
 interface IHolders {
@@ -27,7 +28,13 @@ export const leaderboard = async (req: Request, res: Response) => {
   try {
     const { filter } = req.query;
 
-    const creators = await User.find({ creatorToken: { $exists: true, $ne: null } });
+    const creators = await prisma.user.findMany({
+      where: {
+        creatorToken: {
+          not: null
+        }
+      }
+    });
 
     const leaderboard: ILeaderboard[] = [];
 
@@ -61,7 +68,11 @@ export const leaderboard = async (req: Request, res: Response) => {
           const epicStreams = formatNumber(creator.epicStreams.toString());
           const tokenMcap = formatNumber(mcap);
 
-          if (creator.tokenPrice <= Number(price)) {
+          const currentTokenPrice = creator.tokenPrice;
+          const newTokenPrice = Number(price);
+          const tokenPercentage = (((newTokenPrice - currentTokenPrice) / currentTokenPrice) * 100).toFixed(2).replace(/\.0$/, "") + "%";
+
+          if (currentTokenPrice <= newTokenPrice) {
             leaderboard.push({
               price,
               arrow,
@@ -71,9 +82,8 @@ export const leaderboard = async (req: Request, res: Response) => {
               username: creator.username,
               topHolders,
               pfp: creator.userPfp,
+              tokenPercentage
             });
-            creator.tokenPrice = Number(price);
-            creator.save();
           } else {
             arrow = "down";
 
@@ -86,11 +96,16 @@ export const leaderboard = async (req: Request, res: Response) => {
               username: creator.username,
               topHolders,
               pfp: creator.userPfp,
+              tokenPercentage
             });
-
-            creator.tokenPrice = Number(price);
-            creator.save();
           }
+
+          await prisma.user.update({
+            where: { username: creator.username },
+            data: {
+              tokenPrice: newTokenPrice
+            }
+          });
         }
 
         leaderboard.sort((a, b) => Number(b.mcap) - Number(a.mcap));
@@ -102,6 +117,6 @@ export const leaderboard = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "error getting leaderboard info" });
   }
 };
