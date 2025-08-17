@@ -81,7 +81,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
 
     useEffect(
         function () {
-            if (state === "connected" && peerId) {
+            if (state === "connected" && peerId && authenticationStore.isAuthenticated) {
                 updateMetadata({
                     isPeerAuthenticated: authenticationStore.isAuthenticated,
                     username: authenticationStore.user?.backendUserData.user.username ?? "anon",

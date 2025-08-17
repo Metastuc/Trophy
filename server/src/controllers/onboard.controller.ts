@@ -9,7 +9,6 @@ export async function onboard(request: Request, response: Response) {
 
   try {
     const { bio, email, username, profilePicture, walletAddress } = request.body;
-    console.log(request.body)
     const existingUser = await prisma.user.findUnique({ where: { privyId } });
 
     if (!existingUser) {
@@ -28,12 +27,15 @@ export async function onboard(request: Request, response: Response) {
 
       if (userProfilePicture) {
         userPfp = await savePfp(userProfilePicture, request.file!.originalname);
+      } else if (profilePicture && profilePicture !== "default-pfp.svg") {
+        userPfp = profilePicture;
       } else {
-        userPfp = profilePicture !== "default-pfp.svg" ? profilePicture : undefined;
-        console.log(userPfp)
+        userPfp = undefined;
       }
 
-      const user = await prisma.user.create({ data: { bio, email, privyId, username, userPfp, walletAddress }});
+      const user = await prisma.user.create({
+        data: { bio, email, privyId, username, walletAddress, ...(userPfp && { userPfp }) },
+      });
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 
