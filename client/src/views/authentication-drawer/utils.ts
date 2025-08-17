@@ -8,6 +8,8 @@ export const AuthenticationProfileSchema = z.object({
 
     email: z.email("Invalid email address"),
 
+    fc: z.boolean(),
+
     isNewUser: z.boolean(),
 
     profilePicture: z.union([
@@ -27,10 +29,6 @@ export const AuthenticationProfileSchema = z.object({
     ]),
 
     username: z.string().min(3, "Username must be at least 3 characters"),
-    // .regex(
-    //     APPLICATION_CONSTANTS.USERNAME_REGEX,
-    //     "Username must start with a letter or underscore, contain only letters, numbers, and underscores, and be 3 to 15 characters long.",
-    // ),
 
     walletAddress: z.string().refine(isAddress, "Invalid wallet address"),
 });

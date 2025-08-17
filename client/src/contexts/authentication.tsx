@@ -65,6 +65,7 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
                     setFormField("bio", privyUser.farcaster?.bio || null);
                     setFormField("email", privyUser.email?.address || null);
+                    setFormField("fc", !!privyUser.farcaster);
                     setFormField("privyId", privyUser.id || null);
                     setFormField("profilePicture", privyUser.farcaster?.pfp || "default-pfp.svg");
                     setFormField("username", privyUser.farcaster?.username || null);

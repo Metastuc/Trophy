@@ -44,6 +44,7 @@ interface iAuthenticateFormData {
 
     bio?: string | null;
     email?: string | null;
+    fc?: boolean | null;
     isNewUser?: boolean;
     profilePicture?: File | string | null;
     username?: string | null;

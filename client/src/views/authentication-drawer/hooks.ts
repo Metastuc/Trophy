@@ -1,5 +1,5 @@
 import { useCreateWallet, useLogin } from "@privy-io/react-auth";
-import React from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
@@ -37,7 +37,7 @@ export function usePrivyLoginTrigger() {
         },
     });
 
-    React.useEffect(
+    useEffect(
         function () {
             if (screen === "wallet") {
                 closeDrawer();
@@ -49,6 +49,7 @@ export function usePrivyLoginTrigger() {
                 login({ loginMethods: ["farcaster"] });
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [screen],
     );
 }

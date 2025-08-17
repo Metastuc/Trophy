@@ -24,11 +24,12 @@ export function CompleteProfile() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
 
-    const { bio, email, isNewUser, profilePicture, setFormField, username, walletAddress } =
+    const { bio, email, fc, isNewUser, profilePicture, setFormField, username, walletAddress } =
         useAuthenticationDrawerFormStore(
             useShallow((state) => ({
                 bio: state.bio,
                 email: state.email,
+                fc: state.fc,
                 isNewUser: state.isNewUser,
                 profilePicture: state.profilePicture,
                 username: state.username,
@@ -81,6 +82,7 @@ export function CompleteProfile() {
 
                 formData.append("bio", variables.bio as string);
                 formData.append("email", variables.email as string);
+                formData.append("fc", String(variables.fc));
                 formData.append("profilePicture", variables.profilePicture);
                 formData.append("username", variables.username as string);
                 formData.append("walletAddress", variables.walletAddress as string);
@@ -98,6 +100,7 @@ export function CompleteProfile() {
         const request = AuthenticationProfileSchema.safeParse({
             bio: bio?.trim(),
             email: email?.trim(),
+            fc,
             isNewUser,
             profilePicture,
             username: username?.trim(),
