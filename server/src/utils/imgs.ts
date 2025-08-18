@@ -21,7 +21,7 @@ const getS3Client = () => {
   return S3;
 };
 
-export const uploadPfp = multer({
+export const uploadImg = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
 });
@@ -50,7 +50,8 @@ export const savePfp = async (pfpBuffer: Buffer, originalName: string) => {
   return `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
 };
 
-export const deletePfp = async (pfpUrl: string) => {
+
+export const deleteImg = async (pfpUrl: string) => {
   if (!pfpUrl) return;
 
   const s3 = getS3Client();
@@ -68,15 +69,18 @@ export const deletePfp = async (pfpUrl: string) => {
   }
 };
 
-export const saveThumbnail = multer({
-  storage: multerS3({
-    s3: getS3Client(),
-    bucket: AWS_S3_BUCKET,
-    acl: "public-read",
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    key: (_req: any, file: { originalname: any }, cb: (arg0: null, arg1: string) => void) => {
-      const filename = `thumbnails/${uuid()}-${file.originalname}`;
-      cb(null, filename);
-    },
-  }),
-});
+export const saveThumbnail = async (thumbnailBuffer: Buffer, originalName: string) => {
+  const key = `thumbnails/${uuid()}-${originalName}`;
+  const s3 = getS3Client();
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: AWS_S3_BUCKET,
+      Key: key,
+      Body: thumbnailBuffer,
+      ACL: "public-read",
+      ContentType: "image/jpeg",
+    }),
+  );
+
+  return `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
+}
