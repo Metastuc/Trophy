@@ -68,15 +68,18 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
 
     useEffect(
         function () {
-            if (state === "idle") {
-                console.log("[intial] Joining room...");
+            // if (state === "idle") {
+            joinRoom({ roomId, token }).catch((error) => {
+                toast.error((error as Error).message);
+            });
+            // }
 
-                joinRoom({ roomId, token }).catch((error) => {
-                    toast.error((error as Error).message);
-                });
-            }
+            return function () {
+                leaveRoom();
+                setUserHasToggled({ audio: false, video: false });
+            };
         },
-        [joinRoom, roomId, state, token],
+        [joinRoom, leaveRoom, roomId, token],
     );
 
     useEffect(
@@ -117,14 +120,8 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
             if (["closed", "left", "failed"].includes(state)) {
                 setUserHasToggled({ audio: false, video: false });
             }
-
-            return () => {
-                if (state === "connected") {
-                    leaveRoom();
-                }
-            };
         },
-        [state, leaveRoom],
+        [state],
     );
 
     const value: iStreamingUIContext = useMemo(
