@@ -90,7 +90,7 @@ export const createStream = async (req: Request, res: Response) => {
 
       await prisma.user.update({
         where: { username },
-        data: { totalStreams: user.totalStreams + 1 },
+        data: { totalStreams: user.totalStreams + 1, role: "host" },
       });
 
       res.status(200).json({
@@ -170,9 +170,17 @@ export const stopStream = async (req: Request, res: Response) => {
         where: { username },
         data: {
           epicStreams: Viewers,
+          role: "viewer"
         },
       });
     }
+
+    await prisma.user.update({
+        where: { username },
+        data: {
+          role: "viewer",
+        },
+      });
 
     await prisma.stream.update({
       where: { roomId },

@@ -14,7 +14,7 @@ import { getGuestAccessToken } from "../controllers/guest.controller";
 import { authUser } from "../controllers/authUser.controller";
 import { authenticate } from "../middlewares/authenticate";
 import { onboard } from "../controllers/onboard.controller";
-import { uploadPfp, saveThumbnail } from "../utils/imgs";
+import { uploadImg } from "../utils/imgs";
 import { getStream } from "../controllers/getStream.controller";
 import { leaderboard } from "../controllers/leaderboard.controller";
 import { fetchStreams } from "../controllers/fetchStreams.controller";
@@ -22,7 +22,7 @@ import { fetchStreams } from "../controllers/fetchStreams.controller";
 const router = Router();
 
 router
-  .post("/onboard", uploadPfp.single("profilePicture"), authenticate, onboard)
+  .post("/onboard", uploadImg.single("profilePicture"), authenticate, onboard)
   .post("/create-stream", authenticate, createStream)
   .post("/join-stream", getAccessToken)
   .post("/update-stream", authenticate, scheduleActions)
@@ -30,11 +30,11 @@ router
   .post("/stop-stream", authenticate, stopStream)
 
   .post("/get-user", getUser)
-  .patch("/update-profile", authenticate, uploadPfp.single("profilePicture"), updateProfile)
+  .patch("/update-profile", authenticate, uploadImg.single("profilePicture"), updateProfile)
   .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
-  .post("/update-pfp", authenticate, uploadPfp.single("pfp"), updatePfp)
-  .post("/save-thumbnail", authenticate, saveThumbnail.single("thumbnail"), saveStreamThumbnail)
+  .post("/update-pfp", authenticate, uploadImg.single("pfp"), updatePfp)
+  .post("/save-thumbnail", authenticate, uploadImg.single("thumbnail"), saveStreamThumbnail)
 
   .get("/stream/:roomId", getStream)
   .get("/fetch-streams", fetchStreams)

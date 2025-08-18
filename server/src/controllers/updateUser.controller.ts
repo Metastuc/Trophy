@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { User } from "../models/userSchema";
 import { Stream } from "../models/streamSchema";
 import { DEFAULT_IMAGE } from "../utils/env";
-import { deletePfp, savePfp } from "../utils/imgs";
+import { deleteImg, savePfp, saveThumbnail } from "../utils/imgs";
 import { prisma, RedisClient } from "../config/db";
 
 export const updateProfile = async (req: Request, res: Response) => {
@@ -98,10 +98,10 @@ export const feesUpdate = async (req: Request, res: Response) => {
 
 export const saveStreamThumbnail = async (req: Request, res: Response) => {
   try {
-    const thumbnailUrl = (req.file as any)?.location;
+    const thumbnailBuffer = req.file!.buffer;
     const roomId = req.body.roomId;
 
-    if (!thumbnailUrl || !roomId) {
+    if (!thumbnailBuffer || !roomId) {
       res.status(400).json({ error: "Thumbnail URL or room ID is missing" });
       return;
     }
@@ -118,12 +118,18 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
       return;
     }
 
+    if (stream.thumbnail) {
+      await deleteImg(stream.thumbnail);
+    }
+
+    const thumbnailUrl = await saveThumbnail(thumbnailBuffer, req.file!.originalname);
+
     await prisma.stream.update({
       where: { roomId },
       data: {
         thumbnail: thumbnailUrl
       }
-    })
+    });
 
     res.status(200).json({ message: "Thumbnail saved successfully" });
   } catch (error) {
@@ -135,7 +141,7 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
 export const updatePfp = async (req: Request, res: Response) => {
   try {
     const imageToUpdate = req.file!.buffer;
-    const privyId = req.privyUser;
+    const privyId = req.privyUser?.userId;
 
     const user = await prisma.user.findUnique({ where: { privyId } });
 
@@ -147,7 +153,7 @@ export const updatePfp = async (req: Request, res: Response) => {
     const updatedImage = await savePfp(imageToUpdate, req.file!.originalname);
 
     if (user.userPfp !== DEFAULT_IMAGE) {
-      await deletePfp(user.userPfp);
+      await deleteImg(user.userPfp);
     }
 
     const uUser = await prisma.user.update({
