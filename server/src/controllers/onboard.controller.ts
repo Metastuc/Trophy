@@ -7,29 +7,28 @@ export async function onboard(request: Request, response: Response) {
   const privyId = request.privyUser?.userId as string;
 
   try {
-    const { bio, email, username: uName, profilePicture, walletAddress, fc } = request.body;
+    const { bio, email, username, profilePicture, walletAddress, fc } = request.body;
     const existingUser = await prisma.user.findUnique({ where: { privyId } });
 
     if (!existingUser) {
-      if (!uName) {
+      if (!username) {
         response.status(422).json({ message: "username is required" });
         return;
       }
 
-      let username;
+      let usernameRegex;
       const formatRegex = /[ _-]/g;
-      const usernameFormat = formatRegex.test(uName);
+      const usernameFormat = formatRegex.test(username);
+
       if (fc) {
         if (usernameFormat) {
-          username = uName.replace(formatRegex, "");
+          usernameRegex = username.replace(formatRegex, "");
         }
       } else {
         if (usernameFormat) {
           response.status(400).json({ message: "username cannot have space, underscore or hypens" });
           return;
         }
-
-        username = uName;
       }
 
       const usernameExists = await prisma.user.findUnique({ where: { username } });
