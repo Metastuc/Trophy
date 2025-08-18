@@ -1,32 +1,40 @@
 import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
-import { Loader } from "lucide-react";
+import { createRouter, Link, RouterProvider } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
+import { useShallow } from "zustand/shallow";
 
-import {
-    AuthenticationContextProvider,
-    useAuthenticationContext,
-} from "@/contexts/authentication.tsx";
-
-import { HuddleContextProvider } from "./contexts/huddle.tsx";
-import { PrivyContextProvider } from "./contexts/privy.tsx";
+import { LoadingScreen } from "./components/layouts/loading.tsx";
+import { AppContextProviders } from "./contexts/index.tsx";
 import { routeTree } from "./routeTree.gen.ts";
+import { useAuthenticationStore } from "./store/authentication.ts";
 
 const queryClient = new QueryClient();
 const router = createRouter({
     routeTree,
-    context: { queryClient, authentication: undefined! },
+    context: {
+        queryClient,
+        authenticationStore: undefined,
+    },
+    defaultErrorComponent() {
+        return (
+            <div>
+                <p>An error has occured!</p>
+                <Link to="/">Go home</Link>
+            </div>
+        );
+    },
+    defaultPendingComponent() {
+        return <LoadingScreen />;
+    },
     scrollRestoration: true,
     getScrollRestorationKey(location) {
         const paths = ["/"];
-        return paths.includes(location.pathname)
-            ? location.pathname
-            : (location.state.key as string);
+        return paths.includes(location.pathname) ? location.pathname : (location.state.key as string);
     },
 });
 
@@ -37,14 +45,9 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-    const authentication = useAuthenticationContext();
+    const authenticationStore = useAuthenticationStore(useShallow((state) => state));
 
-    if (!authentication.isReady)
-        return (
-            <section className="flex h-screen w-screen items-center justify-center">
-                <Loader className="animate-spin" />
-            </section>
-        );
+    if (authenticationStore.isLoading) return <LoadingScreen />;
 
     return (
         <AnimatePresence mode="wait">
@@ -52,9 +55,9 @@ function App() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25 }}
-                className="relative min-h-screen"
+                className="relative min-h-dvh"
             >
-                <RouterProvider router={router} context={{ authentication }} />
+                <RouterProvider router={router} context={{ authenticationStore }} />
             </motion.section>
         </AnimatePresence>
     );
@@ -63,13 +66,9 @@ function App() {
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <HuddleContextProvider>
-                <PrivyContextProvider>
-                    <AuthenticationContextProvider>
-                        <App />
-                    </AuthenticationContextProvider>
-                </PrivyContextProvider>
-            </HuddleContextProvider>
+            <AppContextProviders>
+                <App />
+            </AppContextProviders>
         </QueryClientProvider>
         <Toaster position="top-center" />
     </StrictMode>,

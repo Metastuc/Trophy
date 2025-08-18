@@ -1,8 +1,6 @@
-import Moralis from "moralis";
+import { moralisChain, tokenAddresses } from "./constants";
+import MoralisClient from "./moralis";
 
-import { ENV_SCHEMA, moralisChain, tokenAddresses } from "./constants";
-
-let moralisStarted: boolean | undefined;
 type balanceType = {
     tokens: {
         [key: string]: {
@@ -18,7 +16,7 @@ type balanceType = {
     totalMoney: string;
 };
 
-const toFixed = (value: string | number) => {
+export const toFixed = (value: string | number) => {
     if (typeof value === "string") {
         return parseInt(value).toFixed(2);
     }
@@ -28,15 +26,9 @@ const toFixed = (value: string | number) => {
 
 export default async function GetTokenBalances(address: string): Promise<balanceType> {
     try {
-        if (!moralisStarted) {
-            await Moralis.start({
-                apiKey: ENV_SCHEMA.MORALIS_API_KEY,
-            });
+        const moralis = await MoralisClient();
 
-            moralisStarted = true;
-        }
-
-        const response = await Moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
+        const { result: tokens } = await moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
             chain: moralisChain,
             address,
             tokenAddresses,
@@ -49,25 +41,29 @@ export default async function GetTokenBalances(address: string): Promise<balance
             totalMoney: "",
         };
         let arrow = "down";
-        let portfolioArrow = "down";
+        let portfolioArrow = "";
         let portfolioPercent = 0;
         let totalMoney = 0;
 
-        for (let i = 0; i < response.result.length; i++) {
-            const H24_change = parseInt(response.result[i].usdValue24hrUsdChange ?? "0");
+        for (const token of tokens) {
+            const H24_change = parseInt(token.usdValue24hrUsdChange ?? "0");
             if (H24_change > 0) arrow = "up";
-            balances.tokens[response.result[i].symbol] = {
-                balance: toFixed(response.result[i].balanceFormatted),
-                balance_price_usd: toFixed(response.result[i].usdValue),
-                token_price_usd: toFixed(response.result[i].usdPrice),
+            balances.tokens[token.symbol] = {
+                balance: toFixed(token.balanceFormatted),
+                balance_price_usd: toFixed(token.usdValue),
+                token_price_usd: toFixed(token.usdPrice),
                 arrow,
                 H24_change: H24_change.toFixed(2),
             };
-            totalMoney += response.result[i].usdValue;
-            portfolioPercent += response.result[i].portfolioPercentage;
+            totalMoney += token.usdValue;
+            portfolioPercent += token.portfolioPercentage;
         }
 
-        if (portfolioPercent > 0) portfolioArrow = "up";
+        if (portfolioPercent > 0) {
+            portfolioArrow = "up"
+        } else if (portfolioPercent < 0) {
+            portfolioArrow = "down"
+        };
 
         balances.portfolio_percent = toFixed(portfolioPercent);
         balances.portfolioArrow = portfolioArrow;

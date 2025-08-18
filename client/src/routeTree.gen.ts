@@ -8,150 +8,181 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as AppStreamRouteImport } from './routes/_app/stream'
+import { Route as AppProfileRouteImport } from './routes/_app/profile'
+import { Route as AppDiscoverRouteImport } from './routes/_app/discover'
+import { Route as AppUsernameRouteImport } from './routes/_app/$username'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as StreamImport } from './routes/stream'
-import { Route as ProfileImport } from './routes/profile'
-import { Route as DiscoverImport } from './routes/discover'
-import { Route as IndexImport } from './routes/index'
-
-// Create/Update Routes
-
-const StreamRoute = StreamImport.update({
-  id: '/stream',
-  path: '/stream',
-  getParentRoute: () => rootRoute,
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ProfileRoute = ProfileImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DiscoverRoute = DiscoverImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexRoute = IndexImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const LiveIdRoute = LiveIdRouteImport.update({
+  id: '/live/$id',
+  path: '/live/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppStreamRoute = AppStreamRouteImport.update({
+  id: '/stream',
+  path: '/stream',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppDiscoverRoute = AppDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppUsernameRoute = AppUsernameRouteImport.update({
+  id: '/$username',
+  path: '/$username',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/$username': typeof AppUsernameRoute
+  '/discover': typeof AppDiscoverRoute
+  '/profile': typeof AppProfileRoute
+  '/stream': typeof AppStreamRoute
+  '/live/$id': typeof LiveIdRoute
+  '/': typeof AppIndexRoute
+}
+export interface FileRoutesByTo {
+  '/$username': typeof AppUsernameRoute
+  '/discover': typeof AppDiscoverRoute
+  '/profile': typeof AppProfileRoute
+  '/stream': typeof AppStreamRoute
+  '/live/$id': typeof LiveIdRoute
+  '/': typeof AppIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/_app': typeof AppRouteRouteWithChildren
+  '/_app/$username': typeof AppUsernameRoute
+  '/_app/discover': typeof AppDiscoverRoute
+  '/_app/profile': typeof AppProfileRoute
+  '/_app/stream': typeof AppStreamRoute
+  '/live/$id': typeof LiveIdRoute
+  '/_app/': typeof AppIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/$username'
+    | '/discover'
+    | '/profile'
+    | '/stream'
+    | '/live/$id'
+    | '/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/$username' | '/discover' | '/profile' | '/stream' | '/live/$id' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/$username'
+    | '/_app/discover'
+    | '/_app/profile'
+    | '/_app/stream'
+    | '/live/$id'
+    | '/_app/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  LiveIdRoute: typeof LiveIdRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
     }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverImport
-      parentRoute: typeof rootRoute
+    '/live/$id': {
+      id: '/live/$id'
+      path: '/live/$id'
+      fullPath: '/live/$id'
+      preLoaderRoute: typeof LiveIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
-    }
-    '/stream': {
-      id: '/stream'
+    '/_app/stream': {
+      id: '/_app/stream'
       path: '/stream'
       fullPath: '/stream'
-      preLoaderRoute: typeof StreamImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AppStreamRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/discover': {
+      id: '/_app/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof AppDiscoverRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/$username': {
+      id: '/_app/$username'
+      path: '/$username'
+      fullPath: '/$username'
+      preLoaderRoute: typeof AppUsernameRouteImport
+      parentRoute: typeof AppRouteRoute
     }
   }
 }
 
-// Create and export the route tree
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+interface AppRouteRouteChildren {
+  AppUsernameRoute: typeof AppUsernameRoute
+  AppDiscoverRoute: typeof AppDiscoverRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppStreamRoute: typeof AppStreamRoute
+  AppIndexRoute: typeof AppIndexRoute
 }
 
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppUsernameRoute: AppUsernameRoute,
+  AppDiscoverRoute: AppDiscoverRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppStreamRoute: AppStreamRoute,
+  AppIndexRoute: AppIndexRoute,
 }
 
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover' | '/profile' | '/stream'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover' | '/profile' | '/stream'
-  id: '__root__' | '/' | '/discover' | '/profile' | '/stream'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DiscoverRoute: typeof DiscoverRoute
-  ProfileRoute: typeof ProfileRoute
-  StreamRoute: typeof StreamRoute
-}
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DiscoverRoute: DiscoverRoute,
-  ProfileRoute: ProfileRoute,
-  StreamRoute: StreamRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  LiveIdRoute: LiveIdRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/discover",
-        "/profile",
-        "/stream"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/discover": {
-      "filePath": "discover.tsx"
-    },
-    "/profile": {
-      "filePath": "profile.tsx"
-    },
-    "/stream": {
-      "filePath": "stream.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

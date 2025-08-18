@@ -1,117 +1,111 @@
 import type { Request, Response } from "express";
 import { HUDDLE_API_KEY } from "../utils/env";
-import { AccessToken, Role } from "@huddle01/server-sdk/auth";
+import { AccessToken, Role, Permissions } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema";
 import { format } from "date-fns";
-import { Recorder } from "@huddle01/server-sdk/recorder";
+import { prisma } from "../config/db";
 
 export const getAccessToken = async (req: Request, res: Response) => {
-    try {
-        const { name, roomId } = req.body;
+  try {
+    const { username, roomId, userRole } = req.body;
 
-        if (!roomId || !name) {
-            res.status(400).json({
-                status: "error",
-                message: "Missing roomId or address",
-            });
-            return;
-        }
-
-        const stream = await Stream.findOne({ roomId });
-
-        if (!stream) {
-            res.status(404).json({
-                status: "error",
-                message: "Stream not found",
-            });
-            return;
-        }
-
-        const now = new Date();
-        const startTime = new Date(stream.date!);
-        const isOwner = stream.streamer.toLowerCase() === name.toLowerCase();
-
-        // Check if stream hasn't started
-        if (startTime > new Date(format(now, "eee dd MMM y p"))) {
-            res.status(403).json({
-                status: "error",
-                message: "Stream has not started yet",
-            });
-            return;
-        }
-
-        // Assign role
-        const role: Role = isOwner ? "host" : "listener";
-
-        const permissions = isOwner
-            ? {
-                  admin: true,
-                  canConsume: true,
-                  canProduce: true,
-                  canProduceSources: {
-                      cam: true,
-                      mic: true,
-                      screen: true,
-                  },
-                  canSendData: true,
-                  canRecvData: true,
-              }
-            : {
-                  admin: false,
-                  canConsume: true,
-                  canProduce: true,
-                  canRecvData: true,
-                  canSendData: true,
-              };
-
-        // Generate access token
-        const accessToken = new AccessToken({
-            apiKey: HUDDLE_API_KEY,
-            roomId,
-            role,
-            permissions,
-        });
-
-        const token = await accessToken.toJwt();
-
-        // await recordStreamJoin(address, roomId);
-        res.status(200).json({
-            status: "success",
-            token,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: "error",
-            message: "Failed to generate access token",
-        });
+    if (!roomId || !username) {
+      res.status(400).json({
+        status: "error",
+        message: "Missing roomId or address",
+      });
+      return;
     }
-};
 
-// const recorder = new Recorder(
-//   process.env.HUDDLE_PROJECT_ID!,
-//   process.env.HUDDLE_API_KEY!
-// );
-
-const generateRecordingToken = async (roomId: string) => {
-    const token = new AccessToken({
-        apiKey: process.env.HUDDLE_API_KEY!,
-        roomId: roomId,
-        role: Role.BOT,
-        permissions: {
-            admin: true,
-            canConsume: true,
-            canProduce: true,
-            canProduceSources: {
-                cam: true,
-                mic: true,
-                screen: true,
-            },
-            canRecvData: true,
-            canSendData: true,
-            canUpdateMetadata: true,
-        },
+    const stream = await prisma.stream.findUnique({
+      where: { roomId }
     });
 
-    return await token.toJwt();
+    if (!stream) {
+      res.status(404).json({
+        error: "Stream not found",
+      });
+      return;
+    }
+
+    if (stream.status !== "Live") {
+      res.status(401).json({ message: "stream is not live or is ended" });
+      return
+    }
+
+    const now = new Date();
+    const startTime = new Date(stream.date!);
+
+    const isOwner = stream.streamer.toLowerCase() === username.toLowerCase();
+    const role: Role = isOwner ? "host" : "listener";
+
+    if (isOwner) {
+      const token = await generateAccessToken(roomId, role);
+      res.status(200).json({
+        message: "Host access token generated successfully",
+        token,
+      });
+
+      await prisma.stream.update({
+        where: { roomId },
+        data: { status: "Live" }
+      });
+      return;
+    }
+
+    // Check if stream hasn't started
+    if (startTime > new Date(format(now, "eee dd MMM y p"))) {
+      res.status(403).json({
+        error: "Stream has not started yet",
+      });
+
+      return;
+    }
+
+    const joiningRole = userRole === "guest" ? userRole : role;
+
+    const token = await generateAccessToken(roomId, joiningRole);
+
+    res.status(200).json({
+      message: "Access token generated successfully",
+      token,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+};
+
+export const generateAccessToken = async (roomId: string, role: Role) => {
+  const permissions = ["host", "bot", "guest"].includes(role)
+    ? {
+      admin: true,
+      canConsume: true,
+      canProduce: true,
+      canProduceSources: {
+        cam: true,
+        mic: true,
+        screen: true,
+      },
+      canSendData: true,
+      canRecvData: true,
+    }
+    : {
+      admin: false,
+      canConsume: true,
+      canProduce: true,
+      canRecvData: true,
+      canSendData: true,
+    };
+
+  const token = new AccessToken({
+    apiKey: HUDDLE_API_KEY,
+    roomId,
+    role,
+    permissions,
+  });
+
+  return await token.toJwt();
 };
