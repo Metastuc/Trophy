@@ -1,53 +1,116 @@
 import mongoose from "mongoose";
+import { DEFAULT_IMAGE } from "../utils/env";
 
-const userSchema = new mongoose.Schema({
+const notificationSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+  },
+  read: {
+    type: Boolean,
+    default: false,
+  },
+  follow: {
+    content: {
+      type: String,
+      default: "",
+    },
+    followNots: [String],
+    recentFollows: {
+      type: Number,
+      default: 0,
+    },
+    followedAt: {
+      type: Date,
+      default: Date.now,
+      expires: "7d",
+    },
+  },
+  tip: [
+    {
+      token: String,
+      amount: String,
+      tipper: String,
+    },
+  ],
+  buy: [String],
+});
+
+const userSchema = new mongoose.Schema({
+  privyId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
   },
   email: {
     type: String,
-    required: true,
-    unique: true
+    unique: true,
   },
   userPfp: {
     type: String,
-    required: true
+    default: DEFAULT_IMAGE,
+  },
+  walletAddress: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  tokenPrice: {
+    type: Number,
+    default: 0,
   },
   totalStreams: {
     type: Number,
-    default: 0
+    default: 0,
   },
   bio: {
     type: String,
-    default: ""
+    default: "",
+  },
+  epicStreams: {
+    type: Number,
+    default: 0,
   },
   totalFees: {
     type: Number,
-    default: 0
+    default: 0,
+  },
+  role: {
+    type: String,
+    default: "viewer",
   },
   xUrl: {
-    type: String
-  },
-  YTUrl: {
-    type: String
-  },
-  notifications: [{
     type: String,
-  }],
-  followers: [{
-    type: String
-  }],
-  following: [{
-    type: String
-  }],
-  creatorToken: {
-    type: String
   },
-  videoTokenAddresses: [{
-    type: String
-  }]
+  ytUrl: {
+    type: String,
+  },
+  followers: [
+    {
+      type: String,
+    },
+  ],
+  following: [
+    {
+      type: String,
+    },
+  ],
+  creatorToken: {
+    type: String,
+  },
+  holdings: [
+    {
+      type: String,
+    },
+  ],
 });
 
 export const User = mongoose.model("Users", userSchema);
+
+export const Notification = mongoose.model("notifications", notificationSchema);

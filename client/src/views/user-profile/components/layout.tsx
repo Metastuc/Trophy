@@ -1,5 +1,3 @@
-export default function Component() {}
-
-export function UserProfileTop() {
+export function Navigation() {
     return <div>profile</div>;
 }

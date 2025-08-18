@@ -1,44 +1,37 @@
 import { type Request, type Response } from "express";
-import { iUser, User } from "../models/userSchema";
+import { User } from "../models/userSchema";
+import { prisma } from "../config/db";
 
 export const authUser = async (req: Request, res: Response) => {
-    let _user: iUser | null;
+  const privyId = req.privyUser?.userId;
 
-    try {
-        const { privyId } = req.body;
+  try {
+    const user = await prisma.user.findUnique({ where: { privyId } });
 
-        if (!privyId) {
-            res.status(400).json({
-                status: "error",
-                message: "privyId is required",
-            });
-            return;
-        }
-
-        _user = await User.findOne({ privyId });
-
-        if (!_user) {
-            res.status(404).json({
-                status: "error",
-                message: "User not found",
-            });
-            return;
-        }
-
-        res.status(200).json({
-            status: "success",
-            data: {
-                isBasicProfileComplete: !!(_user?.email && _user?.userPfp && _user?.username),
-            },
-        });
-        return;
-    } catch (error) {
-        console.error(error);
-
-        res.status(500).json({
-            message: "Failed to authenticate user",
-            error: (error as Error).message,
-        });
-        return;
+    if (!user) {
+      res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+      return;
     }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username),
+        user: {
+          bio: user?.bio,
+          email: user?.email,
+          profilePicture: user?.userPfp,
+          username: user?.username,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: (error as Error).message,
+      message: "Failed to authenticate user",
+    });
+  }
 };

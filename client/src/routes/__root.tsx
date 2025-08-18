@@ -1,24 +1,29 @@
 import { type QueryClient } from "@tanstack/react-query";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Outlet } from "@tanstack/react-router";
 import { Fragment } from "react";
-
-import BottomNavigationBar from "@/components/bottom-navigation-bar";
-import TopNavigationBar from "@/components/top-navigation-bar";
-import { iAuthenticationContext } from "@/contexts/authentication";
 
 export type RouterContext = {
     queryClient: QueryClient;
-    authentication: iAuthenticationContext;
+    authenticationStore?: tAuthenticatedState;
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <Fragment>
-            <TopNavigationBar />
-            <main className="mb-20">
-                <Outlet />
-            </main>
-            <BottomNavigationBar />
+            <HeadContent />
+            <Outlet />
         </Fragment>
     ),
+
+    head() {
+        return {
+            meta: [
+                {
+                    name: "description",
+                    content: "Creators are the best",
+                },
+                { title: "Trophy" },
+            ],
+        };
+    },
 });

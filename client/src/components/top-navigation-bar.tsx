@@ -1,15 +1,14 @@
+import { usePrivy } from "@privy-io/react-auth";
 import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
 
-import { LOGO, SEARCH } from "@/assets/icons";
-import { useAuthenticationContext } from "@/contexts/authentication";
+import { EXIT_PAGE, SEARCH } from "@/assets/icons";
+import { useShouldShowExitButton } from "@/hooks/exit-button";
 import { resetScroll, sleep } from "@/lib/utils";
+import { useAuthenticationStore } from "@/store/authentication";
 import { useDiscoverSearchStore } from "@/store/discover-search";
-import { useShouldShowExitButton } from "@/utils/auth";
+import { AuthenticationDrawer } from "@/views/authentication-drawer";
 
-import AuthenticationDrawer from "./authentication-drawer";
-import { AuthenticationDrawerContextProvider } from "./authentication-drawer/context";
-
-export default function Component() {
+export function TopNavigationBar() {
     const checkRoute = useMatchRoute();
     const { toggleIsVisible } = useDiscoverSearchStore();
     const showExitButton = useShouldShowExitButton(["/profile", "/stream"]);
@@ -27,7 +26,7 @@ export default function Component() {
         <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white/85 p-5 backdrop-blur-sm">
             <aside>
                 <Link to={"/"}>
-                    <LOGO />
+                    <img src="/trophy.svg" alt="trophy-logo" />
                 </Link>
             </aside>
 
@@ -38,30 +37,29 @@ export default function Component() {
                     </button>
                 ) : null}
 
-                {!showExitButton ? (
-                    <AuthenticationDrawerContextProvider>
-                        <AuthenticationDrawer />
-                    </AuthenticationDrawerContextProvider>
-                ) : (
-                    <ExitButton />
-                )}
+                {!showExitButton ? <AuthenticationDrawer /> : <ExitButton />}
             </aside>
         </section>
     );
 }
 
 function ExitButton() {
-    const { logout } = useAuthenticationContext();
+    const { logout } = usePrivy();
     const navigate = useNavigate();
 
-    function handleLogout() {
-        logout();
-        navigate({ to: "/" });
+    async function handleLogout() {
+        logout()
+            .then(function () {
+                useAuthenticationStore.getState().logout();
+            })
+            .finally(function () {
+                navigate({ to: "/" });
+            });
     }
 
     return (
         <button onClick={handleLogout}>
-            <span>exit</span>
+            <i>{EXIT_PAGE()}</i>
         </button>
     );
 }

@@ -1,0 +1,69 @@
+import { Request, Response } from "express";
+import { User } from "../models/userSchema";
+import { RedisClient, prisma } from "../config/db";
+import { savePfp } from "../utils/imgs";
+
+export async function onboard(request: Request, response: Response) {
+  const userProfilePicture = request.file?.buffer;
+  const privyId = request.privyUser?.userId as string;
+
+  try {
+    const { bio, email, username: uName, profilePicture, walletAddress, fc } = request.body;
+    const existingUser = await prisma.user.findUnique({ where: { privyId } });
+
+    if (!existingUser) {
+      if (!uName) {
+        response.status(422).json({ message: "username is required" });
+        return;
+      }
+
+      let username;
+      const formatRegex = /[ _-]/g;
+      const usernameFormat = formatRegex.test(uName);
+      if (fc) {
+        if (usernameFormat) {
+          username = uName.replace(formatRegex, "");
+        }
+      } else {
+        if (usernameFormat) {
+          response.status(400).json({ message: "username cannot have space, underscore or hypens" });
+          return;
+        }
+
+        username = uName;
+      }
+
+      const usernameExists = await prisma.user.findUnique({ where: { username } });
+      if (usernameExists) {
+        response.status(400).json({ message: "username exists" });
+        return;
+      }
+
+      let userPfp;
+
+      if (userProfilePicture) {
+        userPfp = await savePfp(userProfilePicture, request.file!.originalname);
+      } else if (profilePicture && profilePicture !== "default-pfp.svg") {
+        userPfp = profilePicture;
+      } else {
+        userPfp = undefined;
+      }
+
+      const user = await prisma.user.create({
+        data: { bio, email, privyId, username, walletAddress, ...(userPfp && { userPfp }) },
+      });
+
+      await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
+
+      response.status(201).json({
+        message: "success",
+        data: { isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username) },
+      });
+    }
+  } catch (error) {
+    response.status(500).json({
+      error: (error as Error).message,
+      message: "Failed to authenticate user",
+    });
+  }
+}

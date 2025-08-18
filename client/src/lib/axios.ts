@@ -1,9 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
+import { useAuthenticationStore } from "@/store/authentication";
+
 /**
  * Define supported HTTP methods.
  */
-export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
+export type HttpMethod = "DELETE" | "GET" | "PATCH" | "POST" | "PUT";
 
 /**
  * Define DataResponse type for receiving requests
@@ -42,7 +44,7 @@ const axiosInstance: AxiosInstance = axios.create({
  */
 export async function makeRequest<T>({
     data,
-    headers,
+    headers = {},
     method,
     params,
     url,
@@ -53,6 +55,11 @@ export async function makeRequest<T>({
      */
     const isExternalApi = url.startsWith("http");
 
+    const token = useAuthenticationStore.getState().token;
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
     try {
         /**
          * Send the request using the configured Axios instance.
@@ -61,14 +68,7 @@ export async function makeRequest<T>({
             ? await axios({ url, method, params, headers, data })
             : await axiosInstance({ url, method, params, headers, data });
 
-        const {
-            config,
-            data: responseData,
-            headers: responseHeaders,
-            request,
-            status,
-            statusText,
-        } = response;
+        const { config, data: responseData, headers: responseHeaders, request, status, statusText } = response;
 
         /**
          * Return the response data and status.

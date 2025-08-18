@@ -1,12 +1,5 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
-import {
-    createPublicClient,
-    createWalletClient,
-    custom,
-    http,
-    type PublicClient,
-    type WalletClient,
-} from "viem";
+import { createPublicClient, createWalletClient, custom, http, type PublicClient, type WalletClient } from "viem";
 
 import { network } from "@/lib/constants";
 
@@ -19,7 +12,7 @@ export const getPublicClient = () => {
     }) as PublicClient;
 };
 
-export const getWalletClient = async (provider: EIP1193Provider) => {
+export const getWalletClient = (provider: EIP1193Provider): WalletClient => {
     if (!walletClient) {
         walletClient = createWalletClient({
             chain: network,
