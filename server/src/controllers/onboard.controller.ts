@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { User } from "../models/userSchema";
 import { RedisClient, prisma } from "../config/db";
 import { savePfp } from "../utils/imgs";
 
