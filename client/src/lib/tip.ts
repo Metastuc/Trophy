@@ -1,15 +1,15 @@
 /* eslint-disable simple-import-sort/imports */
-import { EIP1193Provider } from "@privy-io/react-auth";
-import { http, parseAbi, parseEther, parseUnits } from "viem";
 import { DEGEN, USDC, ZORA } from "@/lib/contracts";
-import { getWalletClient } from "./viem";
 import {
     createMeeClient,
     greaterThanOrEqualTo,
     runtimeERC20BalanceOf,
-    toMultichainNexusAccount
+    toMultichainNexusAccount,
 } from "@biconomy/abstractjs";
+import { EIP1193Provider } from "@privy-io/react-auth";
+import { http, parseAbi, parseEther, parseUnits } from "viem";
 import { network } from "./constants";
+import { getWalletClient } from "./viem";
 
 type walletType = "privy" | "external";
 
@@ -28,15 +28,33 @@ export const ethTip = async (recipient: string, amount: string, provider: EIP119
     return hash;
 };
 
-export const tipUSDC = async (recipient: string, amount: string, userAddress: `0x${string}`, wallet: walletType, provider: EIP1193Provider) => {
+export const tipUSDC = async (
+    recipient: string,
+    amount: string,
+    userAddress: `0x${string}`,
+    wallet: walletType,
+    provider: EIP1193Provider,
+) => {
     return await tipToken(recipient, USDC, amount, userAddress, provider, wallet, true);
 };
 
-export const tipZORA = async (recipient: string, amount: string, userAddress: `0x${string}`, provider: EIP1193Provider, wallet: walletType) => {
+export const tipZORA = async (
+    recipient: string,
+    amount: string,
+    userAddress: `0x${string}`,
+    provider: EIP1193Provider,
+    wallet: walletType,
+) => {
     return await tipToken(recipient, ZORA, amount, userAddress, provider, wallet);
 };
 
-export const tipDEGEN = async (recipient: string, amount: string, userAddress: `0x${string}`, provider: EIP1193Provider, wallet: walletType) => {
+export const tipDEGEN = async (
+    recipient: string,
+    amount: string,
+    userAddress: `0x${string}`,
+    provider: EIP1193Provider,
+    wallet: walletType,
+) => {
     return await tipToken(recipient, DEGEN, amount, userAddress, provider, wallet);
 };
 
@@ -46,7 +64,7 @@ export const tipCreatorToken = async (
     amount: string,
     userAddress: `0x${string}`,
     provider: EIP1193Provider,
-    wallet: walletType
+    wallet: walletType,
 ) => {
     return await tipToken(recipient, contractAddress, amount, userAddress, provider, wallet);
 };
@@ -60,7 +78,6 @@ const tipToken = async (
     wallet: walletType,
     usdc?: boolean,
 ) => {
-
     const nexusAccount = await toMultichainNexusAccount({
         chains: [network],
         transports: [http()],
@@ -77,12 +94,12 @@ const tipToken = async (
     const tokenInUnits = parseUnits(amount, decimals);
 
     const sendTokenIx = await nexusAccount.buildComposable({
-        type: 'default',
+        type: "default",
         data: {
             abi: parseAbi(["function transfer(address to, uint256 amount) nonpayable"]),
             chainId,
             to: tokenAddress,
-            functionName: 'transfer',
+            functionName: "transfer",
             args: [
                 recieverAddress,
                 runtimeERC20BalanceOf({
@@ -91,28 +108,27 @@ const tipToken = async (
                     constraints: [greaterThanOrEqualTo(tokenInUnits)],
                 }),
             ],
-        }
+        },
     });
 
     if (wallet === "external") {
-
         const fusionQuote = await MeeClient.getFusionQuote({
             trigger: {
                 chainId,
                 tokenAddress,
-                amount: tokenInUnits
+                amount: tokenInUnits,
             },
             instructions: [sendTokenIx],
             feeToken: {
                 address: tokenAddress,
-                chainId
-            }
+                chainId,
+            },
         });
 
         const { hash } = await MeeClient.executeFusionQuote({ fusionQuote });
 
         const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-    
+
         return superHash;
     }
 
@@ -122,7 +138,7 @@ const tipToken = async (
 
         feeToken: {
             address: tokenAddress,
-            chainId
+            chainId,
         },
     });
 
