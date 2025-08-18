@@ -1,5 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
-import { DEGEN, USDC, ZORA } from "@/lib/contracts";
 import {
     createMeeClient,
     greaterThanOrEqualTo,
@@ -8,6 +6,9 @@ import {
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { http, parseAbi, parseEther, parseUnits } from "viem";
+
+import { DEGEN, USDC, ZORA } from "@/lib/contracts";
+
 import { network } from "./constants";
 import { getWalletClient } from "./viem";
 
