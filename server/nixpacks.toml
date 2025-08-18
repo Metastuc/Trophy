@@ -4,8 +4,9 @@ nixPkgs = ["nodejs_22"]
 [phases.install]
 cmds = [
   "npm install --legacy-peer-deps",
-  "npx prisma generate"
-]
+  "npx prisma generate",
+  "npm ci --omit=dev"
+] 
 
 [start]
 cmd = "npm start"
