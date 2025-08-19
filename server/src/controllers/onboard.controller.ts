@@ -21,11 +21,7 @@ export async function onboard(request: Request, response: Response) {
       const usernameFormat = formatRegex.test(username);
 
       if (fc !== "false") {
-        if (usernameFormat) {
-          usernameRegex = username.replace(formatRegex, "");
-        } else {
-          usernameRegex = username;
-        }
+        usernameRegex = username.replace(formatRegex, "");
       } else {
         if (usernameFormat) {
           response.status(400).json({ message: "username cannot have space, underscore or hypens" });
