@@ -3,7 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch server.ts",
+    "dev": "clear && bun --watch server.ts",
     "start": "tsx server.ts",
     "migrate": "prisma db push && tsx prisma/db-notis-ttl.ts"
   },

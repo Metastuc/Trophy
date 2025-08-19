@@ -20,9 +20,10 @@ export async function onboard(request: Request, response: Response) {
       const formatRegex = /[ _-]/g;
       const usernameFormat = formatRegex.test(username);
 
-      if (fc) {
+      if (fc !== "false") {
         if (usernameFormat) {
           usernameRegex = username.replace(formatRegex, "");
+
         }
       } else {
         if (usernameFormat) {
@@ -57,7 +58,7 @@ export async function onboard(request: Request, response: Response) {
 
       response.status(201).json({
         message: "success",
-        data: { isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username) },
+        data: { isBasicProfileComplete: Boolean(user?.email && user?.userPfp && user?.username), user },
       });
     }
   } catch (error) {
