@@ -23,6 +23,8 @@ export async function onboard(request: Request, response: Response) {
       if (fc !== "false") {
         if (usernameFormat) {
           usernameRegex = username.replace(formatRegex, "");
+        } else {
+          usernameRegex = username;
         }
       } else {
         if (usernameFormat) {
