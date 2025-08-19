@@ -1,4 +1,9 @@
 {
+    "accountAssociation": {
+        "header": "eyJmaWQiOjY1NDQxOCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDIxODIyQzFERjg0MjI0MDg1MWIzYzdCOTk1ODI2Y2M5QTdkNjM1NzQifQ",
+        "payload": "eyJkb21haW4iOiJ0cm9waHl0di5jbyJ9",
+        "signature": "MHgyZTk1ZGM1NmE5ZjExYjdkZGJjZDg2MjZmOTNmNzJhNjBmOGJiMmIzNjhiZjNiNWYzMWQxZDhjNDJkZjZiMTE1MzVjMjEzYzJjOWVlOWVmMDIzMTQ1OTU2YjI3NWI3ZDQ3YjFjNWJlMDU3Mzc0YWM1NTRiMzAwNzg5YjM0MmNmYjFj"
+    },
     "frame": {
         "version": "1",
         "name": "Trophy",
