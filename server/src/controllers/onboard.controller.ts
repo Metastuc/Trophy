@@ -16,7 +16,7 @@ export async function onboard(request: Request, response: Response) {
         return;
       }
 
-      let usernameRegex;
+      let usernameRegex = "";
       const formatRegex = /[ _-]/g;
       const usernameFormat = formatRegex.test(username);
 
@@ -29,9 +29,11 @@ export async function onboard(request: Request, response: Response) {
           response.status(400).json({ message: "username cannot have space, underscore or hypens" });
           return;
         }
+
+        usernameRegex = username;
       }
 
-      const usernameExists = await prisma.user.findUnique({ where: { username } });
+      const usernameExists = await prisma.user.findUnique({ where: { username: usernameRegex } });
       if (usernameExists) {
         response.status(400).json({ message: "username exists" });
         return;
@@ -48,7 +50,7 @@ export async function onboard(request: Request, response: Response) {
       }
 
       const user = await prisma.user.create({
-        data: { bio, email, privyId, username, walletAddress, ...(userPfp && { userPfp }) },
+        data: { bio, email, privyId, username: usernameRegex, walletAddress, ...(userPfp && { userPfp }) },
       });
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
