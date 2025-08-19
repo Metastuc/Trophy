@@ -3,13 +3,14 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, Link, RouterProvider } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 import { LoadingScreen } from "./components/layouts/loading.tsx";
 import { AppContextProviders } from "./contexts/index.tsx";
+import { useCustomScriptLoader } from "./hooks/script.ts";
 import { routeTree } from "./routeTree.gen.ts";
 import { useAuthenticationStore } from "./store/authentication.ts";
 
@@ -46,6 +47,19 @@ declare module "@tanstack/react-router" {
 
 function App() {
     const authenticationStore = useAuthenticationStore(useShallow((state) => state));
+    const status = useCustomScriptLoader({
+        src: "https://cdn.jsdelivr.net/npm/eruda",
+    });
+
+    useEffect(() => {
+        if (status === "ready") {
+            // @ts-expect-error window.eruda is not defined in the TypeScript type definitions
+            if (window.eruda) {
+                // @ts-expect-error window.eruda.init is not defined in the TypeScript type definitions
+                window.eruda.init();
+            }
+        }
+    }, [status]);
 
     if (authenticationStore.isLoading) return <LoadingScreen />;
 
