@@ -7,21 +7,22 @@ export async function onboard(request: Request, response: Response) {
   const privyId = request.privyUser?.userId as string;
 
   try {
-    const { bio, email, username: uName, profilePicture, walletAddress, fc } = request.body;
+    const { bio, email, username, profilePicture, walletAddress, fc } = request.body;
     const existingUser = await prisma.user.findUnique({ where: { privyId } });
 
     if (!existingUser) {
-      if (!uName) {
+      if (!username) {
         response.status(422).json({ message: "username is required" });
         return;
       }
 
-      let username;
+      let usernameRegex = "";
       const formatRegex = /[ _-]/g;
-      const usernameFormat = formatRegex.test(uName);
+      const usernameFormat = formatRegex.test(username);
+
       if (fc) {
         if (usernameFormat) {
-          username = uName.replace(formatRegex, "");
+          usernameRegex = username.replace(formatRegex, "");
         }
       } else {
         if (usernameFormat) {
@@ -29,10 +30,10 @@ export async function onboard(request: Request, response: Response) {
           return;
         }
 
-        username = uName;
+        usernameRegex = username;
       }
 
-      const usernameExists = await prisma.user.findUnique({ where: { username } });
+      const usernameExists = await prisma.user.findUnique({ where: { username: usernameRegex } });
       if (usernameExists) {
         response.status(400).json({ message: "username exists" });
         return;
@@ -49,7 +50,7 @@ export async function onboard(request: Request, response: Response) {
       }
 
       const user = await prisma.user.create({
-        data: { bio, email, privyId, username, walletAddress, ...(userPfp && { userPfp }) },
+        data: { bio, email, privyId, username: usernameRegex, walletAddress, ...(userPfp && { userPfp }) },
       });
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
