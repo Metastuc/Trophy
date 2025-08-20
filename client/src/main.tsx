@@ -3,7 +3,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, Link, RouterProvider } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { useShallow } from "zustand/shallow";
@@ -46,19 +46,32 @@ declare module "@tanstack/react-router" {
 
 function App() {
     const authenticationStore = useAuthenticationStore(useShallow((state) => state));
-    // const status = useCustomScriptLoader({
-    //     src: "https://cdn.jsdelivr.net/npm/eruda",
-    // });
 
-    // useEffect(() => {
-    //     if (status === "ready") {
-    //         // @ts-expect-error window.eruda is not defined in the TypeScript type definitions
-    //         if (window.eruda) {
-    //             // @ts-expect-error window.eruda.init is not defined in the TypeScript type definitions
-    //             window.eruda.init();
-    //         }
-    //     }
-    // }, [status]);
+    // this is a hack to make the app work on faracster android mini app
+    useEffect(function () {
+        try {
+            // @ts-expect-error navigator.__defineGetter__ is not defined in the TypeScript type definitions
+            const os = navigator?.userAgentData?.platform;
+
+            if (os !== "android") {
+                // @ts-expect-error navigator.__defineGetter__ is not defined in the TypeScript type definitions
+                navigator.__defineGetter__(
+                    "userAgent",
+                    () =>
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15",
+                );
+            } else {
+                // @ts-expect-error navigator.__defineGetter__ is not defined in the TypeScript type definitions
+                navigator.__defineGetter__(
+                    "userAgent",
+                    () =>
+                        "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36",
+                );
+            }
+        } catch (error) {
+            console.error("Error defining getter for navigator:", error);
+        }
+    }, []);
 
     if (authenticationStore.isLoading) return <LoadingScreen />;
 
