@@ -20,7 +20,7 @@ export async function onboard(request: Request, response: Response) {
       const formatRegex = /[ _-]/g;
       const usernameFormat = formatRegex.test(username);
 
-      if (fc !== "false") {
+      if (fc) {
         usernameRegex = username.replace(formatRegex, "");
       } else {
         if (usernameFormat) {
