@@ -100,7 +100,7 @@ export const createStream = async (req: Request, res: Response) => {
       });
 
       setTimeout(async () => {
-        await startLivestream(roomId, recordToken, ["rtmp://va.pscp.tv:80/x/771qg44fkjtf"])
+        await startLivestream(roomId, recordToken, ["rtmp://a.rtmp.youtube.com/live2/t9j2-km4u-3wqc-6udf-d46m"]);
       }, 80000);
 
       if (xLive && !ytLive) {
