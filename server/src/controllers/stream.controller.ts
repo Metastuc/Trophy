@@ -101,33 +101,37 @@ export const createStream = async (req: Request, res: Response) => {
 
       if (xLive && !ytLive) {
         if (user.xUrl) {
-          await startLiveStream(roomId, liveStreamToken, [user.xUrl]);
+          await startLivestream(roomId, liveStreamToken, [user.xUrl]);
         }
       } else if (ytLive && !xLive) {
         if (user.ytUrl) {
-          await startLiveStream(roomId, liveStreamToken, [user.ytUrl]);
+          await startLivestream(roomId, liveStreamToken, [user.ytUrl]);
         }
       } else if (xLive && ytLive) {
         if (user.xUrl && user.ytUrl) {
-          await startLiveStream(roomId, liveStreamToken, [user.xUrl, user.ytUrl]);
+          await startLivestream(roomId, liveStreamToken, [user.xUrl, user.ytUrl]);
         }
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({
       error: "Internal server error",
+      message: error.message
     });
   }
 };
 
-const startLiveStream = async (roomId: string, token: string, rtmpUrls: string[]) => {
+const startLivestream = async (roomId: string, token: string, rtmpUrls: string[]) => {
   try {
-    await recorder.startLivestream({
+    const { msg } = await recorder.startLivestream({
       roomId,
       token,
       rtmpUrls,
+      recordLivestream: true
     });
+
+    console.log({msg})
   } catch (error: any) {
     console.error(error);
     throw new Error(error.message);
@@ -155,8 +159,6 @@ export const stopStream = async (req: Request, res: Response) => {
       res.status(404).json({ message: "Stream not found!" });
       return;
     }
-
-    console.log(liveStream);
 
     if (liveStream.status !== "Live") {
       console.log(liveStream.status)

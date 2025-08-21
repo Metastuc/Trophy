@@ -2,15 +2,16 @@ import nodemailer from "nodemailer";
 import hbs, { type NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASSWORD } from "./env";
+import { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASSWORD, EMAIL_PORT } from "./env";
 import type { UserProp, MailOptions } from "../types/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // currently using gmail service/transport. Will update to Zoho domain email.
 const transporter = nodemailer.createTransport({
-  service: EMAIL_SERVICE,
-  secure: true,
+  host: EMAIL_SERVICE,
+  port: EMAIL_PORT,
+  secure: true, 
   auth: {
     user: EMAIL_USER,
     pass: EMAIL_PASSWORD,
@@ -27,15 +28,15 @@ const options: NodemailerExpressHandlebarsOptions = {
 
 transporter.use("compile", hbs(options));
 
-export const sendRegisterEmail = async (user: UserProp, subject: string) => {
+export const sendRegisterEmail = async (email: string, username: string) => {
   try {
     await transporter.sendMail({
       from: EMAIL_USER,
-      to: user.email,
-      subject: subject,
+      to: email,
+      subject: "Welcome to Trophy 🎉",
       template: "newUser",
       context: {
-        username: user.username,
+        username,
       },
     } as MailOptions);
   } catch (error) {
@@ -71,11 +72,11 @@ export const sendScheduleEmail = async (
     const icsCalendarContent = `
       BEGIN:VCALENDAR
       VERSION:2.0
-      PRODID:-trophystream.xyz//EN
+      PRODID:-trophytv.co//EN
       CALSCALE:GREGORIAN
       METHOD:REQUEST
       BEGIN:VEVENT
-      UID:${Date.now()}@trophystream.xyz
+      UID:${Date.now()}@trophytv.co
       DTSTAMP:${dtStamp}
       DTSTART:${date}
       DTEND:${date}
