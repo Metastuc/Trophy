@@ -18,6 +18,7 @@ import { uploadImg } from "../utils/imgs";
 import { getStream } from "../controllers/getStream.controller";
 import { leaderboard } from "../controllers/leaderboard.controller";
 import { fetchStreams } from "../controllers/fetchStreams.controller";
+import { createTokenUri } from "../controllers/pinata";
 
 const router = Router();
 
@@ -36,9 +37,10 @@ router
   .post("/update-pfp", authenticate, uploadImg.single("pfp"), updatePfp)
   .post("/save-thumbnail", authenticate, uploadImg.single("thumbnail"), saveStreamThumbnail)
 
-  .get("/stream/:roomId", getStream)
   .get("/fetch-streams", fetchStreams)
+  .post("/create-token-uri", authenticate, createTokenUri)
   .get("/leaderboard", leaderboard)
-  .post("/save-creator-token", authenticate, creatorTokenCreated);
+  .post("/save-creator-token", authenticate, creatorTokenCreated)
+  .get("/stream/:roomId", getStream);
 
 export default router;
