@@ -6,11 +6,13 @@ import {
   type MultichainSmartAccount,
   UniswapSwapRouterAbi as ROUTER_ABI,
   runtimeERC20BalanceOf,
-  greaterThanOrEqualTo
+  greaterThanOrEqualTo,
+  getMEEVersion,
+  MEEVersion
 } from "@biconomy/abstractjs";
 import { network } from "./constants";
 import type { EIP1193Provider } from "@privy-io/react-auth";
-import { http, parseUnits } from "viem";
+import { type Address, custom, parseUnits } from "viem";
 import {
   BASE_V3_ROUTER,
   WETH,
@@ -19,7 +21,7 @@ import {
   Addresses
 } from "./contracts";
 import { MORPH_ABI, QUOTE_ABI } from "./abi";
-import { getPublicClient } from "./viem";
+import { publicClient } from "./viem";
 
 type tokenType = "USDC" | "ZORA" | "DEGEN" | "BANKR";
 
@@ -27,27 +29,30 @@ const chainId = network.id as unknown as number;
 
 export const performTokentoETHSwap = async (
   token: tokenType,
-  walletType: "privy" | "external",
-  address: `0x${string}`,
+  walletType: string,
+  address: Address,
   signer: EIP1193Provider,
   amount: string,
   minOutAmount: bigint
 ) => {
   try {
     const nexusAccount = await toMultichainNexusAccount({
-      chains: [network],
-      transports: [http()],
+      chainConfigurations: [{
+        chain: network,
+        transport: custom(signer),
+        version: getMEEVersion(MEEVersion.V2_1_0)
+      }],
       signer,
       accountAddress: address,
     });
 
     const MeeClient = await createMeeClient({ account: nexusAccount });
-    const tokenAddress = Addresses[token] as `0x${string}`;
+    const tokenAddress = Addresses[token] as Address;
 
     const decimals = token === "USDC" ? 6 : 18;
     const tokenInUnits = parseUnits(amount, decimals);
 
-    if (walletType === "external") {
+    if (walletType !== "privy") {
 
       const approveTokenIx = await nexusAccount.buildComposable({
         type: "approve",
@@ -80,11 +85,11 @@ export const performTokentoETHSwap = async (
         instructions: [approveTokenIx, performSwapIx, approveMorphoIx, supplyWETHtoMORPHOIx]
       });
 
-      const { hash } = await MeeClient.executeFusionQuote({ fusionQuote: quote });
+      const { hash: fusionHash } = await MeeClient.executeFusionQuote({ fusionQuote: quote });
 
-      const receipt = await MeeClient.waitForSupertransactionReceipt({ hash });
+      const { hash } = await MeeClient.waitForSupertransactionReceipt({ hash: fusionHash });
 
-      return receipt.hash;
+      return hash;
     }
 
     const {
@@ -93,7 +98,7 @@ export const performTokentoETHSwap = async (
       supplyWETHtoMORPHOIx
     } = await getIxs(tokenAddress, nexusAccount, minOutAmount);
 
-    const { hash } = await MeeClient.getQuote({
+    const { hash: executeHash } = await MeeClient.execute({
       delegate: true,
       feeToken: {
         address: tokenAddress,
@@ -102,16 +107,16 @@ export const performTokentoETHSwap = async (
       instructions: [performSwapIx, approveMorphoIx, supplyWETHtoMORPHOIx]
     });
 
-    const receipt = await MeeClient.waitForSupertransactionReceipt({ hash });
+    const { hash } = await MeeClient.waitForSupertransactionReceipt({ hash: executeHash });
 
-    return receipt.hash;
+    return hash;
   } catch (error: any) {
     console.error(error)
     throw new Error(error.messge);
   }
 };
 
-const getIxs = async (tokenAddress: `0x${string}`, nexusAccount: MultichainSmartAccount, amountOutMin: bigint) => {
+const getIxs = async (tokenAddress: Address, nexusAccount: MultichainSmartAccount, amountOutMin: bigint) => {
   const minOutAmount = (amountOutMin * 99n) / 100n; // 1% spillage buffer
 
   const performSwapIx = await nexusAccount.buildComposable({
@@ -177,9 +182,7 @@ export const getTokenToEthQuote = async (token: tokenType, amount: string) => {
   try {
     const decimals = token === "USDC" ? 6 : 18;
     const tokenInUnits = parseUnits(amount, decimals);
-    const tokenAddress = Addresses[token] as `0x${string}`;
-
-    const publicClient = getPublicClient();
+    const tokenAddress = Addresses[token] as Address;
 
     const amountOut = await publicClient.readContract({
       address: BASE_V2_QUOTER,
