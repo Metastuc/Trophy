@@ -99,10 +99,6 @@ export const createStream = async (req: Request, res: Response) => {
         token,
       });
 
-      setTimeout(async () => {
-        await startLivestream(roomId, recordToken, ["rtmp://a.rtmp.youtube.com/live2/t9j2-km4u-3wqc-6udf-d46m"]);
-      }, 80000);
-
       if (xLive && !ytLive) {
         if (user.xUrl) {
           await startLivestream(roomId, liveStreamToken, [user.xUrl]);
