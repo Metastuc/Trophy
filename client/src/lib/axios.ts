@@ -2,6 +2,8 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 import { useAuthenticationStore } from "@/store/authentication";
 
+import { BACKEND_URL } from "./constants";
+
 /**
  * Define supported HTTP methods.
  */
@@ -31,7 +33,7 @@ type RequestOptions = {
 };
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: BACKEND_URL,
 });
 
 /**

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { RedisClient, prisma } from "../config/db";
 import { savePfp } from "../utils/imgs";
+import { sendRegisterEmail } from "../utils/emailNotis";
 
 export async function onboard(request: Request, response: Response) {
   const userProfilePicture = request.file?.buffer;
@@ -28,12 +29,23 @@ export async function onboard(request: Request, response: Response) {
           return;
         }
 
+        if (username === "jessepollak") {
+          response.status(400).json({ message: "username cannot be jessepollak" });
+          return;
+        }
+
         usernameRegex = username;
       }
 
       const usernameExists = await prisma.user.findUnique({ where: { username: usernameRegex } });
       if (usernameExists) {
         response.status(400).json({ message: "username exists" });
+        return;
+      }
+
+      const emailExists = await prisma.user.findUnique({ where: { email } });
+      if (emailExists) {
+        response.status(400).json({ message: "email exists" });
         return;
       }
 
@@ -52,6 +64,8 @@ export async function onboard(request: Request, response: Response) {
       });
 
       await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
+
+      await sendRegisterEmail(email, username);
 
       response.status(201).json({
         message: "success",

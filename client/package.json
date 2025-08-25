@@ -10,10 +10,8 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@biconomy/abstractjs": "1.0.22",
+        "@biconomy/abstractjs": "^1.1.1",
         "@coinbase/onchainkit": "^0.38.19",
-        "@delvtech/drift": "^0.11.1",
-        "@delvtech/drift-viem": "^0.11.1",
         "@farcaster/miniapp-sdk": "^0.1.8",
         "@flaunch/sdk": "^0.8.2",
         "@huddle01/react": "^2.5.1",
@@ -25,7 +23,7 @@
         "@radix-ui/react-popover": "^1.1.14",
         "@radix-ui/react-select": "^2.2.5",
         "@radix-ui/react-slot": "^1.2.3",
-        "@rhinestone/module-sdk": "0.3.0",
+        "@rhinestone/module-sdk": "^0.3.1",
         "@tailwindcss/vite": "^4.1.11",
         "@tanstack/react-query": "^5.85.0",
         "@tanstack/react-router": "^1.131.8",
