@@ -45,8 +45,6 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-    const authenticationStore = useAuthenticationStore(useShallow((state) => state));
-
     // this is a hack to make the app work on faracster android mini app
     useEffect(function () {
         try {
@@ -73,6 +71,7 @@ function App() {
         }
     }, []);
 
+    const authenticationStore = useAuthenticationStore(useShallow((state) => state));
     if (authenticationStore.isLoading) return <LoadingScreen />;
 
     return (

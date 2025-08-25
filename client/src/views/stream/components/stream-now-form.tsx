@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { cn } from "@/lib/utils";
@@ -60,7 +61,6 @@ export function StreamNowForm() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <input type="hidden" name="username" value={formState.username} />
                 <input type="hidden" name="walletAddress" value={formState.walletAddress} />
-
                 <div className="flex flex-col">
                     <label htmlFor="title">Title</label>
                     <TextInput
@@ -73,13 +73,19 @@ export function StreamNowForm() {
                     />
                 </div>
 
+                <div className="flex items-center justify-between">
+                    <label htmlFor="creatorToken">Activate creator token</label>
+                    <input type="checkbox" name="record" id="record" />
+
+                    <Switch checked={field.value} onCheckedChange={field.onChange} disabled aria-readonly />
+                </div>
+
                 <p className="text-xs">
                     You can brodcast your livestreams to X and YouTube by including the RMTP URL to your{" "}
                     <Link to="/profile" className="text-blue100">
                         profile
                     </Link>
                 </p>
-
                 <Button
                     type="submit"
                     className={cn(
@@ -104,8 +110,3 @@ export function StreamNowForm() {
         </section>
     );
 }
-
-// <div className="flex items-center justify-between">
-//     <label htmlFor="record">Record livestream</label>
-//     <input type="checkbox" name="record" id="record" />
-// </div>;
