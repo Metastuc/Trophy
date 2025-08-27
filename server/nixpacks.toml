@@ -6,10 +6,9 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
-  "node -v",
-  "which node",
-  "pnpm --version",
-  "pnpm install",
+  "pnpm install --frozen-lockfile",
+  "pnpm prisma generate",
+  "pnpm run migrate"
 ]
 
 [start]
