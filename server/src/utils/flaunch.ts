@@ -1,4 +1,5 @@
-import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk/dist/index.esm.js";
+// import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
+import * as flaunch from "@flaunch/sdk";
 import { http, createPublicClient, type PublicClient, type Address } from "viem";
 import { NETWORK } from "./env";
 
@@ -11,7 +12,7 @@ export const getTokenDetails = async (coinAddress: Address, profile = false) => 
     transport: http(),
   }) as PublicClient;
 
-  const flaunchClient = createFlaunch({ publicClient }) as ReadFlaunchSDK;
+  const flaunchClient = flaunch.createFlaunch({ publicClient }) as flaunch.ReadFlaunchSDK;
 
   const mcap = await flaunchClient.coinMarketCapInUSD({ coinAddress });
 
