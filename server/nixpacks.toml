@@ -6,7 +6,7 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
-  "pnpm install --frozen-lockfile",
+  "pnpm install",
   "pnpm prisma generate",
   "pnpm run migrate"
 ]
