@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "clear && bun --watch server.ts",
     "start": "bun server.ts",
-    "migrate": "prisma db push && bun prisma/db-notis-ttl.ts"
+    "migrate": "prisma db push && tsx prisma/db-notis-ttl.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
