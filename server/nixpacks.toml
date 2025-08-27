@@ -5,6 +5,3 @@ nixPkgs = ["nodePackages_latest.nodejs", "bun"]
 cmds = [
   "npx prisma generate"
 ]
-
-[start]
-cmd = "bunx --bun run start"
