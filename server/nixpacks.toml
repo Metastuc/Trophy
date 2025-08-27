@@ -1,14 +1,14 @@
 [phases.setup]
 nixPkgs = [
   "nodePackages_latest.nodejs",
-  "pnpm"
+  "yarn-1_x"
 ]
 
 [phases.install]
 cmds = [
-  "pnpm install",
-  "pnpm run migrate"
+  "yarn install",
+  "yarn run migrate"
 ]
 
 [start]
-cmd = "pnpm start"
+cmd = "yarn start"
