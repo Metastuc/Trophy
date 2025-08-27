@@ -7,9 +7,8 @@ nixPkgs = [
 [phases.install]
 cmds = [
   "pnpm install",
-  "pnpm prisma generate",
   "pnpm run migrate"
 ]
 
 [start]
-cmd = "pnpm run start"
+cmd = "pnpm start"

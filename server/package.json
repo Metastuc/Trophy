@@ -41,6 +41,7 @@
     "janus-gateway": "^1.3.2-2",
     "jsonwebtoken": "^9.0.2",
     "livepeer": "^3.5.0",
+    "mongodb": "^6.19.0",
     "mongoose": "^8.15.1",
     "moralis": "^2.27.2",
     "multer": "^2.0.0",
