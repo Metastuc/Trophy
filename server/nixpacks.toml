@@ -4,6 +4,9 @@ nixPkgs = [
   "yarn"
 ]
 
+[environment]
+PATH = "/app/node_modules/.bin:" + "$PATH"
+
 [phases.install]
 cmds = [
   "yarn install --frozen-lockfile",
