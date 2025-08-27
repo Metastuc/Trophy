@@ -3,7 +3,6 @@ nixPkgs = ["nodePackages_latest.nodejs", "bun"]
 
 [phases.install]
 cmds = [
-  "npm run migrate",
   "npx prisma generate"
 ]
 
