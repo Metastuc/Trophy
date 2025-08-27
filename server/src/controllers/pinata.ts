@@ -2,7 +2,7 @@ import { PinataSDK } from "pinata";
 import {} from "@aws-sdk/client-s3";
 import type { Request, Response } from "express";
 import { prisma } from "../config/db";
-import { PINATA_JWT, PINATA_GATEWAY, JPG_DEFAULT_IMAGE } from "../utils/env";
+import { PINATA_JWT, PINATA_GATEWAY, JPG_DEFAULT_IMAGE, DEFAULT_IMAGE } from "../utils/env";
 
 let pinata: PinataSDK | undefined = undefined;
 export const createTokenUri = async (req: Request, res: Response) => {
@@ -28,8 +28,7 @@ export const createTokenUri = async (req: Request, res: Response) => {
     }
 
     let image: string;
-    const key = user.userPfp.split(".com/")[1];
-    if (key !== "default-pfp.svg") {
+    if (user.userPfp !== DEFAULT_IMAGE) {
       image = user.userPfp
     } else {
       image = JPG_DEFAULT_IMAGE

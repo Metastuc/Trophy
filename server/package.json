@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.835.0",
-    "@flaunch/sdk": "^0.8.2",
+    "@flaunch/sdk": "^0.9.0-beta.1",
     "@huddle01/server-sdk": "^2.6.2",
     "@prisma/client": "6.14.0",
     "@privy-io/server-auth": "^1.26.2",
