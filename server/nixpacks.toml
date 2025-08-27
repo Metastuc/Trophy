@@ -3,6 +3,12 @@ nixPkgs = ["nodePackages_latest.nodejs"]
 
 [phases.install]
 cmds = [
+  "echo '--- PACKAGE.JSON CONTENTS ---'",
+  "cat package.json",
+  "echo '--- NODE VERSION ---'",
+  "node -v",
+  "echo '--- NPM VERSION ---'",
+  "npm -v",
   "npm install --legacy-peer-deps --omit=dev",
   "npm run migrate",
 ]
