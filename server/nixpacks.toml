@@ -6,8 +6,7 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
-  "yarn install",
-  "yarn migrate"
+  "yarn install --frozen-lockfile",
 ]
 
 [start]
