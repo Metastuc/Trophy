@@ -1,21 +1,14 @@
 [phases.setup]
-nixPkgs = ["nodePackages_latest.nodejs"]
+nixPkgs = [
+  "nodePackages_latest.nodejs",
+  "yarn"
+]
 
 [phases.install]
 cmds = [
-  "echo '--- PACKAGE.JSON CONTENTS ---'",
-  "cat package.json",
-  "echo '--- NODE VERSION ---'",
-  "node -v",
-  "echo '--- NPM VERSION ---'",
-  "npm -v",
-  "npm install --legacy-peer-deps --omit=dev",
-  "echo '--- FLAUNCH SDK PACKAGE.JSON ---'",
-  "cat node_modules/@flaunch/sdk/package.json",
-  "echo '--- FILES INSTALLED ---'",
-  "ls -R node_modules/@flaunch/sdk | head -n 100",
-  "npm run migrate",
+  "yarn install --frozen-lockfile",
+  "yarn migrate"
 ]
 
 [start]
-cmd = "npm start"
+cmd = "yarn start"
