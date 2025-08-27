@@ -1,7 +1,14 @@
 [phases.setup]
-nixPkgs = ["nodePackages_latest.nodejs", "bun"]
+nixPkgs = ["bun", "nodejs_20", "openssl", "pkg-config", "bash", "coreutils"]
 
 [phases.install]
+cmds = ["bun install"]
+
+[phases.build]
 cmds = [
-  "npx prisma generate"
+  "bunx prisma generate",
+  "bunx prisma migrate deploy"
 ]
+
+[phases.start]
+cmd = "bun run server.ts"
