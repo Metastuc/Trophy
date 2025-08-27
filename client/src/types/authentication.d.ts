@@ -9,6 +9,7 @@ declare global {
             privyId: string;
             profilePicture: string;
             username: string;
+            creatorToken: string;
         };
     }
 

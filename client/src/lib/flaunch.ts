@@ -74,9 +74,9 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                flaunchParams._whitelistParams,
-                flaunchParams._airdropParams,
-                flaunchParams._treasuryManagerParams,
+                // flaunchParams._whitelistParams,
+                // flaunchParams._airdropParams,
+                // flaunchParams._treasuryManagerParams,
             ],
             account: smartWalletClient.account,
         });
