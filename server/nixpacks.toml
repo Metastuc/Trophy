@@ -1,16 +1,16 @@
 [phases.setup]
 nixPkgs = [
   "nodePackages_latest.nodejs",
-  "yarn"
+  "pnpm"
 ]
 
 [phases.install]
 cmds = [
   "node -v",
   "which node",
-  "yarn --version",
-  "yarn install --frozen-lockfile",
+  "pnpm --version",
+  "pnpm install",
 ]
 
 [start]
-cmd = "yarn start"
+cmd = "pnpm run start"
