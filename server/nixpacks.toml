@@ -13,7 +13,7 @@ cmds = [
   "echo '--- FLAUNCH SDK PACKAGE.JSON ---'",
   "cat node_modules/@flaunch/sdk/package.json",
   "echo '--- FILES INSTALLED ---'",
-  "ls -R node_modules/@flaunch/sdk | head -n 100"
+  "ls -R node_modules/@flaunch/sdk | head -n 100",
   "npm run migrate",
 ]
 
