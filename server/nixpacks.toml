@@ -5,7 +5,7 @@ nixPkgs = [
 ]
 
 [environment]
-PATH = "/app/node_modules/.bin:" + "$PATH"
+PATH = "/app/node_modules/.bin:$PATH"
 
 [phases.install]
 cmds = [
