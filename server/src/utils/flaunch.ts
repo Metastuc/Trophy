@@ -1,4 +1,3 @@
-// import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
 import * as flaunch from "@flaunch/sdk";
 import { http, createPublicClient, type PublicClient, type Address } from "viem";
 import { NETWORK } from "./env";
