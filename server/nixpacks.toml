@@ -1,2 +1,11 @@
 [phases.setup]
 nixPkgs = ["nodePackages_latest.nodejs", "bun"]
+
+[phases.install]
+cmds = [
+  "npm run migrate",
+  "npx prisma generate"
+]
+
+[start]
+cmd = "bunx --bun run start"
