@@ -6,6 +6,8 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
+  "node -v",
+  "yarn --version",
   "yarn install --frozen-lockfile",
 ]
 
