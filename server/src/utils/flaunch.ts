@@ -1,4 +1,4 @@
-import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
+import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk/dist/index.esm.js";
 import { http, createPublicClient, type PublicClient, type Address } from "viem";
 import { NETWORK } from "./env";
 
