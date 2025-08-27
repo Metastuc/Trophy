@@ -10,6 +10,10 @@ cmds = [
   "echo '--- NPM VERSION ---'",
   "npm -v",
   "npm install --legacy-peer-deps --omit=dev",
+  "echo '--- INSTALLED FLAUNCH SDK VERSION ---'",
+  "cat node_modules/@flaunch/sdk/package.json | grep 'version'",
+  "echo '--- FLAUNCH SDK EXPORTS (TOP OF INDEX FILE) ---'",
+  "head -n 40 node_modules/@flaunch/sdk/dist/index.js || true",
   "npm run migrate",
 ]
 
