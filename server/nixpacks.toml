@@ -1,14 +1,11 @@
 [phases.setup]
-nixPkgs = ["bun", "nodejs_20", "openssl", "pkg-config", "bash", "coreutils"]
+nixPkgs = ["nodePackages_latest.nodejs", "bun"]
 
 [phases.install]
-cmds = ["bun install"]
-
-[phases.build]
 cmds = [
-  "bunx prisma generate",
-  "bunx prisma migrate deploy"
+  "npm install --legacy-peer-deps --omit=dev",
+  "npm run migrate",
 ]
 
-[phases.start]
-cmd = "bun run server.ts"
+[start]
+cmd = "npm start"
