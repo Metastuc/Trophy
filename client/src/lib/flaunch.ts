@@ -30,7 +30,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
 
         const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
-        // add your axios logic here and check fit the status code received
+
         const {
             data: { tokenUri },
         } = await axios.post(`${BACKEND_URL}/create-token-uri`, { username: name });
