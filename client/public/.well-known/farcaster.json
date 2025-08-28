@@ -4,6 +4,9 @@
         "payload": "eyJkb21haW4iOiJ0cm9waHl0di5jbyJ9",
         "signature": "MHgyZTk1ZGM1NmE5ZjExYjdkZGJjZDg2MjZmOTNmNzJhNjBmOGJiMmIzNjhiZjNiNWYzMWQxZDhjNDJkZjZiMTE1MzVjMjEzYzJjOWVlOWVmMDIzMTQ1OTU2YjI3NWI3ZDQ3YjFjNWJlMDU3Mzc0YWM1NTRiMzAwNzg5YjM0MmNmYjFj"
     },
+    "baseBuilder": {
+        "allowedAddresses": ["0xaCe3857224705f3b4D0026AF226AAE42Ce94A7A8"]
+    },
     "frame": {
         "version": "1",
         "name": "Trophy",
