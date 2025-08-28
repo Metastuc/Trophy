@@ -16,9 +16,12 @@ export const ENV_SCHEMA = {
     BUNDLER: import.meta.env.VITE_BUNDLER_URL as string,
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
     FLAUNCH_CA: import.meta.env.VITE_FLAUNCH_CA as Address,
+    COINGECKO_API_KEY: import.meta.env.VITE_COINGECKO_API_KEY as string,
 };
 
 export const PUBLIC_ROUTES = ["/auth"];
+
+export const COINGECKO_URL = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=ethereum"
 
 const environment = ENV_SCHEMA.ENVIRONMENT;
 
