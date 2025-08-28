@@ -12,7 +12,6 @@ export const CLIENT_URL = ENVIRONMENT === "development" ? "localhost:5173" : "ht
 export const DB_URI = process.env.DB_URI!;
 export const DEFAULT_IMAGE = process.env.DEFAULT_IMAGE!;
 export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD!;
-export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD!;
 export const EMAIL_SERVICE = process.env.EMAIL_SERVICE!;
 export const EMAIL_USER = process.env.EMAIL_USER!;
 export const EMAIL_PORT = process.env.EMAIL_PORT as unknown as number;
