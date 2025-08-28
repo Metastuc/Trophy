@@ -96,7 +96,7 @@ function RenderControlsBasedOnRole() {
             if (isVideoOn) {
                 await disableVideo();
             } else {
-                await enableVideo();
+                await enableVideo().then((response) => console.log(response));
             }
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to toggle video.";

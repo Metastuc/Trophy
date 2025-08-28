@@ -12,19 +12,24 @@ import { useServer } from "@/hooks/server";
 import { cn, sleep } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
 
-import { useAuthenticationDrawerFormStore, useAuthenticationDrawerStateStore } from "../store";
+import {
+    useAuthenticationDrawerFormStore,
+    useAuthenticationDrawerNavigationStore,
+    useAuthenticationDrawerStateStore,
+} from "../store";
 import { AuthenticationProfileSchema } from "../utils";
 
 export function CompleteProfile() {
     const { user: privyUser } = useUser();
 
     const closeDrawer = useAuthenticationDrawerStateStore((state) => state.closeDrawer);
+    const goToDefault = useAuthenticationDrawerNavigationStore((state) => state.goToDefault);
     const setAuthenticatedUser = useAuthenticationStore((state) => state.setUser);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
 
-    const { bio, email, fc, isNewUser, profilePicture, setFormField, username, walletAddress } =
+    const { bio, email, fc, isNewUser, profilePicture, setFormField, username, walletAddress, resetForm } =
         useAuthenticationDrawerFormStore(
             useShallow((state) => ({
                 bio: state.bio,
@@ -35,6 +40,7 @@ export function CompleteProfile() {
                 username: state.username,
                 walletAddress: state.walletAddress,
 
+                resetForm: state.resetForm,
                 setFormField: state.setField,
             })),
         );
@@ -71,6 +77,10 @@ export function CompleteProfile() {
 
                 await sleep(1500);
                 closeDrawer();
+                resetForm();
+
+                await sleep(300);
+                goToDefault();
 
                 if (privyUser && backendUserData) setAuthenticatedUser({ ...privyUser, backendUserData });
             },
@@ -207,7 +217,7 @@ export function CompleteProfile() {
 
                 <TextInput
                     className={cn(
-                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs",
                         isEmailPreFilled.current && "opacity-50",
                     )}
                     name="email"
@@ -220,7 +230,7 @@ export function CompleteProfile() {
 
                 <TextInput
                     className={cn(
-                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs",
                         isUsernamePreFilled.current && "opacity-50",
                     )}
                     name="username"
@@ -232,7 +242,7 @@ export function CompleteProfile() {
                 />
 
                 <TextInput
-                    className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-xs lowercase"
+                    className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-xs"
                     name="bio"
                     placeholder="enter bio (say something about yourself, this is optional)"
                     type="textarea"

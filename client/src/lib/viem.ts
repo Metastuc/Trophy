@@ -5,12 +5,10 @@ import { network } from "@/lib/constants";
 
 let walletClient: WalletClient | undefined;
 
-export const getPublicClient = () => {
-    return createPublicClient({
-        chain: network,
-        transport: http(),
-    }) as PublicClient;
-};
+export const publicClient = createPublicClient({
+    chain: network,
+    transport: http(),
+}) as PublicClient;
 
 export const getWalletClient = (provider: EIP1193Provider): WalletClient => {
     if (!walletClient) {

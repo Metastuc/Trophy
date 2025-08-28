@@ -4,6 +4,8 @@ interface iFormState {
     date: string;
     username: string;
     walletAddress: string;
+    creatorToken?: string;
+    creatorTokenEnabled?: boolean;
 }
 
 type tCreateStreamFormRequest = {

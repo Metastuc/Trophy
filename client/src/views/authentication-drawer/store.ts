@@ -82,6 +82,8 @@ export const useAuthenticationDrawerFormStore: UseBoundStore<StoreApi<iAuthentic
 
         email: null,
 
+        fc: null,
+
         isNewUser: false,
 
         profilePicture: null,
@@ -99,6 +101,14 @@ export const useAuthenticationDrawerFormStore: UseBoundStore<StoreApi<iAuthentic
         },
 
         resetForm() {
-            set({ bio: null, email: null, privyId: null, profilePicture: null, username: null });
+            set({
+                bio: null,
+                email: null,
+                fc: null,
+                isNewUser: false,
+                profilePicture: null,
+                username: null,
+                walletAddress: null,
+            });
         },
     }));

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { HUDDLE_API_KEY } from "../utils/env";
-import { AccessToken, Role, Permissions } from "@huddle01/server-sdk/auth";
+import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import { Stream } from "../models/streamSchema";
 import { format } from "date-fns";
 import { prisma } from "../config/db";

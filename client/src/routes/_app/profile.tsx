@@ -1,50 +1,48 @@
-import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { TvMinimalPlay, Wallet } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { toast } from "sonner";
+import { useShallow } from "zustand/shallow";
 
 import { getUser } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { useTabSwitcher } from "@/hooks/tab-switcher";
-import { logger } from "@/utils/logger";
+import { useAuthenticationStore } from "@/store/authentication";
 import { About } from "@/views/user-profile/components/about";
 import { Streams } from "@/views/user-profile/components/streams";
 import { UserWallet } from "@/views/user-profile/components/wallet";
 import { UserProfileContextProvider } from "@/views/user-profile/context";
 
 export const Route = createFileRoute("/_app/profile")({
-    async beforeLoad({ context }) {
-        if (!context.authenticationStore?.isAuthenticated) {
-            toast.error("You must be logged in to view your profile");
-            throw redirect({ to: "/" });
-        }
-    },
-
-    async loader({ context }) {
-        const response = await context.queryClient.ensureQueryData(
-            getUser({ username: context.authenticationStore?.user?.backendUserData.user.username as string }),
-        );
-
-        if (!response) {
-            throw new Error("Unable to get user profile");
-        }
-
-        logger({ response });
-
-        return { user: response.user, streams: response.streams, isCurrentUser: true };
-    },
-
     component: () => <Page />,
 });
 
 function Page() {
-    const { user, streams } = useLoaderData({ from: "/_app/profile" });
     // const tabRefs = React.useRef<(HTMLLIElement | null)[]>([]);
     const { activeTab, handleTabClick } = useTabSwitcher<tProfileScreens>("wallet");
     // const [tabIndicator, setTabIndicator] = React.useState<{ left: string; width: string }>({
     //     left: "0px",
     //     width: "0px",
     // });
+
+    const { isAuthenticated, username } = useAuthenticationStore(
+        useShallow((state) => ({
+            username: state.user?.backendUserData.user.username as string,
+            isAuthenticated: state.isAuthenticated,
+        })),
+    );
+
+    const { data, isPending, error } = useQuery(getUser({ username }));
+
+    if (isPending && isAuthenticated) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error loading profile: {error.message}</div>;
+    }
+
+    const { streams, user } = data as tGetUserResponse;
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">

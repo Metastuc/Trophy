@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import appRoutes from "./src/routes/appRoutes.routes";
-// import DB from "./src/config/db";
+import DB, { prisma } from "./src/config/db";
 import { CORS_ORIGINS, PORT } from "./src/utils/env";
 import { Socket, Server } from "socket.io";
 import { User, Notification } from "./src/models/userSchema";
