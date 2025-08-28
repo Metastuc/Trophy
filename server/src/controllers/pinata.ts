@@ -28,9 +28,11 @@ export const createTokenUri = async (req: Request, res: Response) => {
     }
 
     let image: string;
+    let defaultImg: boolean = false;
     if (user.userPfp !== DEFAULT_IMAGE) {
       image = user.userPfp
     } else {
+      defaultImg = true;
       image = JPG_DEFAULT_IMAGE
     }
 
@@ -42,6 +44,8 @@ export const createTokenUri = async (req: Request, res: Response) => {
       description: `${username} creator token, created on Trophy`,
       image: `ipfs://${imageCID}`
     });
+
+    await prisma.user.update({ where:  { username }, data: { tokenImage: defaultImg ? DEFAULT_IMAGE : image } })
 
     res.status(200).json({ tokenUri: `ipfs://${metadataCID}` });
   } catch (error: any) {

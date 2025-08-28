@@ -65,6 +65,7 @@ model User {
   userPfp       String   @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
   walletAddress String   @unique
   tokenPrice    Float    @default(0)
+  tokenImage    String?
   totalStreams  Int      @default(0)
   bio           String   @default("")
   epicStreams   Int      @default(0)
