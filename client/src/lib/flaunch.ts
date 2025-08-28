@@ -1,17 +1,17 @@
-import { createFlaunch, ReadWriteFlaunchSDK } from "@flaunch/sdk";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable simple-import-sort/imports */
+import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, parseEther } from "viem";
-
-import { ENV_SCHEMA, REVENUE_MANAGER_ADDRESS } from "./constants";
+import axios from "axios";
+import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
+import { BACKEND_URL, ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
-import { getPublicClient, getWalletClient } from "./viem";
+import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
-const publicClient = getPublicClient();
-
-const flaunchClient = async (provider: EIP1193Provider) => {
+const flaunchClient = (provider: EIP1193Provider) => {
     if (!fClient) {
         const walletClient = getWalletClient(provider);
 
@@ -21,45 +21,73 @@ const flaunchClient = async (provider: EIP1193Provider) => {
     return fClient;
 };
 
-// The sFlaunch means sponsored flaunch (We're sponsoring deployment gas for creator tokens)
-const sFlaunchClient = async (provider: EIP1193Provider) => {
-    const walletClient = await getSmartAccount(provider);
+export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<Address> => {
+    try {
+        const smartWalletClient = await getSmartAccount(provider);
 
-    const sClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
+        const initialMCapInUSDCWei = parseUnits("2000", 6);
+        const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
-    return sClient;
-};
+        const fairLaunchInBps = BigInt(40 * 100);
+        const creatorFeeAllocationInBps = 70 * 100;
+        // add your axios logic here and check fit the status code received
+        const {
+            data: { tokenUri },
+        } = await axios.post(`${BACKEND_URL}/create-token-uri`, { username: name });
 
-export const createCreatorToken = async (
-    name: string,
-    symbol: string,
-    address: Address,
-    image: string,
-    provider: EIP1193Provider,
-    twitter?: string,
-    telegram?: string,
-): Promise<Address> => {
-    const sFlaunch = await sFlaunchClient(provider);
+        const flaunchParams = {
+            _flaunchParams: {
+                name,
+                symbol: name.toUpperCase(),
+                tokenUri,
+                initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
+                fairLaunchDuration: BigInt(30 * 60),
+                premineAmount: 0n,
+                creator: smartWalletClient.account.address as Address,
+                creatorFeeAllocation: creatorFeeAllocationInBps,
+                flaunchAt: 0n,
+                initialPriceParams,
+                feeCalculatorParams: "0x" as Address,
+            },
+            _treasuryManagerParams: {
+                manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+                initializeData: "0x" as Address,
+                depositData: "0x" as Address,
+            },
+            _whitelistParams: {
+                merkleRoot: zeroHash,
+                merkleIPFSHash: "",
+                maxTokens: 0n,
+            },
+            _airdropParams: {
+                airdropIndex: 0n,
+                airdropAmount: 0n,
+                airdropEndTime: 0n,
+                merkleRoot: zeroHash,
+                merkleIPFSHash: "",
+            },
+        };
 
-    return await sFlaunch.flaunchIPFSWithRevenueManager({
-        name,
-        symbol,
-        creator: address,
-        metadata: {
-            base64Image: image,
-            description: `${name} creator token`,
-            twitterUrl: twitter,
-            telegramUrl: telegram,
-        },
-        pinataConfig: {
-            jwt: ENV_SCHEMA.PINATA_JWT,
-        },
-        fairLaunchPercent: 40,
-        fairLaunchDuration: 30 * 60, // 30 mins
-        initialMarketCapUSD: 2_000,
-        creatorFeeAllocationPercent: 70,
-        revenueManagerInstanceAddress: REVENUE_MANAGER_ADDRESS,
-    });
+        const { request, result } = await publicClient.simulateContract({
+            address: ENV_SCHEMA.FLAUNCH_CA,
+            abi: FlaunchZapAbi,
+            functionName: "flaunch",
+            args: [
+                flaunchParams._flaunchParams,
+                // flaunchParams._whitelistParams,
+                // flaunchParams._airdropParams,
+                // flaunchParams._treasuryManagerParams,
+            ],
+            account: smartWalletClient.account,
+        });
+
+        await smartWalletClient.writeContract(request);
+
+        return result[0];
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(error);
+    }
 };
 
 const checkTx = async (hash: Address, flaunch = fClient) => {
@@ -73,7 +101,7 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
 };
 
 export const buyCreatorToken = async (coinAddress: Address, amount: string, provider: EIP1193Provider) => {
-    const flaunch = await flaunchClient(provider);
+    const flaunch = flaunchClient(provider);
     const hash = await flaunch.buyCoin({
         coinAddress,
         slippagePercent: 4,
@@ -90,7 +118,7 @@ export const getSwapQuote = async (
     amount: string,
     coinAddress: Address,
 ) => {
-    const flaunch = await flaunchClient(provider);
+    const flaunch = flaunchClient(provider);
     if (ethToCreatorToken) {
         return await flaunch.getBuyQuoteExactInput(coinAddress, parseEther(amount));
     }
@@ -104,7 +132,7 @@ export const sellCreatorToken = async (
     provider: EIP1193Provider,
     signTypedData: SignTypedData,
 ) => {
-    const flaunch = await flaunchClient(provider);
+    const flaunch = flaunchClient(provider);
     const amountInWei = parseEther(amount);
 
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
@@ -133,36 +161,39 @@ export const sellCreatorToken = async (
     }
 };
 
-export const deployRevenueManager = async (provider: EIP1193Provider) => {
-    const flaunch = await flaunchClient(provider);
-
-    return await flaunch.deployRevenueManager({
-        protocolFeePercent: 30,
-        protocolRecipient: "0x",
-    });
-};
-
-export const fetchFeeBalance = async (creator: Address, provider: EIP1193Provider) => {
-    const flaunch = await flaunchClient(provider);
+export const fetchFeeBalance = async (provider: EIP1193Provider) => {
+    const flaunch = flaunchClient(provider);
+    const smartWalletClient = await getSmartAccount(provider);
 
     return await flaunch.revenueManagerBalance({
-        recipient: creator,
-        revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
+        recipient: smartWalletClient.account.address,
+        revenueManagerAddress: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
     });
 };
 
 export const claimCreatorFees = async (provider: EIP1193Provider) => {
-    const sFlaunch = await sFlaunchClient(provider);
+    try {
+        const smartWalletClient = await getSmartAccount(provider);
 
-    return await sFlaunch.revenueManagerCreatorClaim({
-        revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
-    });
+        const { request } = await publicClient.simulateContract({
+            address: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+            abi: RevenueManagerAbi,
+            functionName: "claim",
+            args: [],
+            account: smartWalletClient.account,
+        });
+
+        return await smartWalletClient.writeContract(request);
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(error);
+    }
 };
 
 export const claimApplicationFees = async (provider: EIP1193Provider) => {
-    const flaunch = await flaunchClient(provider);
+    const flaunch = flaunchClient(provider);
 
     return await flaunch.revenueManagerProtocolClaim({
-        revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
+        revenueManagerAddress: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
     });
 };
