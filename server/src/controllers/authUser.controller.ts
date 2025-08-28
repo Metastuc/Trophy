@@ -25,6 +25,7 @@ export const authUser = async (req: Request, res: Response) => {
           email: user?.email,
           profilePicture: user?.userPfp,
           username: user?.username,
+          creatorToken: user?.creatorToken,
         },
       },
     });

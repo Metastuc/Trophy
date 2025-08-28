@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -10,12 +10,6 @@ import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-fo
 import { StreamNowForm } from "@/views/stream/components/stream-now-form";
 
 export const Route = createFileRoute("/_app/stream")({
-    beforeLoad({ context }) {
-        if (!context.authenticationStore?.isAuthenticated) {
-            throw redirect({ to: "/" });
-        }
-    },
-
     component: () => <Page />,
 });
 

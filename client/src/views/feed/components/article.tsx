@@ -28,7 +28,9 @@ export function StreamArticle({
     );
 }
 
-function RenderHeader({ pfp, streamer }: { streamer: string; pfp: string; creatorToken: string }) {
+function RenderHeader({ pfp, streamer, creatorToken }: { streamer: string; pfp: string; creatorToken: string }) {
+    console.log("creatorToken", creatorToken);
+
     return (
         <header className="flex h-8 items-center justify-between">
             <aside className="flex items-center justify-center gap-1">

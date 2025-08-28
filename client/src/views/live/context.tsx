@@ -107,7 +107,7 @@ export function StreamingUIContextProvider({ children, roomId, token }: iStreami
     useEffect(
         function () {
             if (roomRoles.host && state === "connected" && !isVideoOn && !userHasToggled.video) {
-                enableVideo().catch((error) => {
+                enableVideo({ prefferedCodec: "video/vp8" }).catch((error) => {
                     toast.error((error as Error).message);
                 });
             }
