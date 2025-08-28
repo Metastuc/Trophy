@@ -5,6 +5,7 @@ declare global {
         isBasicProfileComplete: boolean;
         user: {
             bio: string;
+            creatorToken: string;
             email: string;
             privyId: string;
             profilePicture: string;
