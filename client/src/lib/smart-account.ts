@@ -1,4 +1,11 @@
-import { createBicoPaymasterClient, createSmartAccountClient, toNexusAccount } from "@biconomy/abstractjs";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+    createBicoPaymasterClient,
+    createSmartAccountClient,
+    DEFAULT_MEE_VERSION,
+    getMEEVersion,
+    toNexusAccount,
+} from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
 
@@ -9,15 +16,20 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
         const nexusAccountClient = createSmartAccountClient({
             account: await toNexusAccount({
                 signer: provider,
-                chain: network,
-                transport: custom(provider),
+                chainConfiguration: {
+                    chain: network,
+                    transport: custom(provider),
+                    version: getMEEVersion(DEFAULT_MEE_VERSION),
+                },
             }),
-            paymaster: createBicoPaymasterClient({ paymasterUrl: ENV_SCHEMA.PAYMASTER_URL }),
+            chain: network,
+            paymaster: createBicoPaymasterClient({ paymasterUrl: ENV_SCHEMA.PAYMASTER }),
+            bundlerUrl: ENV_SCHEMA.BUNDLER,
         });
 
-        return nexusAccountClient.account.walletClient;
-    } catch (error) {
+        return nexusAccountClient;
+    } catch (error: any) {
         console.error(error);
-        throw new Error(error as string);
+        throw new Error(error);
     }
 };

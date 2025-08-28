@@ -1,28 +1,25 @@
+/* eslint-disable simple-import-sort/imports */
+import { DEGEN, USDC, ZORA } from "@/lib/contracts";
 import {
     createMeeClient,
+    getMEEVersion,
     greaterThanOrEqualTo,
+    MEEVersion,
     runtimeERC20BalanceOf,
     toMultichainNexusAccount,
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { http, parseAbi, parseEther, parseUnits } from "viem";
-
-import { DEGEN, USDC, ZORA } from "@/lib/contracts";
-
+import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
 import { network } from "./constants";
 import { getWalletClient } from "./viem";
-
-type walletType = "privy" | "external";
 
 export const ethTip = async (recipient: string, amount: string, provider: EIP1193Provider) => {
     const walletClient = getWalletClient(provider);
 
-    // ignore the lint error, code is correct
     const hash = await walletClient.sendTransaction({
         account: walletClient.account!,
         chain: walletClient.chain,
-
-        to: recipient as `0x${string}`,
+        to: recipient as Address,
         value: parseEther(amount),
     });
 
@@ -32,8 +29,8 @@ export const ethTip = async (recipient: string, amount: string, provider: EIP119
 export const tipUSDC = async (
     recipient: string,
     amount: string,
-    userAddress: `0x${string}`,
-    wallet: walletType,
+    userAddress: Address,
+    wallet: string,
     provider: EIP1193Provider,
 ) => {
     return await tipToken(recipient, USDC, amount, userAddress, provider, wallet, true);
@@ -42,9 +39,9 @@ export const tipUSDC = async (
 export const tipZORA = async (
     recipient: string,
     amount: string,
-    userAddress: `0x${string}`,
+    userAddress: Address,
     provider: EIP1193Provider,
-    wallet: walletType,
+    wallet: string,
 ) => {
     return await tipToken(recipient, ZORA, amount, userAddress, provider, wallet);
 };
@@ -52,9 +49,9 @@ export const tipZORA = async (
 export const tipDEGEN = async (
     recipient: string,
     amount: string,
-    userAddress: `0x${string}`,
+    userAddress: Address,
     provider: EIP1193Provider,
-    wallet: walletType,
+    wallet: string,
 ) => {
     return await tipToken(recipient, DEGEN, amount, userAddress, provider, wallet);
 };
@@ -63,9 +60,9 @@ export const tipCreatorToken = async (
     recipient: string,
     contractAddress: string,
     amount: string,
-    userAddress: `0x${string}`,
+    userAddress: Address,
     provider: EIP1193Provider,
-    wallet: walletType,
+    wallet: string,
 ) => {
     return await tipToken(recipient, contractAddress, amount, userAddress, provider, wallet);
 };
@@ -74,21 +71,26 @@ const tipToken = async (
     recipient: string,
     contractAddress: string,
     amount: string,
-    accountAddress: `0x${string}`,
+    accountAddress: Address,
     signer: EIP1193Provider,
-    wallet: walletType,
+    wallet: string,
     usdc?: boolean,
 ) => {
     const nexusAccount = await toMultichainNexusAccount({
-        chains: [network],
-        transports: [http()],
+        chainConfigurations: [
+            {
+                chain: network,
+                transport: custom(signer),
+                version: getMEEVersion(MEEVersion.V2_1_0),
+            },
+        ],
         signer,
         accountAddress,
     });
 
     const MeeClient = await createMeeClient({ account: nexusAccount });
-    const tokenAddress = contractAddress as unknown as `0x${string}`;
-    const recieverAddress = recipient as unknown as `0x${string}`;
+    const tokenAddress = contractAddress as unknown as Address;
+    const recieverAddress = recipient as unknown as Address;
 
     const decimals = usdc ? 6 : 18;
     const chainId = network.id as unknown as number;
@@ -112,7 +114,7 @@ const tipToken = async (
         },
     });
 
-    if (wallet === "external") {
+    if (wallet !== "privy") {
         const fusionQuote = await MeeClient.getFusionQuote({
             trigger: {
                 chainId,
