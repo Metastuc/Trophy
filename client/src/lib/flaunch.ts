@@ -2,9 +2,9 @@
 /* eslint-disable simple-import-sort/imports */
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import axios from "axios";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
-import { BACKEND_URL, ENV_SCHEMA } from "./constants";
+import { makeRequest } from "./axios";
+import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
@@ -30,10 +30,14 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
 
         const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
-        // add your axios logic here and check fit the status code received
+
         const {
             data: { tokenUri },
-        } = await axios.post(`${BACKEND_URL}/create-token-uri`, { username: name });
+        } = await makeRequest<{ tokenUri: string }>({
+            method: "POST",
+            url: `/create-token-uri`,
+            data: { username: name },
+        });
 
         const flaunchParams = {
             _flaunchParams: {
