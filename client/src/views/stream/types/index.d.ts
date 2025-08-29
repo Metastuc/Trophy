@@ -1,11 +1,11 @@
 type tStreamAction = "now" | "schedule";
 
 interface iFormState {
-    creatorToken: string;
-    creatorTokenEnabled: boolean;
     date: string;
     username: string;
     walletAddress: string;
+    creatorToken?: string;
+    creatorTokenEnabled?: boolean;
 }
 
 type tCreateStreamFormRequest = {
