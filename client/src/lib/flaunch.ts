@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable simple-import-sort/imports */
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
+
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
@@ -31,13 +30,11 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
 
-        const {
-            data: { tokenUri },
-        } = await makeRequest<{ tokenUri: string }>({
+        const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
             url: `/create-token-uri`,
             data: { username: name },
-        });
+        }).then((response) => response.data);
 
         const flaunchParams = {
             _flaunchParams: {
@@ -86,11 +83,10 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         });
 
         await smartWalletClient.writeContract(request);
-
-        return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
-    } catch (error: any) {
+        return result[0];
+    } catch (error: unknown) {
         console.error(error);
-        throw new Error(error);
+        throw new Error((error as Error).message);
     }
 };
 
@@ -188,9 +184,9 @@ export const claimCreatorFees = async (provider: EIP1193Provider) => {
         });
 
         return await smartWalletClient.writeContract(request);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(error);
-        throw new Error(error);
+        throw new Error((error as Error).message);
     }
 };
 
