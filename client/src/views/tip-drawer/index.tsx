@@ -1,9 +1,21 @@
 import { CircleDollarSign } from "lucide-react";
+import { ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
-
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { logger } from "@/utils/logger";
+
+import { TOKENS } from "./constants";
 import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
 
@@ -17,10 +29,37 @@ export function TipDrawer(props: TipDrawer) {
     );
 }
 
-function TipDrawerInner() {
-    const { closeDrawer, isDrawerOpen, openDrawer, streamerWalletAddress } = useTipDrawerContext();
+interface TipDrawerState {
+    amountInToken: number;
+    amountInUsd: number;
+    senderAvailableBalanceInToken: number;
+    senderAvailableBalanceInUsd: number;
+    token: string;
+}
 
-    logger({ streamerWalletAddress });
+function TipDrawerInner() {
+    const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
+
+    const [initialValues, setInitialValues] = useState<TipDrawerState>(() => ({
+        amountInToken: 0,
+        amountInUsd: 0,
+        senderAvailableBalanceInToken: 0,
+        senderAvailableBalanceInUsd: 0,
+        token: "USDC",
+    }));
+
+    function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
+        event.preventDefault();
+
+        const inputValue = event.target.value.replace(/\D/g, "");
+        const parsedValue = inputValue === "" ? 0 : parseInt(inputValue);
+
+        setInitialValues((state) => ({
+            ...state,
+            amountInToken: parsedValue === null || parsedValue <= 100 ? parsedValue : 100,
+            // amountInUsd: Number(event.target.value) * (streamer?.priceInUsd || 0),
+        }));
+    }
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
@@ -35,6 +74,88 @@ function TipDrawerInner() {
                     <span className="pt-0.5 text-xs">Send tip</span>
                 </Button>
             </DrawerTrigger>
+
+            <DrawerContent>
+                <DrawerHeader>
+                    <DrawerTitle className="text-blue100 flex items-center gap-1 text-xl font-normal">
+                        <i className="size-4">
+                            <CircleDollarSign />
+                        </i>
+                        <span className="font-medium">Send tip to:</span>
+                    </DrawerTitle>
+                    <DrawerDescription className="flex items-center gap-1 text-xs font-light">
+                        <aside className="flex size-7 items-center justify-center">
+                            <StreamerLivePFP
+                                isLive={false}
+                                imageSrc={streamer?.profilePicture as string}
+                                imageAlt={`${streamer?.username as string}-pfp`}
+                            />
+                        </aside>
+                        <span className="text-black100 text-sm font-normal">@{streamer?.username}</span>
+                    </DrawerDescription>
+                </DrawerHeader>
+
+                <main className="mt-5 mb-8 p-4">
+                    <section>
+                        <span className="text-blue100 pl-5 text-sm font-medium">Enter amount</span>
+
+                        <div className="border-blue100 flex h-25 items-center justify-between rounded-xl border-2 p-4">
+                            <aside className="flex flex-col items-center justify-center">
+                                <div className="flex items-center justify-center gap-2 text-2xl">
+                                    <input
+                                        value={initialValues.amountInToken}
+                                        onChange={handleAmountInTokenChange}
+                                        style={{
+                                            width: `${String(initialValues.amountInToken || 0).length || 1}ch`,
+                                            color: initialValues.amountInToken ? "black" : "gray",
+                                        }}
+                                        className="outline-none"
+                                    />
+                                    <span>{initialValues.token}</span>
+                                </div>
+
+                                <span className="text-base text-[#060606]/50">
+                                    ${initialValues.amountInUsd.toFixed(2)}
+                                </span>
+                            </aside>
+
+                            <aside className="flex flex-col items-center justify-center">
+                                <span className="text-blue100 text-xs">Select token</span>
+
+                                <Select
+                                    value={initialValues.token}
+                                    onValueChange={(value) => setInitialValues((state) => ({ ...state, token: value }))}
+                                >
+                                    <SelectTrigger className="border-blue100 h-10.5! min-w-28 rounded-lg bg-[#1B1B1B] p-0 px-2">
+                                        <SelectValue>
+                                            {TOKENS.find((token) => token.value === initialValues.token)?.title}
+                                        </SelectValue>
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                        {TOKENS.map((token, index) => (
+                                            <SelectItem key={index} value={token.value}>
+                                                {token.render}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </aside>
+                        </div>
+                    </section>
+
+                    <section>
+                        <aside></aside>
+                        <aside></aside>
+                    </section>
+                </main>
+
+                <DrawerFooter>
+                    <Button className="bg-blue100 mx-auto h-13.5 w-full rounded-lg">
+                        <span className="text-xl font-normal">Send tip</span>
+                    </Button>
+                </DrawerFooter>
+            </DrawerContent>
         </Drawer>
     );
 }

@@ -10,5 +10,11 @@ interface TipDrawerContextActions {
 type TipDrawerContext = TipDrawerContextValues & TipDrawerContextActions;
 
 interface TipDrawer {
-    streamerWalletAddress?: string;
+    streamer?: TipDrawerStreamer;
+}
+
+interface TipDrawerStreamer {
+    walletAddress: string;
+    username: string;
+    profilePicture: string;
 }

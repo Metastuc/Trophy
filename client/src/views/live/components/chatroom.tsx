@@ -19,9 +19,15 @@ export function Chatroom() {
 
     const user = useAuthenticationStore((state) => state.user?.backendUserData?.user?.username);
     const isLoggedIn = useAuthenticationStore((state) => state.isAuthenticated);
-    const { streamResponse } = useRouteContext({
+    const { streamResponse, streamCreator } = useRouteContext({
         from: "/live/$id",
     });
+
+    const streamer = {
+        username: streamResponse?.streamer,
+        walletAddress: streamResponse?.creatorAddress,
+        profilePicture: streamCreator.user.userPfp,
+    };
 
     const { peerId } = useLocalPeer();
     const MAX_CHATS = 10;
@@ -83,7 +89,7 @@ export function Chatroom() {
                 </aside>
 
                 <aside className="flex items-center gap-3">
-                    <TipDrawer streamerWalletAddress={streamResponse.creatorAddress} />
+                    <TipDrawer streamer={streamer} />
                     <TradeDrawer tokenAddress={streamResponse?.creatorToken} />
                 </aside>
             </header>
