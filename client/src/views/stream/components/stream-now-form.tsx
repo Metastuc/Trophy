@@ -47,7 +47,7 @@ export function StreamNowForm() {
                 try {
                     const tokenAddress = await createCreatorToken(formState.username, provider);
                     toast.success("Creator token created!", { id: toastId });
-                    setFormState((state) => ({ ...state, creatorToken: tokenAddress }));
+                    setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 } catch (error) {
                     toast.error("Failed to create token: " + ((error as Error).message || "Unknown error"), {
                         id: toastId,

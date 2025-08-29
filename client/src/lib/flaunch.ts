@@ -20,7 +20,10 @@ const flaunchClient = (provider: EIP1193Provider) => {
     return fClient;
 };
 
-export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<{creatorToken: Address, sa_address: Address}> => {
+export const createCreatorToken = async (
+    name: string,
+    provider: EIP1193Provider,
+): Promise<{ creatorToken: Address; sa_address: Address }> => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
@@ -83,7 +86,12 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         });
 
         await smartWalletClient.writeContract(request);
-        return result[0];
+        await makeRequest({
+            method: "POST",
+            url: `/save-creator-token`,
+            data: { creatorToken: result[0], sa_address: smartWalletClient.account.address, username: name },
+        });
+        return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
     } catch (error: unknown) {
         console.error(error);
         throw new Error((error as Error).message);
