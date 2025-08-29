@@ -31,13 +31,11 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
 
-        const {
-            data: { tokenUri },
-        } = await makeRequest<{ tokenUri: string }>({
+        const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
             url: `/create-token-uri`,
             data: { username: name },
-        });
+        }).then((response) => response.data);
 
         const flaunchParams = {
             _flaunchParams: {
