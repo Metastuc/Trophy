@@ -27,6 +27,7 @@ export function Chatroom() {
         username: streamResponse?.streamer,
         walletAddress: streamResponse?.creatorAddress,
         profilePicture: streamCreator.user.userPfp,
+        tokenAddress: streamResponse?.creatorToken as string,
     };
 
     const { peerId } = useLocalPeer();
@@ -90,7 +91,7 @@ export function Chatroom() {
 
                 <aside className="flex items-center gap-3">
                     <TipDrawer streamer={streamer} />
-                    <TradeDrawer tokenAddress={streamResponse?.creatorToken} />
+                    <TradeDrawer streamer={streamer} />
                 </aside>
             </header>
 

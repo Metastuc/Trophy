@@ -1,30 +1,33 @@
 import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
-import React from "react";
+import { useEffect, useState } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { TOKENS } from "../constants";
+import { useTradeDrawerContext } from "../hooks";
 import { formatUSD } from "../utils";
 
 export function Swap() {
-    const [initialValues, setInitialValues] = React.useState(() => ({
+    const { streamer } = useTradeDrawerContext();
+
+    const [initialValues, setInitialValues] = useState(() => ({
         buyAmount: 0,
         sellAmount: 0,
 
-        buyToken: "",
+        buyToken: streamer?.username,
         sellToken: "USDC",
 
         buyBalance: 0,
         sellBalance: 0,
     }));
 
-    const [provider, setProvider] = React.useState<EIP1193Provider | null>(null);
+    const [provider, setProvider] = useState<EIP1193Provider | null>(null);
 
     const { wallets } = useWallets();
 
     const wallet = wallets[0];
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!wallet) {
             return;
         }
@@ -50,7 +53,7 @@ export function Swap() {
 
                     <Select
                         value={initialValues.sellToken}
-                        onValueChange={(value) => setInitialValues((previous) => ({ ...previous, sellToken: value }))}
+                        onValueChange={(value) => setInitialValues((state) => ({ ...state, sellToken: value }))}
                     >
                         <SelectTrigger className="border-blue100 w-25 rounded-xl p-2">
                             <SelectValue>
@@ -101,8 +104,10 @@ export function Swap() {
                     <span>Buy</span>
 
                     <div className="border-blue100 flex w-25 items-center justify-center gap-1 rounded-xl border p-2">
-                        <i className="size-3.5 overflow-hidden rounded-full">ICON</i>
-                        <span className="pt-0.5 text-xs">TOKEN</span>
+                        <i className="size-5 overflow-hidden rounded-full">
+                            <img src={streamer?.profilePicture} />
+                        </i>
+                        <span className="pt-0.5 text-xs">{initialValues.buyToken}</span>
                     </div>
 
                     <span className="text-xs text-black/60">Balance: {initialValues.sellBalance}</span>
