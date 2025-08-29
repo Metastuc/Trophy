@@ -61,6 +61,10 @@ function TipDrawerInner() {
         }));
     }
 
+    function handleTipPercentage(value: string) {
+        console.log(value);
+    }
+
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
             <DrawerTrigger asChild>
@@ -83,6 +87,7 @@ function TipDrawerInner() {
                         </i>
                         <span className="font-medium">Send tip to:</span>
                     </DrawerTitle>
+
                     <DrawerDescription className="flex items-center gap-1 text-xs font-light">
                         <aside className="flex size-7 items-center justify-center">
                             <StreamerLivePFP
@@ -95,7 +100,7 @@ function TipDrawerInner() {
                     </DrawerDescription>
                 </DrawerHeader>
 
-                <main className="mt-5 mb-8 p-4">
+                <main className="space-y-6 p-4">
                     <section>
                         <span className="text-blue100 pl-5 text-sm font-medium">Enter amount</span>
 
@@ -144,9 +149,37 @@ function TipDrawerInner() {
                         </div>
                     </section>
 
-                    <section>
-                        <aside></aside>
-                        <aside></aside>
+                    <section className="flex items-center justify-between">
+                        <aside>
+                            <span className="text-blue100 text-xs font-light">Available balance</span>
+
+                            <div className="bg-blue100/80 border-blue100 flex flex-col items-center rounded-lg border pb-1 pt-3 px-2 w-28">
+                                <span className="text-xl text-white">
+                                    ${initialValues.senderAvailableBalanceInUsd.toFixed(2)}
+                                </span>
+                                <span className="text-sm text-white/70">
+                                    {initialValues.senderAvailableBalanceInToken.toFixed(2)} {initialValues.token}
+                                </span>
+                            </div>
+                        </aside>
+
+                        <aside>
+                            <span className="text-blue100 text-xs font-light">
+                                % of available balance to send as tip
+                            </span>
+
+                            <div className="space-x-2.5">
+                                {["10%", "25%", "50%", "100%"].map((value, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handleTipPercentage(value)}
+                                        className="border-blue100 rounded-lg border p-2 text-sm font-light"
+                                    >
+                                        {value}
+                                    </button>
+                                ))}
+                            </div>
+                        </aside>
                     </section>
                 </main>
 
