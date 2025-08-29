@@ -174,7 +174,7 @@ export const updatePfp = async (req: Request, res: Response) => {
 
 export const creatorTokenCreated = async (req: Request, res: Response) => {
   try {
-    const { username, creatorToken } = req.body;
+    const { username, creatorToken, sa_address } = req.body;
 
     if (!username || !creatorToken) {
       res.status(400).json({ error: "username or creator token address cannot be empty" });
@@ -190,7 +190,8 @@ export const creatorTokenCreated = async (req: Request, res: Response) => {
     const uUser = await prisma.user.update({
       where: { username },
       data: {
-        creatorToken
+        creatorToken,
+        sa_address
       }
     });
 

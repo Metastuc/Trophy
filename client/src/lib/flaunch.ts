@@ -21,7 +21,7 @@ const flaunchClient = (provider: EIP1193Provider) => {
     return fClient;
 };
 
-export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<Address> => {
+export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<{creatorToken: Address, sa_address: Address}> => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
@@ -87,7 +87,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
 
         await smartWalletClient.writeContract(request);
 
-        return result[0];
+        return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
     } catch (error: any) {
         console.error(error);
         throw new Error(error);
