@@ -65,6 +65,22 @@ function TipDrawerInner() {
         console.log(value);
     }
 
+    // function handleTip() {
+    //     switch (initialValues.token) {
+    //         case "DEGEN":
+    //             break;
+
+    //         case "ETH":
+    //             break;
+
+    //         case "USDC":
+    //             break;
+
+    //         case "ZORA":
+    //             break;
+    //     }
+    // }
+
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
             <DrawerTrigger asChild>
@@ -153,7 +169,7 @@ function TipDrawerInner() {
                         <aside>
                             <span className="text-blue100 text-xs font-light">Available balance</span>
 
-                            <div className="bg-blue100/80 border-blue100 flex flex-col items-center rounded-lg border pb-1 pt-3 px-2 w-28">
+                            <div className="bg-blue100/80 border-blue100 flex w-28 flex-col items-center rounded-lg border px-2 pt-3 pb-1">
                                 <span className="text-xl text-white">
                                     ${initialValues.senderAvailableBalanceInUsd.toFixed(2)}
                                 </span>
