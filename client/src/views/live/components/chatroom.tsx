@@ -1,8 +1,11 @@
 import { useDataMessage, useLocalPeer, useRemotePeer } from "@huddle01/react";
-import { CircleDollarSign, MessageCircle } from "lucide-react";
+import { useRouteContext } from "@tanstack/react-router";
+import { MessageCircle } from "lucide-react";
 import React from "react";
 
 import { useAuthenticationStore } from "@/store/authentication";
+import { TipDrawer } from "@/views/tip-drawer";
+import { TradeDrawer } from "@/views/trade-modal";
 
 export type TMessage = {
     text: string;
@@ -16,6 +19,9 @@ export function Chatroom() {
 
     const user = useAuthenticationStore((state) => state.user?.backendUserData?.user?.username);
     const isLoggedIn = useAuthenticationStore((state) => state.isAuthenticated);
+    const { streamResponse } = useRouteContext({
+        from: "/live/$id",
+    });
 
     const { peerId } = useLocalPeer();
     const MAX_CHATS = 10;
@@ -77,13 +83,8 @@ export function Chatroom() {
                 </aside>
 
                 <aside className="flex items-center gap-3">
-                    <button className="flex h-6 w-20 items-center justify-center gap-1 rounded bg-gradient-to-b from-[#2D57FF] to-[#1B3499] text-white">
-                        <i className="size-4">
-                            <CircleDollarSign />
-                        </i>
-                        <span className="pt-0.5 text-xs">Send tip</span>
-                    </button>
-                    <button>Trade</button>
+                    <TipDrawer streamerWalletAddress={streamResponse.creatorAddress} />
+                    <TradeDrawer tokenAddress={streamResponse?.creatorToken} />
                 </aside>
             </header>
 

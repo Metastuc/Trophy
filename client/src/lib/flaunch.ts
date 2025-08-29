@@ -86,6 +86,11 @@ export const createCreatorToken = async (
         });
 
         await smartWalletClient.writeContract(request);
+        await makeRequest({
+            method: "POST",
+            url: `/save-creator-token`,
+            data: { creatorToken: result[0], sa_address: smartWalletClient.account.address, username: name },
+        });
         return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
     } catch (error: unknown) {
         console.error(error);
