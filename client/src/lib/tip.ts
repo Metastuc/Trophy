@@ -1,5 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
-import { Addresses } from "@/lib/contracts";
 import {
     createMeeClient,
     getMEEVersion,
@@ -10,6 +8,9 @@ import {
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
+
+import { Addresses } from "@/lib/contracts";
+
 import { network } from "./constants";
 import { getWalletClient } from "./viem";
 

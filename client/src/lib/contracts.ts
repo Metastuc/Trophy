@@ -7,11 +7,11 @@ export const DEGEN = "0x4ed4e862860bed51a9570b96d89af5e1b0efefed";
 export const BANKR = "0x22af33fe49fd1fa80c7149773dde5890d3c76f3b";
 
 export const Addresses = {
-  USDC,
-  DEGEN,
-  BANKR,
-  ZORA
-}
+    USDC,
+    DEGEN,
+    BANKR,
+    ZORA,
+};
 
 export const NEXUS_IMPLN = "0x000000004F43C49e93C970E84001853a70923B03";
 
