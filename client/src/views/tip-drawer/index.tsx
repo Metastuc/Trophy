@@ -91,7 +91,6 @@ function TipDrawerInner() {
             ...state,
             amountInToken: parsedValue === null || parsedValue <= 100 ? parsedValue : 100,
             // amountInUsd: Number(event.target.value) * (streamer?.priceInUsd || 0),
-            
         }));
     }
 
@@ -160,7 +159,7 @@ function TipDrawerInner() {
                         <span className="text-blue100 pl-5 text-sm font-medium">Enter amount</span>
 
                         <div className="border-blue100 flex h-25 items-center justify-between rounded-xl border-2 p-4">
-                            <aside className="flex flex-col items-center justify-center">
+                            <aside className="flex flex-col items-start justify-center">
                                 <div className="flex items-center justify-center gap-2 text-2xl">
                                     <input
                                         value={initialValues.amountInToken}
