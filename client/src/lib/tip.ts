@@ -9,9 +9,8 @@ import {
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
 
-import { Addresses } from "@/lib/contracts";
-
 import { network } from "./constants";
+import { Addresses } from "./contracts";
 import { getWalletClient } from "./viem";
 
 type tokenType = "USDC" | "DEGEN" | "ZORA" | "BANKR";

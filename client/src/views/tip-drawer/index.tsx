@@ -1,5 +1,9 @@
+import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
+import { useDebounce } from "@uidotdev/usehooks";
 import { CircleDollarSign } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Address } from "viem";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +17,7 @@ import {
 } from "@/components/ui/drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
+import { tipUser } from "@/lib/tip";
 import { logger } from "@/utils/logger";
 
 import { TOKENS } from "./constants";
@@ -37,16 +42,44 @@ interface TipDrawerState {
     token: string;
 }
 
+interface TipDrawerPrivyWalletState {
+    provider?: EIP1193Provider;
+    address?: string;
+    walletType?: string;
+}
+
 function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
+    const { wallets } = useWallets();
+
+    const [privyWalletState, setProvyWalletState] = useState<TipDrawerPrivyWalletState>(() => ({
+        provider: undefined,
+        address: undefined,
+        walletType: undefined,
+    }));
 
     const [initialValues, setInitialValues] = useState<TipDrawerState>(() => ({
         amountInToken: 0,
         amountInUsd: 0,
         senderAvailableBalanceInToken: 0,
         senderAvailableBalanceInUsd: 0,
-        token: "USDC",
+        token: "ETH",
     }));
+
+    const debouncedAmountInToken = useDebounce(initialValues.amountInToken, 1000);
+    const debouncedAmountInUsd = useDebounce(initialValues.amountInUsd, 1000);
+
+    useEffect(
+        function () {
+            (async function () {
+                const provider = await wallets[0].getEthereumProvider();
+                const address = wallets[0].address;
+                const walletType = wallets[0].walletClientType;
+                setProvyWalletState({ provider, address, walletType });
+            })();
+        },
+        [wallets],
+    );
 
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
         event.preventDefault();
@@ -58,6 +91,7 @@ function TipDrawerInner() {
             ...state,
             amountInToken: parsedValue === null || parsedValue <= 100 ? parsedValue : 100,
             // amountInUsd: Number(event.target.value) * (streamer?.priceInUsd || 0),
+            
         }));
     }
 
@@ -65,21 +99,26 @@ function TipDrawerInner() {
         console.log(value);
     }
 
-    // function handleTip() {
-    //     switch (initialValues.token) {
-    //         case "DEGEN":
-    //             break;
+    async function handleTip() {
+        try {
+            if (!privyWalletState.provider || !privyWalletState.address) throw new Error("Privy wallet not connected");
 
-    //         case "ETH":
-    //             break;
+            const hash = await tipUser({
+                amount: initialValues.amountInToken.toString(),
+                provider: privyWalletState.provider,
+                recipient: streamer?.walletAddress as string,
+                token: initialValues.token as tokenType,
+                userAddress: privyWalletState.address as Address,
+                wallet: privyWalletState.walletType as string,
+            });
 
-    //         case "USDC":
-    //             break;
-
-    //         case "ZORA":
-    //             break;
-    //     }
-    // }
+            toast.success("Tip sent successfully!", {
+                duration: 3000,
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
@@ -200,7 +239,7 @@ function TipDrawerInner() {
                 </main>
 
                 <DrawerFooter>
-                    <Button className="bg-blue100 mx-auto h-13.5 w-full rounded-lg">
+                    <Button className="bg-blue100 mx-auto h-13.5 w-full rounded-lg" onClick={handleTip}>
                         <span className="text-xl font-normal">Send tip</span>
                     </Button>
                 </DrawerFooter>

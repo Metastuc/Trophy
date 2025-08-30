@@ -6,3 +6,6 @@ enum Token {
 }
 
 type tToken = Token;
+
+
+type tokenType = "USDC" | "DEGEN" | "ZORA" | "BANKR";
