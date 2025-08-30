@@ -1,5 +1,5 @@
 /* eslint-disable simple-import-sort/imports */
-import { DEGEN, USDC, ZORA } from "@/lib/contracts";
+import { Addresses } from "@/lib/contracts";
 import {
     createMeeClient,
     getMEEVersion,
@@ -13,7 +13,17 @@ import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
 import { network } from "./constants";
 import { getWalletClient } from "./viem";
 
-export const ethTip = async (recipient: string, amount: string, provider: EIP1193Provider) => {
+type tokenType = "USDC" | "DEGEN" | "ZORA" | "BANKR";
+
+export const ethTip = async ({
+    recipient,
+    amount,
+    provider,
+}: {
+    recipient: string;
+    amount: string;
+    provider: EIP1193Provider;
+}) => {
     const walletClient = getWalletClient(provider);
 
     const hash = await walletClient.sendTransaction({
@@ -26,44 +36,41 @@ export const ethTip = async (recipient: string, amount: string, provider: EIP119
     return hash;
 };
 
-export const tipUSDC = async (
-    recipient: string,
-    amount: string,
-    userAddress: Address,
-    wallet: string,
-    provider: EIP1193Provider,
-) => {
-    return await tipToken(recipient, USDC, amount, userAddress, provider, wallet, true);
+export const tipUser = async ({
+    recipient,
+    amount,
+    userAddress,
+    wallet,
+    provider,
+    token,
+}: {
+    recipient: string;
+    amount: string;
+    userAddress: Address;
+    wallet: string;
+    provider: EIP1193Provider;
+    token: tokenType;
+}) => {
+    const tokenAddress = Addresses[token];
+    const isUSDC = token === "USDC" ? true : false;
+    return await tipToken(recipient, tokenAddress, amount, userAddress, provider, wallet, isUSDC);
 };
 
-export const tipZORA = async (
-    recipient: string,
-    amount: string,
-    userAddress: Address,
-    provider: EIP1193Provider,
-    wallet: string,
-) => {
-    return await tipToken(recipient, ZORA, amount, userAddress, provider, wallet);
-};
-
-export const tipDEGEN = async (
-    recipient: string,
-    amount: string,
-    userAddress: Address,
-    provider: EIP1193Provider,
-    wallet: string,
-) => {
-    return await tipToken(recipient, DEGEN, amount, userAddress, provider, wallet);
-};
-
-export const tipCreatorToken = async (
-    recipient: string,
-    contractAddress: string,
-    amount: string,
-    userAddress: Address,
-    provider: EIP1193Provider,
-    wallet: string,
-) => {
+export const tipCreatorToken = async ({
+    recipient,
+    amount,
+    userAddress,
+    wallet,
+    provider,
+    contractAddress,
+}: {
+    recipient: string;
+    amount: string;
+    userAddress: Address;
+    wallet: string;
+    provider: EIP1193Provider;
+    contractAddress: string;
+}) => {
     return await tipToken(recipient, contractAddress, amount, userAddress, provider, wallet);
 };
 
