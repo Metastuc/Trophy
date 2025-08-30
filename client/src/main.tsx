@@ -1,6 +1,6 @@
 import "./index.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, Link, RouterProvider } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { StrictMode, useEffect } from "react";
@@ -11,10 +11,10 @@ import { useShallow } from "zustand/shallow";
 import { LoadingScreen } from "./components/layouts/loading.tsx";
 import { AppContextProviders } from "./contexts/index.tsx";
 import { useCustomScriptLoader } from "./hooks/script.ts";
+import { queryClient } from "./lib/constants.ts";
 import { routeTree } from "./routeTree.gen.ts";
 import { useAuthenticationStore } from "./store/authentication.ts";
 
-const queryClient = new QueryClient();
 const router = createRouter({
     routeTree,
     context: {

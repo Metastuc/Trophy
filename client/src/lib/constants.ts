@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import Moralis from "moralis";
 import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
@@ -17,6 +18,8 @@ export const ENV_SCHEMA = {
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
     FLAUNCH_CA: import.meta.env.VITE_FLAUNCH_CA as Address,
 };
+
+export const queryClient = new QueryClient();
 
 export const PUBLIC_ROUTES = ["/auth"];
 
