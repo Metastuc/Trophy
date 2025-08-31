@@ -1,16 +1,12 @@
+/* eslint-disable simple-import-sort/imports */
 import Moralis from "moralis";
 import type { Address } from "viem";
-import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
-
-import { BANKR, DEGEN, USDC, ZORA } from "./contracts";
-import { BANKR, DEGEN, USDC, ZORA } from "./contracts";
+import { BNKR, DEGEN, USDC, ZORA, FLAY } from "./contracts";
 
 export const ENV_SCHEMA = {
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
-    MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY as string,
-    PAYMASTER: import.meta.env.VITE_PAYMASTER_URL as string,
     MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY as string,
     PAYMASTER: import.meta.env.VITE_PAYMASTER_URL as string,
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
@@ -25,13 +21,14 @@ export const ENV_SCHEMA = {
 
 export const PUBLIC_ROUTES = ["/auth"];
 
-export const COINGECKO_URL = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=ethereum"
+export const COINGECKO_ETH_URL = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=ethereum";
+
+export const supportedTokens = ["DEGEN", "USDC", "FLAY", "ETH", "ZORA", "BNKR"];
 
 const environment = ENV_SCHEMA.ENVIRONMENT;
 
 export const network = environment === "development" ? baseSepolia : base;
 
-export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL!;
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL!;
 
 export const moralisChain =
@@ -39,7 +36,7 @@ export const moralisChain =
 
 const addresses = {
     development: [""],
-    production: [DEGEN, USDC, ZORA, BANKR],
+    production: [DEGEN, USDC, ZORA, BNKR, FLAY],
 };
 
 export const tokenAddresses = addresses[environment];
