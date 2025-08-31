@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
+import { APPLICATION_CONSTANTS } from "@/lib/constants";
 import { tipUser } from "@/lib/tip";
 import { logger } from "@/utils/logger";
 
@@ -35,7 +36,7 @@ export function TipDrawer(props: TipDrawer) {
 }
 
 interface TipDrawerState {
-    amountInToken: number;
+    amountInToken: string;
     amountInUsd: number;
     senderAvailableBalanceInToken: number;
     senderAvailableBalanceInUsd: number;
@@ -52,14 +53,14 @@ function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
     const { wallets } = useWallets();
 
-    const [privyWalletState, setProvyWalletState] = useState<TipDrawerPrivyWalletState>(() => ({
+    const [privyWalletState, setPrivyWalletState] = useState<TipDrawerPrivyWalletState>(() => ({
         provider: undefined,
         address: undefined,
         walletType: undefined,
     }));
 
     const [initialValues, setInitialValues] = useState<TipDrawerState>(() => ({
-        amountInToken: 0,
+        amountInToken: "",
         amountInUsd: 0,
         senderAvailableBalanceInToken: 0,
         senderAvailableBalanceInUsd: 0,
@@ -75,21 +76,23 @@ function TipDrawerInner() {
                 const provider = await wallets[0].getEthereumProvider();
                 const address = wallets[0].address;
                 const walletType = wallets[0].walletClientType;
-                setProvyWalletState({ provider, address, walletType });
+                setPrivyWalletState({ provider, address, walletType });
             })();
         },
         [wallets],
     );
 
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
-        event.preventDefault();
-
-        const inputValue = event.target.value.replace(/\D/g, "");
-        const parsedValue = inputValue === "" ? 0 : parseInt(inputValue);
+        let inputValue = event.target.value.replace(/[^0-9.]/g, "");
+        const parts = inputValue.split(".");
+        if (parts.length > 2) {
+            inputValue = parts[0] + "." + parts.slice(1).join("");
+        }
 
         setInitialValues((state) => ({
             ...state,
-            amountInToken: parsedValue === null || parsedValue <= 100 ? parsedValue : 100,
+            // amountInToken: parsedValue === null || parsedValue <= 100 ? parsedValue : 100,
+            amountInToken: inputValue,
             // amountInUsd: Number(event.target.value) * (streamer?.priceInUsd || 0),
         }));
     }
@@ -99,23 +102,39 @@ function TipDrawerInner() {
     }
 
     async function handleTip() {
+        if (initialValues.amountInUsd > APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD) {
+            toast.error(`Maximum tip amount is ${APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD} USD`);
+            return;
+        }
+
         try {
             if (!privyWalletState.provider || !privyWalletState.address) throw new Error("Privy wallet not connected");
 
             const hash = await tipUser({
-                amount: initialValues.amountInToken.toString(),
+                amount: initialValues.amountInToken.toString() || "0",
                 provider: privyWalletState.provider,
                 recipient: streamer?.walletAddress as string,
-                token: initialValues.token as tokenType,
+                token: initialValues.token as TokenAddresses,
                 userAddress: privyWalletState.address as Address,
                 wallet: privyWalletState.walletType as string,
             });
 
             toast.success("Tip sent successfully!", {
-                duration: 3000,
+                duration: 5000,
+                description: (
+                    <a
+                        href={`https://basescan.org/tx/${hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline"
+                    >
+                        View on BaseScan
+                    </a>
+                ),
             });
         } catch (error) {
             console.error(error);
+            toast.error("Failed to send tip.");
         }
     }
 
@@ -165,10 +184,11 @@ function TipDrawerInner() {
                                         value={initialValues.amountInToken}
                                         onChange={handleAmountInTokenChange}
                                         style={{
-                                            width: `${String(initialValues.amountInToken || 0).length || 1}ch`,
+                                            width: `${initialValues.amountInToken.length || 1}ch`,
                                             color: initialValues.amountInToken ? "black" : "gray",
                                         }}
                                         className="outline-none"
+                                        placeholder="0.00"
                                     />
                                     <span>{initialValues.token}</span>
                                 </div>

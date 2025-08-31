@@ -75,3 +75,11 @@ export const TOKENS = [
         value: "DEGEN",
     },
 ];
+
+export const TOKENS_MAX = {
+    ETH: "1000",
+    USDC: "1000",
+    ZORA: "1000",
+    DEGEN: "1000",
+    BANKR: "1000",
+};

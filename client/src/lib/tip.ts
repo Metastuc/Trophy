@@ -10,10 +10,8 @@ import { EIP1193Provider } from "@privy-io/react-auth";
 import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
 
 import { network } from "./constants";
-import { Addresses } from "./contracts";
+import { TOKEN_ADDRESSES } from "./contracts";
 import { getWalletClient } from "./viem";
-
-type tokenType = "USDC" | "DEGEN" | "ZORA" | "BANKR";
 
 export const ethTip = async ({
     recipient,
@@ -49,9 +47,9 @@ export const tipUser = async ({
     userAddress: Address;
     wallet: string;
     provider: EIP1193Provider;
-    token: tokenType;
+    token: TokenAddresses;
 }) => {
-    const tokenAddress = Addresses[token];
+    const tokenAddress = TOKEN_ADDRESSES[token];
     const isUSDC = token === "USDC" ? true : false;
     return await tipToken(recipient, tokenAddress, amount, userAddress, provider, wallet, isUSDC);
 };

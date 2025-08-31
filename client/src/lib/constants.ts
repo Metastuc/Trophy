@@ -45,8 +45,8 @@ export const tokenAddresses = addresses[environment];
 export const APPLICATION_CONSTANTS = {
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
-
+    MAX_TIP_AMOUNT_USD: 2000,
+    SUPPORTED_TOKENS: ["DEGEN", "USDC", "FLAY", "ETH", "ZORA", "BNKR"],
     TOTAL_CO_HOSTS_ALLOWED: 4,
-
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
 };
