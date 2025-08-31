@@ -137,24 +137,24 @@ const tipToken = async (
 
         const { hash } = await MeeClient.executeFusionQuote({ fusionQuote });
 
+        const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
+
+        return superHash;
+    }
+
+    const quote = await MeeClient.getQuote({
+        instructions: [sendTokenIx],
+        delegate: true,
+
+        feeToken: {
+            address: tokenAddress,
+            chainId,
+        },
+    });
+
+    const { hash } = await MeeClient.executeQuote({ quote });
+
     const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
 
     return superHash;
-  }
-
-  const quote = await MeeClient.getQuote({
-    instructions: [sendTokenIx],
-    delegate: true,
-
-    feeToken: {
-      address: tokenAddress,
-      chainId,
-    },
-  });
-
-  const { hash } = await MeeClient.executeQuote({ quote });
-
-  const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-
-  return superHash;
 };
