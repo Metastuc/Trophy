@@ -13,7 +13,7 @@ import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
 import { network } from "./constants";
 import { getWalletClient } from "./viem";
 
-type tokenType = "USDC" | "DEGEN" | "ZORA" | "BANKR";
+type tokenType = "USDC" | "DEGEN" | "ZORA" | "BNKR" | "FLAY";
 
 export const ethTip = async ({
     recipient,
