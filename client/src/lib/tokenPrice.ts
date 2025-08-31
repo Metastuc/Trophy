@@ -5,6 +5,7 @@ import { publicClient } from "./viem";
 import axios from "axios";
 import { COINGECKO_ETH_URL, ENV_SCHEMA, supportedTokens } from "./constants";
 import { moralisTokenFetch } from "./utils";
+import { toFixed } from "./fetchBalances";
 
 const flaunchReadClient = createFlaunch({ publicClient }) as ReadFlaunchSDK;
 
@@ -34,12 +35,48 @@ export const getPrice = async (tokenToEth: boolean, quantity: number, coinAddres
 
 export const getTokens = async (address: string) => {
   const tokens = await moralisTokenFetch(address);
-  const foundTokens: { [key: string]: string } = {};
+
+  const foundTokens = {
+    ETH: {
+      tokenPrice: "0",
+      tokenPriceInUsd: "0",
+      balance: "0"
+    },
+    USDC: {
+      tokenPrice: "0",
+      tokenPriceInUsd: "0",
+      balance: "0"
+    },
+    DEGEN: {
+      tokenPrice: "0",
+      tokenPriceInUsd: "0",
+      balance: "0"
+    },
+    ZORA: {
+      tokenPrice: "0",
+      tokenPriceInUsd: "0",
+      balance: "0"
+    },
+    FLAY: {
+      tokenPrice: "0",
+      tokenPriceInUsd: "0",
+      balance: "0"
+    },
+    BNKR: {
+      tokenPrice: "0",
+      tokenPriceInUsd: "0",
+      balance: "0"
+    }
+  };
 
   for (const token of tokens) {
     if (!supportedTokens.includes(token.symbol)) continue;
 
-    foundTokens[token.symbol] = token.usdPrice;
+    foundTokens[token.symbol as keyof typeof foundTokens] = {
+      tokenPrice: toFixed(token.usdPrice),
+      balance: toFixed(token.balanceFormatted),
+      tokenPriceInUsd: toFixed(token.usdValue)
+    };
   }
 
   return foundTokens;
