@@ -2,9 +2,9 @@
 /* eslint-disable simple-import-sort/imports */
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import axios from "axios";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
-import { BACKEND_URL, ENV_SCHEMA } from "./constants";
+import { makeRequest } from "./axios";
+import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
@@ -21,7 +21,7 @@ const flaunchClient = (provider: EIP1193Provider) => {
     return fClient;
 };
 
-export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<Address> => {
+export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<{creatorToken: Address, sa_address: Address}> => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
@@ -33,7 +33,11 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
 
         const {
             data: { tokenUri },
-        } = await axios.post(`${BACKEND_URL}/create-token-uri`, { username: name });
+        } = await makeRequest<{ tokenUri: string }>({
+            method: "POST",
+            url: `/create-token-uri`,
+            data: { username: name },
+        });
 
         const flaunchParams = {
             _flaunchParams: {
@@ -83,7 +87,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
 
         await smartWalletClient.writeContract(request);
 
-        return result[0];
+        return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
     } catch (error: any) {
         console.error(error);
         throw new Error(error);

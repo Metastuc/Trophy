@@ -1,12 +1,16 @@
 import Moralis from "moralis";
 import type { Address } from "viem";
+import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
+import { BANKR, DEGEN, USDC, ZORA } from "./contracts";
 import { BANKR, DEGEN, USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
+    MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY as string,
+    PAYMASTER: import.meta.env.VITE_PAYMASTER_URL as string,
     MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY as string,
     PAYMASTER: import.meta.env.VITE_PAYMASTER_URL as string,
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
@@ -27,6 +31,7 @@ const environment = ENV_SCHEMA.ENVIRONMENT;
 
 export const network = environment === "development" ? baseSepolia : base;
 
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL!;
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL!;
 
 export const moralisChain =

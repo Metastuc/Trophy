@@ -217,7 +217,7 @@ export function CompleteProfile() {
 
                 <TextInput
                     className={cn(
-                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs",
                         isEmailPreFilled.current && "opacity-50",
                     )}
                     name="email"
@@ -230,7 +230,7 @@ export function CompleteProfile() {
 
                 <TextInput
                     className={cn(
-                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs lowercase",
+                        "border-blue100/40 h-11 w-full rounded-xs border p-2.5 text-xs",
                         isUsernamePreFilled.current && "opacity-50",
                     )}
                     name="username"
@@ -242,7 +242,7 @@ export function CompleteProfile() {
                 />
 
                 <TextInput
-                    className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-xs lowercase"
+                    className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-xs"
                     name="bio"
                     placeholder="enter bio (say something about yourself, this is optional)"
                     type="textarea"
