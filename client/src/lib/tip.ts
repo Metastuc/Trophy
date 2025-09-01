@@ -7,100 +7,92 @@ import {
     toMultichainNexusAccount,
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
+import { type Account, type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
 
 import { network } from "./constants";
 import { TOKEN_ADDRESSES } from "./contracts";
 import { getWalletClient } from "./viem";
 
-export const ethTip = async ({
-    recipient,
-    amount,
-    provider,
-}: {
-    recipient: string;
+interface TipETH {
     amount: string;
     provider: EIP1193Provider;
-}) => {
+    recipientAddress: Address;
+}
+
+interface TipUser extends TipETH {
+    token: TokenAddresses;
+    senderAddress: Address;
+    wallet: string;
+}
+
+type TipToken = Omit<TipUser, "token"> & {
+    contractAddress: Address;
+    isUSDC?: boolean;
+};
+
+export async function tipETH({ amount, provider, recipientAddress }: TipETH) {
     const walletClient = getWalletClient(provider);
 
-    const hash = await walletClient.sendTransaction({
-        account: walletClient.account!,
+    return await walletClient.sendTransaction({
+        account: walletClient.account as Account,
         chain: walletClient.chain,
-        to: recipient as Address,
+        to: recipientAddress,
         value: parseEther(amount),
     });
+}
 
-    return hash;
-};
+export async function tipUser({ amount, provider, recipientAddress, token, senderAddress, wallet }: TipUser) {
+    return await tipToken({
+        amount,
+        contractAddress: TOKEN_ADDRESSES[token] as Address,
+        isUSDC: token === "USDC",
+        provider,
+        recipientAddress,
+        senderAddress,
+        wallet,
+    });
+}
 
-export const tipUser = async ({
-    recipient,
+export async function tipCreatorToken({
     amount,
-    userAddress,
-    wallet,
-    provider,
-    token,
-}: {
-    recipient: string;
-    amount: string;
-    userAddress: Address;
-    wallet: string;
-    provider: EIP1193Provider;
-    token: TokenAddresses;
-}) => {
-    const tokenAddress = TOKEN_ADDRESSES[token];
-    const isUSDC = token === "USDC" ? true : false;
-    return await tipToken(recipient, tokenAddress, amount, userAddress, provider, wallet, isUSDC);
-};
-
-export const tipCreatorToken = async ({
-    recipient,
-    amount,
-    userAddress,
-    wallet,
-    provider,
     contractAddress,
-}: {
-    recipient: string;
-    amount: string;
-    userAddress: Address;
-    wallet: string;
-    provider: EIP1193Provider;
-    contractAddress: string;
-}) => {
-    return await tipToken(recipient, contractAddress, amount, userAddress, provider, wallet);
-};
+    provider,
+    recipientAddress,
+    senderAddress,
+    wallet,
+}: TipToken) {
+    return await tipToken({ amount, contractAddress, provider, recipientAddress, senderAddress, wallet });
+}
 
-const tipToken = async (
-    recipient: string,
-    contractAddress: string,
-    amount: string,
-    accountAddress: Address,
-    signer: EIP1193Provider,
-    wallet: string,
-    usdc?: boolean,
-) => {
+export async function tipToken({
+    amount,
+    contractAddress,
+    isUSDC,
+    provider,
+    recipientAddress,
+    senderAddress,
+    wallet,
+}: TipToken) {
     const nexusAccount = await toMultichainNexusAccount({
         chainConfigurations: [
             {
                 chain: network,
-                transport: custom(signer),
+                transport: custom(provider),
                 version: getMEEVersion(MEEVersion.V2_1_0),
             },
         ],
-        signer,
-        accountAddress,
+        signer: provider,
+        accountAddress: senderAddress,
     });
 
-    const MeeClient = await createMeeClient({ account: nexusAccount });
-    const tokenAddress = contractAddress as unknown as Address;
-    const recieverAddress = recipient as unknown as Address;
+    console.log({ amount, contractAddress, isUSDC, provider, recipientAddress, senderAddress, wallet });
 
-    const decimals = usdc ? 6 : 18;
+    const MeeClient = await createMeeClient({ account: nexusAccount });
+    const tokenAddress = contractAddress;
+    const recieverAddress = recipientAddress;
+    const decimals = isUSDC ? 6 : 18;
     const chainId = network.id as unknown as number;
     const tokenInUnits = parseUnits(amount, decimals);
-
     const sendTokenIx = await nexusAccount.buildComposable({
         type: "default",
         data: {
@@ -134,16 +126,13 @@ const tipToken = async (
         });
 
         const { hash } = await MeeClient.executeFusionQuote({ fusionQuote });
-
         const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-
         return superHash;
     }
 
     const quote = await MeeClient.getQuote({
         instructions: [sendTokenIx],
         delegate: true,
-
         feeToken: {
             address: tokenAddress,
             chainId,
@@ -151,8 +140,6 @@ const tipToken = async (
     });
 
     const { hash } = await MeeClient.executeQuote({ quote });
-
     const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-
     return superHash;
-};
+}

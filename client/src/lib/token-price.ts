@@ -1,9 +1,11 @@
 import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
 import axios from "axios";
 
-import { APPLICATION_CONSTANTS, COINGECKO_URL, ENV_SCHEMA } from "./constants";
+import { APPLICATION_CONSTANTS, BASE_TOKEN_INFO, COINGECKO_URL, ENV_SCHEMA } from "./constants";
 import { moralisTokenFetch } from "./moralis";
 import { publicClient } from "./viem";
+
+type FoundTokens = Record<string, typeof BASE_TOKEN_INFO>;
 
 const flaunchReadClient = createFlaunch({ publicClient }) as ReadFlaunchSDK;
 
@@ -35,11 +37,22 @@ export const getPrice = async (tokenToEth: boolean, quantity: number, coinAddres
 
 export const getTokens = async (address: string) => {
     const tokens = await moralisTokenFetch(address);
-    const foundTokens: { [key: string]: string } = {};
+
+    const foundTokens: FoundTokens = APPLICATION_CONSTANTS.SUPPORTED_TOKENS.reduce((acc, token) => {
+        acc[token] = { ...BASE_TOKEN_INFO };
+        return acc;
+    }, {} as FoundTokens);
 
     for (const token of tokens) {
+        console.log(token);
+
         if (!APPLICATION_CONSTANTS.SUPPORTED_TOKENS.includes(token.symbol)) continue;
-        foundTokens[token.symbol] = token.usdPrice;
+
+        foundTokens[token.symbol as keyof typeof foundTokens] = {
+            tokenPrice: Number(token.usdPrice).toFixed(2),
+            balance: Number(token.balanceFormatted).toFixed(2),
+            tokenPriceInUsd: Number(token.usdValue).toFixed(2),
+        };
     }
 
     return foundTokens;

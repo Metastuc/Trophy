@@ -1,7 +1,7 @@
 import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
 import { useDebounce } from "@uidotdev/usehooks";
 import { CircleDollarSign } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
 
@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { APPLICATION_CONSTANTS } from "@/lib/constants";
 import { tipUser } from "@/lib/tip";
+import { getTokens } from "@/lib/token-price";
 import { logger } from "@/utils/logger";
 
 import { TOKENS } from "./constants";
@@ -26,8 +27,6 @@ import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
 
 export function TipDrawer(props: TipDrawer) {
-    logger({ props });
-
     return (
         <TipDrawerContextProvider {...props}>
             <TipDrawerInner />
@@ -52,6 +51,8 @@ interface TipDrawerPrivyWalletState {
 function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
     const { wallets } = useWallets();
+
+    const hasMoralisFiredRef = useRef<boolean>(false);
 
     const [privyWalletState, setPrivyWalletState] = useState<TipDrawerPrivyWalletState>(() => ({
         provider: undefined,
@@ -82,6 +83,19 @@ function TipDrawerInner() {
         [wallets],
     );
 
+    useEffect(
+        function () {
+            (async function () {
+                if (!privyWalletState.address || hasMoralisFiredRef.current) return;
+                const tokensValues = await getTokens(privyWalletState.address);
+                hasMoralisFiredRef.current = true;
+
+                // logger({ tokensValues, address: privyWalletState.address });
+            })();
+        },
+        [privyWalletState.address],
+    );
+
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
         let inputValue = event.target.value.replace(/[^0-9.]/g, "");
         const parts = inputValue.split(".");
@@ -110,12 +124,21 @@ function TipDrawerInner() {
         try {
             if (!privyWalletState.provider || !privyWalletState.address) throw new Error("Privy wallet not connected");
 
-            const hash = await tipUser({
+            logger({
                 amount: initialValues.amountInToken.toString() || "0",
                 provider: privyWalletState.provider,
                 recipient: streamer?.walletAddress as string,
                 token: initialValues.token as TokenAddresses,
                 userAddress: privyWalletState.address as Address,
+                wallet: privyWalletState.walletType as string,
+            });
+
+            const hash = await tipUser({
+                amount: initialValues.amountInToken.toString() || "0",
+                provider: privyWalletState.provider,
+                recipientAddress: streamer?.walletAddress as Address,
+                token: initialValues.token as TokenAddresses,
+                senderAddress: privyWalletState.address as Address,
                 wallet: privyWalletState.walletType as string,
             });
 
@@ -161,15 +184,17 @@ function TipDrawerInner() {
                         <span className="font-medium">Send tip to:</span>
                     </DrawerTitle>
 
-                    <DrawerDescription className="flex items-center gap-1 text-xs font-light">
-                        <aside className="flex size-7 items-center justify-center">
-                            <StreamerLivePFP
-                                isLive={false}
-                                imageSrc={streamer?.profilePicture as string}
-                                imageAlt={`${streamer?.username as string}-pfp`}
-                            />
-                        </aside>
-                        <span className="text-black100 text-sm font-normal">@{streamer?.username}</span>
+                    <DrawerDescription asChild>
+                        <div className="flex items-center gap-1 text-xs font-light">
+                            <aside className="flex size-7 items-center justify-center">
+                                <StreamerLivePFP
+                                    isLive={false}
+                                    imageSrc={streamer?.profilePicture as string}
+                                    imageAlt={`${streamer?.username as string}-pfp`}
+                                />
+                            </aside>
+                            <span className="text-black100 text-sm font-normal">@{streamer?.username}</span>
+                        </div>
                     </DrawerDescription>
                 </DrawerHeader>
 
