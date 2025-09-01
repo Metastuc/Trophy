@@ -10,7 +10,7 @@ import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
-const flaunchClient = (provider: EIP1193Provider, address: Address) => {
+const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!fClient) {
         const walletClient = getWalletClient(provider, address);
 
