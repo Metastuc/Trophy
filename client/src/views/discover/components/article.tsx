@@ -1,4 +1,4 @@
-import { TradeDrawer } from "@/views/trade-modal";
+import { TradeDrawer } from "@/views/trade-drawer";
 
 import { useLeaderboardStreamerContext } from "../hooks";
 import { Outcome } from "./outcome";
