@@ -17,8 +17,6 @@ export function Swap() {
         }));
     }
 
-    console.log({ streamer });
-
     return (
         <section className="mx-auto max-w-md p-4">
             <article className="border-blue100 flex items-end justify-between rounded-xl border-2 px-3 py-2">

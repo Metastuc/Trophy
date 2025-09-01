@@ -8,7 +8,7 @@ export const publicClient = createPublicClient({
     transport: http(),
 }) as PublicClient;
 
-export const getWalletClient = (provider: EIP1193Provider, address: Address) => {
+export const getWalletClient = (provider: EIP1193Provider, address?: Address) => {
     return createWalletClient({
         chain: network,
         transport: custom(provider!),
