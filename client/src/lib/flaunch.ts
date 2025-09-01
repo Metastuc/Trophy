@@ -33,17 +33,17 @@ export const createCreatorToken = async (
         const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
 
-        const { tokenUri } = await makeRequest<{ tokenUri: string }>({
-            method: "POST",
-            url: `/create-token-uri`,
-            data: { username: name },
-        }).then((response) => response.data);
+        // const { tokenUri } = await makeRequest<{ tokenUri: string }>({
+        //     method: "POST",
+        //     url: `/create-token-uri`,
+        //     data: { username: name },
+        // }).then((response) => response.data);
 
         const flaunchParams = {
             _flaunchParams: {
                 name,
                 symbol: name.toUpperCase(),
-                tokenUri,
+                tokenUri: "ipfs://bafkreiaaojq4u2nopmwilfia7b3rxts2itb7xlgf3qa4z4spqxntfp4gfe",
                 initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
                 fairLaunchDuration: BigInt(30 * 60),
                 premineAmount: 0n,
@@ -78,9 +78,9 @@ export const createCreatorToken = async (
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                flaunchParams._whitelistParams,
-                flaunchParams._airdropParams,
-                flaunchParams._treasuryManagerParams,
+                // flaunchParams._whitelistParams,
+                // flaunchParams._airdropParams,
+                // flaunchParams._treasuryManagerParams,
             ],
             account: smartWalletClient.account,
         });
