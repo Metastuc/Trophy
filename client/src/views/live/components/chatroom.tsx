@@ -2,10 +2,11 @@ import { useDataMessage, useLocalPeer, useRemotePeer } from "@huddle01/react";
 import { useRouteContext } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 import React from "react";
+import { Address } from "viem";
 
 import { useAuthenticationStore } from "@/store/authentication";
 import { TipDrawer } from "@/views/tip-drawer";
-import { TradeDrawer } from "@/views/trade-modal";
+import { TradeDrawer } from "@/views/trade-drawer";
 
 export type TMessage = {
     text: string;
@@ -27,7 +28,7 @@ export function Chatroom() {
         username: streamResponse?.streamer,
         walletAddress: streamResponse?.creatorAddress,
         profilePicture: streamCreator.user.userPfp,
-        tokenAddress: streamResponse?.creatorToken as string,
+        tokenAddress: streamResponse?.creatorToken as Address,
     };
 
     const { peerId } = useLocalPeer();
