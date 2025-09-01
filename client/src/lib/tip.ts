@@ -35,7 +35,7 @@ export async function tipETH({ amount, provider, recipientAddress }: TipETH) {
 
     return await walletClient.sendTransaction({
         account: walletClient.account as Account,
-        chain: walletClient.chain,
+        chain: network,
         to: recipientAddress,
         value: parseEther(amount),
     });

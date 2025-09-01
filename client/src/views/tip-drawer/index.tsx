@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
-import { APPLICATION_CONSTANTS } from "@/lib/constants";
+import { APPLICATION_CONSTANTS, network } from "@/lib/constants";
 import { tipETH, tipUser } from "@/lib/tip";
 import { getTokens } from "@/lib/token-price";
 import { logger } from "@/utils/logger";
@@ -74,9 +74,11 @@ function TipDrawerInner() {
     useEffect(
         function () {
             (async function () {
-                const provider = await wallets[0].getEthereumProvider();
-                const address = wallets[0].address;
-                const walletType = wallets[0].walletClientType;
+                const wallet = wallets[0];
+                await wallet.switchChain(network.id)
+                const provider = await wallet.getEthereumProvider();
+                const address = wallet.address;
+                const walletType = wallet.walletClientType;
                 setPrivyWalletState({ provider, address, walletType });
             })();
         },
