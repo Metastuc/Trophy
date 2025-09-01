@@ -1,9 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
+import { Address } from "viem";
 
 import { WATCHING } from "@/assets/icons";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { StreamerLiveSignal } from "@/components/ui/streamer-live-signal";
-import { TradeDrawer } from "@/views/trade-modal";
+import { truncateText } from "@/utils/truncate";
+import { TradeDrawer } from "@/views/trade-drawer";
 
 export function StreamArticle({
     creatorToken,
@@ -17,7 +19,7 @@ export function StreamArticle({
 }: Partial<iStream>) {
     return (
         <article className="h-72 space-y-2">
-            <RenderHeader pfp={pfp as string} streamer={streamer as string} creatorToken={creatorToken as string} />
+            <RenderHeader pfp={pfp as string} streamer={streamer as string} creatorToken={creatorToken as Address} />
             <RenderMain
                 thumbnail={thumbnail as string}
                 status={status as "Live" | "Scheduled" | "Ended"}
@@ -28,8 +30,12 @@ export function StreamArticle({
     );
 }
 
-function RenderHeader({ pfp, streamer, creatorToken }: { streamer: string; pfp: string; creatorToken: string }) {
-    console.log("creatorToken", creatorToken);
+function RenderHeader({ pfp, streamer, creatorToken }: { streamer: string; pfp: string; creatorToken: Address }) {
+    const drawerStreamerInfo = {
+        tokenAddress: creatorToken,
+        username: truncateText({ text: streamer, maxLength: 8 }),
+        profilePicture: pfp,
+    };
 
     return (
         <header className="flex h-8 items-center justify-between">
@@ -41,7 +47,7 @@ function RenderHeader({ pfp, streamer, creatorToken }: { streamer: string; pfp: 
                 <span className="text-sm">@{streamer}</span>
             </aside>
 
-            <TradeDrawer />
+            <TradeDrawer streamer={drawerStreamerInfo} />
         </header>
     );
 }

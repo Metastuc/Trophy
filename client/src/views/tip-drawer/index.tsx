@@ -4,6 +4,8 @@ import { CircleDollarSign } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
+import { useConnect } from "wagmi";
+import { injected } from "wagmi/connectors";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -51,6 +53,7 @@ interface TipDrawerPrivyWalletState {
 function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
     const { wallets } = useWallets();
+    const { connect } = useConnect();
 
     const hasMoralisFiredRef = useRef<boolean>(false);
 
@@ -73,6 +76,8 @@ function TipDrawerInner() {
 
     useEffect(
         function () {
+            logger({ wallets });
+
             (async function () {
                 const wallet = wallets[0];
                 await wallet.switchChain(network.id)
@@ -126,7 +131,11 @@ function TipDrawerInner() {
         let hash: string | undefined;
 
         try {
-            if (!privyWalletState.provider || !privyWalletState.address) throw new Error("Privy wallet not connected");
+            if (!privyWalletState.provider || !privyWalletState.address) {
+                toast.error("Wallet not connected");
+                connect({ connector: injected() });
+                return;
+            }
 
             logger({
                 amount: initialValues.amountInToken.toString() || "0",

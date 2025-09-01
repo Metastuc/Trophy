@@ -1,63 +1,46 @@
-import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
-import { useEffect, useState } from "react";
+import { ChangeEvent } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { tokenInputField } from "@/utils/truncate";
 
 import { TOKENS } from "../constants";
 import { useTradeDrawerContext } from "../hooks";
 import { formatUSD } from "../utils";
 
 export function Swap() {
-    const { streamer } = useTradeDrawerContext();
+    const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
 
-    const [initialValues, setInitialValues] = useState(() => ({
-        buyAmount: 0,
-        sellAmount: 0,
-
-        buyToken: streamer?.username,
-        sellToken: "USDC",
-
-        buyBalance: 0,
-        sellBalance: 0,
-    }));
-
-    const [provider, setProvider] = useState<EIP1193Provider | null>(null);
-
-    const { wallets } = useWallets();
-
-    const wallet = wallets[0];
-
-    useEffect(() => {
-        if (!wallet) {
-            return;
-        }
-        (async () => setProvider(await wallet.getEthereumProvider()))();
-    }, [wallet, provider]);
-
-    // function handleSellAmountChange() {}
-
-    // function handleBuyAmountChange() {}
-
-    // function handleSwap() {}
+    function handleSellAmountChange(event: ChangeEvent<HTMLInputElement>) {
+        setDrawerData((state) => ({
+            ...state,
+            sellAmount: tokenInputField(event.target.value),
+        }));
+    }
 
     return (
         <section className="mx-auto max-w-md p-4">
             <article className="border-blue100 flex items-end justify-between rounded-xl border-2 px-3 py-2">
                 <aside className="flex flex-col gap-3">
-                    <input type="text" placeholder="0.00" />
-                    <span className="text-xs text-black/60">{formatUSD(initialValues.sellAmount)}</span>
+                    <input
+                        type="text"
+                        placeholder="0.00"
+                        onChange={(event) => handleSellAmountChange(event)}
+                        value={drawerData.sellAmount}
+                        className="outline-none"
+                    />
+                    <span className="text-xs text-black/60">{formatUSD(drawerData.sellAmount || "0")}</span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">
                     <span>Sell</span>
 
                     <Select
-                        value={initialValues.sellToken}
-                        onValueChange={(value) => setInitialValues((state) => ({ ...state, sellToken: value }))}
+                        value={drawerData.sellToken}
+                        onValueChange={(value) => setDrawerData((state) => ({ ...state, sellToken: value }))}
                     >
                         <SelectTrigger className="border-blue100 w-25 rounded-xl p-2">
                             <SelectValue>
-                                {TOKENS.find((token) => token.value === initialValues.sellToken)?.title}
+                                {TOKENS.find((token) => token.value === drawerData.sellToken)?.title}
                             </SelectValue>
                         </SelectTrigger>
 
@@ -70,7 +53,7 @@ export function Swap() {
                         </SelectContent>
                     </Select>
 
-                    <span className="text-xs text-black/60">Balance: {initialValues.sellBalance}</span>
+                    <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
                 </aside>
             </article>
 
@@ -95,9 +78,9 @@ export function Swap() {
                         placeholder="0.00"
                         readOnly
                         className="outline-none"
-                        value={initialValues.buyAmount}
+                        value={drawerData.buyAmount}
                     />
-                    <span className="text-xs text-black/60">{formatUSD(initialValues.buyAmount)}</span>
+                    <span className="text-xs text-black/60">{formatUSD(drawerData.buyAmount)}</span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">
@@ -107,10 +90,10 @@ export function Swap() {
                         <i className="size-5 overflow-hidden rounded-full">
                             <img src={streamer?.profilePicture} />
                         </i>
-                        <span className="pt-0.5 text-xs">{initialValues.buyToken}</span>
+                        <span className="pt-0.5 text-xs">{streamer?.username}</span>
                     </div>
 
-                    <span className="text-xs text-black/60">Balance: {initialValues.sellBalance}</span>
+                    <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
                 </aside>
             </article>
         </section>
