@@ -1,5 +1,5 @@
 import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
-import { useDebounce } from "@uidotdev/usehooks";
+// import { useDebounce } from "@uidotdev/usehooks";
 import { CircleDollarSign } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { APPLICATION_CONSTANTS } from "@/lib/constants";
-import { tipUser } from "@/lib/tip";
+import { tipETH, tipUser } from "@/lib/tip";
 import { getTokens } from "@/lib/token-price";
 import { logger } from "@/utils/logger";
 
@@ -68,8 +68,8 @@ function TipDrawerInner() {
         token: "ETH",
     }));
 
-    const debouncedAmountInToken = useDebounce(initialValues.amountInToken, 1000);
-    const debouncedAmountInUsd = useDebounce(initialValues.amountInUsd, 1000);
+    // const debouncedAmountInToken = useDebounce(initialValues.amountInToken, 1000);
+    // const debouncedAmountInUsd = useDebounce(initialValues.amountInUsd, 1000);
 
     useEffect(
         function () {
@@ -90,7 +90,7 @@ function TipDrawerInner() {
                 const tokensValues = await getTokens(privyWalletState.address);
                 hasMoralisFiredRef.current = true;
 
-                // logger({ tokensValues, address: privyWalletState.address });
+                logger({ tokensValues, address: privyWalletState.address });
             })();
         },
         [privyWalletState.address],
@@ -121,6 +121,8 @@ function TipDrawerInner() {
             return;
         }
 
+        let hash: string | undefined;
+
         try {
             if (!privyWalletState.provider || !privyWalletState.address) throw new Error("Privy wallet not connected");
 
@@ -133,14 +135,24 @@ function TipDrawerInner() {
                 wallet: privyWalletState.walletType as string,
             });
 
-            const hash = await tipUser({
-                amount: initialValues.amountInToken.toString() || "0",
-                provider: privyWalletState.provider,
-                recipientAddress: streamer?.walletAddress as Address,
-                token: initialValues.token as TokenAddresses,
-                senderAddress: privyWalletState.address as Address,
-                wallet: privyWalletState.walletType as string,
-            });
+            if (initialValues.token === "ETH") {
+                hash = await tipETH({
+                    amount: initialValues.amountInToken.toString() || "0",
+                    provider: privyWalletState.provider,
+                    recipientAddress: streamer?.walletAddress as Address,
+                });
+            }
+
+            if (initialValues.token !== "ETH") {
+                hash = await tipUser({
+                    amount: initialValues.amountInToken.toString() || "0",
+                    provider: privyWalletState.provider,
+                    recipientAddress: streamer?.walletAddress as Address,
+                    token: initialValues.token as TokenAddresses,
+                    senderAddress: privyWalletState.address as Address,
+                    wallet: privyWalletState.walletType as string,
+                });
+            }
 
             toast.success("Tip sent successfully!", {
                 duration: 5000,
@@ -204,7 +216,7 @@ function TipDrawerInner() {
 
                         <div className="border-blue100 flex h-25 items-center justify-between rounded-xl border-2 p-4">
                             <aside className="flex flex-col items-start justify-center">
-                                <div className="flex items-center justify-center gap-2 text-2xl">
+                                <div className="flex items-center justify-center gap-1 text-2xl">
                                     <input
                                         value={initialValues.amountInToken}
                                         onChange={handleAmountInTokenChange}
@@ -212,7 +224,7 @@ function TipDrawerInner() {
                                             width: `${initialValues.amountInToken.length || 1}ch`,
                                             color: initialValues.amountInToken ? "black" : "gray",
                                         }}
-                                        className="outline-none"
+                                        className="max-w-[7.5rem] outline-none"
                                         placeholder="0.00"
                                     />
                                     <span>{initialValues.token}</span>
