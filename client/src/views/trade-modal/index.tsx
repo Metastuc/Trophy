@@ -13,7 +13,7 @@ import { Swap } from "./components/swap";
 import { TradeDrawerContextProvider } from "./context";
 import { useTradeDrawerContext } from "./hooks";
 
-export function TradeDrawer(props: iTradeDrawer) {
+export function TradeDrawer(props: TradeDrawer) {
     return (
         <TradeDrawerContextProvider {...props}>
             <TradeDrawerInner />

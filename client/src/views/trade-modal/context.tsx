@@ -2,9 +2,9 @@ import { PropsWithChildren, useMemo, useState } from "react";
 
 import { TradeDrawerContext } from "./hooks";
 
-interface iTradeDrawerContextProvider extends PropsWithChildren, iTradeDrawer {}
+type TradeDrawerContextProvider = PropsWithChildren<TradeDrawer>;
 
-export function TradeDrawerContextProvider({ children }: iTradeDrawerContextProvider) {
+export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerContextProvider) {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
     const value = useMemo(
@@ -12,8 +12,9 @@ export function TradeDrawerContextProvider({ children }: iTradeDrawerContextProv
             isDrawerOpen,
             closeDrawer: () => setIsDrawerOpen(false),
             openDrawer: () => setIsDrawerOpen(true),
+            streamer,
         }),
-        [isDrawerOpen],
+        [isDrawerOpen, streamer],
     );
 
     return <TradeDrawerContext.Provider value={value}>{children}</TradeDrawerContext.Provider>;

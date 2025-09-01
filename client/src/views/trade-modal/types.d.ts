@@ -1,22 +1,20 @@
-type tTradeDrawerState = {
-    isOpen: boolean;
-};
-
-type tTradeDrawerActions = {
-    openDrawer: () => void;
-    closeDrawer: () => void;
-};
-
-type tTradeDrawerStateStore = tTradeDrawerState & tTradeDrawerActions;
-
-interface iTradeDrawerContext {
+interface TradeDrawerContextValues extends Partial<TradeDrawer> {
     isDrawerOpen: boolean;
-    openDrawer: () => void;
-    closeDrawer: () => void;
 }
 
-interface iTradeDrawer {
-    tokenAddress?: string;
-    image?: string;
-    name?: string;
+interface TradeDrawerContextActions {
+    closeDrawer: () => void;
+    openDrawer: () => void;
+}
+
+type TradeDrawerContext = TradeDrawerContextValues & TradeDrawerContextActions;
+
+interface TradeDrawer {
+    streamer?: TradeDrawerStreamer;
+}
+
+interface TradeDrawerStreamer {
+    tokenAddress: string;
+    username: string;
+    profilePicture: string;
 }

@@ -1,8 +1,7 @@
-enum Token {
-    DEGEN = "DEGEN",
-    ETH = "ETH",
-    USDC = "USDC",
-    ZORA = "ZORA",
+import { TOKEN_ADDRESSES } from "@/lib/contracts";
+
+declare global {
+    type TokenAddresses = keyof typeof TOKEN_ADDRESSES;
 }
 
-type tToken = Token;
+export {};

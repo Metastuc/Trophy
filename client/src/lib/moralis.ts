@@ -1,6 +1,6 @@
 import Moralis from "moralis";
 
-import { ENV_SCHEMA } from "./constants";
+import { ENV_SCHEMA, moralisChain } from "./constants";
 
 let moralisStarted: boolean = false;
 
@@ -15,3 +15,14 @@ export default async function MoralisClient() {
 
     return Moralis;
 }
+
+export const moralisTokenFetch = async (address: string) => {
+    const moralis = await MoralisClient();
+
+    const { result } = await moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
+        chain: moralisChain,
+        address,
+    });
+
+    return result;
+};

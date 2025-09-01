@@ -3,10 +3,7 @@ import { StreamLayout } from "./stream-layout";
 
 export function StreamScreen() {
     return (
-        <section
-            style={{ backgroundImage: "url(/tv-bg.svg)", backgroundSize: "cover" }}
-            className="aspect-video"
-        >
+        <section style={{ backgroundImage: "url(/tv-bg.svg)", backgroundSize: "cover" }} className="aspect-video">
             <div className="relative aspect-video">
                 <StreamControls />
                 <StreamLayout />

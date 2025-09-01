@@ -1,6 +1,6 @@
 import { Context, createContext, useContext } from "react";
 
-export const TradeDrawerContext: Context<iTradeDrawerContext> = createContext({} as iTradeDrawerContext);
+export const TradeDrawerContext: Context<TradeDrawerContext> = createContext({} as TradeDrawerContext);
 
 export function useTradeDrawerContext() {
     const context = useContext(TradeDrawerContext);

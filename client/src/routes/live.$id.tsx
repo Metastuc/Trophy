@@ -5,6 +5,7 @@ import { getUser } from "@/api/get-user";
 import { joinStream } from "@/api/join-stream";
 import { PageContentLayout } from "@/components/layouts/main-content";
 import { useAuthenticationStore } from "@/store/authentication";
+import { logger } from "@/utils/logger";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 import { Chatroom } from "@/views/live/components/chatroom";
 import { CoHostDrawer } from "@/views/live/components/cohost-drawer";
@@ -19,6 +20,8 @@ export const Route = createFileRoute("/live/$id")({
         if (!streamResponse) {
             throw new Error("Unable to get stream");
         }
+
+        logger({ streamResponse });
 
         const streamCreator = await context.queryClient.ensureQueryData(getUser({ username: streamResponse.streamer }));
         if (!streamCreator) {
