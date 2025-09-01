@@ -10,9 +10,9 @@ import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
-const flaunchClient = (provider: EIP1193Provider) => {
+const flaunchClient = (provider: EIP1193Provider, address: Address) => {
     if (!fClient) {
-        const walletClient = getWalletClient(provider);
+        const walletClient = getWalletClient(provider, address);
 
         fClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }
@@ -108,14 +108,22 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
     return hash;
 };
 
-export const buyCreatorToken = async (coinAddress: Address, amount: string, provider: EIP1193Provider) => {
-    const flaunch = flaunchClient(provider);
-    const hash = await flaunch.buyCoin({
-        coinAddress,
-        slippagePercent: 4,
-        swapType: "EXACT_IN",
-        amountIn: parseEther(amount),
-    });
+export const buyCreatorToken = async (
+    coinAddress: Address,
+    amount: string,
+    provider: EIP1193Provider,
+    address: Address,
+) => {
+    const flaunch = flaunchClient(provider, address);
+    const hash = await flaunch.buyCoin(
+        {
+            coinAddress,
+            slippagePercent: 4,
+            swapType: "EXACT_IN",
+            amountIn: parseEther(amount),
+        },
+        "V1_1",
+    );
 
     return await checkTx(hash);
 };
@@ -139,8 +147,9 @@ export const sellCreatorToken = async (
     amount: string,
     provider: EIP1193Provider,
     signTypedData: SignTypedData,
+    address: Address,
 ) => {
-    const flaunch = flaunchClient(provider);
+    const flaunch = flaunchClient(provider, address);
     const amountInWei = parseEther(amount);
 
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);

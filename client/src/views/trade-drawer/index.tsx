@@ -22,7 +22,7 @@ export function TradeDrawer(props: TradeDrawer) {
 }
 
 function TradeDrawerInner() {
-    const { closeDrawer, isDrawerOpen, openDrawer } = useTradeDrawerContext();
+    const { closeDrawer, isDrawerOpen, openDrawer, handleSwap } = useTradeDrawerContext();
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
@@ -83,7 +83,7 @@ function TradeDrawerInner() {
                 </main>
 
                 <DrawerFooter>
-                    <Button className="bg-blue100 mx-auto h-13.5 w-3/4 rounded-lg">
+                    <Button className="bg-blue100 mx-auto h-13.5 w-3/4 rounded-lg" onClick={handleSwap}>
                         <span className="text-xl font-normal">swap</span>
                     </Button>
                 </DrawerFooter>
