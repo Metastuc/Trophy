@@ -4,6 +4,7 @@ import pino from "pino";
 import SonicBoom from "sonic-boom";
 
 import { APP_SETTINGS } from "#config/settings.ts";
+
 import { getCwd } from "./get-cwd";
 
 const { dirname } = getCwd(import.meta.url);

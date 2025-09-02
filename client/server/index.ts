@@ -1,11 +1,12 @@
-import { APP_SETTINGS } from "#config/settings.ts";
-import { loggingMiddleware } from "#middleware/logging.ts";
-import { getCwd } from "#utils/get-cwd.ts";
-import { logger } from "#utils/logger.ts";
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import path from "path";
+
+import { APP_SETTINGS } from "#config/settings.ts";
+import { loggingMiddleware } from "#middleware/logging.ts";
+import { getCwd } from "#utils/get-cwd.ts";
+import { logger } from "#utils/logger.ts";
 
 const app = express();
 const port = APP_SETTINGS.ENVIRONMENT === "production" ? APP_SETTINGS.PORT : 3000;
