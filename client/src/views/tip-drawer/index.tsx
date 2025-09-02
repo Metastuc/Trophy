@@ -170,7 +170,7 @@ function TipDrawerInner() {
                 duration: 5000,
                 description: (
                     <a
-                        href={`https://basescan.org/tx/${hash}`}
+                        href={`https://sepolia.basescan.org/tx/${hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500 underline"
