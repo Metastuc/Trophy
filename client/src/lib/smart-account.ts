@@ -10,7 +10,7 @@ import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
 import { baseSepolia } from "viem/chains";
 
-import { ENV_SCHEMA, network } from "@/lib/constants";
+// import { ENV_SCHEMA, network } from "@/lib/constants";
 
 export const getSmartAccount = async (provider: EIP1193Provider) => {
     try {
