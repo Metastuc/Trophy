@@ -17,6 +17,7 @@ interface TipETH {
     amount: string;
     provider: EIP1193Provider;
     recipientAddress: Address;
+    senderAddress: Address;
 }
 
 interface TipUser extends TipETH {
@@ -30,8 +31,8 @@ type TipToken = Omit<TipUser, "token"> & {
     isUSDC?: boolean;
 };
 
-export async function tipETH({ amount, provider, recipientAddress }: TipETH) {
-    const walletClient = getWalletClient(provider);
+export async function tipETH({ amount, provider, recipientAddress, senderAddress }: TipETH) {
+    const walletClient = getWalletClient(provider, senderAddress);
 
     return await walletClient.sendTransaction({
         account: walletClient.account as Account,

@@ -151,6 +151,7 @@ function TipDrawerInner() {
                     amount: initialValues.amountInToken.toString() || "0",
                     provider: privyWalletState.provider,
                     recipientAddress: streamer?.walletAddress as Address,
+                    senderAddress: privyWalletState.address as Address
                 });
             }
 

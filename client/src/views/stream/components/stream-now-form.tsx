@@ -32,6 +32,7 @@ export function StreamNowForm() {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
+        await wallets[0].switchChain(84532);
         const provider = await wallets[0].getEthereumProvider();
 
         const formData = new FormData(event.target as HTMLFormElement);
