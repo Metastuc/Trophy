@@ -73,7 +73,7 @@ export const createCreatorToken = async (
         };
 
         const { request, result } = await publicClient.simulateContract({
-            address: ENV_SCHEMA.FLAUNCH_CA,
+            address: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
             abi: FlaunchZapAbi,
             functionName: "flaunch",
             args: [
