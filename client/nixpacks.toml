@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodePackages_latest.nodejs", "pnpm"]
+nixPkgs = ["nodePackages_latest.nodejs", "pnpm", "bun"]
 
 [phases.install]
 cmds = ["pnpm install --frozen-lockfile", "pnpm run migrate"]
