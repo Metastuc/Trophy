@@ -26,9 +26,9 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
             chain: baseSepolia,
             paymaster: createBicoPaymasterClient({
                 paymasterUrl:
-                    "https://paymaster.biconomy.io/api/v2/8453/WyEqvS_x5.0ee2c593-bf89-4e29-bf12-943e4417d959",
+                    "https://paymaster.biconomy.io/api/v2/84532/YoPMO7wuc.a62f6b6b-74d1-4955-9790-4021f242c510",
             }),
-            bundlerUrl: "https://bundler.biconomy.io/api/v3/8453/bundler_5zKwM7o5jjsfUsXGuVhrTC",
+            bundlerUrl: "https://bundler.biconomy.io/api/v3/84532/bundler_3EuqxbGSNpmeCG9osoP4uL",
         });
 
         return nexusAccountClient;
