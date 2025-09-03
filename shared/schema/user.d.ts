@@ -10,4 +10,8 @@ export const AUTHENTICATE_USER_RESPONSE_SCHEMA = z.object({
     }),
 });
 
-export type AuthenticateUserResponse = z.infer<typeof AUTHENTICATE_USER_RESPONSE_SCHEMA>;
+declare global {
+    type AuthenticateUserResponse = z.infer<typeof AUTHENTICATE_USER_RESPONSE_SCHEMA>;
+}
+
+export {};

@@ -29,7 +29,7 @@ type AuthenticationDrawerFormState = AuthenticationDrawerFormData & {
 
 interface AuthenticateWithButton {
     handler: () => void;
-    icon: (() => React.ReactNode) | string;
+    icon: string;
     label: string;
 }
 

@@ -4,7 +4,7 @@ import { base, baseSepolia } from "viem/chains";
 export const queryClient = new QueryClient();
 
 export const ENV_SCHEMA = {
-    CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string,
+    CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string, //deprecated
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,

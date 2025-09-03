@@ -53,6 +53,8 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
             (async function () {
                 try {
+                    setIsLoading(true);
+
                     const accessToken = await getAccessToken();
                     setToken(accessToken as string);
 
@@ -71,8 +73,6 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
                         await sleep(3000);
                         goToFinish();
                         openDrawer();
-
-                        setIsLoading(false);
                         return;
                     }
 
@@ -94,6 +94,8 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
                     setUser({ ...privyUser, backendUserData: response.data as AuthenticateUserResponse });
                 } catch (error) {
                     toast.error((error as Error).message);
+                } finally {
+                    setIsLoading(false);
                 }
             })();
         },

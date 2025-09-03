@@ -1,5 +1,4 @@
 import { API_ENDPOINTS } from "@/lib/constants";
-import { AuthenticateUserResponse } from "#~/schema/user.ts";
 import { makeRequest } from "#~/utils/axios.ts";
 
 export async function authenticateUser(): Promise<ApiResponse<AuthenticateUserResponse> | void> {

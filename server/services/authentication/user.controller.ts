@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AUTHENTICATE_USER_RESPONSE_SCHEMA } from "#~/schema/user.ts";
+import { AUTHENTICATE_USER_RESPONSE_SCHEMA } from "#~/schema/user.js";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
