@@ -34,9 +34,13 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
     useEffect(
         function () {
-            if (!ready) return;
+            if (!ready) {
+                console.log("⏸️ Privy not ready yet");
+                return;
+            }
 
             if (!authenticated || !privyUser) {
+                console.log("⏸️ User not authenticated or no privyUser");
                 lastFetchedUserIdRef.current = null;
                 setIsLoading(false);
                 return;
@@ -47,14 +51,22 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            if (lastFetchedUserIdRef.current === privyUser.id) return;
+            if (lastFetchedUserIdRef.current === privyUser.id) {
+                console.log("⏸️ Already fetched user, skipping");
+                return;
+            }
             lastFetchedUserIdRef.current = privyUser.id;
 
+            console.log("✅ Running authenticateUser flow");
             (async function () {
                 try {
                     setIsLoading(true);
 
-                    const accessToken = await getAccessToken();
+                    const accessToken = await getAccessToken().catch((err) => {
+                        console.error("❌ Failed to get access token:", err);
+                        throw err;
+                    });
+
                     setToken(accessToken as string);
 
                     const response = await authenticateUser();
