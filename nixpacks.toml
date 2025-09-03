@@ -7,5 +7,5 @@ cmds = ["pnpm install"]
 [phases.build]
 cmds = ["pnpm run build"]
 
-[start]
+[phases.start]
 cmds = ["pnpm run prod"]
