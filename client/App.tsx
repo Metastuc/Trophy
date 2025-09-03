@@ -1,34 +1,52 @@
-import "./App.css";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
+import { useShallow } from "zustand/shallow";
 
-import { useState } from "react";
+import { useAuthenticationStore } from "#~/store/authentication.ts";
 
-import viteLogo from "/vite.svg";
+import { LoadingScreen } from "./components/loading-screen.tsx";
+import { useRunningInBrowser } from "./hooks/running-in-browser-init.ts";
+import { queryClient } from "./lib/constants.ts";
+import { routeTree } from "./routeTree.gen.ts";
 
-import reactLogo from "./assets/react.svg";
+const router = createRouter({
+    routeTree,
+    context: {
+        queryClient,
+        authenticationStore: undefined,
+    },
+    defaultPendingComponent() {
+        return <LoadingScreen />;
+    },
+    scrollRestoration: true,
+    getScrollRestorationKey(location) {
+        const paths = ["/"];
+        return paths.includes(location.pathname) ? location.pathname : (location.state.key as string);
+    },
+});
 
-function App() {
-    const [count, setCount] = useState(0);
-
-    return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo" />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-        </>
-    );
+declare module "@tanstack/react-router" {
+    interface Register {
+        router: typeof router;
+    }
 }
 
-export default App;
+export function App() {
+    useRunningInBrowser();
+
+    const authenticationStore = useAuthenticationStore(useShallow((state) => state));
+    if (authenticationStore.isLoading) return <LoadingScreen />;
+
+    return (
+        <AnimatePresence mode="wait">
+            <motion.section
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25 }}
+                className="relative min-h-dvh"
+            >
+                <RouterProvider router={router} context={{ authenticationStore }} />
+            </motion.section>
+        </AnimatePresence>
+    );
+}
