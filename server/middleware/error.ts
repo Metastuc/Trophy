@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 
 interface HttpErrorProps {
@@ -21,7 +21,7 @@ export class HttpError extends Error {
     }
 }
 
-export function errorHandler(error: unknown, _: Request, response: Response) {
+export function errorHandler(error: unknown, _: Request, response: Response, _next: NextFunction) {
     console.error(error);
 
     if (response.customResponse) {

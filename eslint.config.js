@@ -24,9 +24,10 @@ export default defineConfig(
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
+            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
             "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-            "simple-import-sort/imports": "error",
             "simple-import-sort/exports": "error",
+            "simple-import-sort/imports": "error",
         },
     },
 );

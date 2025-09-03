@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(loggingMiddleware);
 app.use(customResponse);
-app.use(routes);
+app.use("/api", routes);
 app.use(errorHandler);
 
 switch (APP_SETTINGS.ENVIRONMENT) {
