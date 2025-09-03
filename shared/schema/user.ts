@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const USER_RESPONSE_SCHEMA = z.object({
+export const AUTHENTICATE_USER_RESPONSE_SCHEMA = z.object({
     isBasicProfileComplete: z.boolean(),
     user: z.object({
         bio: z.string().nullable(),
@@ -10,4 +10,4 @@ export const USER_RESPONSE_SCHEMA = z.object({
     }),
 });
 
-export type UserResponse = z.infer<typeof USER_RESPONSE_SCHEMA>;
+export type AuthenticateUserResponse = z.infer<typeof AUTHENTICATE_USER_RESPONSE_SCHEMA>;

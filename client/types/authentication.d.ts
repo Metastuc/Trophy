@@ -1,19 +1,10 @@
 import { type User as PrivyUser } from "@privy-io/react-auth";
 
-declare global {
-    interface iBackendUser {
-        isBasicProfileComplete: boolean;
-        user: {
-            bio: string;
-            email: string;
-            privyId: string;
-            profilePicture: string;
-            username: string;
-        };
-    }
+import { AuthenticateUserResponse } from "#~/schema/user.ts";
 
+declare global {
     type tAuthenticatedUser = PrivyUser & {
-        backendUserData: iBackendUser;
+        backendUserData: AuthenticateUserResponse;
     };
 
     type AuthenticationState = {

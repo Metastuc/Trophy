@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { USER_RESPONSE_SCHEMA } from "#~/schema/user.ts";
+import { AUTHENTICATE_USER_RESPONSE_SCHEMA } from "#~/schema/user.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
@@ -14,7 +14,7 @@ export async function user(request: Request, response: Response) {
 
     response.customResponse({
         code: 200,
-        data: USER_RESPONSE_SCHEMA.parse({
+        data: AUTHENTICATE_USER_RESPONSE_SCHEMA.parse({
             isBasicProfileComplete: Boolean(user.email && user.profileImage && user.username),
             user: { bio: user.bio, email: user.email, profilePicture: user.profileImage, username: user.username },
         }),
