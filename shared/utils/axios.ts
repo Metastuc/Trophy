@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-import { useAuthenticationStore } from "./store/authentication";
+import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 /**
  * Define supported HTTP methods.
