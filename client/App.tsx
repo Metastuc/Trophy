@@ -1,5 +1,5 @@
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useShallow } from "zustand/shallow";
 
 import { useAuthenticationStore } from "#~/store/authentication.ts";
