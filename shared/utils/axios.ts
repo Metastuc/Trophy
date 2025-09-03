@@ -56,12 +56,6 @@ export async function makeRequest<T>({
      */
     const isExternalApi = url.startsWith("http");
 
-    if (isExternalApi) {
-        console.log("➡️ Full request URL (external):", url);
-    } else {
-        console.log("➡️ Full request URL:", `${axiosInstance.defaults.baseURL}${url}`);
-    }
-
     const token = useAuthenticationStore.getState().token;
     if (token) {
         headers["Authorization"] = `Bearer ${token}`;

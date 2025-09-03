@@ -42,7 +42,7 @@ switch (APP_SETTINGS.ENVIRONMENT) {
         console.log("Running in production/staging mode");
 
         app.use(express.static(path.join(dirname, "..", "dist")));
-        app.get("/{*splat}", function (_: Request, response: Response) {
+        app.get("/{*splat}", function (_request: Request, response: Response) {
             response.sendFile(path.join(dirname, "..", "dist", "index.html"));
         });
         break;
