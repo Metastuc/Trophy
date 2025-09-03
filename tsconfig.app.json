@@ -25,5 +25,5 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true
     },
-    "include": ["client"]
+    "include": ["client", "server"]
 }
