@@ -8,4 +8,4 @@ cmds = ["pnpm install"]
 cmds = ["pnpm run build"]
 
 [start]
-cmds = ["pnpm exec prisma db push", "pnpm run prod"]
+cmds = ["pnpm run prod"]
