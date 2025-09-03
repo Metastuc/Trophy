@@ -16,7 +16,8 @@
         "jsx": "react-jsx",
         "paths": {
             "@/*": ["client/*"],
-            "#/*": ["server/*"]
+            "#/*": ["server/*"],
+            "#~/*": ["shared/*"]
         },
         /* Linting */
         "strict": true,
@@ -25,5 +26,5 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true
     },
-    "include": ["client", "server"]
+    "include": ["client", "server", "shared"]
 }
