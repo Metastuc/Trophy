@@ -1,0 +1,176 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String  @id @default(auto()) @map("_id") @db.ObjectId
+    privyId       String  @unique
+    username      String  @unique
+    email         String? @unique
+    profileImage  String  @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
+    walletAddress String  @unique
+
+    bio String @default("")
+
+    // creator token (unique per user)
+    creatorToken String? @unique
+
+    // creator token relationships
+    tokensOwned  Holding[] @relation("HolderHoldings") // tokens this user owns
+    tokenHolders Holding[] @relation("CreatorHoldings") // who owns this user's token
+
+    // content
+    streams       Stream[]       @relation("UserStreams")
+    notifications Notification[]
+
+    // metrics & counters
+    tokenPrice     Float @default(0)
+    totalStreams   Int   @default(0)
+    epicStreams    Int   @default(0)
+    totalFees      Float @default(0)
+    followerCount  Int   @default(0)
+    followingCount Int   @default(0)
+    tipCount       Int   @default(0)
+    holdingCount   Int   @default(0)
+
+    // socials
+    xUrl  String?
+    ytUrl String?
+
+    // social graph
+    followers Follow[] @relation("UserFollowers")
+    following Follow[] @relation("UserFollowing")
+
+    // tips
+    tipsReceived Tip[] @relation("ReceivedTips")
+    tipsSent     Tip[] @relation("SentTips")
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@map("users")
+}
+
+model Stream {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    roomId      String    @unique
+    title       String
+    scheduledAt DateTime?
+    startedAt   DateTime?
+    endedAt     DateTime?
+    viewers     Int       @default(0)
+    thumbnail   String?
+    status      Status
+
+    streamer   User   @relation("UserStreams", fields: [streamerId], references: [id])
+    streamerId String @db.ObjectId
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@index([status, scheduledAt])
+    @@index([title])
+    @@map("streams")
+}
+
+enum Status {
+    LIVE
+    SCHEDULED
+    ENDED
+}
+
+model Holding {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    // holder (viewer/investor)
+    user   User   @relation("HolderHoldings", fields: [userId], references: [id])
+    userId String @db.ObjectId
+
+    // creator whose token is held
+    creator   User   @relation("CreatorHoldings", fields: [creatorId], references: [id])
+    creatorId String @db.ObjectId
+
+    amount    Float
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, creatorId])
+    @@index([userId])
+    @@index([creatorId])
+    @@map("holdings")
+}
+
+model Notification {
+    id     String  @id @default(auto()) @map("_id") @db.ObjectId
+    user   User    @relation(fields: [userId], references: [id]) // recipient
+    userId String  @db.ObjectId
+    read   Boolean @default(false)
+
+    type      NotificationType
+    message   String
+    createdAt DateTime         @default(now())
+
+    // generic link to source event
+    payloadId   String?
+    payloadType String? // e.g. "TIP", "FOLLOW", "PURCHASE"
+    Tip         Tip[]
+    Follow      Follow[]
+
+    @@index([userId, createdAt])
+    @@map("notifications")
+}
+
+enum NotificationType {
+    TIP
+    FOLLOW
+    PURCHASE
+    SYSTEM
+}
+
+model Tip {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    // receiver (creator)
+    user   User   @relation("ReceivedTips", fields: [userId], references: [id])
+    userId String @db.ObjectId
+
+    // sender (tipper)
+    tipper   User   @relation("SentTips", fields: [tipperId], references: [id])
+    tipperId String @db.ObjectId
+
+    token     String?
+    amount    Float?
+    createdAt DateTime @default(now())
+
+    // 1:1 notification
+    notification   Notification? @relation(fields: [notificationId], references: [id])
+    notificationId String?       @db.ObjectId
+
+    @@map("tips")
+}
+
+model Follow {
+    id         String @id @default(auto()) @map("_id") @db.ObjectId
+    follower   User   @relation("UserFollowing", fields: [followerId], references: [id])
+    followerId String @db.ObjectId
+
+    following   User   @relation("UserFollowers", fields: [followingId], references: [id])
+    followingId String @db.ObjectId
+
+    createdAt DateTime @default(now())
+
+    // 1:1 notification
+    notification   Notification? @relation(fields: [notificationId], references: [id])
+    notificationId String?       @db.ObjectId
+
+    @@unique([followerId, followingId])
+    @@index([followerId])
+    @@index([followingId])
+    @@map("follows")
+}
