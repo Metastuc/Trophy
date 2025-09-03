@@ -9,9 +9,3 @@ export const AUTHENTICATE_USER_RESPONSE_SCHEMA = z.object({
         username: z.string(),
     }),
 });
-
-declare global {
-    type AuthenticateUserResponse = z.infer<typeof AUTHENTICATE_USER_RESPONSE_SCHEMA>;
-}
-
-export {};

@@ -9,7 +9,6 @@ import {
     useAuthenticationDrawerNavigationStore,
     useAuthenticationDrawerStateStore,
 } from "@/views/authentication-drawer/store";
-import { AuthenticateUserResponse } from "#~/schema/user.ts";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
