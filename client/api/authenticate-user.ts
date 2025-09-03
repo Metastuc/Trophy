@@ -1,8 +1,8 @@
 import { API_ENDPOINTS } from "@/lib/constants";
 import { makeRequest } from "#~/utils/axios.ts";
 
-export async function authenticateUser(): Promise<ApiResponse<AuthenticateUserResponse> | void> {
-    return await makeRequest<ApiResponse<AuthenticateUserResponse>>({
+export async function authenticateUser(): Promise<AuthenticateUserResponse | void> {
+    return await makeRequest<AuthenticateUserResponse>({
         method: "GET",
         url: API_ENDPOINTS.AUTHENTICATION.USER,
     })

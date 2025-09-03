@@ -4,12 +4,12 @@ import { AuthTokenClaims } from "@privy-io/server-auth";
 
 declare module "express-serve-static-core" {
     interface Response {
-        customResponse: (options: {
-            data?: unknown;
+        customResponse<T = unknown>(options: {
+            data?: T;
             message?: string;
             code: number;
             [key: string]: unknown;
-        }) => Response;
+        }): Response;
     }
 }
 

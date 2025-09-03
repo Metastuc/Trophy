@@ -90,7 +90,7 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
                         openDrawer();
                     }
 
-                    setUser({ ...privyUser, backendUserData: response.data as AuthenticateUserResponse });
+                    setUser({ ...privyUser, backendUserData: response.data });
                 } catch (error) {
                     toast.error((error as Error).message);
                 } finally {
