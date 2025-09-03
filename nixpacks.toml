@@ -5,7 +5,7 @@ nixPkgs = ["nodePackages_latest.nodejs", "pnpm"]
 cmds = ["pnpm install"]
 
 [phases.build]
-cmds = ["pnpm run build"]
+cmds = ["cp .env.local .env", "pnpm run build"]
 
 [start]
-cmd = "pnpm run prod"
+cmds = ["cp .env.local .env", "pnpm exec prisma db push", "pnpm run prod"]
