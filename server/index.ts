@@ -6,17 +6,21 @@ import path from "path";
 import { APP_SETTINGS } from "#config/settings.ts";
 import { errorHandler } from "#middleware/error.ts";
 import { loggingMiddleware } from "#middleware/logging.ts";
+import { customResponse } from "#middleware/response.ts";
+import { routes } from "#routes.ts";
 import { getCwd } from "#utils/get-cwd.ts";
 import { logger } from "#utils/logger.ts";
 
 const app = express();
-const port = APP_SETTINGS.ENVIRONMENT === "production" ? APP_SETTINGS.PORT : 3000;
+const port = APP_SETTINGS.PORT;
 const { dirname } = getCwd(import.meta.url);
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(loggingMiddleware);
+app.use(customResponse);
+app.use(routes);
 app.use(errorHandler);
 
 switch (APP_SETTINGS.ENVIRONMENT) {
