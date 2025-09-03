@@ -41,6 +41,13 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
             if (!authenticated || !privyUser) {
                 console.log("⏸️ User not authenticated or no privyUser");
+
+                console.log("⏸️ Blocked bootstrap because:", {
+                    reason: !authenticated ? "Not authenticated" : "No privyUser",
+                    authenticated,
+                    privyUser,
+                });
+
                 lastFetchedUserIdRef.current = null;
                 setIsLoading(false);
                 return;
