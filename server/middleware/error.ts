@@ -26,14 +26,15 @@ export function errorHandler(error: unknown, _: Request, response: Response) {
 
     if (response.customResponse) {
         if (error instanceof HttpError) {
-            return response.customResponse({
+            response.customResponse({
                 code: error.code,
                 message: error.message,
                 data: error.data,
             });
+            return;
         }
 
-        return response.customResponse({
+        response.customResponse({
             code: 500,
             message: "Internal server error",
             data: { error: (error as Error).message, info: httpStatus[500] },
