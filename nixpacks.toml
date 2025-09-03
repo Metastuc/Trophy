@@ -1,5 +1,2 @@
 [phases.setup]
 nixPkgs = ["nodePackages_latest.nodejs", "pnpm"]
-
-[phases.build]
-cmd = "pnpm dlx prisma generate"
