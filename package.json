@@ -29,7 +29,7 @@
         "prisma": "^6.15.0",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
-        "sonic-boom": "^4.2.0",
+        "rotating-file-stream": "^3.2.7",
         "zod": "^4.1.5"
     },
     "devDependencies": {

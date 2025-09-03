@@ -1,20 +1,27 @@
 import fs from "fs";
 import path from "path";
 import pino from "pino";
-import SonicBoom from "sonic-boom";
+import * as rfs from "rotating-file-stream";
 
 import { APP_SETTINGS } from "#config/settings.ts";
 
 import { getCwd } from "./get-cwd";
 
-const { dirname } = getCwd(import.meta.url);
-const logDir = path.join(dirname, "logs");
+const { rootDir } = getCwd(import.meta.url);
+const logDir = path.join(rootDir, "logs");
 
 if (APP_SETTINGS.ENVIRONMENT !== "development") {
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
     }
 }
+
+const stream = rfs.createStream("app.log", {
+    size: "10M",
+    maxFiles: 5,
+    path: logDir,
+    compress: "gzip",
+});
 
 export const logger = pino(
     {
@@ -26,7 +33,5 @@ export const logger = pino(
                 : undefined,
     },
 
-    APP_SETTINGS.ENVIRONMENT === "development"
-        ? process.stdout
-        : new SonicBoom({ dest: path.join(logDir, "app.log"), append: true }),
+    APP_SETTINGS.ENVIRONMENT === "development" ? process.stdout : stream,
 );

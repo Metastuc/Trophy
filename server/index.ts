@@ -14,6 +14,7 @@ const { dirname } = getCwd(import.meta.url);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(loggingMiddleware);
 
 switch (APP_SETTINGS.ENVIRONMENT) {
@@ -23,7 +24,7 @@ switch (APP_SETTINGS.ENVIRONMENT) {
         app.use(
             createProxyMiddleware({
                 changeOrigin: true,
-                pathFilter: ["!/trpc", "!/api/**"],
+                pathFilter: ["!/api/**"],
                 target: APP_SETTINGS.CLIENT_URL,
                 ws: true,
             }),
