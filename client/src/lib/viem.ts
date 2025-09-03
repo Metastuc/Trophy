@@ -1,22 +1,18 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { createPublicClient, createWalletClient, custom, http, type PublicClient, type WalletClient } from "viem";
+import { Address, createPublicClient, createWalletClient, custom, http, type PublicClient } from "viem";
+import { baseSepolia } from "viem/chains"
 
-import { network } from "@/lib/constants";
-
-let walletClient: WalletClient | undefined;
+// import { network } from "@/lib/constants";
 
 export const publicClient = createPublicClient({
-    chain: network,
+    chain: baseSepolia,
     transport: http(),
 }) as PublicClient;
 
-export const getWalletClient = (provider: EIP1193Provider): WalletClient => {
-    if (!walletClient) {
-        walletClient = createWalletClient({
-            chain: network,
-            transport: custom(provider!),
-        });
-    }
-
-    return walletClient;
+export const getWalletClient = (provider: EIP1193Provider, address?: Address) => {
+    return createWalletClient({
+        chain: baseSepolia,
+        transport: custom(provider),
+        account: address,
+    });
 };

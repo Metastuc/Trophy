@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
-// import { createCreatorToken } from "@/lib/flaunch";
+import { createCreatorToken } from "@/lib/flaunch";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
 
@@ -32,6 +32,7 @@ export function StreamNowForm() {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
+        await wallets[0].switchChain(84532);
         const provider = await wallets[0].getEthereumProvider();
 
         const formData = new FormData(event.target as HTMLFormElement);
@@ -45,9 +46,9 @@ export function StreamNowForm() {
                 setIsCreatingToken(true);
 
                 try {
-                    // const tokenAddress = await createCreatorToken(formState.username, provider);
-                    // toast.success("Creator token created!", { id: toastId });
-                    // setFormState((state) => ({ ...state, creatorToken: tokenAddress }));
+                    const tokenAddress = await createCreatorToken(formState.username, provider);
+                    toast.success("Creator token created!", { id: toastId });
+                    setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 } catch (error) {
                     toast.error("Failed to create token: " + ((error as Error).message || "Unknown error"), {
                         id: toastId,
@@ -129,7 +130,6 @@ export function StreamNowForm() {
                         profile
                     </Link>
                 </p>
-
                 <Button
                     type="submit"
                     className={cn(

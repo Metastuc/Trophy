@@ -9,18 +9,18 @@ export const getStream = async (req: Request, res: Response) => {
 
     const streamCache = await RedisClient.get(`stream:${roomId}`);
 
-    if (streamCache) {
-      const streamObjs = JSON.parse(streamCache);
-      res.status(200).json({
-        title: streamObjs.title,
-        streamer: streamObjs.streamer,
-        creatorToken: streamObjs.creatorToken,
-        creatorAddress: streamObjs.creatorAddress,
-        pfp: streamObjs.userPfp,
-      });
+    // if (streamCache) {
+    //   const streamObjs = JSON.parse(streamCache);
+    //   res.status(200).json({
+    //     title: streamObjs.title,
+    //     streamer: streamObjs.streamer,
+    //     creatorToken: streamObjs.creatorToken,
+    //     creatorAddress: streamObjs.creatorAddress,
+    //     pfp: streamObjs.userPfp,
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
 
     const stream = await prisma.stream.findUnique({ where: { roomId } });
 
@@ -35,7 +35,7 @@ export const getStream = async (req: Request, res: Response) => {
       return;
     }
 
-    await RedisClient.set(`stream:${roomId}`, JSON.stringify(stream));
+    // await RedisClient.set(`stream:${roomId}`, JSON.stringify(stream));
     res.status(200).json({
       title: stream.title,
       streamer: stream.streamer,

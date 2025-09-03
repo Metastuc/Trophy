@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -12,12 +10,22 @@ import {
 } from "@/components/ui/drawer";
 
 import { Swap } from "./components/swap";
+import { TradeDrawerContextProvider } from "./context";
+import { useTradeDrawerContext } from "./hooks";
 
-export function TradeDrawer() {
-    const [isOpen, setIsOpen] = React.useState<boolean>(false);
+export function TradeDrawer(props: TradeDrawer) {
+    return (
+        <TradeDrawerContextProvider {...props}>
+            <TradeDrawerInner />
+        </TradeDrawerContextProvider>
+    );
+}
+
+function TradeDrawerInner() {
+    const { closeDrawer, isDrawerOpen, openDrawer, handleSwap } = useTradeDrawerContext();
 
     return (
-        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
             <DrawerTrigger asChild>
                 <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
                     <span className="text-green200 capitalize">trade</span>
@@ -75,7 +83,7 @@ export function TradeDrawer() {
                 </main>
 
                 <DrawerFooter>
-                    <Button className="bg-blue100 mx-auto h-13.5 w-3/4 rounded-lg">
+                    <Button className="bg-blue100 mx-auto h-13.5 w-3/4 rounded-lg" onClick={handleSwap}>
                         <span className="text-xl font-normal">swap</span>
                     </Button>
                 </DrawerFooter>

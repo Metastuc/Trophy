@@ -14,7 +14,7 @@ import type { EIP1193Provider } from "@privy-io/react-auth";
 import { type Address, custom, parseUnits } from "viem";
 import { MORPH_ABI, QUOTE_ABI } from "./abi";
 import { network } from "./constants";
-import { Addresses, BASE_V2_QUOTER, BASE_V3_ROUTER, MORPHO_RE7_POOL, WETH } from "./contracts";
+import { TOKEN_ADDRESSES, BASE_V2_QUOTER, BASE_V3_ROUTER, MORPHO_RE7_POOL, BASE_WETH } from "./contracts";
 import { publicClient } from "./viem";
 
 type tokenType = "USDC" | "ZORA" | "DEGEN" | "BANKR";
@@ -43,7 +43,7 @@ export const performTokentoETHSwap = async (
         });
 
         const MeeClient = await createMeeClient({ account: nexusAccount });
-        const tokenAddress = Addresses[token] as Address;
+        const tokenAddress = TOKEN_ADDRESSES[token] as Address;
 
         const decimals = token === "USDC" ? 6 : 18;
         const tokenInUnits = parseUnits(amount, decimals);
@@ -129,7 +129,7 @@ const getIxs = async (tokenAddress: Address, nexusAccount: MultichainSmartAccoun
                         targetAddress: nexusAccount.addressOn(chainId, true),
                         constraints: [greaterThanOrEqualTo(minOutAmount)],
                     }),
-                    tokenOut: WETH,
+                    tokenOut: BASE_WETH,
                     recipient: nexusAccount.addressOn(chainId, true),
                     fee: 100,
                     amountOutMinimum: minOutAmount,
@@ -144,9 +144,9 @@ const getIxs = async (tokenAddress: Address, nexusAccount: MultichainSmartAccoun
         data: {
             spender: MORPHO_RE7_POOL,
             chainId,
-            tokenAddress: WETH,
+            tokenAddress: BASE_WETH,
             amount: runtimeERC20BalanceOf({
-                tokenAddress: WETH,
+                tokenAddress: BASE_WETH,
                 targetAddress: nexusAccount.addressOn(chainId, true),
                 constraints: [greaterThanOrEqualTo(minOutAmount)],
             }),
@@ -162,7 +162,7 @@ const getIxs = async (tokenAddress: Address, nexusAccount: MultichainSmartAccoun
             functionName: "deposit",
             args: [
                 runtimeERC20BalanceOf({
-                    tokenAddress: WETH,
+                    tokenAddress: BASE_WETH,
                     targetAddress: nexusAccount.addressOn(chainId, true),
                     constraints: [greaterThanOrEqualTo(minOutAmount)],
                 }),
@@ -179,7 +179,7 @@ export const getTokenToEthQuote = async (token: tokenType, amount: string) => {
     try {
         const decimals = token === "USDC" ? 6 : 18;
         const tokenInUnits = parseUnits(amount, decimals);
-        const tokenAddress = Addresses[token] as Address;
+        const tokenAddress = TOKEN_ADDRESSES[token] as Address;
 
         const amountOut = await publicClient.readContract({
             address: BASE_V2_QUOTER,
@@ -187,7 +187,7 @@ export const getTokenToEthQuote = async (token: tokenType, amount: string) => {
             functionName: "quoteExactInputSingle",
             args: [
                 tokenAddress,
-                WETH,
+                BASE_WETH,
                 500, // spillage set to 0.05%
                 tokenInUnits,
                 0n, // No price limit

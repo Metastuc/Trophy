@@ -60,10 +60,10 @@ export default async function GetTokenBalances(address: string): Promise<balance
         }
 
         if (portfolioPercent > 0) {
-            portfolioArrow = "up"
+            portfolioArrow = "up";
         } else if (portfolioPercent < 0) {
-            portfolioArrow = "down"
-        };
+            portfolioArrow = "down";
+        }
 
         balances.portfolio_percent = toFixed(portfolioPercent);
         balances.portfolioArrow = portfolioArrow;

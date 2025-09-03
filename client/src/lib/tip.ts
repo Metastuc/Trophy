@@ -1,5 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
-import { DEGEN, USDC, ZORA } from "@/lib/contracts";
 import {
     createMeeClient,
     getMEEVersion,
@@ -9,93 +7,93 @@ import {
     toMultichainNexusAccount,
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
+import { type Account, type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
+
 import { network } from "./constants";
+import { TOKEN_ADDRESSES } from "./contracts";
 import { getWalletClient } from "./viem";
 
-export const ethTip = async (recipient: string, amount: string, provider: EIP1193Provider) => {
-    const walletClient = getWalletClient(provider);
+interface TipETH {
+    amount: string;
+    provider: EIP1193Provider;
+    recipientAddress: Address;
+    senderAddress: Address;
+}
 
-    const hash = await walletClient.sendTransaction({
-        account: walletClient.account!,
-        chain: walletClient.chain,
-        to: recipient as Address,
+interface TipUser extends TipETH {
+    token: TokenAddresses;
+    senderAddress: Address;
+    wallet: string;
+}
+
+type TipToken = Omit<TipUser, "token"> & {
+    contractAddress: Address;
+    isUSDC?: boolean;
+};
+
+export async function tipETH({ amount, provider, recipientAddress, senderAddress }: TipETH) {
+    const walletClient = getWalletClient(provider, senderAddress);
+
+    return await walletClient.sendTransaction({
+        account: walletClient.account as Account,
+        chain: network,
+        to: recipientAddress,
         value: parseEther(amount),
     });
+}
 
-    return hash;
-};
+export async function tipUser({ amount, provider, recipientAddress, token, senderAddress, wallet }: TipUser) {
+    return await tipToken({
+        amount,
+        contractAddress: TOKEN_ADDRESSES[token] as Address,
+        isUSDC: token === "USDC",
+        provider,
+        recipientAddress,
+        senderAddress,
+        wallet,
+    });
+}
 
-export const tipUSDC = async (
-    recipient: string,
-    amount: string,
-    userAddress: Address,
-    wallet: string,
-    provider: EIP1193Provider,
-) => {
-    return await tipToken(recipient, USDC, amount, userAddress, provider, wallet, true);
-};
+export async function tipCreatorToken({
+    amount,
+    contractAddress,
+    provider,
+    recipientAddress,
+    senderAddress,
+    wallet,
+}: TipToken) {
+    return await tipToken({ amount, contractAddress, provider, recipientAddress, senderAddress, wallet });
+}
 
-export const tipZORA = async (
-    recipient: string,
-    amount: string,
-    userAddress: Address,
-    provider: EIP1193Provider,
-    wallet: string,
-) => {
-    return await tipToken(recipient, ZORA, amount, userAddress, provider, wallet);
-};
-
-export const tipDEGEN = async (
-    recipient: string,
-    amount: string,
-    userAddress: Address,
-    provider: EIP1193Provider,
-    wallet: string,
-) => {
-    return await tipToken(recipient, DEGEN, amount, userAddress, provider, wallet);
-};
-
-export const tipCreatorToken = async (
-    recipient: string,
-    contractAddress: string,
-    amount: string,
-    userAddress: Address,
-    provider: EIP1193Provider,
-    wallet: string,
-) => {
-    return await tipToken(recipient, contractAddress, amount, userAddress, provider, wallet);
-};
-
-const tipToken = async (
-    recipient: string,
-    contractAddress: string,
-    amount: string,
-    accountAddress: Address,
-    signer: EIP1193Provider,
-    wallet: string,
-    usdc?: boolean,
-) => {
+export async function tipToken({
+    amount,
+    contractAddress,
+    isUSDC,
+    provider,
+    recipientAddress,
+    senderAddress,
+    wallet,
+}: TipToken) {
     const nexusAccount = await toMultichainNexusAccount({
         chainConfigurations: [
             {
                 chain: network,
-                transport: custom(signer),
+                transport: custom(provider),
                 version: getMEEVersion(MEEVersion.V2_1_0),
             },
         ],
-        signer,
-        accountAddress,
+        signer: provider,
+        accountAddress: senderAddress,
     });
 
-    const MeeClient = await createMeeClient({ account: nexusAccount });
-    const tokenAddress = contractAddress as unknown as Address;
-    const recieverAddress = recipient as unknown as Address;
+    console.log({ amount, contractAddress, isUSDC, provider, recipientAddress, senderAddress, wallet });
 
-    const decimals = usdc ? 6 : 18;
+    const MeeClient = await createMeeClient({ account: nexusAccount });
+    const tokenAddress = contractAddress;
+    const recieverAddress = recipientAddress;
+    const decimals = isUSDC ? 6 : 18;
     const chainId = network.id as unknown as number;
     const tokenInUnits = parseUnits(amount, decimals);
-
     const sendTokenIx = await nexusAccount.buildComposable({
         type: "default",
         data: {
@@ -129,16 +127,13 @@ const tipToken = async (
         });
 
         const { hash } = await MeeClient.executeFusionQuote({ fusionQuote });
-
         const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-
         return superHash;
     }
 
     const quote = await MeeClient.getQuote({
         instructions: [sendTokenIx],
         delegate: true,
-
         feeToken: {
             address: tokenAddress,
             chainId,
@@ -146,8 +141,6 @@ const tipToken = async (
     });
 
     const { hash } = await MeeClient.executeQuote({ quote });
-
     const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-
     return superHash;
-};
+}

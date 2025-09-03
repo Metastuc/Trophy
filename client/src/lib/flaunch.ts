@@ -1,19 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable simple-import-sort/imports */
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import axios from "axios";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
-import { BACKEND_URL, ENV_SCHEMA } from "./constants";
+
+import { makeRequest } from "./axios";
+import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
-const flaunchClient = (provider: EIP1193Provider) => {
+const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!fClient) {
-        const walletClient = getWalletClient(provider);
+        const walletClient = getWalletClient(provider, address);
 
         fClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }
@@ -21,7 +20,10 @@ const flaunchClient = (provider: EIP1193Provider) => {
     return fClient;
 };
 
-export const createCreatorToken = async (name: string, provider: EIP1193Provider): Promise<Address> => {
+export const createCreatorToken = async (
+    name: string,
+    provider: EIP1193Provider,
+): Promise<{ creatorToken: Address; sa_address: Address }> => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
@@ -30,16 +32,18 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
 
         const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
-        // add your axios logic here and check fit the status code received
-        const {
-            data: { tokenUri },
-        } = await axios.post(`${BACKEND_URL}/create-token-uri`, { username: name });
+
+        // const { tokenUri } = await makeRequest<{ tokenUri: string }>({
+        //     method: "POST",
+        //     url: `/create-token-uri`,
+        //     data: { username: name },
+        // }).then((response) => response.data);
 
         const flaunchParams = {
             _flaunchParams: {
                 name,
                 symbol: name.toUpperCase(),
-                tokenUri,
+                tokenUri: "ipfs://bafkreiaaojq4u2nopmwilfia7b3rxts2itb7xlgf3qa4z4spqxntfp4gfe",
                 initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
                 fairLaunchDuration: BigInt(30 * 60),
                 premineAmount: 0n,
@@ -69,7 +73,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         };
 
         const { request, result } = await publicClient.simulateContract({
-            address: ENV_SCHEMA.FLAUNCH_CA,
+            address: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
             abi: FlaunchZapAbi,
             functionName: "flaunch",
             args: [
@@ -82,11 +86,15 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         });
 
         await smartWalletClient.writeContract(request);
-
-        return result[0];
-    } catch (error: any) {
+        await makeRequest({
+            method: "POST",
+            url: `/save-creator-token`,
+            data: { creatorToken: result[0], sa_address: smartWalletClient.account.address, username: name },
+        });
+        return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
+    } catch (error: unknown) {
         console.error(error);
-        throw new Error(error);
+        throw new Error((error as Error).message);
     }
 };
 
@@ -100,14 +108,22 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
     return hash;
 };
 
-export const buyCreatorToken = async (coinAddress: Address, amount: string, provider: EIP1193Provider) => {
-    const flaunch = flaunchClient(provider);
-    const hash = await flaunch.buyCoin({
-        coinAddress,
-        slippagePercent: 4,
-        swapType: "EXACT_IN",
-        amountIn: parseEther(amount),
-    });
+export const buyCreatorToken = async (
+    coinAddress: Address,
+    amount: string,
+    provider: EIP1193Provider,
+    address: Address,
+) => {
+    const flaunch = flaunchClient(provider, address);
+    const hash = await flaunch.buyCoin(
+        {
+            coinAddress,
+            slippagePercent: 4,
+            swapType: "EXACT_IN",
+            amountIn: parseEther(amount),
+        },
+        "V1_1",
+    );
 
     return await checkTx(hash);
 };
@@ -131,8 +147,9 @@ export const sellCreatorToken = async (
     amount: string,
     provider: EIP1193Provider,
     signTypedData: SignTypedData,
+    address: Address,
 ) => {
-    const flaunch = flaunchClient(provider);
+    const flaunch = flaunchClient(provider, address);
     const amountInWei = parseEther(amount);
 
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
@@ -184,9 +201,9 @@ export const claimCreatorFees = async (provider: EIP1193Provider) => {
         });
 
         return await smartWalletClient.writeContract(request);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(error);
-        throw new Error(error);
+        throw new Error((error as Error).message);
     }
 };
 

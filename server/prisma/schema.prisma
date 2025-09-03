@@ -58,18 +58,19 @@ type TipEntry {
 }
 
 model User {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  privyId       String   @unique
-  username      String   @unique
-  email         String?  @unique
-  userPfp       String   @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
-  walletAddress String   @unique
-  tokenPrice    Float    @default(0)
-  totalStreams  Int      @default(0)
-  bio           String   @default("")
-  epicStreams   Int      @default(0)
-  totalFees     Float    @default(0)
-  role          StreamerRole   @default(viewer)
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  privyId       String       @unique
+  username      String       @unique
+  email         String?      @unique
+  userPfp       String       @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
+  walletAddress String       @unique
+  sa_address    String?      @unique
+  tokenPrice    Float        @default(0)
+  totalStreams  Int          @default(0)
+  bio           String       @default("")
+  epicStreams   Int          @default(0)
+  totalFees     Float        @default(0)
+  role          StreamerRole @default(viewer)
   xUrl          String?
   ytUrl         String?
   followers     String[]

@@ -8,8 +8,9 @@ import {
 } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
+import { baseSepolia } from "viem/chains";
 
-import { ENV_SCHEMA, network } from "@/lib/constants";
+// import { ENV_SCHEMA, network } from "@/lib/constants";
 
 export const getSmartAccount = async (provider: EIP1193Provider) => {
     try {
@@ -17,14 +18,17 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
             account: await toNexusAccount({
                 signer: provider,
                 chainConfiguration: {
-                    chain: network,
+                    chain: baseSepolia,
                     transport: custom(provider),
                     version: getMEEVersion(DEFAULT_MEE_VERSION),
                 },
             }),
-            chain: network,
-            paymaster: createBicoPaymasterClient({ paymasterUrl: ENV_SCHEMA.PAYMASTER }),
-            bundlerUrl: ENV_SCHEMA.BUNDLER,
+            chain: baseSepolia,
+            paymaster: createBicoPaymasterClient({
+                paymasterUrl:
+                    "https://paymaster.biconomy.io/api/v2/84532/YoPMO7wuc.a62f6b6b-74d1-4955-9790-4021f242c510",
+            }),
+            bundlerUrl: "https://bundler.biconomy.io/api/v3/84532/bundler_3EuqxbGSNpmeCG9osoP4uL",
         });
 
         return nexusAccountClient;
