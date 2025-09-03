@@ -11,6 +11,5 @@ export const APP_SETTINGS = z
         PRIVY_APP_ID: z.string(),
         PRIVY_APP_SECRET: z.string(),
         PRIVY_KEY: z.string(),
-        SERVER_URL: z.url(),
     })
     .parse(process.env);

@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
+import { ENV_SCHEMA } from "@/lib/constants";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 /**
@@ -31,7 +32,7 @@ type RequestOptions = {
 };
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: ENV_SCHEMA.SERVER_URL,
 });
 
 /**

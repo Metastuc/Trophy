@@ -1,23 +1,27 @@
 import { Fragment, ReactNode } from "react";
 
 import { AuthenticationProvider } from "./authentication";
-import { CoinbaseMiniKitProvider } from "./mini-kit";
+import { FarcasterMiniAppProvider } from "./farcaster";
 // import { HuddleContextProvider } from "./huddle";
 import { PrivyContextProvider } from "./privy";
 import { WagmiContextProvider } from "./wagmi";
 
 export function AppContextProviders({ children }: { children: ReactNode }) {
+    {
+        /* <HuddleContextProvider> */
+    }
     return (
-        <CoinbaseMiniKitProvider>
-            {/* <HuddleContextProvider> */}
-            <PrivyContextProvider>
+        <PrivyContextProvider>
+            <FarcasterMiniAppProvider>
                 <WagmiContextProvider>
                     <AuthenticationProvider>
                         <Fragment>{children}</Fragment>
                     </AuthenticationProvider>
                 </WagmiContextProvider>
-            </PrivyContextProvider>
-            {/* </HuddleContextProvider> */}
-        </CoinbaseMiniKitProvider>
+            </FarcasterMiniAppProvider>
+        </PrivyContextProvider>
     );
+    {
+        /* </HuddleContextProvider> */
+    }
 }

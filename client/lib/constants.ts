@@ -4,10 +4,11 @@ import { base, baseSepolia } from "viem/chains";
 export const queryClient = new QueryClient();
 
 export const ENV_SCHEMA = {
+    CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string,
+    ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
-    CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_KEY as string,
-    ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
+    SERVER_URL: import.meta.env.VITE_SERVER_URL as string,
 };
 
 export const API_ENDPOINTS = {
@@ -34,11 +35,11 @@ export const API_ENDPOINTS = {
 };
 
 export const APPLICATION_CONSTANTS = {
+    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
     MAX_TIP_AMOUNT_USD: 2000,
     SUPPORTED_TOKENS: ["DEGEN", "USDC", "FLAY", "ETH", "ZORA", "BNKR"],
     TOTAL_CO_HOSTS_ALLOWED: 4,
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
-    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base,
 };

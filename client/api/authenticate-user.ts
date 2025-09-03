@@ -4,12 +4,15 @@ import { makeRequest } from "#~/utils/axios.ts";
 
 export async function authenticateUser(): Promise<ApiResponse<AuthenticateUserResponse> | void> {
     return await makeRequest<ApiResponse<AuthenticateUserResponse>>({
-        method: "POST",
+        method: "GET",
         url: API_ENDPOINTS.AUTHENTICATION.USER,
     })
         .then((response) => response.data)
-        .catch(async (error) => {
-            if (error.status === 404) return;
-            throw new Error(error.message);
+        .catch(function (error) {
+            if (error.response.data) {
+                const { code, message } = error.response.data;
+                if (code === 404) return;
+                throw new Error(message);
+            }
         });
 }

@@ -9,10 +9,7 @@ export async function privyAuth(request: Request, response: Response, next: Next
     const authorizationHeader = request.headers.authorization;
 
     if (!authorizationHeader?.startsWith("Bearer ")) {
-        response.customResponse({
-            code: 401,
-            message: "authorization token is missing or invalid",
-        });
+        response.customResponse({ code: 401, message: "authorization token is missing or invalid" });
         return;
     }
 

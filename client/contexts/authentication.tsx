@@ -1,6 +1,6 @@
-import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 import { authenticateUser } from "@/api/authenticate-user";
@@ -15,7 +15,6 @@ import { sleep } from "#~/utils/sleep.ts";
 
 export function AuthenticationProvider({ children }: { children: ReactNode }) {
     const { authenticated, ready, user: privyUser } = usePrivy();
-    const { setFrameReady, isFrameReady } = useMiniKit();
 
     const lastFetchedUserIdRef = useRef<string | null>(null);
 
@@ -33,10 +32,6 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
             setUser: state.setUser,
         })),
     );
-
-    useEffect(() => {
-        if (!isFrameReady) setFrameReady();
-    }, [isFrameReady, setFrameReady]);
 
     useEffect(
         function () {
@@ -57,45 +52,49 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
             lastFetchedUserIdRef.current = privyUser.id;
 
             (async function () {
-                const accessToken = await getAccessToken();
-                setToken(accessToken as string);
+                try {
+                    const accessToken = await getAccessToken();
+                    setToken(accessToken as string);
 
-                const response = await authenticateUser();
-                if (!response) {
-                    setIsNewUser(true);
+                    const response = await authenticateUser();
+                    if (!response) {
+                        setIsNewUser(true);
 
-                    setFormField("bio", privyUser.farcaster?.bio || null);
-                    setFormField("email", privyUser.email?.address || null);
-                    setFormField("fc", !!privyUser.farcaster);
-                    setFormField("privyId", privyUser.id || null);
-                    setFormField("profilePicture", privyUser.farcaster?.pfp || "default-pfp.svg");
-                    setFormField("username", privyUser.farcaster?.username || null);
-                    setFormField("walletAddress", privyUser.wallet?.address || null);
+                        setFormField("bio", privyUser.farcaster?.bio || null);
+                        setFormField("email", privyUser.email?.address || null);
+                        setFormField("fc", !!privyUser.farcaster);
+                        setFormField("privyId", privyUser.id || null);
+                        setFormField("profilePicture", privyUser.farcaster?.pfp || "default-pfp.svg");
+                        setFormField("username", privyUser.farcaster?.username || null);
+                        setFormField("walletAddress", privyUser.wallet?.address || null);
 
-                    await sleep(3000);
-                    goToFinish();
-                    openDrawer();
+                        await sleep(3000);
+                        goToFinish();
+                        openDrawer();
 
-                    setIsLoading(false);
-                    return;
+                        setIsLoading(false);
+                        return;
+                    }
+
+                    const backendUserData = response.data;
+
+                    if (!backendUserData?.isBasicProfileComplete) {
+                        setIsNewUser(false);
+
+                        setFormField("bio", backendUserData?.user.bio || null);
+                        setFormField("email", backendUserData?.user.email || null);
+                        setFormField("profilePicture", backendUserData?.user.profilePicture || null);
+                        setFormField("username", backendUserData?.user.username || null);
+
+                        await sleep(3000);
+                        goToFinish();
+                        openDrawer();
+                    }
+
+                    setUser({ ...privyUser, backendUserData: response.data as AuthenticateUserResponse });
+                } catch (error) {
+                    toast.error((error as Error).message);
                 }
-
-                const backendUserData = response.data;
-
-                if (!backendUserData?.isBasicProfileComplete) {
-                    setIsNewUser(false);
-
-                    setFormField("bio", backendUserData?.user.bio || null);
-                    setFormField("email", backendUserData?.user.email || null);
-                    setFormField("profilePicture", backendUserData?.user.profilePicture || null);
-                    setFormField("username", backendUserData?.user.username || null);
-
-                    await sleep(3000);
-                    goToFinish();
-                    openDrawer();
-                }
-
-                setUser({ ...privyUser, backendUserData: response.data as AuthenticateUserResponse });
             })();
         },
         [
