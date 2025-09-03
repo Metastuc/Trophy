@@ -9,7 +9,7 @@
         "dev": "bunx --bun vite",
         "lint": "bunx --bun eslint --fix . && bunx --bun prettier --write .",
         "preview": "vite preview",
-        "prod": "prisma db push &&pnpm exec tsx server/index.ts",
+        "prod": "prisma db push && pnpm exec tsx server/index.ts",
         "server": "bun --watch server/index.ts",
         "start": "concurrently \"npm run server\" \"npm run dev\""
     },
