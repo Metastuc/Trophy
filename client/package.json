@@ -8,7 +8,7 @@
         "dev": "bunx --bun vite",
         "lint": "bunx --bun eslint --fix . && bunx --bun prettier --write .",
         "preview": "vite preview",
-        "prod": "npm run build && npx tsx server/index.ts",
+        "prod": "pnpm exec tsx server/index.ts",
         "server": "bun --watch server/index.ts",
         "start": "concurrently \"npm run server\" \"npm run dev\""
     },
