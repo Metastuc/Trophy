@@ -9,7 +9,7 @@ import tseslint from "typescript-eslint";
 export default defineConfig(
     js.configs.recommended,
     tseslint.configs.recommended,
-    { ignores: ["dist", "generated/prisma/**"] },
+    { ignores: ["dist", "server/generated/prisma/**"] },
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
         files: ["**/*.{ts,tsx}"],
