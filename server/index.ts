@@ -4,6 +4,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import path from "path";
 
 import { APP_SETTINGS } from "#config/settings.ts";
+import { errorHandler } from "#middleware/error.ts";
 import { loggingMiddleware } from "#middleware/logging.ts";
 import { getCwd } from "#utils/get-cwd.ts";
 import { logger } from "#utils/logger.ts";
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(loggingMiddleware);
+app.use(errorHandler);
 
 switch (APP_SETTINGS.ENVIRONMENT) {
     case "development":
