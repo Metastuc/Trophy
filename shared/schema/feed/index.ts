@@ -3,16 +3,16 @@ import { Prisma } from "#generated/prisma/index.js";
 export const publicFeedSelectFields = {
     id: true,
     roomId: true,
-    title: true,
-    thumbnail: true,
-    viewers: true,
     streamer: {
         select: {
-            username: true,
-            profileImage: true,
             creatorToken: true,
+            profileImage: true,
+            username: true,
         },
     },
+    thumbnail: true,
+    title: true,
+    viewers: true,
 };
 
 export type PublicFeed = Prisma.StreamGetPayload<{
