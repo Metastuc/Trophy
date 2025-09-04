@@ -5,7 +5,7 @@ import { TipDrawerContext } from "./hooks";
 type TipContextProvider = PropsWithChildren<TipDrawer>;
 
 export function TipDrawerContextProvider({ children, streamer }: TipContextProvider) {
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
     const value = useMemo(
         () => ({
