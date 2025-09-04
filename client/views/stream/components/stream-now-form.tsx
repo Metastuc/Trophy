@@ -4,6 +4,7 @@ import { Loader, Projector } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
+import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -18,7 +19,13 @@ export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const { wallets } = useWallets();
 
-    const user = useAuthenticationStore((state) => state.user);
+    const { isAuthenticated, user } = useAuthenticationStore(
+        useShallow((state) => ({
+            isAuthenticated: state.isAuthenticated,
+            user: state.user,
+        })),
+    );
+
     const [isCreatingToken, setIsCreatingToken] = useState<boolean>(false);
 
     const [formState, setFormState] = useState<CreateStreamFormState>(() => ({
@@ -42,6 +49,12 @@ export function StreamNowForm() {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
+
+        if (!isAuthenticated) {
+            toast.error("You must be logged in to create a stream");
+            return;
+        }
+
         await wallets[0].switchChain(84532);
         const provider = await wallets[0].getEthereumProvider();
 

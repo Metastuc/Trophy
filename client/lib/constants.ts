@@ -35,7 +35,7 @@ export const API_ENDPOINTS = {
 };
 
 export const APPLICATION_CONSTANTS = {
-    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base,
+    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
     MAX_TIP_AMOUNT_USD: 2000,

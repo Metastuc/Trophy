@@ -3,26 +3,31 @@ import { Loader } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
+import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 import { DateTimePicker } from "./date-time-picker";
 
 export function ScheduleStreamForm() {
-    const user = useAuthenticationStore((state) => state.user);
+    const { isAuthenticated, user } = useAuthenticationStore(
+        useShallow((state) => ({
+            isAuthenticated: state.isAuthenticated,
+            user: state.user,
+        })),
+    );
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, CreateStreamFormResponse>(
-        { METHOD: "POST", URL: "/create-stream" },
+        { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
 
         {
             onSuccess(response) {
-                console.log(`token: ${response.data.token}`, `roomId: ${response.data.roomId}`);
-
                 toast.success(response.data.message);
             },
         },
@@ -30,6 +35,11 @@ export function ScheduleStreamForm() {
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+
+        if (!isAuthenticated) {
+            toast.error("You must be logged in to schedule a stream");
+            return;
+        }
 
         const formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData.entries()) as CreateStreamFormRequest;
