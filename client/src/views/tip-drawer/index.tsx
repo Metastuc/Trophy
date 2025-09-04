@@ -3,6 +3,7 @@ import { CircleDollarSign } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
+import { useAccount, useBalance } from "wagmi";
 
 import { useTokenPrice } from "@/api/get-token-prices";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,7 @@ function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
     const { wallets } = useWallets();
     const { connectWallet } = usePrivy();
+    const { address } = useAccount();
 
     const [privyWalletState, setPrivyWalletState] = useState<TipDrawerPrivyWalletState>(() => ({
         provider: undefined,
@@ -70,6 +72,7 @@ function TipDrawerInner() {
     }));
 
     const { data: tokenPrice } = useTokenPrice(initialValues.tokenAddress);
+    const { data: balanceData } = useBalance({ address });
 
     useEffect(
         function () {
@@ -109,6 +112,19 @@ function TipDrawerInner() {
             amountInUsd: tokenPrice ? Number(state.amountInToken || 0) * tokenPrice.usdPrice : 0,
         }));
     }, [initialValues.amountInToken, tokenPrice]);
+
+    useEffect(() => {
+        if (!balanceData || !tokenPrice) return;
+
+        const tokenBalance = parseFloat(balanceData.formatted);
+        const balanceInUsd = tokenBalance * tokenPrice.usdPrice;
+
+        setInitialValues((state) => ({
+            ...state,
+            senderAvailableBalanceInToken: tokenBalance,
+            senderAvailableBalanceInUsd: balanceInUsd,
+        }));
+    }, [balanceData, tokenPrice]);
 
     async function handleTip() {
         if (initialValues.amountInUsd > APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD) {

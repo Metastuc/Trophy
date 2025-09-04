@@ -63,7 +63,7 @@ export const APPLICATION_CONSTANTS = {
             : `https://sepolia.basescan.org/tx/${hash}`,
 
     CURRENT_MORALIS_CHAIN:
-        ENV_SCHEMA.ENVIRONMENT !== "production"
+        ENV_SCHEMA.ENVIRONMENT === "production"
             ? Moralis.EvmUtils.EvmChain.BASE
             : Moralis.EvmUtils.EvmChain.BASE_SEPOLIA,
 };
