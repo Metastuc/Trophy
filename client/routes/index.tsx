@@ -39,7 +39,9 @@ function RouteComponent() {
                 value={content}
             />
 
-            <section className={cn("space-y-6.5", "md:grid md:grid-cols-3 md:gap-6", "lg:grid-cols-3", "xl:grid-cols-5")}>
+            <section
+                className={cn("space-y-6.5", "md:grid md:grid-cols-3 md:gap-6", "lg:grid-cols-3", "xl:grid-cols-5")}
+            >
                 {data?.data
                     ? data.data.map((value) => (
                           <FeedContextProvider key={value.id} isPending={isPending} {...value}>

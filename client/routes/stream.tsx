@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CalendarPlus, Projector } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -7,7 +8,6 @@ import { useTabSwitcher } from "@/hooks/tab-switch";
 import { TabButton } from "@/views/stream/components/button";
 import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-form";
 import { StreamNowForm } from "@/views/stream/components/stream-now-form";
-import { CalendarPlus, Projector } from "lucide-react";
 
 export const Route = createFileRoute("/stream")({
     component: RouteComponent,
