@@ -20,7 +20,7 @@ import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { APPLICATION_CONSTANTS, network } from "@/lib/constants";
 import { TOKEN_ADDRESSES } from "@/lib/contracts";
 import { tipETH, tipUser } from "@/lib/tip";
-import { logger } from "@/utils/logger";
+import { sleep } from "@/lib/utils";
 
 import { TOKENS } from "./constants";
 import { TipDrawerContextProvider } from "./context";
@@ -73,8 +73,6 @@ function TipDrawerInner() {
 
     useEffect(
         function () {
-            logger({ wallets });
-
             (async function () {
                 const wallet = wallets[0];
                 await wallet.switchChain(network.id);
@@ -114,7 +112,9 @@ function TipDrawerInner() {
 
     async function handleTip() {
         if (initialValues.amountInUsd > APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD) {
-            toast.error(`Maximum tip amount is ${APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD} USD`);
+            toast.error(
+                `Maximum tip amount is ${APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD.toLocaleString("en-US")} USD`,
+            );
             return;
         }
 
@@ -123,18 +123,10 @@ function TipDrawerInner() {
         try {
             if (!privyWalletState.provider || !privyWalletState.address) {
                 toast.error("Wallet not connected");
+                closeDrawer();
                 connectWallet();
                 return;
             }
-
-            logger({
-                amount: initialValues.amountInToken.toString() || "0",
-                provider: privyWalletState.provider,
-                recipient: streamer?.walletAddress as string,
-                token: initialValues.token as TokenAddresses,
-                userAddress: privyWalletState.address as Address,
-                wallet: privyWalletState.walletType as string,
-            });
 
             if (initialValues.token === "ETH") {
                 hash = await tipETH({
@@ -175,6 +167,24 @@ function TipDrawerInner() {
             toast.error("Failed to send tip.");
         }
     }
+
+    useEffect(
+        function () {
+            if (wallets.length > 0 && !isDrawerOpen) {
+                let canceled = false;
+
+                (async () => {
+                    await sleep(2000);
+                    if (!canceled) openDrawer();
+                })();
+
+                return () => {
+                    canceled = true;
+                };
+            }
+        },
+        [isDrawerOpen, wallets.length, openDrawer],
+    );
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>

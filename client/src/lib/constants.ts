@@ -47,7 +47,7 @@ export const APPLICATION_CONSTANTS = {
 
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
 
-    MAX_TIP_AMOUNT_USD: 2000,
+    MAX_TIP_AMOUNT_USD: 10000,
 
     SUPPORTED_TOKENS: ["DEGEN", "USDC", "FLAY", "ETH", "ZORA", "BNKR"],
 
