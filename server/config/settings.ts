@@ -10,6 +10,6 @@ export const APP_SETTINGS = z
         PORT: z.coerce.number().int().positive(),
         PRIVY_APP_ID: z.string(),
         PRIVY_APP_SECRET: z.string(),
-        PRIVY_KEY: z.string(),
+        PRIVY_KEY: z.string().transform((value) => value.replace(/\\n/g, "\n")),
     })
     .parse(process.env);
