@@ -6,6 +6,7 @@ import { getPublicFeed } from "@/api/feed";
 import { PageContentLayout } from "@/components/layout/page-content";
 import { LoadingScreen } from "@/components/loading-screen";
 import { Dropdown } from "@/components/ui/dropdown";
+import { cn } from "@/lib/utils";
 import { FeedStreamWrapper } from "@/views/feed/components/wrapper";
 import { dropdownButtons } from "@/views/feed/constants";
 import { FeedContextProvider } from "@/views/feed/context";
@@ -30,7 +31,7 @@ function RouteComponent() {
     }
 
     return (
-        <PageContentLayout>
+        <PageContentLayout className="space-y-10.5">
             <Dropdown
                 onChange={(value) => setContent(value as FeedContent)}
                 options={dropdownButtons}
@@ -38,7 +39,7 @@ function RouteComponent() {
                 value={content}
             />
 
-            <section className="space-y-6.5">
+            <section className={cn("space-y-6.5", "md:grid md:grid-cols-3 md:gap-6", "lg:grid-cols-3", "xl:grid-cols-5")}>
                 {data?.data
                     ? data.data.map((value) => (
                           <FeedContextProvider key={value.id} isPending={isPending} {...value}>
