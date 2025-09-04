@@ -2,7 +2,7 @@ import { type QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Outlet } from "@tanstack/react-router";
 import { Fragment } from "react";
 
-import { TopNavigationBar } from "@/components/top-navigation-bar";
+import { AppShell } from "@/components/layout/app-shell";
 
 export type RouterContext = {
     queryClient: QueryClient;
@@ -13,8 +13,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <Fragment>
             <HeadContent />
-            <TopNavigationBar />
-            <Outlet />
+            <AppShell>
+                <Outlet />
+            </AppShell>
         </Fragment>
     ),
 

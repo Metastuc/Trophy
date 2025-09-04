@@ -42,7 +42,7 @@ export function App() {
             <motion.section
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.3 }}
                 className="relative min-h-dvh"
             >
                 <RouterProvider router={router} context={{ authenticationStore }} />

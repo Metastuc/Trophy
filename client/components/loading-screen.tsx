@@ -6,8 +6,8 @@ export function LoadingScreen({ isPending }: { isPending?: boolean }) {
     return (
         <section
             className={cn(
-                "flex w-screen items-center justify-center",
-                isPending ? "h-[calc(100dvh-4.25rem)] my-auto" : "h-dvh",
+                "flex items-center justify-center",
+                isPending ? "h-[calc(100dvh-9.25rem)]" : "h-dvh w-screen",
             )}
         >
             <Loader className="animate-spin" />
