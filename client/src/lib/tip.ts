@@ -92,7 +92,7 @@ const tipERC20Token = async (
     const hash = await walletClient.writeContract({
         address: contractAddress as Address,
         functionName: "transfer",
-        abi: parseAbi(["function transfer(address to, unit256 amount) payable"]),
+        abi: parseAbi(["function transfer(address to, unit256 amount)"]),
         args: [recipient as Address, amountInUnits],
         chain: network,
         account: accountAddress
