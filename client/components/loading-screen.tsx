@@ -1,8 +1,15 @@
 import { Loader } from "lucide-react";
 
-export function LoadingScreen() {
+import { cn } from "@/lib/utils";
+
+export function LoadingScreen({ isPending }: { isPending?: boolean }) {
     return (
-        <section className="flex h-dvh w-screen items-center justify-center">
+        <section
+            className={cn(
+                "flex w-screen items-center justify-center",
+                isPending ? "h-[calc(100dvh-4.25rem)] my-auto" : "h-dvh",
+            )}
+        >
             <Loader className="animate-spin" />
         </section>
     );

@@ -5,10 +5,17 @@ import { useState } from "react";
 import { getPublicFeed } from "@/api/feed";
 import { PageContentLayout } from "@/components/layout/page-content";
 import { Dropdown } from "@/components/ui/dropdown";
+import { FeedStreamWrapper } from "@/views/feed/components/wrapper";
 import { dropdownButtons } from "@/views/feed/constants";
 import { FeedContextProvider } from "@/views/feed/context";
 
 export const Route = createFileRoute("/")({
+    loader: async () => {
+        // simulate network latency
+        await new Promise((r) => setTimeout(r, 20000));
+        return { data: "Feed data" };
+    },
+
     component: RouteComponent,
 });
 
@@ -42,7 +49,7 @@ function RouteComponent() {
                 {data?.data
                     ? data.data.map((value) => (
                           <FeedContextProvider key={value.id} isPending={isPending} {...value}>
-                              {/* <StreamArticle /> */}
+                              <FeedStreamWrapper />
                           </FeedContextProvider>
                       ))
                     : null}

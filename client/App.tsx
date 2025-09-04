@@ -16,7 +16,7 @@ const router = createRouter({
         authenticationStore: undefined,
     },
     defaultPendingComponent() {
-        return <LoadingScreen />;
+        return <LoadingScreen isPending />;
     },
     scrollRestoration: true,
     getScrollRestorationKey(location) {
