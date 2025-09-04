@@ -1,11 +1,9 @@
-import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
+import { EIP1193Provider, usePrivy, useWallets } from "@privy-io/react-auth";
 // import { useDebounce } from "@uidotdev/usehooks";
 import { CircleDollarSign } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
-import { useConnect } from "wagmi";
-import { injected } from "wagmi/connectors";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -53,7 +51,7 @@ interface TipDrawerPrivyWalletState {
 function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
     const { wallets } = useWallets();
-    const { connect } = useConnect();
+    const { connectWallet } = usePrivy();
 
     const hasMoralisFiredRef = useRef<boolean>(false);
 
@@ -80,7 +78,7 @@ function TipDrawerInner() {
 
             (async function () {
                 const wallet = wallets[0];
-                await wallet.switchChain(network.id)
+                await wallet.switchChain(network.id);
                 const provider = await wallet.getEthereumProvider();
                 const address = wallet.address;
                 const walletType = wallet.walletClientType;
@@ -133,7 +131,7 @@ function TipDrawerInner() {
         try {
             if (!privyWalletState.provider || !privyWalletState.address) {
                 toast.error("Wallet not connected");
-                connect({ connector: injected() });
+                connectWallet();
                 return;
             }
 
@@ -151,7 +149,7 @@ function TipDrawerInner() {
                     amount: initialValues.amountInToken.toString() || "0",
                     provider: privyWalletState.provider,
                     recipientAddress: streamer?.walletAddress as Address,
-                    senderAddress: privyWalletState.address as Address
+                    senderAddress: privyWalletState.address as Address,
                 });
             }
 
