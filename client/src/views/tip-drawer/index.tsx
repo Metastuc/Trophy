@@ -1,10 +1,11 @@
 import { EIP1193Provider, usePrivy, useWallets } from "@privy-io/react-auth";
-// import { useDebounce } from "@uidotdev/usehooks";
 import { CircleDollarSign } from "lucide-react";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
+import { useAccount, useBalance } from "wagmi";
 
+import { useTokenPrice } from "@/api/get-token-prices";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -18,9 +19,9 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
 import { APPLICATION_CONSTANTS, network } from "@/lib/constants";
+import { TOKEN_ADDRESSES } from "@/lib/contracts";
 import { tipETH, tipUser } from "@/lib/tip";
-import { getTokens } from "@/lib/token-price";
-import { logger } from "@/utils/logger";
+import { sleep } from "@/lib/utils";
 
 import { TOKENS } from "./constants";
 import { TipDrawerContextProvider } from "./context";
@@ -40,6 +41,7 @@ interface TipDrawerState {
     senderAvailableBalanceInToken: number;
     senderAvailableBalanceInUsd: number;
     token: string;
+    tokenAddress: Address;
 }
 
 interface TipDrawerPrivyWalletState {
@@ -52,8 +54,7 @@ function TipDrawerInner() {
     const { closeDrawer, isDrawerOpen, openDrawer, streamer } = useTipDrawerContext();
     const { wallets } = useWallets();
     const { connectWallet } = usePrivy();
-
-    const hasMoralisFiredRef = useRef<boolean>(false);
+    const { address } = useAccount();
 
     const [privyWalletState, setPrivyWalletState] = useState<TipDrawerPrivyWalletState>(() => ({
         provider: undefined,
@@ -66,16 +67,15 @@ function TipDrawerInner() {
         amountInUsd: 0,
         senderAvailableBalanceInToken: 0,
         senderAvailableBalanceInUsd: 0,
-        token: "ETH",
+        token: TOKENS[0].value,
+        tokenAddress: TOKENS[0].address,
     }));
 
-    // const debouncedAmountInToken = useDebounce(initialValues.amountInToken, 1000);
-    // const debouncedAmountInUsd = useDebounce(initialValues.amountInUsd, 1000);
+    const { data: tokenPrice } = useTokenPrice(initialValues.tokenAddress);
+    const { data: balanceData } = useBalance({ address });
 
     useEffect(
         function () {
-            logger({ wallets });
-
             (async function () {
                 const wallet = wallets[0];
                 await wallet.switchChain(network.id);
@@ -88,19 +88,6 @@ function TipDrawerInner() {
         [wallets],
     );
 
-    useEffect(
-        function () {
-            (async function () {
-                if (!privyWalletState.address || hasMoralisFiredRef.current) return;
-                const tokensValues = await getTokens(privyWalletState.address);
-                hasMoralisFiredRef.current = true;
-
-                logger({ tokensValues, address: privyWalletState.address });
-            })();
-        },
-        [privyWalletState.address],
-    );
-
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
         let inputValue = event.target.value.replace(/[^0-9.]/g, "");
         const parts = inputValue.split(".");
@@ -110,9 +97,8 @@ function TipDrawerInner() {
 
         setInitialValues((state) => ({
             ...state,
-            // amountInToken: parsedValue === null || parsedValue <= 100 ? parsedValue : 100,
             amountInToken: inputValue,
-            // amountInUsd: Number(event.target.value) * (streamer?.priceInUsd || 0),
+            amountInUsd: tokenPrice ? Number(inputValue) * tokenPrice.usdPrice : 0,
         }));
     }
 
@@ -120,9 +106,31 @@ function TipDrawerInner() {
         console.log(value);
     }
 
+    useEffect(() => {
+        setInitialValues((state) => ({
+            ...state,
+            amountInUsd: tokenPrice ? Number(state.amountInToken || 0) * tokenPrice.usdPrice : 0,
+        }));
+    }, [initialValues.amountInToken, tokenPrice]);
+
+    useEffect(() => {
+        if (!balanceData || !tokenPrice) return;
+
+        const tokenBalance = parseFloat(balanceData.formatted);
+        const balanceInUsd = tokenBalance * tokenPrice.usdPrice;
+
+        setInitialValues((state) => ({
+            ...state,
+            senderAvailableBalanceInToken: tokenBalance,
+            senderAvailableBalanceInUsd: balanceInUsd,
+        }));
+    }, [balanceData, tokenPrice]);
+
     async function handleTip() {
         if (initialValues.amountInUsd > APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD) {
-            toast.error(`Maximum tip amount is ${APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD} USD`);
+            toast.error(
+                `Maximum tip amount is ${APPLICATION_CONSTANTS.MAX_TIP_AMOUNT_USD.toLocaleString("en-US")} USD`,
+            );
             return;
         }
 
@@ -131,18 +139,10 @@ function TipDrawerInner() {
         try {
             if (!privyWalletState.provider || !privyWalletState.address) {
                 toast.error("Wallet not connected");
+                closeDrawer();
                 connectWallet();
                 return;
             }
-
-            logger({
-                amount: initialValues.amountInToken.toString() || "0",
-                provider: privyWalletState.provider,
-                recipient: streamer?.walletAddress as string,
-                token: initialValues.token as TokenAddresses,
-                userAddress: privyWalletState.address as Address,
-                wallet: privyWalletState.walletType as string,
-            });
 
             if (initialValues.token === "ETH") {
                 hash = await tipETH({
@@ -167,14 +167,15 @@ function TipDrawerInner() {
             toast.success("Tip sent successfully!", {
                 duration: 5000,
                 description: (
-                    <a
-                        href={`https://sepolia.basescan.org/tx/${hash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                    >
-                        View on BaseScan
-                    </a>
+                    <Button className="text-blue-500 underline" variant="link">
+                        <a
+                            href={`${APPLICATION_CONSTANTS.TX_SCAN_URL(hash as string)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            View on BaseScan
+                        </a>
+                    </Button>
                 ),
             });
         } catch (error) {
@@ -182,6 +183,24 @@ function TipDrawerInner() {
             toast.error("Failed to send tip.");
         }
     }
+
+    useEffect(
+        function () {
+            if (wallets.length > 0 && !isDrawerOpen) {
+                let canceled = false;
+
+                (async () => {
+                    await sleep(2000);
+                    if (!canceled) openDrawer();
+                })();
+
+                return () => {
+                    canceled = true;
+                };
+            }
+        },
+        [isDrawerOpen, wallets.length, openDrawer],
+    );
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
@@ -250,7 +269,15 @@ function TipDrawerInner() {
 
                                 <Select
                                     value={initialValues.token}
-                                    onValueChange={(value) => setInitialValues((state) => ({ ...state, token: value }))}
+                                    onValueChange={(value) =>
+                                        setInitialValues((state) => ({
+                                            ...state,
+                                            token: value,
+                                            tokenAddress: TOKEN_ADDRESSES[
+                                                value as keyof typeof TOKEN_ADDRESSES
+                                            ] as Address,
+                                        }))
+                                    }
                                 >
                                     <SelectTrigger className="border-blue100 h-10.5! min-w-28 rounded-lg bg-[#1B1B1B] p-0 px-2">
                                         <SelectValue>

@@ -44,12 +44,28 @@ export const tokenAddresses = addresses[environment];
 
 export const APPLICATION_CONSTANTS = {
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
+
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
-    MAX_TIP_AMOUNT_USD: 2000,
+
+    MAX_TIP_AMOUNT_USD: 10000,
+
     SUPPORTED_TOKENS: ["DEGEN", "USDC", "FLAY", "ETH", "ZORA", "BNKR"],
+
     TOTAL_CO_HOSTS_ALLOWED: 4,
+
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
-    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base,
+
+    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "production" ? base : baseSepolia,
+
+    TX_SCAN_URL: (hash: string) =>
+        ENV_SCHEMA.ENVIRONMENT === "production"
+            ? `https://basescan.org/tx/${hash}`
+            : `https://sepolia.basescan.org/tx/${hash}`,
+
+    CURRENT_MORALIS_CHAIN:
+        ENV_SCHEMA.ENVIRONMENT === "production"
+            ? Moralis.EvmUtils.EvmChain.BASE
+            : Moralis.EvmUtils.EvmChain.BASE_SEPOLIA,
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };
