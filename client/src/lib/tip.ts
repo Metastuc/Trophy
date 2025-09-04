@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable simple-import-sort/imports */
 import { Addresses } from "@/lib/contracts";
 // import {
@@ -40,38 +41,38 @@ export const tipUser = async ({
     recipient,
     amount,
     userAddress,
-    wallet,
     provider,
     token,
+    wallet
 }: {
     recipient: string;
     amount: string;
     userAddress: Address;
-    wallet: string;
     provider: EIP1193Provider;
     token: tokenType;
+    wallet?: string;
 }) => {
     const tokenAddress = Addresses[token];
-    const isUSDC = token === "USDC" ? true : false;
-    return await tipERC20Token(recipient, tokenAddress, amount, userAddress, provider, wallet, isUSDC);
+    const decimals = token === "USDC" ? 6 : 18;
+    return await tipERC20Token(recipient, tokenAddress, amount, userAddress, provider, decimals);
 };
 
 export const tipCreatorToken = async ({
     recipient,
     amount,
     userAddress,
-    wallet,
     provider,
     contractAddress,
+    wallet
 }: {
     recipient: string;
     amount: string;
     userAddress: Address;
-    wallet: string;
     provider: EIP1193Provider;
     contractAddress: string;
+    wallet?: string;
 }) => {
-    return await tipERC20Token(recipient, contractAddress, amount, userAddress, provider, wallet);
+    return await tipERC20Token(recipient, contractAddress, amount, userAddress, provider, 18);
 };
 
 
@@ -81,12 +82,12 @@ const tipERC20Token = async (
     amount: string,
     accountAddress: Address,
     signer: EIP1193Provider,
+    decimals: number,
     wallet?: string,
-    usdc?: boolean,
 ) => {
     const walletClient = getWalletClient(signer, accountAddress);
 
-    const amountInUnits = parseUnits(amount, usdc ? 6 : 18);
+    const amountInUnits = parseUnits(amount, decimals);
 
     const hash = await walletClient.writeContract({
         address: contractAddress as Address,
@@ -107,7 +108,7 @@ const tipERC20Token = async (
 //     accountAddress: Address,
 //     signer: EIP1193Provider,
 //     wallet: string,
-//     usdc?: boolean,
+//     decimals: number,
 // ) => {
 //     const nexusAccount = await toMultichainNexusAccount({
 //         chainConfigurations: [
@@ -125,7 +126,6 @@ const tipERC20Token = async (
 //     const tokenAddress = contractAddress as unknown as Address;
 //     const recieverAddress = recipient as unknown as Address;
 
-//     const decimals = usdc ? 6 : 18;
 //     const chainId = network.id as unknown as number;
 //     const tokenInUnits = parseUnits(amount, decimals);
 
