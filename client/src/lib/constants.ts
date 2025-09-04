@@ -49,7 +49,11 @@ export const APPLICATION_CONSTANTS = {
     SUPPORTED_TOKENS: ["DEGEN", "USDC", "FLAY", "ETH", "ZORA", "BNKR"],
     TOTAL_CO_HOSTS_ALLOWED: 4,
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
-    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "development" ? baseSepolia : base,
+    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "production" ? base : baseSepolia,
+    TX_SCAN_URL: (hash: string) =>
+        ENV_SCHEMA.ENVIRONMENT === "production"
+            ? `https://basescan.org/tx/${hash}`
+            : `https://sepolia.basescan.org/tx/${hash}`,
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };

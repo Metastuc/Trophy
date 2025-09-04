@@ -167,14 +167,15 @@ function TipDrawerInner() {
             toast.success("Tip sent successfully!", {
                 duration: 5000,
                 description: (
-                    <a
-                        href={`https://sepolia.basescan.org/tx/${hash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                    >
-                        View on BaseScan
-                    </a>
+                    <Button className="text-blue-500 underline" variant="link">
+                        <a
+                            href={`${APPLICATION_CONSTANTS.TX_SCAN_URL(hash as string)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            View on BaseScan
+                        </a>
+                    </Button>
                 ),
             });
         } catch (error) {
