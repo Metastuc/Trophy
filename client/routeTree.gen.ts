@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StreamRouteImport } from './routes/stream'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as UsernameRouteImport } from './routes/$username'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LiveRoomRouteImport } from './routes/live.$room'
 
+const StreamRoute = StreamRouteImport.update({
+  id: '/stream',
+  path: '/stream',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRoute
   '/discover': typeof DiscoverRoute
+  '/stream': typeof StreamRoute
   '/live/$room': typeof LiveRoomRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRoute
   '/discover': typeof DiscoverRoute
+  '/stream': typeof StreamRoute
   '/live/$room': typeof LiveRoomRoute
 }
 export interface FileRoutesById {
@@ -52,25 +60,34 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRoute
   '/discover': typeof DiscoverRoute
+  '/stream': typeof StreamRoute
   '/live/$room': typeof LiveRoomRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$username' | '/discover' | '/live/$room'
+  fullPaths: '/' | '/$username' | '/discover' | '/stream' | '/live/$room'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$username' | '/discover' | '/live/$room'
-  id: '__root__' | '/' | '/$username' | '/discover' | '/live/$room'
+  to: '/' | '/$username' | '/discover' | '/stream' | '/live/$room'
+  id: '__root__' | '/' | '/$username' | '/discover' | '/stream' | '/live/$room'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   UsernameRoute: typeof UsernameRoute
   DiscoverRoute: typeof DiscoverRoute
+  StreamRoute: typeof StreamRoute
   LiveRoomRoute: typeof LiveRoomRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stream': {
+      id: '/stream'
+      path: '/stream'
+      fullPath: '/stream'
+      preLoaderRoute: typeof StreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   UsernameRoute: UsernameRoute,
   DiscoverRoute: DiscoverRoute,
+  StreamRoute: StreamRoute,
   LiveRoomRoute: LiveRoomRoute,
 }
 export const routeTree = rootRouteImport
