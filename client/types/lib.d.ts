@@ -23,6 +23,12 @@ declare global {
         provider: EIP1193Provider;
         tokenAddress: Address;
     }
+
+    interface TokenDropdownConfig {
+        address: Address;
+        icon: string;
+        symbol: string;
+    }
 }
 
 export {};

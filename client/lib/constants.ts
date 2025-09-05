@@ -71,3 +71,37 @@ export const CLIENT_CONSTANTS = {
     TOTAL_CO_HOSTS_ALLOWED: 4,
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
 };
+
+
+export const TOKEN_CONFIG: Record<keyof typeof CLIENT_CONSTANTS.SUPPORTED_TOKENS, TokenDropdownConfig> = {
+    ETH: {
+        address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.ETH,
+        icon: "/ethereum.svg",
+        symbol: "ETH",
+    },
+    USDC: {
+        address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.USDC,
+        icon: "/usdc.svg",
+        symbol: "USDC",
+    },
+    DEGEN: {
+        address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.DEGEN,
+        icon: "/degen.svg",
+        symbol: "DEGEN",
+    },
+    ZORA: {
+        address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.ZORA,
+        icon: "/zora.svg",
+        symbol: "ZORA",
+    },
+    BANKR: {
+        address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.BANKR,
+        icon: "/bankr.svg",
+        symbol: "BNKR",
+    },
+    FLAY: {
+        address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.FLAY,
+        icon: "/flay.svg",
+        symbol: "FLAY",
+    },
+};

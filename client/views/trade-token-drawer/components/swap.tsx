@@ -4,10 +4,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatUSD, tokenInputField, truncateText } from "@/lib/utils";
 
 import { useTradeDrawerContext } from "../hooks";
-import { TOKENS } from "./tokens";
+import { getTokens } from "./tokens";
 
 export function Swap() {
     const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
+    const TOKENS = getTokens(["ETH"]);
 
     function handleSellAmountChange(event: ChangeEvent<HTMLInputElement>) {
         setDrawerData((state) => ({

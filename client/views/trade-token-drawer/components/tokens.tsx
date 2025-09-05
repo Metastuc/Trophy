@@ -1,77 +1,26 @@
-export const TOKENS = [
-    {
-        render: (
-            <div className="flex items-center justify-center gap-1">
-                <aside className="relative">
-                    <img src="/etherum.svg" className="size-3.5" alt="etherum-logo" />
-                    <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
-                </aside>
-                <span>ETH</span>
-            </div>
-        ),
-        title: (
-            <div className="flex items-center justify-center gap-1">
-                <img src="/etherum.svg" className="size-3.5" alt="etherum-logo" />
-                <span className="pt-0.5 text-xs">ETH</span>
-            </div>
-        ),
-        value: "ETH",
-    },
+import { TOKEN_CONFIG } from "@/lib/constants";
 
-    // {
-    //     render: (
-    //         <div className="flex items-center justify-center gap-1">
-    //             <aside className="relative">
-    //                 <img src="/usdc.svg" className="size-3.5" alt="usdc-logo" />
-    //                 <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
-    //             </aside>
-    //             <span>USDC</span>
-    //         </div>
-    //     ),
-    //     title: (
-    //         <div className="flex items-center justify-center gap-1">
-    //             <img src="/usdc.svg" className="size-3.5" alt="usdc-logo" />
-    //             <span className="pt-0.5 text-xs">USDC</span>
-    //         </div>
-    //     ),
-    //     value: "USDC",
-    // },
-
-    // {
-    //     render: (
-    //         <div className="flex items-center justify-center gap-1">
-    //             <aside className="relative">
-    //                 <img src="/zora.svg" className="size-3.5" alt="zora-logo" />
-    //                 <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
-    //             </aside>
-    //             <span>ZORA</span>
-    //         </div>
-    //     ),
-    //     title: (
-    //         <div className="flex items-center justify-center gap-1">
-    //             <img src="/zora.svg" className="size-3.5" alt="zora-logo" />
-    //             <span className="pt-0.5 text-xs">ZORA</span>
-    //         </div>
-    //     ),
-    //     value: "ZORA",
-    // },
-
-    // {
-    //     render: (
-    //         <div className="flex items-center justify-center gap-1">
-    //             <aside className="relative">
-    //                 <img src="/degen.svg" className="size-3.5" alt="degen-logo" />
-    //                 <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
-    //             </aside>
-    //             <span>DEGEN</span>
-    //         </div>
-    //     ),
-    //     title: (
-    //         <div className="flex items-center justify-center gap-1">
-    //             <img src="/degen.svg" className="size-3.5" alt="degen-logo" />
-    //             <span className="pt-0.5 text-xs">DEGEN</span>
-    //         </div>
-    //     ),
-    //     value: "DEGEN",
-    // },
-];
+export function getTokens(keys: Array<keyof typeof TOKEN_CONFIG>) {
+    return keys.map(function (key) {
+        const token = TOKEN_CONFIG[key];
+        return {
+            address: token.address,
+            render: (
+                <div className="flex items-center justify-center gap-1">
+                    <aside className="relative">
+                        <img src={token.icon} className="size-3.5" alt={`${token.symbol}-logo`} />
+                        <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
+                    </aside>
+                    <span>{token.symbol}</span>
+                </div>
+            ),
+            title: (
+                <div className="flex items-center justify-center gap-1">
+                    <img src={token.icon} className="size-5" alt={`${token.symbol}-logo`} />
+                    <span className="pt-0.5 text-base">{token.symbol}</span>
+                </div>
+            ),
+            value: token.symbol,
+        };
+    });
+}

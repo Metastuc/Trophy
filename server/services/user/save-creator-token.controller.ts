@@ -7,8 +7,6 @@ export async function saveCreatorToken(request: Request, response: Response, nex
     const { userId: username } = request.params;
     const { creatorToken, smartAccount, tokenName } = request.body;
 
-    console.log(username);
-
     if (!smartAccount) {
         throw new HttpError({ message: "smart account address is missing", code: 422 });
     }
