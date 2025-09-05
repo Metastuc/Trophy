@@ -9,7 +9,7 @@ export const AUTHENTICATE_USER_RESPONSE_SCHEMA = z.object({
             .string()
             .refine((value) => isAddress(value), { message: "Invalid address" })
             .nullable(),
-        email: z.email(),
+        email: z.email().nullable(),
         profilePicture: z.string().nullable(),
         username: z.string(),
     }),
