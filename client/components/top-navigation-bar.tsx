@@ -17,7 +17,7 @@ export function TopNavigationBar() {
     }
 
     return (
-        <section className="sticky top-0 z-50 w-full border-b border-b-black/5 bg-white/85 p-5 backdrop-blur-sm">
+        <section className="sticky top-0 z-50 w-full border-b border-b-black/5 bg-white/85 px-5 py-3 backdrop-blur-sm">
             <div className="flex h-9 items-center justify-between">
                 <aside>
                     <Link to={"/"}>

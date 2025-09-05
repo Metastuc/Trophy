@@ -93,7 +93,12 @@ export async function createCreatorToken({ provider, tokenName }: CreateCreatorT
     }
 }
 
-export async function buyCreatorToken({ amount, buyerAddress, provider, tokenAddress }: BuyCreatorToken) {
+export async function buyCreatorToken({
+    amount,
+    buyerAddress,
+    provider,
+    tokenAddress,
+}: BuyCreatorToken): Promise<Address> {
     const flaunch = getFlaunchClient({ address: buyerAddress, provider });
     const hash = await flaunch?.buyCoin(
         {
