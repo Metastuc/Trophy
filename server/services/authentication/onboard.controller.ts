@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { saveProfileImage } from "#config/images.utils.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
-import { userRegisteredEmail } from "#services/notifications/email/register.ts";
+import { sendUserRegisteredEmail } from "#services/notifications/email/register.ts";
 
 export async function onBoard(request: Request, response: Response, next: NextFunction) {
     const userProfilePicture = request.file?.buffer;
@@ -58,7 +58,7 @@ export async function onBoard(request: Request, response: Response, next: NextFu
                 data: { bio, email, privyId, username: usernameRegex, walletAddress, ...(userPfp && { userPfp }) },
             });
 
-            await userRegisteredEmail({ email: user.email as string, username: user.username });
+            sendUserRegisteredEmail({ email: user.email as string, username: user.username });
             response.customResponse<OnboardUserData>({
                 code: 201,
                 message: "user created successfully",

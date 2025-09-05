@@ -10,15 +10,14 @@ const templatesDir = path.join(dirname, "templates");
 
 export const transporter = nodemailer.createTransport({
     auth: { user: SERVER_ENV.EMAIL_USER, pass: SERVER_ENV.EMAIL_PASSWORD },
-    host: SERVER_ENV.EMAIL_HOST,
-    port: SERVER_ENV.EMAIL_PORT,
-    secure: true,
+    service: "zoho",
 });
 
 const options: NodemailerExpressHandlebarsOptions = {
     viewEngine: {
         partialsDir: templatesDir,
-        defaultLayout: false,
+        layoutsDir: templatesDir,
+        defaultLayout: "base",
     },
     viewPath: templatesDir,
 };

@@ -1,21 +1,24 @@
 import { SERVER_ENV } from "#config/constants.ts";
+import { HttpError } from "#middleware/error.ts";
 import { logger } from "#utils/logger.ts";
 
 import { transporter } from ".";
 
-export async function userRegisteredEmail({ email, username }: { email: string; username: string }) {
+export function sendUserRegisteredEmail({ email, username }: { email: string; username: string }) {
     const mail = {
         context: { username },
         from: SERVER_ENV.EMAIL_USER,
         subject: "Welcome to Trophy 🎉",
-        template: "newUser",
+        template: "new-user",
         to: email,
     };
 
-    try {
-        await transporter.sendMail(mail);
-    } catch (error) {
-        logger.error(error);
-        throw error;
-    }
+    transporter.sendMail(mail, function (error, info) {
+        if (error) {
+            logger.error(error);
+            throw new HttpError({ message: "failed to send email", code: 500 });
+        }
+
+        logger.info(info, "email sent successfully to user: " + email);
+    });
 }
