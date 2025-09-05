@@ -12,7 +12,7 @@ export function StreamContext() {
             <aside className="my-2 flex items-center justify-start gap-1">
                 <div className="size-8.5">
                     <StreamerLivePFP
-                        imageSrc="https://placehold.co/400x400/pink/blue"
+                        imageSrc={streamCreator.user.userPfp}
                         imageAlt={`${streamCreator.user.username}-pfp`}
                         isLive
                     />
