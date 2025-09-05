@@ -3407,7 +3407,7 @@ export namespace Prisma {
     email: string | null
     userPfp: string
     walletAddress: string
-    sa_address: string
+    sa_address: string | null
     tokenPrice: number
     totalStreams: number
     bio: string
@@ -3499,7 +3499,7 @@ export namespace Prisma {
       email: string | null
       userPfp: string
       walletAddress: string
-      sa_address: string
+      sa_address: string | null
       tokenPrice: number
       totalStreams: number
       bio: string
@@ -4606,7 +4606,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"User"> | string | null
     userPfp?: StringFilter<"User"> | string
     walletAddress?: StringFilter<"User"> | string
-    sa_address?: StringFilter<"User"> | string
+    sa_address?: StringNullableFilter<"User"> | string | null
     tokenPrice?: FloatFilter<"User"> | number
     totalStreams?: IntFilter<"User"> | number
     bio?: StringFilter<"User"> | string
@@ -4705,7 +4705,7 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     userPfp?: StringWithAggregatesFilter<"User"> | string
     walletAddress?: StringWithAggregatesFilter<"User"> | string
-    sa_address?: StringWithAggregatesFilter<"User"> | string
+    sa_address?: StringNullableWithAggregatesFilter<"User"> | string | null
     tokenPrice?: FloatWithAggregatesFilter<"User"> | number
     totalStreams?: IntWithAggregatesFilter<"User"> | number
     bio?: StringWithAggregatesFilter<"User"> | string
@@ -4894,7 +4894,7 @@ export namespace Prisma {
     email?: string | null
     userPfp?: string
     walletAddress: string
-    sa_address: string
+    sa_address?: string | null
     tokenPrice?: number
     totalStreams?: number
     bio?: string
@@ -4916,7 +4916,7 @@ export namespace Prisma {
     email?: string | null
     userPfp?: string
     walletAddress: string
-    sa_address: string
+    sa_address?: string | null
     tokenPrice?: number
     totalStreams?: number
     bio?: string
@@ -4937,7 +4937,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
-    sa_address?: StringFieldUpdateOperationsInput | string
+    sa_address?: NullableStringFieldUpdateOperationsInput | string | null
     tokenPrice?: FloatFieldUpdateOperationsInput | number
     totalStreams?: IntFieldUpdateOperationsInput | number
     bio?: StringFieldUpdateOperationsInput | string
@@ -4958,7 +4958,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
-    sa_address?: StringFieldUpdateOperationsInput | string
+    sa_address?: NullableStringFieldUpdateOperationsInput | string | null
     tokenPrice?: FloatFieldUpdateOperationsInput | number
     totalStreams?: IntFieldUpdateOperationsInput | number
     bio?: StringFieldUpdateOperationsInput | string
@@ -4980,7 +4980,7 @@ export namespace Prisma {
     email?: string | null
     userPfp?: string
     walletAddress: string
-    sa_address: string
+    sa_address?: string | null
     tokenPrice?: number
     totalStreams?: number
     bio?: string
@@ -5001,7 +5001,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
-    sa_address?: StringFieldUpdateOperationsInput | string
+    sa_address?: NullableStringFieldUpdateOperationsInput | string | null
     tokenPrice?: FloatFieldUpdateOperationsInput | number
     totalStreams?: IntFieldUpdateOperationsInput | number
     bio?: StringFieldUpdateOperationsInput | string
@@ -5022,7 +5022,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
-    sa_address?: StringFieldUpdateOperationsInput | string
+    sa_address?: NullableStringFieldUpdateOperationsInput | string | null
     tokenPrice?: FloatFieldUpdateOperationsInput | number
     totalStreams?: IntFieldUpdateOperationsInput | number
     bio?: StringFieldUpdateOperationsInput | string
