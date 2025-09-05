@@ -8,155 +8,140 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as StreamRouteImport } from './routes/stream'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as UsernameRouteImport } from './routes/$username'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as LiveRoomRouteImport } from './routes/live.$room'
+import { Route as UsernameRouteImport } from "./routes/$username";
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as DiscoverRouteImport } from "./routes/discover";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as LiveRoomRouteImport } from "./routes/live.$room";
+import { Route as ProfileRouteImport } from "./routes/profile";
+import { Route as StreamRouteImport } from "./routes/stream";
 
 const StreamRoute = StreamRouteImport.update({
-  id: '/stream',
-  path: '/stream',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: "/stream",
+    path: "/stream",
+    getParentRoute: () => rootRouteImport,
+} as any);
 const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: "/profile",
+    path: "/profile",
+    getParentRoute: () => rootRouteImport,
+} as any);
 const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: "/discover",
+    path: "/discover",
+    getParentRoute: () => rootRouteImport,
+} as any);
 const UsernameRoute = UsernameRouteImport.update({
-  id: '/$username',
-  path: '/$username',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: "/$username",
+    path: "/$username",
+    getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: "/",
+    path: "/",
+    getParentRoute: () => rootRouteImport,
+} as any);
 const LiveRoomRoute = LiveRoomRouteImport.update({
-  id: '/live/$room',
-  path: '/live/$room',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: "/live/$room",
+    path: "/live/$room",
+    getParentRoute: () => rootRouteImport,
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/$username': typeof UsernameRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
-  '/live/$room': typeof LiveRoomRoute
+    "/": typeof IndexRoute;
+    "/$username": typeof UsernameRoute;
+    "/discover": typeof DiscoverRoute;
+    "/profile": typeof ProfileRoute;
+    "/stream": typeof StreamRoute;
+    "/live/$room": typeof LiveRoomRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/$username': typeof UsernameRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
-  '/live/$room': typeof LiveRoomRoute
+    "/": typeof IndexRoute;
+    "/$username": typeof UsernameRoute;
+    "/discover": typeof DiscoverRoute;
+    "/profile": typeof ProfileRoute;
+    "/stream": typeof StreamRoute;
+    "/live/$room": typeof LiveRoomRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/$username': typeof UsernameRoute
-  '/discover': typeof DiscoverRoute
-  '/profile': typeof ProfileRoute
-  '/stream': typeof StreamRoute
-  '/live/$room': typeof LiveRoomRoute
+    __root__: typeof rootRouteImport;
+    "/": typeof IndexRoute;
+    "/$username": typeof UsernameRoute;
+    "/discover": typeof DiscoverRoute;
+    "/profile": typeof ProfileRoute;
+    "/stream": typeof StreamRoute;
+    "/live/$room": typeof LiveRoomRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/$username'
-    | '/discover'
-    | '/profile'
-    | '/stream'
-    | '/live/$room'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$username' | '/discover' | '/profile' | '/stream' | '/live/$room'
-  id:
-    | '__root__'
-    | '/'
-    | '/$username'
-    | '/discover'
-    | '/profile'
-    | '/stream'
-    | '/live/$room'
-  fileRoutesById: FileRoutesById
+    fileRoutesByFullPath: FileRoutesByFullPath;
+    fullPaths: "/" | "/$username" | "/discover" | "/profile" | "/stream" | "/live/$room";
+    fileRoutesByTo: FileRoutesByTo;
+    to: "/" | "/$username" | "/discover" | "/profile" | "/stream" | "/live/$room";
+    id: "__root__" | "/" | "/$username" | "/discover" | "/profile" | "/stream" | "/live/$room";
+    fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  UsernameRoute: typeof UsernameRoute
-  DiscoverRoute: typeof DiscoverRoute
-  ProfileRoute: typeof ProfileRoute
-  StreamRoute: typeof StreamRoute
-  LiveRoomRoute: typeof LiveRoomRoute
+    IndexRoute: typeof IndexRoute;
+    UsernameRoute: typeof UsernameRoute;
+    DiscoverRoute: typeof DiscoverRoute;
+    ProfileRoute: typeof ProfileRoute;
+    StreamRoute: typeof StreamRoute;
+    LiveRoomRoute: typeof LiveRoomRoute;
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/stream': {
-      id: '/stream'
-      path: '/stream'
-      fullPath: '/stream'
-      preLoaderRoute: typeof StreamRouteImport
-      parentRoute: typeof rootRouteImport
+declare module "@tanstack/react-router" {
+    interface FileRoutesByPath {
+        "/stream": {
+            id: "/stream";
+            path: "/stream";
+            fullPath: "/stream";
+            preLoaderRoute: typeof StreamRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/profile": {
+            id: "/profile";
+            path: "/profile";
+            fullPath: "/profile";
+            preLoaderRoute: typeof ProfileRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/discover": {
+            id: "/discover";
+            path: "/discover";
+            fullPath: "/discover";
+            preLoaderRoute: typeof DiscoverRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/$username": {
+            id: "/$username";
+            path: "/$username";
+            fullPath: "/$username";
+            preLoaderRoute: typeof UsernameRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/": {
+            id: "/";
+            path: "/";
+            fullPath: "/";
+            preLoaderRoute: typeof IndexRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/live/$room": {
+            id: "/live/$room";
+            path: "/live/$room";
+            fullPath: "/live/$room";
+            preLoaderRoute: typeof LiveRoomRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$username': {
-      id: '/$username'
-      path: '/$username'
-      fullPath: '/$username'
-      preLoaderRoute: typeof UsernameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/live/$room': {
-      id: '/live/$room'
-      path: '/live/$room'
-      fullPath: '/live/$room'
-      preLoaderRoute: typeof LiveRoomRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  UsernameRoute: UsernameRoute,
-  DiscoverRoute: DiscoverRoute,
-  ProfileRoute: ProfileRoute,
-  StreamRoute: StreamRoute,
-  LiveRoomRoute: LiveRoomRoute,
-}
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+    IndexRoute: IndexRoute,
+    UsernameRoute: UsernameRoute,
+    DiscoverRoute: DiscoverRoute,
+    ProfileRoute: ProfileRoute,
+    StreamRoute: StreamRoute,
+    LiveRoomRoute: LiveRoomRoute,
+};
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();

@@ -3,11 +3,13 @@ import { base, baseSepolia } from "viem/chains";
 
 export const queryClient = new QueryClient();
 
-export const ENV_SCHEMA = {
-    CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string, //deprecated
+export const ENV_SCHEMA: Record<string, string> = {
+    BUNDLER_URL: import.meta.env.VITE_BUNDLER_URL as string,
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
+    PAYMASTER_URL: import.meta.env.VITE_PAYMASTER_URL as string,
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
+    REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER_ADDRESS as string,
     SERVER_URL: import.meta.env.VITE_SERVER_URL as string,
 };
 
