@@ -57,8 +57,8 @@ export function ScheduleStreamForm() {
             <h5 className="text-center">Schedule Livestream</h5>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <input type="hidden" name="date" value={formState.date} />
-                <input type="hidden" name="username" value={formState.username} />
+                <input type="hidden" name="date" value={formState.date ?? ""} />
+                <input type="hidden" name="username" value={formState.username ?? ""} />
 
                 <div className="flex flex-col">
                     <label htmlFor="title">Title</label>
