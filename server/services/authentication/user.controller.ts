@@ -20,7 +20,7 @@ export async function user(request: Request, response: Response, next: NextFunct
                 isBasicProfileComplete: Boolean(user.email && user.profileImage && user.username),
                 user: {
                     bio: user.bio,
-                    creatorToken: user.creatorToken?.address,
+                    creatorToken: user.creatorToken?.address ?? null,
                     email: user.email,
                     profilePicture: user.profileImage,
                     username: user.username,
