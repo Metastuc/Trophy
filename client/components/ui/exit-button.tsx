@@ -1,26 +1,39 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useNavigate } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
+import { toast } from "sonner";
+import { useShallow } from "zustand/shallow";
 
 import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export function ExitButton() {
-    const { logout } = usePrivy();
+    const { logout: privyLogout } = usePrivy();
     const navigate = useNavigate();
 
+    const { isAuthenticated, logout: appLogout } = useAuthenticationStore(
+        useShallow((state) => ({
+            isAuthenticated: state.isAuthenticated,
+            logout: state.logout,
+        })),
+    );
+
     async function handleLogout() {
-        logout()
-            .then(function () {
-                useAuthenticationStore.getState().logout();
-            })
-            .finally(function () {
-                navigate({ to: "/" });
-            });
+        if (isAuthenticated) {
+            try {
+                privyLogout().then(() => appLogout());
+            } catch (error) {
+                toast.error((error as Error).message);
+            }
+        }
+        navigate({ to: "/" });
     }
 
     return (
-        <button onClick={handleLogout}>
-            <i className="size-6">
+        <button
+            onClick={handleLogout}
+            className="border-blue100/10 flex size-9 items-center justify-center rounded-full border shadow"
+        >
+            <i className="text-blue100 size-4.5">
                 <LogOut />
             </i>
         </button>

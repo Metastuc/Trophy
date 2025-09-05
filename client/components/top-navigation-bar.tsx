@@ -16,24 +16,26 @@ export function TopNavigationBar() {
     }
 
     return (
-        <section className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-b-black/5 bg-white/85 p-5 backdrop-blur-sm">
-            <aside>
-                <Link to={"/"}>
-                    <img src="/trophy.svg" alt="trophy-logo" />
-                </Link>
-            </aside>
+        <section className="sticky top-0 z-50 w-full border-b border-b-black/5 bg-white/85 p-5 backdrop-blur-sm">
+            <div className="flex h-9 items-center justify-between">
+                <aside>
+                    <Link to={"/"}>
+                        <img src="/trophy.svg" alt="trophy-logo" />
+                    </Link>
+                </aside>
 
-            <aside className="flex items-center gap-3.5">
-                {checkRoute({ to: "/discover" }) ? (
-                    <button onClick={handleButtonClick}>
-                        <i className="size-6">
-                            <img src="/search.svg" alt="search_icon" />
-                        </i>
-                    </button>
-                ) : null}
+                <aside className="flex items-center gap-3.5">
+                    {checkRoute({ to: "/discover" }) ? (
+                        <button onClick={handleButtonClick}>
+                            <i className="size-6">
+                                <img src="/search.svg" alt="search_icon" />
+                            </i>
+                        </button>
+                    ) : null}
 
-                {!showExitButton ? <AuthenticationDrawer /> : <ExitButton />}
-            </aside>
+                    {!showExitButton ? <AuthenticationDrawer /> : <ExitButton />}
+                </aside>
+            </div>
         </section>
     );
 }
