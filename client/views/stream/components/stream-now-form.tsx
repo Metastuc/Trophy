@@ -1,10 +1,7 @@
-import { useWallets } from "@privy-io/react-auth";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader, Projector } from "lucide-react";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { FormEvent, Fragment } from "react";
 import { toast } from "sonner";
-import { Address } from "viem";
-import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,29 +9,12 @@ import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-// import { createCreatorToken } from "@/lib/flaunch";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
+
+import { useStreamForm } from "../hooks";
 
 export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
-    const { wallets } = useWallets();
-
-    const { isAuthenticated, user } = useAuthenticationStore(
-        useShallow((state) => ({
-            isAuthenticated: state.isAuthenticated,
-            user: state.user,
-        })),
-    );
-
-    const [isCreatingToken, setIsCreatingToken] = useState<boolean>(false);
-
-    const [formState, setFormState] = useState<CreateStreamFormState>(() => ({
-        creatorToken: undefined,
-        creatorTokenEnabled: false,
-        date: "",
-        username: "",
-        walletAddress: undefined,
-    }));
+    const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, CreateStreamFormResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -55,55 +35,12 @@ export function StreamNowForm() {
             return;
         }
 
-        await wallets[0].switchChain(84532);
-        const provider = await wallets[0].getEthereumProvider();
-
         const formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData.entries()) as CreateStreamFormRequest;
 
-        try {
-            if (!formState.creatorToken && formState.creatorTokenEnabled) {
-                if (!provider) throw new Error("No provider found");
-
-                const toastId = toast.loading("Creating creator token...");
-                setIsCreatingToken(true);
-
-                try {
-                    // const tokenAddress = await createCreatorToken(formState.username, provider);
-                    // toast.success("Creator token created!", { id: toastId });
-                    // setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
-                } catch (error) {
-                    toast.error("Failed to create token: " + ((error as Error).message || "Unknown error"), {
-                        id: toastId,
-                    });
-                    setIsCreatingToken(false);
-                    return;
-                } finally {
-                    setIsCreatingToken(false);
-                }
-            }
-
-            mutate(data);
-        } catch (error) {
-            toast.error("Unexpected error: " + ((error as Error).message || "Unknown error"));
-            setIsCreatingToken(false);
-        }
+        await handleCreatorTokenCreation();
+        mutate(data);
     }
-
-    useEffect(
-        function () {
-            if (!user) return;
-
-            setFormState({
-                creatorToken: user.backendUserData.user.creatorToken as Address,
-                creatorTokenEnabled: !!user.backendUserData.user.creatorToken,
-                date: new Date().toISOString(),
-                username: user.backendUserData.user.username,
-                walletAddress: user.wallet?.address as Address,
-            });
-        },
-        [user],
-    );
 
     return (
         <section className="space-y-5">

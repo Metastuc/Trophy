@@ -1,9 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { FormEvent, Fragment } from "react";
 import { toast } from "sonner";
-import { Address } from "viem";
-import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -11,17 +9,12 @@ import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
+import { useStreamForm } from "../hooks";
 import { DateTimePicker } from "./date-time-picker";
 
 export function ScheduleStreamForm() {
-    const { isAuthenticated, user } = useAuthenticationStore(
-        useShallow((state) => ({
-            isAuthenticated: state.isAuthenticated,
-            user: state.user,
-        })),
-    );
+    const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, CreateStreamFormResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -33,7 +26,7 @@ export function ScheduleStreamForm() {
         },
     );
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (!isAuthenticated) {
@@ -44,31 +37,9 @@ export function ScheduleStreamForm() {
         const formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData.entries()) as CreateStreamFormRequest;
 
+        await handleCreatorTokenCreation();
         mutate(data);
     }
-
-    const [formState, setFormState] = useState<CreateStreamFormState>(() => ({
-        creatorToken: undefined,
-        creatorTokenEnabled: false,
-        date: "",
-        username: "",
-        walletAddress: undefined,
-    }));
-
-    useEffect(
-        function () {
-            if (!user) return;
-
-            setFormState({
-                creatorToken: user.backendUserData.user.creatorToken as Address,
-                creatorTokenEnabled: !!user.backendUserData.user.creatorToken,
-                date: new Date().toISOString(),
-                username: user.backendUserData.user.username,
-                walletAddress: user.wallet?.address as Address,
-            });
-        },
-        [user],
-    );
 
     return (
         <section className="space-y-5">
@@ -117,9 +88,9 @@ export function ScheduleStreamForm() {
                     type="submit"
                     className={cn(
                         "bg-blue100 transition-all duration-150 ease-in-out",
-                        isPending ? "opacity-50" : "opacity-100",
+                        isPending || isCreatingToken ? "opacity-50" : "opacity-100",
                     )}
-                    disabled={isPending}
+                    disabled={isPending || isCreatingToken}
                 >
                     {isPending ? (
                         <Fragment>

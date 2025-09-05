@@ -38,6 +38,14 @@ declare global {
         date?: Date;
         time: string;
     }
+
+    interface UseStreamForm {
+        formState: CreateStreamFormState;
+        handleCreatorTokenCreation: () => Promise<Address | undefined>;
+        isAuthenticated: boolean;
+        isCreatingToken: boolean;
+        setFormState: React.Dispatch<React.SetStateAction<CreateStreamFormState>>;
+    }
 }
 
 export {};

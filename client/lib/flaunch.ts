@@ -1,7 +1,9 @@
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
 
-import { ENV_SCHEMA } from "./constants";
+import { makeRequest } from "#~/utils/axios.ts";
+
+import { CONTRACT_ADDRESSES } from "./constants";
 import { initSmartAccount } from "./smart-account";
 import { getWalletClient, publicClient } from "./viem";
 
@@ -53,7 +55,7 @@ export async function createCreatorToken({ provider, tokenName }: CreateCreatorT
                 feeCalculatorParams: "0x" as Address,
             },
             _treasuryManagerParams: {
-                manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+                manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
                 initializeData: "0x" as Address,
                 depositData: "0x" as Address,
             },
@@ -72,7 +74,7 @@ export async function createCreatorToken({ provider, tokenName }: CreateCreatorT
         };
 
         const { request, result } = await publicClient.simulateContract({
-            address: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+            address: CONTRACT_ADDRESSES.FLAUNCH,
             abi: FlaunchZapAbi,
             functionName: "flaunch",
             args: [params._flaunchParams],
@@ -80,6 +82,11 @@ export async function createCreatorToken({ provider, tokenName }: CreateCreatorT
         });
 
         await smartWalletClient.writeContract(request);
+        await makeRequest({
+            method: "POST",
+            url: `/save-creator-token`,
+            data: { creatorToken: result[0], smartAccount: smartWalletClient.account.address, tokenName },
+        });
         return { creatorToken: result[0], smartAccount: smartWalletClient.account.address };
     } catch (error) {
         throw new Error("Failed to create token: " + ((error as Error).message || "Unknown error"));
