@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
-import { APPLICATION_CONSTANTS } from "@/lib/constants";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
 import { createCreatorToken } from "@/lib/flaunch";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
 
@@ -39,7 +39,7 @@ export function useStreamForm(): UseStreamForm {
 
     async function handleCreatorTokenCreation() {
         if (!formState.creatorToken && formState.creatorTokenEnabled) {
-            await wallets[0].switchChain(APPLICATION_CONSTANTS.CURRENT_NETWORK.id);
+            await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
             const provider = await wallets[0].getEthereumProvider();
             if (!provider) throw new Error("No provider found");
 

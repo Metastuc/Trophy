@@ -3,7 +3,7 @@ import path from "path";
 import pino from "pino";
 import * as rfs from "rotating-file-stream";
 
-import { SERVER_ENV } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/constants.ts";
 
 import { getCwd } from "./get-cwd";
 

@@ -1,4 +1,4 @@
-import { SERVER_ENV } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/constants.ts";
 import { logger } from "#utils/logger.ts";
 
 import { transporter } from ".";

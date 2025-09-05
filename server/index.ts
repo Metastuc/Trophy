@@ -3,7 +3,7 @@ import express, { type Request, type Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import path from "path";
 
-import { SERVER_ENV } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/constants.ts";
 import { errorHandler } from "#middleware/error.ts";
 import { loggingMiddleware } from "#middleware/logging.ts";
 import { customResponse } from "#middleware/response.ts";

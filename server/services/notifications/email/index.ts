@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import hbs, { type NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
 import path from "path";
 
-import { SERVER_ENV } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/constants.ts";
 import { getCwd } from "#utils/get-cwd.ts";
 
 const { dirname } = getCwd(import.meta.url);

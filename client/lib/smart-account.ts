@@ -8,7 +8,7 @@ import {
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
 
-import { APPLICATION_CONSTANTS, CLIENT_ENV } from "./constants";
+import { CLIENT_CONSTANTS, CLIENT_ENV } from "./constants";
 
 export async function initSmartAccount(provider: EIP1193Provider) {
     try {
@@ -16,12 +16,12 @@ export async function initSmartAccount(provider: EIP1193Provider) {
             account: await toNexusAccount({
                 signer: provider,
                 chainConfiguration: {
-                    chain: APPLICATION_CONSTANTS.CURRENT_NETWORK,
+                    chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
                     transport: custom(provider),
                     version: getMEEVersion(DEFAULT_MEE_VERSION),
                 },
             }),
-            chain: APPLICATION_CONSTANTS.CURRENT_NETWORK,
+            chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
             paymaster: createBicoPaymasterClient({
                 paymasterUrl: CLIENT_ENV.PAYMASTER_URL,
             }),

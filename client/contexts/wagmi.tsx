@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 import { Chain } from "viem";
 import { http, WagmiProvider } from "wagmi";
 
-import { APPLICATION_CONSTANTS } from "@/lib/constants";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
 
-const currentChain = APPLICATION_CONSTANTS.CURRENT_NETWORK as Chain;
+const currentChain = CLIENT_CONSTANTS.CURRENT_NETWORK as Chain;
 
 const config = createConfig({
     chains: [currentChain],

@@ -14,3 +14,7 @@ export const AUTHENTICATE_USER_RESPONSE_SCHEMA = z.object({
         username: z.string(),
     }),
 });
+
+export const ONBOARD_USER_RESPONSE_SCHEMA = z.object({
+    isBasicProfileComplete: z.boolean(),
+});

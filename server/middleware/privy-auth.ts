@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
+import { SERVER_ENV } from "#config/constants.ts";
 import { privy } from "#config/privy.ts";
-import { SERVER_ENV } from "#config/settings.ts";
 
 import { HttpError } from "./error";
 

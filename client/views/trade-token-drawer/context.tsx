@@ -3,7 +3,7 @@ import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { Address } from "viem";
 
-import { APPLICATION_CONSTANTS } from "@/lib/constants";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
 
 import { TradeDrawerContext } from "./hooks";
 
@@ -29,7 +29,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                     throw new Error("No wallet connected");
                 }
 
-                await wallets[0].switchChain(APPLICATION_CONSTANTS.CURRENT_NETWORK.id);
+                await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
                 // const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
                 // await buyCreatorToken(

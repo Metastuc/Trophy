@@ -1,7 +1,7 @@
 import { AccessToken } from "@huddle01/server-sdk/auth";
 
+import { SERVER_ENV } from "#config/constants.ts";
 import { huddleAPI, huddleRecorder } from "#config/huddle.ts";
-import { SERVER_ENV } from "#config/settings.ts";
 import { HttpError } from "#middleware/error.ts";
 
 export async function createHuddleRoom(title: string) {

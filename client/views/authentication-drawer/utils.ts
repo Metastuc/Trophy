@@ -1,7 +1,7 @@
 import { isAddress } from "viem";
 import { z } from "zod";
 
-import { APPLICATION_CONSTANTS } from "@/lib/constants";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
 
 export const AuthenticationProfileSchema = z.object({
     bio: z.string().optional().nullable(),
@@ -16,11 +16,11 @@ export const AuthenticationProfileSchema = z.object({
         z
             .instanceof(File)
             .refine(
-                (file) => file.size < APPLICATION_CONSTANTS.FILE_UPLOAD_MAX_SIZE,
-                `File size must be less than ${Math.ceil(APPLICATION_CONSTANTS.FILE_UPLOAD_MAX_SIZE / 1000000)}MB`,
+                (file) => file.size < CLIENT_CONSTANTS.FILE_UPLOAD_MAX_SIZE,
+                `File size must be less than ${Math.ceil(CLIENT_CONSTANTS.FILE_UPLOAD_MAX_SIZE / 1000000)}MB`,
             )
             .refine(
-                (file) => [...APPLICATION_CONSTANTS.FILE_UPLOAD_SUPPORTED_TYPES].includes(file.type),
+                (file) => [...CLIENT_CONSTANTS.FILE_UPLOAD_SUPPORTED_TYPES].includes(file.type),
                 "Only JPEG and PNG formats are allowed",
             )
             .optional(),

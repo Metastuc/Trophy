@@ -55,7 +55,7 @@ export const API_ENDPOINTS = {
     },
 };
 
-export const APPLICATION_CONSTANTS = {
+export const CLIENT_CONSTANTS = {
     CURRENT_NETWORK: CLIENT_ENV.ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
