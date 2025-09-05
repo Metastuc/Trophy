@@ -1,5 +1,5 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 
 import { resetScroll, useShouldShowExitButton } from "@/lib/utils";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
