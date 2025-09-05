@@ -56,6 +56,8 @@ export function ScheduleStreamForm() {
                         type="text"
                         name="title"
                         id="title"
+                        required
+                        minLength={3}
                     />
                 </div>
 

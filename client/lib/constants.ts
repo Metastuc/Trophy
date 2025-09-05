@@ -7,6 +7,8 @@ export const queryClient = new QueryClient();
 export const ENV_SCHEMA: Record<string, string> = {
     BUNDLER_URL: import.meta.env.VITE_BUNDLER_URL as string,
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
+    HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
+    HUDDLE_PROJECT_KEY: import.meta.env.VITE_HUDDLE_PROJECT_KEY as string,
     PAYMASTER_URL: import.meta.env.VITE_PAYMASTER_URL as string,
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
@@ -40,9 +42,10 @@ export const API_ENDPOINTS = {
     },
 
     USER: {
+        CREATOR_TOKEN: "/user/save-creator-token",
         GET_USER: (userId: string) => `/user/profile/${userId}`,
-        UPDATE_USER: (userId: string) => `/user/${userId}`,
         ME: "/user/me",
+        UPDATE_USER: (userId: string) => `/user/${userId}`,
     },
 
     STREAMS: {

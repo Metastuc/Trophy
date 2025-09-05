@@ -3,7 +3,7 @@ import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "
 
 import { makeRequest } from "#~/utils/axios.ts";
 
-import { CONTRACT_ADDRESSES } from "./constants";
+import { API_ENDPOINTS, CONTRACT_ADDRESSES } from "./constants";
 import { initSmartAccount } from "./smart-account";
 import { getWalletClient, publicClient } from "./viem";
 
@@ -84,7 +84,7 @@ export async function createCreatorToken({ provider, tokenName }: CreateCreatorT
         await smartWalletClient.writeContract(request);
         await makeRequest({
             method: "POST",
-            url: `/save-creator-token`,
+            url: API_ENDPOINTS.USER.CREATOR_TOKEN,
             data: { creatorToken: result[0], smartAccount: smartWalletClient.account.address, tokenName },
         });
         return { creatorToken: result[0], smartAccount: smartWalletClient.account.address };

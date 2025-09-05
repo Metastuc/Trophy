@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 export function LoadingScreen({ isPending }: { isPending?: boolean }) {
     return (
         <section
-            className={cn("flex items-center justify-center", isPending ? "h-[calc(100dvh-10rem)]" : "h-dvh w-screen")}
+            className={cn(
+                "flex items-center justify-center",
+                isPending ? "h-[calc(100dvh-8.875rem)]" : "h-dvh w-screen",
+            )}
         >
             <Loader className="animate-spin" />
         </section>
