@@ -2,8 +2,10 @@ import { Loader } from "lucide-react";
 
 export function Loading() {
     return (
-        <i className="h-6">
-            <Loader className="animate-spin" />
-        </i>
+        <span className="flex items-center justify-center">
+            <i className="size-6">
+                <Loader className="animate-spin" />
+            </i>
+        </span>
     );
 }
