@@ -1,7 +1,8 @@
-import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
+import { createFlaunch, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
 
+import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
@@ -23,29 +24,29 @@ const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
 export const createCreatorToken = async (
     name: string,
     provider: EIP1193Provider,
-): Promise<{ creatorToken: Address; sa_address: Address }> => {
+) => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
-        const initialMCapInUSDCWei = parseUnits("2000", 6);
+        const initialMCapInUSDCWei = parseUnits("5000", 6);
         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
-        const fairLaunchInBps = BigInt(40 * 100);
+        const fairLaunchInBps = BigInt(60 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
 
-        // const { tokenUri } = await makeRequest<{ tokenUri: string }>({
-        //     method: "POST",
-        //     url: `/create-token-uri`,
-        //     data: { username: name },
-        // }).then((response) => response.data);
+        const { tokenUri } = await makeRequest<{ tokenUri: string }>({
+            method: "POST",
+            url: `/create-token-uri`,
+            data: { username: name },
+        }).then((response) => response.data);
 
         const flaunchParams = {
             _flaunchParams: {
                 name,
                 symbol: name.toUpperCase(),
-                tokenUri: "ipfs://bafkreiaaojq4u2nopmwilfia7b3rxts2itb7xlgf3qa4z4spqxntfp4gfe",
+                tokenUri,
                 initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
-                fairLaunchDuration: BigInt(30 * 60),
+                fairLaunchDuration: BigInt(20 * 60),
                 premineAmount: 0n,
                 creator: smartWalletClient.account.address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
@@ -55,6 +56,7 @@ export const createCreatorToken = async (
             },
             _treasuryManagerParams: {
                 manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+                permissions: "0x0000000000000000000000000000000000000000" as Address,
                 initializeData: "0x" as Address,
                 depositData: "0x" as Address,
             },
@@ -72,26 +74,30 @@ export const createCreatorToken = async (
             },
         };
 
-        const { request, result } = await publicClient.simulateContract({
-            address: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
-            abi: FlaunchZapAbi,
+        const tx = {
+            abi: FLAUNCH_ZAP_ABI,
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                // flaunchParams._whitelistParams,
-                // flaunchParams._airdropParams,
-                // flaunchParams._treasuryManagerParams,
+                "0x",
+                flaunchParams._whitelistParams,
+                flaunchParams._airdropParams,
+                flaunchParams._treasuryManagerParams,
             ],
-            account: smartWalletClient.account,
-        });
+            to: ENV_SCHEMA.FLAUNCH_CA,
+        };
 
-        await smartWalletClient.writeContract(request);
+        const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
+
+        const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
+        const creatorToken = receipt.logs[4].address;
+
         await makeRequest({
             method: "POST",
             url: `/save-creator-token`,
-            data: { creatorToken: result[0], sa_address: smartWalletClient.account.address, username: name },
+            data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
         });
-        return { creatorToken: result[0], sa_address: smartWalletClient.account.address };
+        return { creatorToken, sa_address: smartWalletClient.account.address };
     } catch (error: unknown) {
         console.error(error);
         throw new Error((error as Error).message);
