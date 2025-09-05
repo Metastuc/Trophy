@@ -1,13 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarPlus, Projector } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import { PageContentLayout } from "@/components/layout/page-content";
+import { Loading } from "@/components/ui/loading";
 import { useTabSwitcher } from "@/hooks/tab-switch";
 import { TabButton } from "@/views/stream/components/button";
-import { ScheduleStreamForm } from "@/views/stream/components/schedule-stream-form";
-import { StreamNowForm } from "@/views/stream/components/stream-now-form";
+
+const StreamNowForm = lazy(() =>
+    import("@/views/stream/components/stream-now-form").then((module) => ({
+        default: module.StreamNowForm,
+    })),
+);
+
+const ScheduleStreamForm = lazy(() =>
+    import("@/views/stream/components/schedule-stream-form").then((module) => ({
+        default: module.ScheduleStreamForm,
+    })),
+);
 
 export const Route = createFileRoute("/stream")({
     component: RouteComponent,
@@ -96,7 +107,9 @@ function RouteComponent() {
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.15 }}
                             >
-                                <StreamNowForm />
+                                <Suspense fallback={<Loading />}>
+                                    <StreamNowForm />
+                                </Suspense>
                             </motion.div>
                         ) : null}
 
@@ -108,7 +121,9 @@ function RouteComponent() {
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.15 }}
                             >
-                                <ScheduleStreamForm />
+                                <Suspense fallback={<Loading />}>
+                                    <ScheduleStreamForm />
+                                </Suspense>
                             </motion.div>
                         ) : null}
                     </AnimatePresence>

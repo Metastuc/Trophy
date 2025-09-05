@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
-import { FormEvent, Fragment } from "react";
+import { FormEvent, Fragment, useCallback } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,17 @@ export function ScheduleStreamForm() {
                 toast.success(response.data.message);
             },
         },
+    );
+
+    const handleDateChange = useCallback(
+        function (date: Date | undefined) {
+            const dateString = date?.toISOString() ?? "";
+            setFormState(function (state) {
+                if (state.date === dateString) return state;
+                return { ...state, date: dateString };
+            });
+        },
+        [setFormState],
     );
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -62,7 +73,7 @@ export function ScheduleStreamForm() {
                 </div>
 
                 <div>
-                    <DateTimePicker onChange={(date) => console.log(date)} />
+                    <DateTimePicker onChange={handleDateChange} />
                 </div>
 
                 {!formState.creatorToken ? (

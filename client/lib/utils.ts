@@ -35,3 +35,7 @@ export function tokenInputField(value: string): string {
 export function formatUSD(amount: string): string {
     return `$${(parseFloat(amount.toString()) * 1).toFixed(2)}`;
 }
+
+export function delay<T>(promise: Promise<T>, ms: number): Promise<T> {
+    return new Promise((resolve) => setTimeout(() => resolve(promise), ms));
+}

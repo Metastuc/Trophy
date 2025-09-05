@@ -1,6 +1,6 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { BellRing, House, TowerControl, TvMinimalPlay, User } from "lucide-react";
-import React, { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 
 import { resetScroll } from "@/lib/utils";
 
@@ -31,16 +31,12 @@ export function BottomNavigationBar() {
 }
 
 function NavigationButton({ href, icon, title }: NavigationButton) {
-    const navigate = useNavigate();
-    const routerState = useRouterState();
+    const linkIsActive = useRouterState().location.pathname === href;
 
-    const linkIsActive = routerState.location.pathname === href;
-
-    function handleClick(event: React.MouseEvent) {
+    function handleClick(event: MouseEvent) {
         if (linkIsActive) {
             event.preventDefault();
             resetScroll();
-            navigate({ to: href, replace: true });
         }
     }
 
@@ -49,9 +45,8 @@ function NavigationButton({ href, icon, title }: NavigationButton) {
             <Link
                 to={href}
                 onClick={handleClick}
-                className="flex flex-col items-center justify-center gap-0.5"
+                className="flex flex-col items-center justify-center gap-0.5 transition-colors duration-150 ease-in-out"
                 activeProps={{ className: "text-blue100" }}
-                resetScroll
             >
                 <i className="size-6">{icon}</i>
                 <span className="text-[.5rem] capitalize">{title}</span>
