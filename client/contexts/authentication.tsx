@@ -1,6 +1,5 @@
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef } from "react";
-import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 import { authenticateUser } from "@/api/authenticate-user";
@@ -51,52 +50,45 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
             lastFetchedUserIdRef.current = privyUser.id;
 
             (async function () {
-                try {
-                    setIsLoading(true);
+                const accessToken = await getAccessToken();
+                setToken(accessToken as string);
 
-                    const accessToken = await getAccessToken();
+                const response = await authenticateUser();
+                if (!response) {
+                    setIsNewUser(true);
 
-                    setToken(accessToken as string);
+                    setFormField("bio", privyUser.farcaster?.bio || null);
+                    setFormField("email", privyUser.email?.address || null);
+                    setFormField("fc", !!privyUser.farcaster);
+                    setFormField("privyId", privyUser.id || null);
+                    setFormField("profilePicture", privyUser.farcaster?.pfp || "default-pfp.svg");
+                    setFormField("username", privyUser.farcaster?.username || null);
+                    setFormField("walletAddress", privyUser.wallet?.address || null);
 
-                    const response = await authenticateUser();
-                    if (!response) {
-                        setIsNewUser(true);
+                    await sleep(3000);
+                    goToFinish();
+                    openDrawer();
 
-                        setFormField("bio", privyUser.farcaster?.bio || null);
-                        setFormField("email", privyUser.email?.address || null);
-                        setFormField("fc", !!privyUser.farcaster);
-                        setFormField("privyId", privyUser.id || null);
-                        setFormField("profilePicture", privyUser.farcaster?.pfp || "default-pfp.svg");
-                        setFormField("username", privyUser.farcaster?.username || null);
-                        setFormField("walletAddress", privyUser.wallet?.address || null);
-
-                        await sleep(3000);
-                        goToFinish();
-                        openDrawer();
-                        return;
-                    }
-
-                    const backendUserData = response.data;
-
-                    if (!backendUserData?.isBasicProfileComplete) {
-                        setIsNewUser(false);
-
-                        setFormField("bio", backendUserData?.user.bio || null);
-                        setFormField("email", backendUserData?.user.email || null);
-                        setFormField("profilePicture", backendUserData?.user.profilePicture || null);
-                        setFormField("username", backendUserData?.user.username || null);
-
-                        await sleep(3000);
-                        goToFinish();
-                        openDrawer();
-                    }
-
-                    setUser({ ...privyUser, backendUserData: response.data });
-                } catch (error) {
-                    toast.error((error as Error).message);
-                } finally {
                     setIsLoading(false);
+                    return;
                 }
+
+                const backendUserData = response.data;
+
+                if (!backendUserData?.isBasicProfileComplete) {
+                    setIsNewUser(false);
+
+                    setFormField("bio", backendUserData?.user.bio || null);
+                    setFormField("email", backendUserData?.user.email || null);
+                    setFormField("profilePicture", backendUserData?.user.profilePicture || null);
+                    setFormField("username", backendUserData?.user.username || null);
+
+                    await sleep(3000);
+                    goToFinish();
+                    openDrawer();
+                }
+
+                setUser({ ...privyUser, backendUserData: response.data });
             })();
         },
         [

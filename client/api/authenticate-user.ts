@@ -8,10 +8,7 @@ export async function authenticateUser(): Promise<AuthenticateUserResponse | voi
     })
         .then((response) => response.data)
         .catch(function (error) {
-            if (error.response.data) {
-                const { code, message } = error.response.data;
-                if (code === 404) return;
-                throw new Error(message);
-            }
+            if (error.status === 404) return;
+            throw new Error((error as Error).message);
         });
 }
