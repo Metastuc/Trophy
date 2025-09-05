@@ -1,5 +1,6 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { Loader } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -55,15 +56,42 @@ export function AuthenticationDrawer() {
             repositionInputs={false}
         >
             <Button className="bg-blue100 h-6 w-15 rounded-xs" onClick={handleAuthentication} disabled={isLoggingOut}>
-                {isLoggingOut ? (
-                    <i className="size-4">
-                        <Loader className="animate-spin" />
-                    </i>
-                ) : isAuthenticated ? (
-                    <span className="text-xs capitalize">log out</span>
-                ) : (
-                    <span className="text-xs capitalize">log in</span>
-                )}
+                <AnimatePresence mode="wait" initial={false}>
+                    {isLoggingOut ? (
+                        <motion.i
+                            key="loading"
+                            className="size-4"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <Loader className="animate-spin" />
+                        </motion.i>
+                    ) : isAuthenticated ? (
+                        <motion.span
+                            key="logout"
+                            className="text-xs capitalize"
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            log out
+                        </motion.span>
+                    ) : (
+                        <motion.span
+                            key="login"
+                            className="text-xs capitalize"
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            log in
+                        </motion.span>
+                    )}
+                </AnimatePresence>
             </Button>
 
             <DrawerContent>
