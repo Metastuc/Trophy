@@ -51,6 +51,18 @@ model Notification {
   @@map("notifications")
 }
 
+model TipTxs {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique @default("trophy")
+  USDC     Float  @default(0)
+  ETH      Float  @default(0)
+  FLAY     Float  @default(0)
+  BNKR     Float  @default(0)
+  ZORA     Float  @default(0)
+  DEGEN    Float  @default(0)
+  tx       Int    @default(1)
+}
+
 type TipEntry {
   token  String?
   amount String?
@@ -71,6 +83,7 @@ model User {
   epicStreams   Int          @default(0)
   totalFees     Float        @default(0)
   role          StreamerRole @default(viewer)
+  tokenImage    String?
   xUrl          String?
   ytUrl         String?
   followers     String[]

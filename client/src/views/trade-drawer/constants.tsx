@@ -3,7 +3,7 @@ export const TOKENS = [
         render: (
             <div className="flex items-center justify-center gap-1">
                 <aside className="relative">
-                    <img src="/etherum.svg" className="size-3.5" alt="etherum-logo" />
+                    <img src="/ethereum.svg" className="size-3.5" alt="ethereum-logo" />
                     <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-2" alt="base-logo" />
                 </aside>
                 <span>ETH</span>
@@ -11,7 +11,7 @@ export const TOKENS = [
         ),
         title: (
             <div className="flex items-center justify-center gap-1">
-                <img src="/etherum.svg" className="size-3.5" alt="etherum-logo" />
+                <img src="/ethereum.svg" className="size-3.5" alt="ethereum-logo" />
                 <span className="pt-0.5 text-xs">ETH</span>
             </div>
         ),
