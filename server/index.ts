@@ -13,6 +13,7 @@ import { logger } from "#utils/logger.ts";
 
 const app = express();
 const port = APP_SETTINGS.PORT;
+const url = APP_SETTINGS.ENVIRONMENT === "development" ? `http://localhost:${port}` : APP_SETTINGS.CLIENT_URL;
 const { dirname } = getCwd(import.meta.url);
 
 app.use(cors());
@@ -53,5 +54,5 @@ switch (APP_SETTINGS.ENVIRONMENT) {
 }
 
 app.listen(port, function () {
-    logger.info(`Server started on port ${port} \nAPI: http://localhost:${port}/api`);
+    logger.info(`Server started on port ${port} \nAPI: ${url}/api`);
 });
