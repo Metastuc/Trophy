@@ -12,7 +12,7 @@ model User {
     id            String  @id @default(auto()) @map("_id") @db.ObjectId
     privyId       String  @unique
     username      String  @unique
-    email         String? @unique
+    email         String @unique
     profileImage  String  @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
     walletAddress String  @unique
 
