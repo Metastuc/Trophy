@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
+import { network } from '@/lib/constants';
 import { createCreatorToken } from "@/lib/flaunch";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
@@ -32,7 +33,7 @@ export function StreamNowForm() {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
-        await wallets[0].switchChain(84532);
+        await wallets[0].switchChain(network.id);
         const provider = await wallets[0].getEthereumProvider();
 
         const formData = new FormData(event.target as HTMLFormElement);
