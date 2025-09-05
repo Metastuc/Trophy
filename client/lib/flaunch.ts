@@ -83,8 +83,8 @@ export async function createCreatorToken({ provider, tokenName }: CreateCreatorT
 
         await smartWalletClient.writeContract(request);
         await makeRequest({
-            method: "POST",
-            url: API_ENDPOINTS.USER.CREATOR_TOKEN,
+            method: "PATCH",
+            url: API_ENDPOINTS.USER.SAVE_TOKEN(tokenName),
             data: { creatorToken: result[0], smartAccount: smartWalletClient.account.address, tokenName },
         });
         return { creatorToken: result[0], smartAccount: smartWalletClient.account.address };

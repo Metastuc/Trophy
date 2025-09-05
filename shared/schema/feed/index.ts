@@ -5,7 +5,11 @@ export const publicFeedSelectFields = {
     roomId: true,
     streamer: {
         select: {
-            creatorToken: true,
+            creatorToken: {
+                select: {
+                    address: true,
+                },
+            },
             profileImage: true,
             username: true,
         },

@@ -16,7 +16,7 @@ import { DateTimePicker } from "./date-time-picker";
 export function ScheduleStreamForm() {
     const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
 
-    const { isPending, mutate } = useServer<CreateStreamFormRequest, CreateStreamFormResponse>(
+    const { isPending, mutate } = useServer<CreateStreamFormRequest, ScheduledStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
 
         {

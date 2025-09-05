@@ -19,12 +19,6 @@ declare global {
         [key: string]: unknown;
     }
 
-    interface CreateStreamFormResponse {
-        message: string;
-        roomId: string;
-        token: string;
-    }
-
     interface CreateStreamFormState {
         date: string;
         username: string;

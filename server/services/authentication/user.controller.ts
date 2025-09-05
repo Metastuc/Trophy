@@ -8,7 +8,7 @@ export async function user(request: Request, response: Response, next: NextFunct
     const privyId = request.privyUser?.userId;
 
     try {
-        const user = await prisma.user.findUnique({ where: { privyId } });
+        const user = await prisma.user.findUnique({ where: { privyId }, include: { creatorToken: true } });
 
         if (!user) {
             throw new HttpError({ message: "user not found", code: 404, data: { privyId } });
@@ -20,7 +20,7 @@ export async function user(request: Request, response: Response, next: NextFunct
                 isBasicProfileComplete: Boolean(user.email && user.profileImage && user.username),
                 user: {
                     bio: user.bio,
-                    creatorToken: user.creatorToken,
+                    creatorToken: user.creatorToken?.address,
                     email: user.email,
                     profilePicture: user.profileImage,
                     username: user.username,

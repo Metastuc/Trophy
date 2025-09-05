@@ -42,9 +42,9 @@ export const API_ENDPOINTS = {
     },
 
     USER: {
-        CREATOR_TOKEN: "/user/save-creator-token",
         GET_USER: (userId: string) => `/user/profile/${userId}`,
         ME: "/user/me",
+        SAVE_TOKEN: (userId: string) => `/user/${userId}/save-creator-token`,
         UPDATE_USER: (userId: string) => `/user/${userId}`,
     },
 

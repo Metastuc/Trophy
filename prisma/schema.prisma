@@ -18,12 +18,9 @@ model User {
 
     bio String @default("")
 
-    // creator token (unique per user)
-    creatorToken String? @unique
-
-    // creator token relationships
-    tokensOwned  Holding[] @relation("HolderHoldings") // tokens this user owns
-    tokenHolders Holding[] @relation("CreatorHoldings") // who owns this user's token
+    // One-to-one relation: a user can have one creator token
+    creatorToken   CreatorToken? @relation("UserCreatorToken", fields: [creatorTokenId], references: [id])
+    creatorTokenId String?       @unique @db.ObjectId
 
     // content
     streams       Stream[]       @relation("UserStreams")
@@ -51,9 +48,13 @@ model User {
     tipsReceived Tip[] @relation("ReceivedTips")
     tipsSent     Tip[] @relation("SentTips")
 
+    // tokens held
+    holdings Holding[] @relation("UserHoldings")
+
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
 
+    @@index([privyId, username, email, walletAddress])
     @@map("users")
 }
 
@@ -71,11 +72,12 @@ model Stream {
     streamer   User   @relation("UserStreams", fields: [streamerId], references: [id])
     streamerId String @db.ObjectId
 
-    createdAt DateTime? @default(now())
-    updatedAt DateTime? @updatedAt
+    createdAt      DateTime?     @default(now())
+    updatedAt      DateTime?     @updatedAt
+    CreatorToken   CreatorToken? @relation("TokenStreams", fields: [creatorTokenId], references: [id])
+    creatorTokenId String?       @db.ObjectId
 
-    @@index([status, scheduledAt])
-    @@index([title])
+    @@index([status, scheduledAt, title])
     @@map("streams")
 }
 
@@ -85,24 +87,45 @@ enum Status {
     ENDED
 }
 
+model CreatorToken {
+    id           String @id @default(auto()) @map("_id") @db.ObjectId
+    address      String @unique
+    symbol       String @unique
+    name         String @unique
+    smartAccount String @unique
+
+    // Creator (one-to-one with User)
+    creator   User?  @relation("UserCreatorToken")
+    creatorId String @db.ObjectId
+
+    // relations
+    holdings Holding[] @relation("TokenHoldings")
+    streams  Stream[]  @relation("TokenStreams")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([symbol, name])
+    @@map("tokens")
+}
+
 model Holding {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
     // holder (viewer/investor)
-    user   User   @relation("HolderHoldings", fields: [userId], references: [id])
+    user   User   @relation("UserHoldings", fields: [userId], references: [id])
     userId String @db.ObjectId
 
     // creator whose token is held
-    creator   User   @relation("CreatorHoldings", fields: [creatorId], references: [id])
-    creatorId String @db.ObjectId
+    creatorToken   CreatorToken @relation("TokenHoldings", fields: [creatorTokenId], references: [id])
+    creatorTokenId String       @db.ObjectId
 
-    amount    Float
+    amount Float
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@unique([userId, creatorId])
-    @@index([userId])
-    @@index([creatorId])
+    @@unique([userId, creatorTokenId])
     @@map("holdings")
 }
 
@@ -119,8 +142,10 @@ model Notification {
     // generic link to source event
     payloadId   String?
     payloadType String? // e.g. "TIP", "FOLLOW", "PURCHASE"
-    Tip         Tip[]
-    Follow      Follow[]
+
+    // relations
+    follow Follow? @relation("FollowNotification")
+    tip    Tip?    @relation("TipNotification")
 
     @@index([userId, createdAt])
     @@map("notifications")
@@ -149,9 +174,10 @@ model Tip {
     createdAt DateTime @default(now())
 
     // 1:1 notification
-    notification   Notification? @relation(fields: [notificationId], references: [id])
-    notificationId String?       @db.ObjectId
+    notification   Notification? @relation("TipNotification", fields: [notificationId], references: [id])
+    notificationId String?       @unique @db.ObjectId
 
+    @@unique([userId, tipperId, createdAt])
     @@map("tips")
 }
 
@@ -166,11 +192,9 @@ model Follow {
     createdAt DateTime @default(now())
 
     // 1:1 notification
-    notification   Notification? @relation(fields: [notificationId], references: [id])
-    notificationId String?       @db.ObjectId
+    notification   Notification? @relation("FollowNotification", fields: [notificationId], references: [id])
+    notificationId String?       @unique @db.ObjectId
 
     @@unique([followerId, followingId])
-    @@index([followerId])
-    @@index([followingId])
     @@map("follows")
 }

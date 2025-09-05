@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
-import { createHuddleRoom, generateHuddleAccessToken, startHuddleStream } from "./utils.huddle";
+import { createHuddleRoom, generateHuddleAccessToken, startHuddleStream } from "./huddle.utils";
 
 export async function createStream(request: Request, response: Response, next: NextFunction) {
     const { date, title, username } = request.body;
