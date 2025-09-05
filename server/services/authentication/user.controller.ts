@@ -14,7 +14,7 @@ export async function user(request: Request, response: Response, next: NextFunct
             throw new HttpError({ message: "user not found", code: 404, data: { privyId } });
         }
 
-        response.customResponse({
+        response.customResponse<AuthenticateUserData>({
             code: 200,
             data: AUTHENTICATE_USER_RESPONSE_SCHEMA.parse({
                 isBasicProfileComplete: Boolean(user.email && user.profileImage && user.username),

@@ -16,13 +16,14 @@ export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
 
-    const { isPending, mutate } = useServer<CreateStreamFormRequest, CreateStreamFormResponse>(
+    const { isPending, mutate } = useServer<CreateStreamFormRequest, CreatedStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
 
         {
             onSuccess(response) {
-                toast.success(response.data.message);
-                navigate({ to: `/live/$room`, params: { room: response.data.roomId } });
+                const { data, message } = response.data;
+                toast.success(message);
+                navigate({ to: `/live/$room`, params: { room: data.roomId } });
             },
         },
     );

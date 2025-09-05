@@ -5,5 +5,7 @@ export const Route = createFileRoute("/live/$room")({
 });
 
 function RouteComponent() {
-    return <div>Hello "/live/$room"!</div>;
+    const { room } = Route.useParams();
+
+    return <div>Hello `/live/${room}`!</div>;
 }

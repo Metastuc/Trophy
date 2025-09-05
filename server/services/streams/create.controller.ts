@@ -27,7 +27,11 @@ export async function createStream(request: Request, response: Response, next: N
             await prisma.stream.create({
                 data: { roomId, scheduledAt: date, status: "SCHEDULED", streamerId: user.id, title },
             });
-            response.customResponse({ code: 201, message: "stream scheduled succesfully", data: { roomId } });
+            response.customResponse<ScheduledStreamData>({
+                code: 201,
+                message: "stream scheduled succesfully",
+                data: { roomId },
+            });
             return;
         } else {
             await prisma.stream.create({
@@ -49,12 +53,11 @@ export async function createStream(request: Request, response: Response, next: N
                 await startHuddleStream({ roomId, rtmpUrls: urls, token: liveStreamAccessToken });
             }
 
-            response.customResponse({
+            response.customResponse<CreatedStreamData>({
                 code: 201,
                 message: "stream created successfully",
                 data: { roomId, token: roomAccessToken },
             });
-            return;
         }
     } catch (error) {
         next(error);
