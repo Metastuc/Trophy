@@ -71,11 +71,15 @@ function TipDrawerInner() {
         tokenAddress: TOKENS[0].address,
     }));
 
+    const [shouldReopenDrawer, setShouldReopenDrawer] = useState<boolean>(false);
+
     const { data: tokenPrice } = useTokenPrice(initialValues.tokenAddress);
     const { data: balanceData } = useBalance({ address });
 
     useEffect(
         function () {
+            if (wallets.length === 0) return;
+
             (async function () {
                 const wallet = wallets[0];
                 await wallet.switchChain(network.id);
@@ -139,6 +143,7 @@ function TipDrawerInner() {
         try {
             if (!privyWalletState.provider || !privyWalletState.address) {
                 toast.error("Wallet not connected");
+                setShouldReopenDrawer(true);
                 closeDrawer();
                 connectWallet();
                 return;
@@ -178,6 +183,8 @@ function TipDrawerInner() {
                     </Button>
                 ),
             });
+
+            closeDrawer();
         } catch (error) {
             console.error(error);
             toast.error("Failed to send tip.");
@@ -186,12 +193,13 @@ function TipDrawerInner() {
 
     useEffect(
         function () {
-            if (wallets.length > 0 && !isDrawerOpen) {
+            if (wallets.length > 0 && shouldReopenDrawer) {
                 let canceled = false;
 
                 (async () => {
                     await sleep(2000);
                     if (!canceled) openDrawer();
+                    setShouldReopenDrawer(false);
                 })();
 
                 return () => {
@@ -199,7 +207,7 @@ function TipDrawerInner() {
                 };
             }
         },
-        [isDrawerOpen, wallets.length, openDrawer],
+        [shouldReopenDrawer, wallets.length, openDrawer],
     );
 
     return (
