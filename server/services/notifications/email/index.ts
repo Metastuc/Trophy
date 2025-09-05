@@ -2,20 +2,17 @@ import nodemailer from "nodemailer";
 import hbs, { type NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
 import path from "path";
 
-import { APP_SETTINGS } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/settings.ts";
 import { getCwd } from "#utils/get-cwd.ts";
 
 const { dirname } = getCwd(import.meta.url);
 const templatesDir = path.join(dirname, "templates");
 
 export const transporter = nodemailer.createTransport({
-    host: APP_SETTINGS.EMAIL_HOST,
-    port: APP_SETTINGS.EMAIL_PORT,
+    auth: { user: SERVER_ENV.EMAIL_USER, pass: SERVER_ENV.EMAIL_PASSWORD },
+    host: SERVER_ENV.EMAIL_HOST,
+    port: SERVER_ENV.EMAIL_PORT,
     secure: true,
-    auth: {
-        user: APP_SETTINGS.EMAIL_USER,
-        pass: APP_SETTINGS.EMAIL_PASSWORD,
-    },
 });
 
 const options: NodemailerExpressHandlebarsOptions = {

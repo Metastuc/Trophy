@@ -3,14 +3,14 @@ import path from "path";
 import pino from "pino";
 import * as rfs from "rotating-file-stream";
 
-import { APP_SETTINGS } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/settings.ts";
 
 import { getCwd } from "./get-cwd";
 
 const { rootDir } = getCwd(import.meta.url);
 const logDir = path.join(rootDir, "logs");
 
-if (APP_SETTINGS.ENVIRONMENT !== "development") {
+if (SERVER_ENV.ENVIRONMENT !== "development") {
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
     }
@@ -25,13 +25,13 @@ const stream = rfs.createStream("app.log", {
 
 export const logger = pino(
     {
-        level: APP_SETTINGS.ENVIRONMENT === "development" ? "debug" : "info",
+        level: SERVER_ENV.ENVIRONMENT === "development" ? "debug" : "info",
 
         transport:
-            APP_SETTINGS.ENVIRONMENT === "development"
+            SERVER_ENV.ENVIRONMENT === "development"
                 ? { target: "pino-pretty", options: { colorize: true } }
                 : undefined,
     },
 
-    APP_SETTINGS.ENVIRONMENT === "development" ? process.stdout : stream,
+    SERVER_ENV.ENVIRONMENT === "development" ? process.stdout : stream,
 );

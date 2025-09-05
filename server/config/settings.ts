@@ -4,7 +4,7 @@ import { z } from "zod";
 
 dotenv.config({ path: ".env.local", quiet: true });
 
-export const APP_SETTINGS = z
+export const SERVER_ENV = z
     .object({
         CLIENT_URL: z.url(),
         EMAIL_HOST: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),

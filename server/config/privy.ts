@@ -1,5 +1,5 @@
 import { PrivyClient } from "@privy-io/server-auth";
 
-import { APP_SETTINGS } from "./settings";
+import { SERVER_ENV } from "./settings";
 
-export const privy = new PrivyClient(APP_SETTINGS.PRIVY_APP_ID, APP_SETTINGS.PRIVY_APP_SECRET);
+export const privy = new PrivyClient(SERVER_ENV.PRIVY_APP_ID, SERVER_ENV.PRIVY_APP_SECRET);

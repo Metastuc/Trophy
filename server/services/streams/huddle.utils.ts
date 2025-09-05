@@ -1,7 +1,7 @@
 import { AccessToken } from "@huddle01/server-sdk/auth";
 
 import { huddleAPI, huddleRecorder } from "#config/huddle.ts";
-import { APP_SETTINGS } from "#config/settings.ts";
+import { SERVER_ENV } from "#config/settings.ts";
 import { HttpError } from "#middleware/error.ts";
 
 export async function createHuddleRoom(title: string) {
@@ -44,7 +44,7 @@ export async function generateHuddleAccessToken({ roomId, role }: { roomId: stri
         };
     }
 
-    return await new AccessToken({ apiKey: APP_SETTINGS.HUDDLE_API_KEY, permissions, role, roomId }).toJwt();
+    return await new AccessToken({ apiKey: SERVER_ENV.HUDDLE_API_KEY, permissions, role, roomId }).toJwt();
 }
 
 export async function startHuddleStream({

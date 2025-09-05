@@ -8,7 +8,7 @@ import {
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { custom } from "viem";
 
-import { APPLICATION_CONSTANTS, ENV_SCHEMA } from "./constants";
+import { APPLICATION_CONSTANTS, CLIENT_ENV } from "./constants";
 
 export async function initSmartAccount(provider: EIP1193Provider) {
     try {
@@ -23,9 +23,9 @@ export async function initSmartAccount(provider: EIP1193Provider) {
             }),
             chain: APPLICATION_CONSTANTS.CURRENT_NETWORK,
             paymaster: createBicoPaymasterClient({
-                paymasterUrl: ENV_SCHEMA.PAYMASTER_URL,
+                paymasterUrl: CLIENT_ENV.PAYMASTER_URL,
             }),
-            bundlerUrl: ENV_SCHEMA.BUNDLER_URL,
+            bundlerUrl: CLIENT_ENV.BUNDLER_URL,
         });
     } catch (error) {
         throw new Error("Failed to initialize smart account: " + (error as Error).message);

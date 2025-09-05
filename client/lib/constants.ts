@@ -4,7 +4,7 @@ import { base, baseSepolia } from "viem/chains";
 
 export const queryClient = new QueryClient();
 
-export const ENV_SCHEMA: Record<string, string> = {
+export const CLIENT_ENV: Record<string, string> = {
     BUNDLER_URL: import.meta.env.VITE_BUNDLER_URL as string,
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
@@ -56,7 +56,7 @@ export const API_ENDPOINTS = {
 };
 
 export const APPLICATION_CONSTANTS = {
-    CURRENT_NETWORK: ENV_SCHEMA.ENVIRONMENT === "production" ? base : baseSepolia,
+    CURRENT_NETWORK: CLIENT_ENV.ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
     MAX_TIP_AMOUNT_USD: 2000,

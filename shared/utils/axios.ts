@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-import { ENV_SCHEMA } from "@/lib/constants";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { CLIENT_ENV } from "@/lib/constants";
 
 /**
  * Define supported HTTP methods.
@@ -32,7 +32,7 @@ type RequestOptions = {
 };
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: ENV_SCHEMA.SERVER_URL,
+    baseURL: CLIENT_ENV.SERVER_URL,
 });
 
 /**
