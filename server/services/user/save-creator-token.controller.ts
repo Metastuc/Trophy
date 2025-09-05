@@ -25,19 +25,19 @@ export async function saveCreatorToken(request: Request, response: Response, nex
             throw new HttpError({ message: "user not found", code: 404, data: { username } });
         }
 
-        const token = await prisma.creatorToken.create({
+        const creatorTokenExists = await prisma.creatorToken.findUnique({ where: { creatorId: user.id } });
+        if (creatorTokenExists) {
+            throw new HttpError({ message: "user already has a creator token", code: 403 });
+        }
+
+        await prisma.creatorToken.create({
             data: {
                 address: creatorToken,
                 creatorId: user.id,
                 name: tokenName,
-                smartAccount: smartAccount,
+                smartAccount,
                 symbol: tokenName.toUpperCase(),
             },
-        });
-
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { creatorTokenId: token.id },
         });
 
         response.customResponse({
