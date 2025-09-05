@@ -9,18 +9,15 @@ datasource db {
 }
 
 model User {
-    id            String  @id @default(auto()) @map("_id") @db.ObjectId
-    privyId       String  @unique
-    username      String  @unique
+    id            String @id @default(auto()) @map("_id") @db.ObjectId
+    privyId       String @unique
+    username      String @unique
     email         String @unique
-    profileImage  String  @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
-    walletAddress String  @unique
+    profileImage  String @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
+    walletAddress String @unique
 
     bio String @default("")
-
-    // One-to-one relation: a user can have one creator token
-    creatorToken   CreatorToken? @relation("UserCreatorToken", fields: [creatorTokenId], references: [id])
-    creatorTokenId String?       @unique @db.ObjectId
+    creatorToken   CreatorToken?
 
     // content
     streams       Stream[]       @relation("UserStreams")
@@ -95,8 +92,8 @@ model CreatorToken {
     smartAccount String @unique
 
     // Creator (one-to-one with User)
-    creator   User?  @relation("UserCreatorToken")
-    creatorId String @db.ObjectId
+    creator   User?  @relation(fields: [creatorId], references: [id])
+    creatorId String @unique @db.ObjectId
 
     // relations
     holdings Holding[] @relation("TokenHoldings")
