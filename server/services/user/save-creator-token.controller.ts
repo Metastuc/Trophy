@@ -4,8 +4,10 @@ import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
 export async function saveCreatorToken(request: Request, response: Response, next: NextFunction) {
-    const { username } = request.params;
+    const { userId: username } = request.params;
     const { creatorToken, smartAccount, tokenName } = request.body;
+
+    console.log(username);
 
     if (!smartAccount) {
         throw new HttpError({ message: "smart account address is missing", code: 422 });
