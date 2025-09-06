@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     createMeeClient,
     getMEEVersion,
@@ -34,6 +33,9 @@ type TipToken = Omit<TipUser, "token"> & {
 
 export async function tipETH({ amount, provider, recipientAddress, senderAddress }: TipETH) {
     const walletClient = getWalletClient(provider, senderAddress);
+    if (recipientAddress) {
+        console.log("ok")
+    }
 
     return await walletClient.sendTransaction({
         account: walletClient.account as Account,
