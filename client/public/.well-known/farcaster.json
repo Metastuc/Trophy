@@ -1,25 +1,22 @@
 {
-    "accountAssociation": {
-        "header": "eyJmaWQiOjY1NDQxOCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDIxODIyQzFERjg0MjI0MDg1MWIzYzdCOTk1ODI2Y2M5QTdkNjM1NzQifQ",
-        "payload": "eyJkb21haW4iOiJ0cm9waHl0di5jbyJ9",
-        "signature": "MHgyZTk1ZGM1NmE5ZjExYjdkZGJjZDg2MjZmOTNmNzJhNjBmOGJiMmIzNjhiZjNiNWYzMWQxZDhjNDJkZjZiMTE1MzVjMjEzYzJjOWVlOWVmMDIzMTQ1OTU2YjI3NWI3ZDQ3YjFjNWJlMDU3Mzc0YWM1NTRiMzAwNzg5YjM0MmNmYjFj"
-    },
-    "baseBuilder": {
-        "allowedAddresses": ["0xaCe3857224705f3b4D0026AF226AAE42Ce94A7A8"]
+    "accountAssociation":{
+        "header": "eyJmaWQiOjc3NjkyNCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEFDNGFEMTNEMWU5ODE2QWZlZEU1MDI3MkM2OEVBMGM5RDBFMUY4YTIifQ",
+        "payload": "eyJkb21haW4iOiJ2Njc2Ymd1eHEyazA4NXQ0b3oxMThlMncwb3o0N3BjMi50cm9waHl0di5jbyJ9",
+        "signature": "MHgxOWMzYTA4ZTM2NTUxNTQ3YTNlMjIyNjM1NWVmOTEwNDRmYTA5MzBhODc4N2E3NzgyYjE2NmQ2ZWI1NWQzZjJmMzBiNmIxYTVjNWQ3ZTA4YzA4NzZiMjUyZWYwNmM1ZmRkNDc1OTI2NzE3ZWVjZjEwM2Q0YTJlMTg1ZWZkNDdhZDFi"
     },
     "frame": {
         "version": "1",
-        "name": "Trophy",
-        "iconUrl": "https://trophytv.co/tLogo.jpg",
-        "homeUrl": "https://trophytv.co",
-        "splashImageUrl": "https://trophytv.co/splash.jpg",
+        "name": "Trophy-test",
+        "iconUrl": "https://v676bguxq2k085t4oz118e2w0oz47pc2.trophytv.co/tLogo.jpg",
+        "homeUrl": "https://v676bguxq2k085t4oz118e2w0oz47pc2.trophytv.co",
+        "splashImageUrl": "https://v676bguxq2k085t4oz118e2w0oz47pc2.trophytv.co/splash.jpg",
         "subtitle": "Livestream Like A Boss",
         "description": "Creator first livestream app on base. Go live, own your stream and earn.",
         "primaryCategory": "social",
         "tags": ["content", "stream", "baseapp", "base", "livestream"],
-        "ogTitle": "Trophy",
+        "ogTitle": "Trophy-test",
         "ogDescription": "Stream on your terms with trophy",
-        "ogImageUrl": "https://trophytv.co/splash.jpg",
+        "ogImageUrl": "https://v676bguxq2k085t4oz118e2w0oz47pc2.trophytv.co/splash.jpg",
         "tagline": "Livestream Like A Boss"
     }
 }
