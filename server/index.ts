@@ -16,6 +16,10 @@ const port = SERVER_ENV.PORT;
 const url = SERVER_ENV.ENVIRONMENT === "development" ? `http://localhost:${port}` : SERVER_ENV.CLIENT_URL;
 const { dirname } = getCwd(import.meta.url);
 
+app.get("/health", (_: Request, response: Response) => {
+    response.status(200).json({ status: "ok" });
+});
+
 app.use(cors({ origin: SERVER_ENV.CLIENT_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
