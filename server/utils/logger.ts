@@ -55,7 +55,9 @@ interface LogInput {
 }
 
 function format({ module, tag, id = rid(), msg, data }: LogInput): string {
-    return `[${module ?? "app"}][${tag ?? "log"}][${id}] ${msg ?? ""}` + (data !== undefined ? " :: " + safe(data) : "");
+    return (
+        `[${module ?? "app"}][${tag ?? "log"}][${id}] ${msg ?? ""}` + (data !== undefined ? " :: " + safe(data) : "")
+    );
 }
 
 function baseLog(input: LogInput): void {

@@ -1,5 +1,3 @@
-import { HttpError } from "#middleware/error.ts";
-
 type TimeUnit = "seconds" | "minutes" | "hours" | "days" | "years";
 type OutputUnit = "seconds" | "milliseconds";
 
@@ -29,7 +27,7 @@ export function toTime({ unit, value, output = "seconds" }: ToTime): number {
             seconds = value * 60 * 60 * 24 * 365;
             break;
         default:
-            throw new HttpError({ message: "invalid unit", code: 400 });
+            throw new Error("invalid unit");
     }
 
     return output === "milliseconds" ? seconds * 1000 : seconds;

@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import isValidHost from "is-valid-host";
 import { z } from "zod";
 
+import { toTime } from "#utils/time.ts";
+
 dotenv.config({ path: ".env.local", quiet: true });
 
 export const SERVER_ENV = z
@@ -33,7 +35,10 @@ export const SERVER_CONSTANTS = {
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
 
     REDIS_KEYS: {
-        USER_PROFILE: ({ id, isUser }: { id: string; isUser: boolean }) =>
-            isUser ? `user:public:${id}` : `user:private:${id}`,
+        USER_PROFILE: {
+            KEY: ({ id, isUser }: { id: string; isUser: boolean }) =>
+                isUser ? `user:public:${id}` : `user:private:${id}`,
+            TTL: toTime({ unit: "hours", value: 6 }),
+        },
     },
 };
