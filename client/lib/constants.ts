@@ -2,6 +2,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
+import { toTime } from "#~/utils/time.ts";
+
 export const queryClient = new QueryClient();
 
 export const CLIENT_ENV: Record<string, string> = {
@@ -66,6 +68,13 @@ export const CLIENT_CONSTANTS = {
     MAX_TIP_AMOUNT_USD: 10000,
     TOTAL_CO_HOSTS_ALLOWED: 4,
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
+
+    QUERY_KEYS: {
+        PRICE: {
+            KEY: "moralis-token-price",
+            TTL: toTime({ unit: "hours", value: 1, output: "milliseconds" }),
+        },
+    },
 
     SUPPORTED_TOKENS: {
         BANKR: CONTRACT_ADDRESSES.BANKR,

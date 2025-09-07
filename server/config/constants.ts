@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import isValidHost from "is-valid-host";
-import moralis from "moralis";
 import { z } from "zod";
 
 import { toTime } from "#~/utils/time.ts";
@@ -48,9 +47,4 @@ export const SERVER_CONSTANTS = {
             TTL: toTime({ unit: "minutes", value: 5 }),
         },
     },
-
-    CURRENT_MORALIS_CHAIN:
-        SERVER_ENV.ENVIRONMENT !== "production"
-            ? moralis.EvmUtils.EvmChain.BASE
-            : moralis.EvmUtils.EvmChain.BASE_SEPOLIA,
 };

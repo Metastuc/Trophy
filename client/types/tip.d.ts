@@ -8,6 +8,17 @@ declare global {
         recipientAddress: Address;
         senderAddress: Address;
     }
+
+    interface TipERC extends TipETH {
+        token: TokenAddresses;
+        senderAddress: Address;
+        wallet: string;
+    }
+
+    type TipToken = Omit<TipERC, "token"> & {
+        contractAddress: Address;
+        isUSDC?: boolean;
+    };
 }
 
 export {};

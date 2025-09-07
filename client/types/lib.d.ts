@@ -1,7 +1,11 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address } from "viem";
 
+import { CONTRACT_ADDRESSES } from "@/lib/constants";
+
 declare global {
+    type TokenAddresses = keyof typeof CONTRACT_ADDRESSES;
+
     interface GetWalletClient {
         address: Address;
         provider: EIP1193Provider;

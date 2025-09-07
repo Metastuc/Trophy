@@ -28,7 +28,7 @@ export async function getTokenPrice(request: Request, response: Response, next: 
 
         const result = await moralis.EvmApi.token
             .getTokenPrice({
-                chain: SERVER_CONSTANTS.CURRENT_MORALIS_CHAIN,
+                chain: moralis.EvmUtils.EvmChain.BASE,
                 address: address as string,
             })
             .then((response) => response.toJSON());

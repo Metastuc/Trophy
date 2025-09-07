@@ -6,7 +6,7 @@ import { useChainId, useSwitchChain } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 import { CLIENT_CONSTANTS } from "@/lib/constants";
-import { tipEther } from "@/lib/tip";
+import { tipERC20, tipEther } from "@/lib/tip";
 import { log } from "#~/utils/logger.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
@@ -68,30 +68,47 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                 data: { chainId, network: CLIENT_CONSTANTS.CURRENT_NETWORK.id },
             });
 
-            let hash = undefined as string | undefined;
+            const promise = (async function () {
+                let hash = undefined as string | undefined;
 
-            if (tipDrawerState.token === "ETH") {
-                hash = await tipEther({
-                    amount: tipDrawerState.amountInToken,
-                    provider: userWalletState.provider,
-                    recipientAddress: streamer?.walletAddress as Address,
-                    senderAddress: userWalletState.address,
-                });
-            }
+                if (tipDrawerState.token === "ETH") {
+                    hash = await tipEther({
+                        amount: tipDrawerState.amountInToken,
+                        provider: userWalletState.provider,
+                        recipientAddress: streamer?.walletAddress as Address,
+                        senderAddress: userWalletState.address as Address,
+                    });
+                } else {
+                    hash = await tipERC20({
+                        amount: tipDrawerState.amountInToken,
+                        provider: userWalletState.provider,
+                        recipientAddress: streamer?.walletAddress as Address,
+                        senderAddress: userWalletState.address as Address,
+                        token: tipDrawerState.token,
+                        wallet: userWalletState.walletType as string,
+                    });
+                }
 
-            toast.success("Tip sent successfully!", {
-                duration: 5000,
-                description: (
-                    <Button className="text-blue-500 underline" variant="link">
-                        <a
-                            href={`${CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            View on BaseScan
-                        </a>
-                    </Button>
+                return hash;
+            })();
+
+            toast.promise(promise, {
+                loading: "Sending tip...",
+                success: (hash) => (
+                    <div>
+                        <p>Tip sent successfully!</p>
+                        <Button className="text-blue-500 underline" variant="link">
+                            <a
+                                href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View on BaseScan
+                            </a>
+                        </Button>
+                    </div>
                 ),
+                error: "Failed to send tip.",
             });
         },
         [
@@ -104,6 +121,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             tipDrawerState.token,
             userWalletState.address,
             userWalletState.provider,
+            userWalletState.walletType,
         ],
     );
 
