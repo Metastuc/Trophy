@@ -145,7 +145,6 @@ export function CompleteProfile() {
             return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { isNewUser: _, ...data } = request.data;
         mutate(data);
     }

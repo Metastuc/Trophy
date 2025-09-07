@@ -1,7 +1,7 @@
 import { BadgeDollarSign, Receipt } from "lucide-react";
 
 import { useUserProfileContext } from "../hooks";
-// import { EditProfile } from "./edit";
+import { EditProfile } from "./edit";
 
 export function About() {
     const { isCurrentUser, profileData } = useUserProfileContext();
@@ -43,7 +43,7 @@ export function About() {
                         <b className="text-blue100 font-normal">{profileData.followerCount}</b> Followers
                     </span>
 
-                    {/* {isCurrentUser ? <EditProfile /> : null} */}
+                    {isCurrentUser ? <EditProfile /> : null}
                 </div>
 
                 {!isCurrentUser ? (
