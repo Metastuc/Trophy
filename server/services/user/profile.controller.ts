@@ -1,14 +1,33 @@
 import { NextFunction, Request, Response } from "express";
 
 import { UserProfile } from "#~/schema/user/index.ts";
+import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { prisma } from "#config/prisma.ts";
+import { redis } from "#config/redis.ts";
 import { HttpError } from "#middleware/error.ts";
+import { toTime } from "#utils/time.ts";
 
 export async function profile(request: Request, response: Response, next: NextFunction) {
     let user = null as null | UserProfile;
 
     const privyId = request.privyUser?.userId;
     const { userId: username } = request.params;
+
+    const cacheKey = SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE({
+        id: username ?? (privyId as string),
+        isUser: Boolean(username),
+    });
+
+    const cachedUserProfile = await redis.get(cacheKey);
+
+    if (cachedUserProfile) {
+        response.customResponse<UserProfileData>({
+            code: 200,
+            message: "user profile fetched successfully",
+            data: JSON.parse(cachedUserProfile),
+        });
+        return;
+    }
 
     try {
         if (username) {
@@ -47,7 +66,7 @@ export async function profile(request: Request, response: Response, next: NextFu
 
         const isOwnerRequestingProfile = privyId && privyId === user.privyId;
 
-        const profileData = {
+        const profileData: UserProfileData = {
             bio: user.bio,
             creatorToken: user.creatorToken?.address,
             followerCount: user.followerCount,
@@ -60,6 +79,7 @@ export async function profile(request: Request, response: Response, next: NextFu
             ...(isOwnerRequestingProfile && { email: user.email, xUrl: user.xUrl, ytUrl: user.ytUrl }),
         };
 
+        await redis.set(cacheKey, JSON.stringify(profileData), "EX", toTime({ unit: "hours", value: 6 }));
         response.customResponse<UserProfileData>({
             code: 200,
             message: "user profile fetched successfully",

@@ -22,9 +22,18 @@ export const SERVER_ENV = z
         PRIVY_APP_ID: z.string(),
         PRIVY_APP_SECRET: z.string(),
         PRIVY_KEY: z.string().transform((value) => value.replace(/\\n/g, "\n")),
+        REDIS_PASSWORD: z.string(),
+        REDIS_PORT: z.coerce.number().int().positive(),
+        REDIS_URI: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
+        REDIS_USERNAME: z.string(),
     })
     .parse(process.env);
 
 export const SERVER_CONSTANTS = {
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
+
+    REDIS_KEYS: {
+        USER_PROFILE: ({ id, isUser }: { id: string; isUser: boolean }) =>
+            isUser ? `user:public:${id}` : `user:private:${id}`,
+    },
 };
