@@ -3,17 +3,20 @@ import { Address } from "viem";
 declare global {
     interface TipDrawerContextValues extends Partial<TipDrawerProps> {
         isDrawerOpen: boolean;
+        tipDrawerState: TipDrawerState;
     }
 
     interface TipDrawerContextActions {
         closeDrawer: () => void;
         openDrawer: () => void;
+        setTipDrawerState: React.Dispatch<React.SetStateAction<TipDrawerState>>;
+        handleSendTip: () => Promise<void>;
     }
 
     type TipDrawerContextValue = TipDrawerContextValues & TipDrawerContextActions;
 
     interface TipDrawerProps {
-        streamer?: { walletAddress: string; username: string; profilePicture: string };
+        streamer?: { walletAddress: Address; username: string; profilePicture: string };
         trigger?: React.ReactNode;
     }
 
@@ -24,6 +27,12 @@ declare global {
         senderAvailableBalanceInUsd: string;
         token: string;
         tokenAddress: Address;
+    }
+
+    interface TipDrawerWalletState {
+        provider?: EIP1193Provider;
+        address?: Address;
+        walletType?: string;
     }
 }
 

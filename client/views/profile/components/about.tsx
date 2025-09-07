@@ -1,4 +1,5 @@
 import { BadgeDollarSign, Receipt } from "lucide-react";
+import { Address } from "viem";
 
 import { TipDrawer } from "@/views/tip-token-drawer";
 
@@ -35,7 +36,7 @@ export function About() {
                             streamer={{
                                 profilePicture: profileData.profilePicture,
                                 username: profileData.username,
-                                walletAddress: profileData.walletAddress,
+                                walletAddress: profileData.walletAddress as Address,
                             }}
                         />
                     ) : null}
