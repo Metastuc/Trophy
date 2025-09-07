@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 import isValidHost from "is-valid-host";
+import moralis from "moralis";
 import { z } from "zod";
 
-import { toTime } from "#utils/time.ts";
+import { toTime } from "#~/utils/time.ts";
 
 dotenv.config({ path: ".env.local", quiet: true });
 
@@ -20,6 +21,7 @@ export const SERVER_ENV = z
         ENVIRONMENT: z.enum(["development", "production", "staging"]),
         HUDDLE_API_KEY: z.string(),
         HUDDLE_PROJECT_ID: z.string(),
+        MORALIS_API_KEY: z.string(),
         PORT: z.coerce.number().int().positive(),
         PRIVY_APP_ID: z.string(),
         PRIVY_APP_SECRET: z.string(),
@@ -41,4 +43,9 @@ export const SERVER_CONSTANTS = {
             TTL: toTime({ unit: "hours", value: 6 }),
         },
     },
+
+    CURRENT_MORALIS_CHAIN:
+        SERVER_ENV.ENVIRONMENT !== "production"
+            ? moralis.EvmUtils.EvmChain.BASE
+            : moralis.EvmUtils.EvmChain.BASE_SEPOLIA,
 };

@@ -1,6 +1,6 @@
 import Redis from "ioredis";
 
-import { log } from "#utils/logger.ts";
+import { log } from "#~/utils/logger.ts";
 
 import { SERVER_ENV } from "./constants";
 

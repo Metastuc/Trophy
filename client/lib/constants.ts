@@ -53,6 +53,10 @@ export const API_ENDPOINTS = {
         JOIN_STREAM: (streamId: string) => `/streams/${streamId}/join`,
         LEAVE_STREAM: "/streams/leave",
     },
+
+    UTIL: {
+        GET_TOKEN_PRICE: (address: string) => `/get-token-price?address=${address}`,
+    },
 };
 
 export const CLIENT_CONSTANTS = {

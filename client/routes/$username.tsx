@@ -10,6 +10,7 @@ import { About } from "@/views/profile/components/about";
 import { Streams } from "@/views/profile/components/streams";
 import { TabHeader } from "@/views/profile/components/tab";
 import { UserProfileContextProvider } from "@/views/profile/context";
+import { toTime } from "#~/utils/time.ts";
 
 export const Route = createFileRoute("/$username")({
     beforeLoad({ context, params }) {
@@ -27,6 +28,8 @@ function RouteComponent() {
     const { data, error, isPending } = useQuery({
         queryKey: ["get-user-profile"],
         queryFn: async () => await getUserProfile({ username }),
+        refetchOnWindowFocus: false,
+        staleTime: toTime({ unit: "minutes", value: 5, output: "milliseconds" }),
     });
 
     if (error) return <div>{error.message}</div>;

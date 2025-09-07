@@ -1,5 +1,7 @@
 import { BadgeDollarSign, Receipt } from "lucide-react";
 
+import { TipDrawer } from "@/views/tip-token-drawer";
+
 import { useUserProfileContext } from "../hooks";
 import { EditProfile } from "./edit";
 
@@ -21,12 +23,21 @@ export function About() {
                     <h3 className="font-medium">@{profileData.username}</h3>
 
                     {!isCurrentUser ? (
-                        <button className="bg-blue100 flex items-center justify-center gap-0.5 rounded px-3 text-white">
-                            <i className="size-3">
-                                <BadgeDollarSign />
-                            </i>
-                            <span className="text-xs">tip</span>
-                        </button>
+                        <TipDrawer
+                            trigger={
+                                <button className="bg-blue100 flex items-center justify-center gap-0.5 rounded px-3 text-white">
+                                    <i className="size-3">
+                                        <BadgeDollarSign />
+                                    </i>
+                                    <span className="text-xs">tip</span>
+                                </button>
+                            }
+                            streamer={{
+                                profilePicture: profileData.profilePicture,
+                                username: profileData.username,
+                                walletAddress: profileData.walletAddress,
+                            }}
+                        />
                     ) : null}
                 </div>
 

@@ -33,7 +33,11 @@ export function tokenInputField(value: string): string {
 }
 
 export function formatUSD(amount: string): string {
-    return `$${(parseFloat(amount.toString()) * 1).toFixed(2)}`;
+    return `$${(parseFloat(amount.toString()) * 1).toFixed(2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function formatToken(amount: string): string {
+    return `${(parseFloat(amount.toString()) * 1).toFixed(2)}`;
 }
 
 export function delay<T>(promise: Promise<T>, ms: number): Promise<T> {

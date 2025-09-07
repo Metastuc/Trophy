@@ -12,8 +12,8 @@ declare global {
     type UserProfileData = {
         username: string;
         bio: string | null;
-        profilePicture: string | null;
-        walletAddress: string | null;
+        profilePicture: string;
+        walletAddress: string;
         followerCount: number;
         followingCount: number;
         creatorToken?: string | null;
