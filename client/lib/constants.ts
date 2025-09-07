@@ -72,7 +72,6 @@ export const CLIENT_CONSTANTS = {
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
 };
 
-
 export const TOKEN_CONFIG: Record<keyof typeof CLIENT_CONSTANTS.SUPPORTED_TOKENS, TokenDropdownConfig> = {
     ETH: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.ETH,
