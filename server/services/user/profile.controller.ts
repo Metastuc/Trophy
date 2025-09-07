@@ -18,12 +18,12 @@ export async function profile(request: Request, response: Response, next: NextFu
     });
 
     try {
-        const cachedUserProfile = await redis.get(cacheKey);
-        if (cachedUserProfile) {
+        const cached = await redis.get(cacheKey);
+        if (cached) {
             response.customResponse<UserProfileData>({
                 code: 200,
-                message: "user profile fetched successfully",
-                data: JSON.parse(cachedUserProfile),
+                message: "user profile fetched from cache",
+                data: JSON.parse(cached),
             });
             return;
         }

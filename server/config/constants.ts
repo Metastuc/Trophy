@@ -42,6 +42,11 @@ export const SERVER_CONSTANTS = {
                 isUser ? `user:public:${id}` : `user:private:${id}`,
             TTL: toTime({ unit: "hours", value: 6 }),
         },
+
+        TOKEN_PRICE: {
+            KEY: (id: string) => `token:price:${id}`,
+            TTL: toTime({ unit: "minutes", value: 5 }),
+        },
     },
 
     CURRENT_MORALIS_CHAIN:
