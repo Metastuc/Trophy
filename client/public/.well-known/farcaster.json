@@ -17,6 +17,7 @@
         "ogTitle": "Trophy-test",
         "ogDescription": "Stream on your terms with trophy",
         "ogImageUrl": "https://v676bguxq2k085t4oz118e2w0oz47pc2.trophytv.co/splash.jpg",
-        "tagline": "Livestream Like A Boss"
+        "tagline": "Livestream Like A Boss",
+        "noindex": true
     }
 }
