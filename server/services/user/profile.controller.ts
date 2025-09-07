@@ -8,7 +8,7 @@ export async function profile(request: Request, response: Response, next: NextFu
     let user = null as null | UserProfile;
 
     const privyId = request.privyUser?.userId;
-    const { userId: username } = request.body;
+    const { userId: username } = request.params;
 
     try {
         if (username) {
