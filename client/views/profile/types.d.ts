@@ -5,7 +5,7 @@ type StreamSelection = "scheduled" | "recorded";
 type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
 
 interface UserProfileContextValue {
-    isCurrentUser: true;
+    isCurrentUser: boolean;
     isPending: boolean;
     profileData: UserProfileResponse["data"];
 }

@@ -5,6 +5,7 @@ import { ReactNode, useState } from "react";
 
 import { Dropdown } from "@/components/ui/dropdown";
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
+import { cn } from "@/lib/utils";
 
 import { useUserProfileContext } from "../hooks";
 
@@ -22,7 +23,7 @@ export function Streams() {
             break;
     }
 
-    return <div className="py-4">{content}</div>;
+    return <div className={cn("py-4", !isCurrentUser && "space-y-3.5")}>{content}</div>;
 }
 
 function UserStreams() {

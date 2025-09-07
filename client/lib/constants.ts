@@ -42,7 +42,7 @@ export const API_ENDPOINTS = {
     },
 
     USER: {
-        GET_USER: (userId: string) => `/user/profile/${userId}`,
+        GET_USER: (userId: string) => `/user/${userId}/profile`,
         ME: "/user/me",
         SAVE_TOKEN: (userId: string) => `/user/${userId}/save-creator-token`,
         UPDATE_USER: (userId: string) => `/user/${userId}`,
