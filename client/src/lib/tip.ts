@@ -22,7 +22,6 @@ interface TipETH {
 
 interface TipUser extends TipETH {
     token: TokenAddresses;
-    senderAddress: Address;
     wallet: string;
 }
 
@@ -33,14 +32,11 @@ type TipToken = Omit<TipUser, "token"> & {
 
 export async function tipETH({ amount, provider, recipientAddress, senderAddress }: TipETH) {
     const walletClient = getWalletClient(provider, senderAddress);
-    if (recipientAddress) {
-        console.log("ok")
-    }
 
     return await walletClient.sendTransaction({
         account: walletClient.account as Account,
         chain: network,
-        to: "0xAC4aD13D1e9816AfedE50272C68EA0c9D0E1F8a2",
+        to: recipientAddress,
         value: parseEther(amount),
     });
 }

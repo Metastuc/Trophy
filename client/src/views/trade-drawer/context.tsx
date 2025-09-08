@@ -35,7 +35,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 console.log(drawerData);
                 await buyCreatorToken(
                     streamer?.tokenAddress as Address,
-                    drawerData.buyAmount,
+                    drawerData.sellAmount,
                     provider,
                     wallets[0].address as Address,
                 );
