@@ -33,7 +33,7 @@ router
 
   .post("/get-user", getUser)
   .patch("/update-profile", authenticate, uploadImg.single("profilePicture"), updateProfile)
-  .get("/fetch-user", authenticate, authUser)
+  .post("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
   .post("/update-pfp", authenticate, uploadImg.single("pfp"), updatePfp)
   .post("/save-thumbnail", authenticate, uploadImg.single("thumbnail"), saveStreamThumbnail)

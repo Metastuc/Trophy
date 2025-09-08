@@ -7,7 +7,7 @@ interface iFetchUserResponse {
 
 export async function fetchUser(): Promise<void | iFetchUserResponse> {
     return await makeRequest<iFetchUserResponse>({
-        method: "GET",
+        method: "POST",
         url: "/fetch-user",
     })
         .then((response) => response.data)
