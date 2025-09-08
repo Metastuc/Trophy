@@ -120,6 +120,7 @@ export const buyCreatorToken = async (
     provider: EIP1193Provider,
     address: Address,
 ) => {
+    console.log({ coinAddress, amount, address });
     const flaunch = flaunchClient(provider, address);
     const hash = await flaunch.buyCoin(
         {
