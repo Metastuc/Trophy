@@ -1,23 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable simple-import-sort/imports */
 import {
     createMeeClient,
     getMEEVersion,
     greaterThanOrEqualTo,
     MEEVersion,
     type MultichainSmartAccount,
-    UniswapSwapRouterAbi as ROUTER_ABI,
     runtimeERC20BalanceOf,
     toMultichainNexusAccount,
+    UniswapSwapRouterAbi as ROUTER_ABI,
 } from "@biconomy/abstractjs";
 import type { EIP1193Provider } from "@privy-io/react-auth";
 import { type Address, custom, parseUnits } from "viem";
+
 import { MORPH_ABI, QUOTE_ABI } from "./abi";
 import { network } from "./constants";
-import { TOKEN_ADDRESSES, BASE_V2_QUOTER, BASE_V3_ROUTER, MORPHO_RE7_POOL, BASE_WETH } from "./contracts";
+import { BASE_V2_QUOTER, BASE_V3_ROUTER, BASE_WETH,MORPHO_RE7_POOL, TOKEN_ADDRESSES } from "./contracts";
 import { publicClient } from "./viem";
 
-type tokenType = "USDC" | "ZORA" | "DEGEN" | "BANKR";
+type tokenType = "USDC" | "ZORA" | "DEGEN" | "BNKR" | "FLAY";
 
 const chainId = network.id as unknown as number;
 
@@ -105,9 +104,9 @@ export const performTokentoETHSwap = async (
         const { hash } = await MeeClient.waitForSupertransactionReceipt({ hash: executeHash });
 
         return hash;
-    } catch (error: any) {
+    } catch (error) {
         console.error(error);
-        throw new Error(error.messge);
+        throw new Error((error as Error).message);
     }
 };
 
@@ -195,8 +194,8 @@ export const getTokenToEthQuote = async (token: tokenType, amount: string) => {
         });
 
         return amountOut;
-    } catch (error: any) {
+    } catch (error) {
         console.error(error);
-        throw new Error(error.message);
+        throw new Error((error as Error).message);
     }
 };

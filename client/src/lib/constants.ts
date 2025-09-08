@@ -3,7 +3,7 @@ import Moralis from "moralis";
 import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
-import { BANKR, DEGEN, USDC, ZORA } from "./contracts";
+import { BNKR, DEGEN, FLAY,USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
     BUNDLER: import.meta.env.VITE_BUNDLER_URL as string,
@@ -37,7 +37,7 @@ export const moralisChain =
 
 const addresses = {
     development: [""],
-    production: [DEGEN, USDC, ZORA, BANKR],
+    production: [DEGEN, USDC, ZORA, BNKR, FLAY],
 };
 
 export const tokenAddresses = addresses[environment];

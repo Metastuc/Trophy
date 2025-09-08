@@ -40,8 +40,8 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("followed", async (data: { email: string; username: string }) => {
     const { email, username } = data;
-    const follower = await User.findOne({ email });
-    const reciever = await User.findOne({ username });
+    const follower = await prisma.user.findUnique({ where: { email } });
+    const reciever = await prisma.user.findUnique({ where: { username } });
 
     if (!follower || !reciever) return;
 
@@ -51,31 +51,48 @@ io.on("connection", (socket: Socket) => {
     const followMessage = `${follower.username} followed you`;
 
     const now = new Date();
-    const notification = await Notification.findOne({ username });
+    const notification = await prisma.notification.findUnique({
+      where: { username }
+    });
 
     if (!notification) {
-      await Notification.create({ username, follow: { followNots: [followMessage], follwedAt: now } });
+      await prisma.notification.create({
+        data: {
+          username,
+          followNots: [followMessage],
+          followedAt: now
+        }
+      });
       const recieverSocketId = userSocketIds.get(reciever.username);
 
       io.to(recieverSocketId).emit("followed");
       return;
     }
 
-    const recentFollow = now.getTime() - new Date(notification.follow!.followedAt).getTime() < 60 * 60 * 1000;
+    const recentFollow = now.getTime() - new Date(notification.followedAt).getTime() < 60 * 60 * 1000;
 
     if (recentFollow) {
-      const content = `${username} and ${notification.follow!.recentFollows} others followed you`;
-      notification.follow!.recentFollows += 1;
-      notification.follow!.followNots[0] = content;
+      const content = `${username} and ${notification.recentFollows} others followed you`;
+      notification.recentFollows += 1;
+      notification.followNots[0] = content;
     } else {
-      notification.follow!.followNots.push(followMessage);
-      notification.follow!.content = followMessage;
-      notification.follow!.recentFollows = 1;
+      notification.followNots.push(followMessage);
+      notification.followContent = followMessage;
+      notification.recentFollows = 1;
     }
 
-    await follower.save();
-    await reciever.save();
-    await notification.save();
+    await prisma.user.update({
+      where: { email },
+      data: follower
+    });
+    await prisma.user.update({
+      where: { username },
+      data: reciever
+    });
+    await prisma.notification.update({
+      where: { username },
+      data: notification
+    });
 
     const recieverSocketId = userSocketIds.get(reciever.username);
     io.to(recieverSocketId).emit("followed");
@@ -84,21 +101,25 @@ io.on("connection", (socket: Socket) => {
   socket.on("send-tip-notis", async (tipData: { email: string; username: string; token: string; amount: string }) => {
     const { email, username, token, amount } = tipData;
 
-    const sender = await User.findOne({ email });
-    const reciever = await User.findOne({ username });
+    const sender = await prisma.user.findUnique({ where: { email } });
+    const reciever = await prisma.user.findUnique({ where: { username } });
 
     if (!sender || !reciever) return;
 
-    const notification = await Notification.findOne({ username });
+    const notification = await prisma.notification.findUnique({
+      where: { username }
+    });
 
     const localeAmount = toLocaleString(amount as string);
 
     const tipMessage = { tipper: sender.username, amount: localeAmount, token };
 
     if (!notification) {
-      await Notification.create({
-        username,
-        tip: [tipMessage],
+      await prisma.notification.create({
+        data: {
+          username,
+          tip: [tipMessage],
+        }
       });
       const recieverSocketId = userSocketIds.get(username);
 
@@ -108,8 +129,14 @@ io.on("connection", (socket: Socket) => {
 
     notification.tip.push(tipMessage);
 
-    await reciever.save();
-    await notification.save();
+    await prisma.user.update({
+      where: { username },
+      data: reciever
+    });
+    await prisma.notification.update({
+      where: { username },
+      data: notification
+    });
 
     const recieverSocketId = userSocketIds.get(reciever.username);
     io.to(recieverSocketId).emit("tipped");
@@ -117,17 +144,27 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("buy", async (data: { buyer: string; streamer: string; amount: string }) => {
     const { buyer, streamer, amount } = data;
-    const notification = await Notification.findOne({ username: streamer });
+    const notification = await prisma.notification.findUnique({
+      where: { username: streamer }
+    });
 
     const buyMessage = `${buyer} bought ${formatNumber(amount)} of your troph`;
 
     if (!notification) {
-      await Notification.create({ buy: [buyMessage] });
+      await prisma.notification.create({
+        data: {
+          buy: [buyMessage],
+          username: streamer
+        }
+      });
       return;
     }
 
     notification.buy.push(buyMessage);
-    await notification.save();
+    await prisma.notification.update({
+      where: { username: streamer },
+      data: notification
+    });
 
     const recieverSocketId = userSocketIds.get(streamer);
     io.to(recieverSocketId).emit("buy");
@@ -138,36 +175,40 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("update-role", async (username: string) => {
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({ where: { username } });
     if (!user) return;
 
-    user.role = "guest";
+    const updatedUser = await prisma.user.update({
+      where: { username },
+      data: { role: "guest" }
+    });
 
-    await user.save();
-
-    socket.emit("saved", user);
+    socket.emit("saved", updatedUser);
   });
 
   socket.on("save-viewers", async (data: { username: string; roomId: string; viewers: number }) => {
     const { username, viewers, roomId } = data;
 
-    const user = await User.findOne({ username });
-    const room = await Stream.findOne({ roomId });
+    const user = await prisma.user.findUnique({ where: { username } });
+    const room = await prisma.stream.findUnique({ where: { roomId } });
 
     if (!user || !room) {
       return;
     }
 
+    await prisma.stream.update({
+      where: { roomId },
+      data: { viewers }
+    });
+
     if (user.epicStreams > viewers) {
       return;
     }
 
-    room.viewers = viewers;
-
-    user.epicStreams = viewers;
-
-    await room.save();
-    await user.save();
+    await prisma.user.update({
+      where: { username },
+      data: { epicStreams: viewers }
+    });
   });
 
   socket.on("chat-message", (data: { username: string; message: string; roomId: string }) => {

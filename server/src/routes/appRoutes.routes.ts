@@ -31,19 +31,19 @@ router
   .post("/update-fees", authenticate, feesUpdate)
   .post("/stop-stream", authenticate, stopStream)
 
-  .get("/get-user", getUser)
+  .post("/get-user", getUser)
   .patch("/update-profile", authenticate, uploadImg.single("profilePicture"), updateProfile)
   .get("/fetch-user", authenticate, authUser)
   .post("/add-guest", getGuestAccessToken)
   .post("/update-pfp", authenticate, uploadImg.single("pfp"), updatePfp)
   .post("/save-thumbnail", authenticate, uploadImg.single("thumbnail"), saveStreamThumbnail)
 
-  .get("/stream/:roomId", getStream)
   .get("/fetch-streams", fetchStreams)
+  .post("/create-token-uri", authenticate, createTokenUri)
   .get("/leaderboard", leaderboard)
   .post("/track-tip", trackTipTxs)
   .get("/tip-txs", getTipTxs)
   .post("/save-creator-token", authenticate, creatorTokenCreated)
-  .post("/create-token-uri", authenticate, createTokenUri);
+  .get("/stream/:roomId", getStream);
 
 export default router;

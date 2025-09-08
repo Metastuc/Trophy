@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_22"]
+nixPkgs = ["nodePackages_latest.nodejs"]
 
 [phases.install]
 cmds = [
   "npm install --legacy-peer-deps --omit=dev",
   "npm run migrate",
-] 
+]
 
 [start]
 cmd = "npm start"

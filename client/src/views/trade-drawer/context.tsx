@@ -32,9 +32,10 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 await wallets[0].switchChain(network.id);
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
+                console.log(drawerData);
                 await buyCreatorToken(
                     streamer?.tokenAddress as Address,
-                    drawerData.buyAmount,
+                    drawerData.sellAmount,
                     provider,
                     wallets[0].address as Address,
                 );
@@ -43,7 +44,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 // optionally show a toast or error UI here
             }
         },
-        [drawerData.buyAmount, streamer?.tokenAddress, wallets],
+        [drawerData, streamer?.tokenAddress, wallets],
     );
 
     const value = useMemo(
