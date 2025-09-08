@@ -1,6 +1,6 @@
-/* eslint-disable simple-import-sort/imports */
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+
 import { moralisChain } from "./constants";
 import MoralisClient from "./moralis";
 

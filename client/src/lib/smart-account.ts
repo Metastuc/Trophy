@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     createBicoPaymasterClient,
     createSmartAccountClient,
@@ -31,8 +30,8 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
         });
 
         return nexusAccountClient;
-    } catch (error: any) {
+    } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error((error as Error).message);
     }
 };

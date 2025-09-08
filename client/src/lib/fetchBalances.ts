@@ -1,5 +1,5 @@
-import { moralisTokenFetch } from "./utils";
 import { APPLICATION_CONSTANTS } from "./constants";
+import { moralisTokenFetch } from "./utils";
 
 type balanceType = {
     tokens: {
