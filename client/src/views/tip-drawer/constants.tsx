@@ -29,9 +29,9 @@ const TOKEN_CONFIG: Record<keyof typeof TOKEN_ADDRESSES, TokenConfig> = {
         address: TOKEN_ADDRESSES.ZORA as Address,
         icon: "/zora.svg",
     },
-    BANKR: {
+    BNKR: {
         symbol: "BNKR",
-        address: TOKEN_ADDRESSES.BANKR as Address,
+        address: TOKEN_ADDRESSES.BNKR as Address,
         icon: "/bankr.svg",
     },
     FLAY: {

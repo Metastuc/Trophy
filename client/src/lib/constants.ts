@@ -2,7 +2,8 @@ import { QueryClient } from "@tanstack/react-query";
 import Moralis from "moralis";
 import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
-import { BNKR, DEGEN, USDC, ZORA, FLAY } from "./contracts";
+
+import { BNKR, DEGEN, FLAY,USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
     BUNDLER: import.meta.env.VITE_BUNDLER_URL as string,
