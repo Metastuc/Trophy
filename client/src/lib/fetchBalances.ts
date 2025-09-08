@@ -1,5 +1,5 @@
-import { moralisChain, tokenAddresses } from "./constants";
-import MoralisClient from "./moralis";
+import { moralisTokenFetch } from "./utils";
+import { APPLICATION_CONSTANTS } from "./constants";
 
 type balanceType = {
     tokens: {
@@ -26,13 +26,7 @@ export const toFixed = (value: string | number) => {
 
 export default async function GetTokenBalances(address: string): Promise<balanceType> {
     try {
-        const moralis = await MoralisClient();
-
-        const { result: tokens } = await moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
-            chain: moralisChain,
-            address,
-            tokenAddresses,
-        });
+        const tokens = await moralisTokenFetch(address);
 
         const balances: balanceType = {
             tokens: {},
@@ -46,6 +40,7 @@ export default async function GetTokenBalances(address: string): Promise<balance
         let totalMoney = 0;
 
         for (const token of tokens) {
+            if (!APPLICATION_CONSTANTS.SUPPORTED_TOKENS.includes(token.symbol.toUpperCase())) continue;
             const H24_change = parseInt(token.usdValue24hrUsdChange ?? "0");
             if (H24_change > 0) arrow = "up";
             balances.tokens[token.symbol] = {

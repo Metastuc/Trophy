@@ -1,13 +1,13 @@
-import {
-    createMeeClient,
-    getMEEVersion,
-    greaterThanOrEqualTo,
-    MEEVersion,
-    runtimeERC20BalanceOf,
-    toMultichainNexusAccount,
-} from "@biconomy/abstractjs";
+// import {
+//     createMeeClient,
+//     getMEEVersion,
+//     greaterThanOrEqualTo,
+//     MEEVersion,
+//     runtimeERC20BalanceOf,
+//     toMultichainNexusAccount,
+// } from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { type Account, type Address, custom, parseAbi, parseEther, parseUnits } from "viem";
+import { type Account, type Address, parseAbi, parseEther, parseUnits } from "viem";
 
 import { network } from "./constants";
 import { TOKEN_ADDRESSES } from "./contracts";
@@ -42,104 +42,137 @@ export async function tipETH({ amount, provider, recipientAddress, senderAddress
 }
 
 export async function tipUser({ amount, provider, recipientAddress, token, senderAddress, wallet }: TipUser) {
-    return await tipToken({
-        amount,
-        contractAddress: TOKEN_ADDRESSES[token] as Address,
-        isUSDC: token === "USDC",
-        provider,
+    return await tipERC20Token(
         recipientAddress,
+        TOKEN_ADDRESSES[token] as Address,
+        amount,
         senderAddress,
+        provider,
+        token === "USDC" ? 8 : 18,
         wallet,
-    });
+    );
 }
 
-export async function tipCreatorToken({
-    amount,
-    contractAddress,
-    provider,
+export const tipCreatorToken = async ({
     recipientAddress,
-    senderAddress,
-    wallet,
-}: TipToken) {
-    return await tipToken({ amount, contractAddress, provider, recipientAddress, senderAddress, wallet });
-}
-
-export async function tipToken({
     amount,
-    contractAddress,
-    isUSDC,
-    provider,
-    recipientAddress,
     senderAddress,
-    wallet,
-}: TipToken) {
-    const nexusAccount = await toMultichainNexusAccount({
-        chainConfigurations: [
-            {
-                chain: network,
-                transport: custom(provider),
-                version: getMEEVersion(MEEVersion.V2_1_0),
-            },
-        ],
-        signer: provider,
-        accountAddress: senderAddress,
-    });
+    provider,
+    contractAddress,
+    wallet
+}: TipToken) => {
+    return await tipERC20Token(recipientAddress, contractAddress, amount, senderAddress, provider, 18, wallet);
+};
 
-    console.log({ amount, contractAddress, isUSDC, provider, recipientAddress, senderAddress, wallet });
 
-    const MeeClient = await createMeeClient({ account: nexusAccount });
-    const tokenAddress = contractAddress;
-    const recieverAddress = recipientAddress;
-    const decimals = isUSDC ? 6 : 18;
-    const chainId = network.id as unknown as number;
-    const tokenInUnits = parseUnits(amount, decimals);
-    const sendTokenIx = await nexusAccount.buildComposable({
-        type: "default",
-        data: {
-            abi: parseAbi(["function transfer(address to, uint256 amount) nonpayable"]),
-            chainId,
-            to: tokenAddress,
-            functionName: "transfer",
-            args: [
-                recieverAddress,
-                runtimeERC20BalanceOf({
-                    tokenAddress,
-                    targetAddress: nexusAccount.addressOn(chainId, true),
-                    constraints: [greaterThanOrEqualTo(tokenInUnits)],
-                }),
-            ],
-        },
-    });
-
-    if (wallet !== "privy") {
-        const fusionQuote = await MeeClient.getFusionQuote({
-            trigger: {
-                chainId,
-                tokenAddress,
-                amount: tokenInUnits,
-            },
-            instructions: [sendTokenIx],
-            feeToken: {
-                address: tokenAddress,
-                chainId,
-            },
-        });
-
-        const { hash } = await MeeClient.executeFusionQuote({ fusionQuote });
-        const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-        return superHash;
+const tipERC20Token = async (
+    recipient: string,
+    contractAddress: string,
+    amount: string,
+    senderAddress: Address,
+    signer: EIP1193Provider,
+    decimals: number,
+    wallet?: string,
+) => {
+    if (!wallet) {
+        console.log("hehe")
     }
+    const walletClient = getWalletClient(signer, senderAddress);
 
-    const quote = await MeeClient.getQuote({
-        instructions: [sendTokenIx],
-        delegate: true,
-        feeToken: {
-            address: tokenAddress,
-            chainId,
-        },
+    const amountInUnits = parseUnits(amount, decimals);
+
+    const hash = await walletClient.writeContract({
+        address: contractAddress as Address,
+        functionName: "transfer",
+        abi: parseAbi(["function transfer(address to, unit256 amount)"]),
+        args: [recipient as Address, amountInUnits],
+        chain: network,
+        account: senderAddress
     });
 
-    const { hash } = await MeeClient.executeQuote({ quote });
-    const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
-    return superHash;
+    return hash;
 }
+
+// const tipToken = async (
+//     recipient: string,
+//     contractAddress: string,
+//     amount: string,
+//     senderAddress: Address,
+//     signer: EIP1193Provider,
+//     wallet: string,
+//     decimals: number,
+// ) => {
+//     const nexusAccount = await toMultichainNexusAccount({
+//         chainConfigurations: [
+//             {
+//                 chain: network,
+//                 transport: custom(signer),
+//                 version: getMEEVersion(MEEVersion.V2_1_0),
+//             },
+//         ],
+//         signer,
+//         senderAddress,
+//     });
+
+//     const MeeClient = await createMeeClient({ account: nexusAccount });
+//     const tokenAddress = contractAddress as unknown as Address;
+//     const recieverAddress = recipient as unknown as Address;
+
+//     const chainId = network.id as unknown as number;
+//     const tokenInUnits = parseUnits(amount, decimals);
+
+//     const sendTokenIx = await nexusAccount.buildComposable({
+//         type: "default",
+//         data: {
+//             abi: parseAbi(["function transfer(address to, uint256 amount) nonpayable"]),
+//             chainId,
+//             to: tokenAddress,
+//             functionName: "transfer",
+//             args: [
+//                 recieverAddress,
+//                 runtimeERC20BalanceOf({
+//                     tokenAddress,
+//                     targetAddress: nexusAccount.addressOn(chainId, true),
+//                     constraints: [greaterThanOrEqualTo(tokenInUnits)],
+//                 }),
+//             ],
+//         },
+//     });
+
+//     if (wallet !== "privy") {
+//         const fusionQuote = await MeeClient.getFusionQuote({
+//             trigger: {
+//                 chainId,
+//                 tokenAddress,
+//                 amount: tokenInUnits,
+//             },
+//             instructions: [sendTokenIx],
+//             feeToken: {
+//                 address: tokenAddress,
+//                 chainId,
+//             },
+//         });
+
+//         const { hash } = await MeeClient.executeFusionQuote({ fusionQuote });
+
+//         const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
+
+//         return superHash;
+//     }
+
+//     const quote = await MeeClient.getQuote({
+//         instructions: [sendTokenIx],
+//         delegate: true,
+
+//         feeToken: {
+//             address: tokenAddress,
+//             chainId,
+//         },
+//     });
+
+//     const { hash } = await MeeClient.executeQuote({ quote });
+
+//     const { hash: superHash } = await MeeClient.waitForSupertransactionReceipt({ hash });
+
+//     return superHash;
+// };

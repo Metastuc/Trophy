@@ -17,7 +17,7 @@ import { network } from "./constants";
 import { TOKEN_ADDRESSES, BASE_V2_QUOTER, BASE_V3_ROUTER, MORPHO_RE7_POOL, BASE_WETH } from "./contracts";
 import { publicClient } from "./viem";
 
-type tokenType = "USDC" | "ZORA" | "DEGEN" | "BANKR";
+type tokenType = "USDC" | "ZORA" | "DEGEN" | "BNKR" | "FLAY";
 
 const chainId = network.id as unknown as number;
 

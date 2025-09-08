@@ -29,6 +29,11 @@ export async function onboard(request: Request, response: Response) {
           return;
         }
 
+        if (username === "jessepollak") {
+          response.status(400).json({ message: "username cannot be jessepollak" });
+          return;
+        }
+
         usernameRegex = username;
       }
 

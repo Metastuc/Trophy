@@ -13,7 +13,7 @@ interface IHoldings {
 
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const username = req.query.username as string;
+    const { username } = req.body;
 
     if (!username) {
       res.status(400).json({ message: "username is required" });
