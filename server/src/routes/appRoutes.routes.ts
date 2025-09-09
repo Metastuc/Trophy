@@ -19,7 +19,7 @@ import { getStream } from "@/controllers/getStream.controller";
 import { leaderboard } from "@/controllers/leaderboard.controller";
 import { fetchStreams } from "@/controllers/fetchStreams.controller";
 import { createTokenUri } from "@/controllers/pinata";
-import { trackTipTxs, getTipTxs } from "@/controllers/tipTxs.controller";
+import { trackTipTxs, getTrophyTxs, saveCreatorTokenVolume } from "@/controllers/txs.controller";
 
 const router = Router();
 
@@ -30,6 +30,7 @@ router
   .post("/update-stream", authenticate, scheduleActions)
   .post("/update-fees", authenticate, feesUpdate)
   .post("/stop-stream", authenticate, stopStream)
+  .post("/save-volume", saveCreatorTokenVolume)
 
   .post("/get-user", getUser)
   .patch("/update-profile", authenticate, uploadImg.single("profilePicture"), updateProfile)
@@ -42,7 +43,7 @@ router
   .post("/create-token-uri", authenticate, createTokenUri)
   .get("/leaderboard", leaderboard)
   .post("/track-tip", trackTipTxs)
-  .get("/tip-txs", getTipTxs)
+  .get("/trophy-txs", getTrophyTxs)
   .post("/save-creator-token", authenticate, creatorTokenCreated)
   .get("/stream/:roomId", getStream);
 
