@@ -88,6 +88,20 @@ export const createStream = async (req: Request, res: Response) => {
       const recordToken = await generateAccessToken(roomId, "bot");
       const liveStreamToken = await generateAccessToken(roomId, "bot");
 
+      await recorder.startRecording({
+        roomId,
+        token: recordToken,
+        layout: "spotlight",
+        watermark: {
+          url: "",
+          position: "top-right",
+          size: { 
+            height: 72,
+            width: 212
+          }
+        }
+      });
+
       await prisma.user.update({
         where: { username },
         data: { totalStreams: user.totalStreams + 1, role: "host" },
