@@ -93,13 +93,13 @@ export const createStream = async (req: Request, res: Response) => {
         token: recordToken,
         layout: "spotlight",
         watermark: {
-          url: "",
+          url: "https://trophy-stream.s3.eu-north-1.amazonaws.com/watermark+2.png",
           position: "top-right",
-          size: { 
+          size: {
             height: 72,
-            width: 212
-          }
-        }
+            width: 212,
+          },
+        },
       });
 
       await prisma.user.update({
