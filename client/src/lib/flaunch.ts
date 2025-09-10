@@ -163,7 +163,7 @@ export const sellCreatorToken = async (
 
     if (allowance < amountInUnits) {
         const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-        const { signature } = await signTypedData(typedData);
+        const { signature } = await signTypedData(typedData, { address });
 
         const hash = await flaunch.sellCoin({
             coinAddress,

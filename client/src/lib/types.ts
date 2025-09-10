@@ -22,6 +22,6 @@ type TypedDataParams<T extends MessageTypes> = {
 
 type SignTypedDataParams = TypedDataParams<MessageTypes>;
 
-export type SignTypedData = (input: SignTypedDataParams) => Promise<{
+export type SignTypedData = (input: SignTypedDataParams, options: { address: string }) => Promise<{
     signature: string;
 }>;
