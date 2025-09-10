@@ -158,23 +158,22 @@ export const sellCreatorToken = async (
 ) => {
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseEther(amount);
-    console.log(signTypedData)
-    // const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
+    const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
-    // if (allowance < amountInUnits) {
-    //     const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-    //     const { signature } = await signTypedData(typedData, { address });
+    if (allowance < amountInUnits) {
+        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+        const { signature } = await signTypedData(typedData, { address });
 
-        // const hash = await flaunch.sellCoin({
-        //     coinAddress,
-        //     slippagePercent: 4,
-        //     amountIn: amountInUnits,
-        //     permitSingle,
-        //     signature: signature as unknown as Address,
-        // });
+        const hash = await flaunch.sellCoin({
+            coinAddress,
+            slippagePercent: 4,
+            amountIn: amountInUnits,
+            permitSingle,
+            signature: signature as unknown as Address,
+        });
 
-    //     return await checkTx(hash);
-    // } else {
+        return await checkTx(hash);
+    } else {
         const hash = await flaunch.sellCoin({
             coinAddress,
             amountIn: amountInUnits,
@@ -182,7 +181,7 @@ export const sellCreatorToken = async (
         });
 
         return await checkTx(hash);
-    // }
+    }
 };
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {
