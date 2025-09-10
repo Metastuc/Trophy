@@ -157,7 +157,7 @@ export const sellCreatorToken = async (
     address: Address,
 ) => {
     const flaunch = flaunchClient(provider, address);
-    const amountInUnits = parseUnits(amount, 18);
+    const amountInUnits = parseEther(amount);
     console.log(signTypedData)
     // const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
@@ -165,13 +165,13 @@ export const sellCreatorToken = async (
     //     const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
     //     const { signature } = await signTypedData(typedData, { address });
 
-    //     const hash = await flaunch.sellCoin({
-    //         coinAddress,
-    //         slippagePercent: 4,
-    //         amountIn: amountInUnits,
-    //         permitSingle,
-    //         signature: signature as unknown as Address,
-    //     });
+        // const hash = await flaunch.sellCoin({
+        //     coinAddress,
+        //     slippagePercent: 4,
+        //     amountIn: amountInUnits,
+        //     permitSingle,
+        //     signature: signature as unknown as Address,
+        // });
 
     //     return await checkTx(hash);
     // } else {
