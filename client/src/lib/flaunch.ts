@@ -158,7 +158,7 @@ export const sellCreatorToken = async (
 ) => {
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseUnits(amount, 18);
-
+    console.log(signTypedData)
     // const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
     // if (allowance < amountInUnits) {
