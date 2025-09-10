@@ -159,30 +159,30 @@ export const sellCreatorToken = async (
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseUnits(amount, 18);
 
-    const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
+    // const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
-    if (allowance < amountInUnits) {
-        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-        const { signature } = await signTypedData(typedData, { address });
+    // if (allowance < amountInUnits) {
+    //     const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+    //     const { signature } = await signTypedData(typedData, { address });
 
+    //     const hash = await flaunch.sellCoin({
+    //         coinAddress,
+    //         slippagePercent: 4,
+    //         amountIn: amountInUnits,
+    //         permitSingle,
+    //         signature: signature as unknown as Address,
+    //     });
+
+    //     return await checkTx(hash);
+    // } else {
         const hash = await flaunch.sellCoin({
             coinAddress,
-            slippagePercent: 4,
             amountIn: amountInUnits,
-            permitSingle,
-            signature: signature as unknown as Address,
+            slippagePercent: 4,
         });
 
         return await checkTx(hash);
-    } else {
-        const hash = await flaunch.sellCoin({
-            coinAddress,
-            amountIn: amountInUnits,
-            slippagePercent: 4,
-        });
-
-        return await checkTx(hash);
-    }
+    // }
 };
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {
