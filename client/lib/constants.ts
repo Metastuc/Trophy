@@ -1,21 +1,24 @@
 import { QueryClient } from "@tanstack/react-query";
 import { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
+import { z } from "zod";
 
 import { toTime } from "#~/utils/time.ts";
 
 export const queryClient = new QueryClient();
 
-export const CLIENT_ENV: Record<string, string> = {
-    BUNDLER_URL: import.meta.env.VITE_BUNDLER_URL as string,
-    ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
-    HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
-    HUDDLE_PROJECT_KEY: import.meta.env.VITE_HUDDLE_PROJECT_KEY as string,
-    PAYMASTER_URL: import.meta.env.VITE_PAYMASTER_URL as string,
-    PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
-    PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
-    SERVER_URL: import.meta.env.VITE_SERVER_URL as string,
-};
+export const CLIENT_ENV = z
+    .object({
+        VITE_BUNDLER_URL: z.string(),
+        VITE_ENVIRONMENT: z.enum(["development", "production", "staging"]),
+        VITE_HUDDLE_PROJECT_ID: z.string(),
+        VITE_HUDDLE_PROJECT_KEY: z.string(),
+        VITE_PAYMASTER_URL: z.string(),
+        VITE_PRIVY_APP_ID: z.string(),
+        VITE_PRIVY_CLIENT_ID: z.string(),
+        VITE_SERVER_URL: z.string(),
+    })
+    .parse(import.meta.env);
 
 export const CONTRACT_ADDRESSES: Record<string, Address> = {
     BANKR: "0x22af33fe49fd1fa80c7149773dde5890d3c76f3b",
@@ -56,13 +59,17 @@ export const API_ENDPOINTS = {
         LEAVE_STREAM: "/streams/leave",
     },
 
+    TIPS: {
+        STORE_TIP: "/tips/store",
+    },
+
     UTIL: {
         GET_TOKEN_PRICE: (address: string) => `/get-token-price?address=${address}`,
     },
 };
 
 export const CLIENT_CONSTANTS = {
-    CURRENT_NETWORK: CLIENT_ENV.ENVIRONMENT === "production" ? base : baseSepolia,
+    CURRENT_NETWORK: CLIENT_ENV.VITE_ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
     MAX_TIP_AMOUNT_USD: 10000,
@@ -86,7 +93,7 @@ export const CLIENT_CONSTANTS = {
     },
 
     TX_SCAN_URL: (hash: string) =>
-        CLIENT_ENV.ENVIRONMENT === "production"
+        CLIENT_ENV.VITE_ENVIRONMENT === "production"
             ? `https://basescan.org/tx/${hash}`
             : `https://sepolia.basescan.org/tx/${hash}`,
 };

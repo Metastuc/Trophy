@@ -23,9 +23,9 @@ export async function initSmartAccount(provider: EIP1193Provider) {
             }),
             chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
             paymaster: createBicoPaymasterClient({
-                paymasterUrl: CLIENT_ENV.PAYMASTER_URL,
+                paymasterUrl: CLIENT_ENV.VITE_PAYMASTER_URL,
             }),
-            bundlerUrl: CLIENT_ENV.BUNDLER_URL,
+            bundlerUrl: CLIENT_ENV.VITE_BUNDLER_URL,
         });
     } catch (error) {
         throw new Error("Failed to initialize smart account: " + (error as Error).message);

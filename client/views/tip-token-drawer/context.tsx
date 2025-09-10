@@ -5,8 +5,9 @@ import { Address } from "viem";
 import { useChainId, useSwitchChain } from "wagmi";
 
 import { Button } from "@/components/ui/button";
-import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { tipERC20, tipEther } from "@/lib/tip";
+import { makeRequest } from "#~/utils/axios.ts";
 import { log } from "#~/utils/logger.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
@@ -94,20 +95,37 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
             toast.promise(promise, {
                 loading: "Sending tip...",
-                success: (hash) => (
-                    <div>
-                        <p>Tip sent successfully!</p>
-                        <Button className="text-blue-500 underline" variant="link">
-                            <a
-                                href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                View on BaseScan
-                            </a>
-                        </Button>
-                    </div>
-                ),
+                success: function (hash) {
+                    makeRequest<undefined>({
+                        url: API_ENDPOINTS.TIPS.STORE_TIP,
+                        method: "POST",
+                        data: {
+                            amountInToken: tipDrawerState.amountInToken,
+                            amountInUsd: parseFloat(tipDrawerState.amountInUsd),
+                            chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id,
+                            recipient: streamer?.walletAddress as Address,
+                            sender: userWalletState.address as Address,
+                            token: tipDrawerState.token,
+                            tokenAddress: tipDrawerState.tokenAddress,
+                            txHash: hash,
+                        },
+                    });
+
+                    return (
+                        <div>
+                            <p>Tip sent successfully!</p>
+                            <Button className="text-blue-500 underline" variant="link">
+                                <a
+                                    href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    View on BaseScan
+                                </a>
+                            </Button>
+                        </div>
+                    );
+                },
                 error: "Failed to send tip.",
             });
         },
@@ -119,6 +137,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             tipDrawerState.amountInToken,
             tipDrawerState.amountInUsd,
             tipDrawerState.token,
+            tipDrawerState.tokenAddress,
             userWalletState.address,
             userWalletState.provider,
             userWalletState.walletType,

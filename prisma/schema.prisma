@@ -136,10 +136,6 @@ model Notification {
     message   String
     createdAt DateTime         @default(now())
 
-    // generic link to source event
-    payloadId   String?
-    payloadType String? // e.g. "TIP", "FOLLOW", "PURCHASE"
-
     // relations
     follow Follow? @relation("FollowNotification")
     tip    Tip?    @relation("TipNotification")
@@ -163,18 +159,26 @@ model Tip {
     userId String @db.ObjectId
 
     // sender (tipper)
-    tipper   User   @relation("SentTips", fields: [tipperId], references: [id])
-    tipperId String @db.ObjectId
+    tipper       User?   @relation("SentTips", fields: [tipperId], references: [id])
+    tipperId     String? @db.ObjectId
+    tipperWallet String?
 
-    token     String?
-    amount    Float?
+    // onchain data
+    txHash       String  @unique
+    chainId      Int
+    token        String?
+    tokenAddress String?
+    amount       Float
+    amountRaw    String?
+    amountUsd    Float?
+
     createdAt DateTime @default(now())
 
     // 1:1 notification
     notification   Notification? @relation("TipNotification", fields: [notificationId], references: [id])
     notificationId String?       @unique @db.ObjectId
 
-    @@unique([userId, tipperId, createdAt])
+    @@index([userId, tipperId, createdAt])
     @@map("tips")
 }
 

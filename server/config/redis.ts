@@ -6,6 +6,7 @@ import { SERVER_ENV } from "./constants";
 
 export const redis = new Redis({
     host: SERVER_ENV.REDIS_URI,
+    maxRetriesPerRequest: null,
     password: SERVER_ENV.REDIS_PASSWORD,
     port: SERVER_ENV.REDIS_PORT,
     username: SERVER_ENV.REDIS_USERNAME,

@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import isValidHost from "is-valid-host";
+import { base, baseSepolia } from "viem/chains";
 import { z } from "zod";
 
 import { toTime } from "#~/utils/time.ts";
@@ -47,4 +48,6 @@ export const SERVER_CONSTANTS = {
             TTL: toTime({ unit: "minutes", value: 5 }),
         },
     },
+
+    CURRENT_NETWORK: SERVER_ENV.ENVIRONMENT === "production" ? base : baseSepolia,
 };
