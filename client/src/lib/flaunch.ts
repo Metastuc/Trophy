@@ -157,18 +157,17 @@ export const sellCreatorToken = async (
     address: Address,
 ) => {
     const flaunch = flaunchClient(provider, address);
-    const amountInWei = parseEther(amount);
-
+    const amountInUnits = parseEther(amount);
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
-    if (allowance < amountInWei) {
+    if (allowance < amountInUnits) {
         const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-        const { signature } = await signTypedData(typedData);
+        const { signature } = await signTypedData(typedData, { address });
 
         const hash = await flaunch.sellCoin({
             coinAddress,
             slippagePercent: 4,
-            amountIn: amountInWei,
+            amountIn: amountInUnits,
             permitSingle,
             signature: signature as unknown as Address,
         });
@@ -177,7 +176,7 @@ export const sellCreatorToken = async (
     } else {
         const hash = await flaunch.sellCoin({
             coinAddress,
-            amountIn: amountInWei,
+            amountIn: amountInUnits,
             slippagePercent: 4,
         });
 
