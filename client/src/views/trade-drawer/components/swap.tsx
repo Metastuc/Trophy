@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, Fragment } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { tokenInputField } from "@/utils/truncate";
@@ -8,7 +8,7 @@ import { useTradeDrawerContext } from "../hooks";
 import { formatUSD } from "../utils";
 
 export function Swap() {
-    const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
+    const { streamer, drawerData, isSwapped, setDrawerData, setIsSwapped } = useTradeDrawerContext();
 
     function handleSellAmountChange(event: ChangeEvent<HTMLInputElement>) {
         setDrawerData((state) => ({
@@ -17,48 +17,84 @@ export function Swap() {
         }));
     }
 
+    console.log("Swap component rendered with data:", isSwapped);
+    console.log("Drawer data:", drawerData);
+
     return (
         <section className="mx-auto max-w-md p-4">
             <article className="border-blue100 flex items-end justify-between rounded-xl border-2 px-3 py-2">
-                <aside className="flex flex-col gap-3">
-                    <input
-                        type="text"
-                        placeholder="0.00"
-                        onChange={(event) => handleSellAmountChange(event)}
-                        value={drawerData.sellAmount}
-                        className="outline-none"
-                    />
-                    <span className="text-xs text-black/60">{formatUSD(drawerData.sellAmount || "0")}</span>
-                </aside>
+                {!isSwapped ? (
+                    <Fragment>
+                        <aside className="flex flex-col gap-3">
+                            <input
+                                type="text"
+                                placeholder="0.00"
+                                onChange={(event) => handleSellAmountChange(event)}
+                                value={drawerData.sellAmount}
+                                className="outline-none"
+                            />
+                            <span className="text-xs text-black/60">{formatUSD(drawerData.sellAmount || "0")}</span>
+                        </aside>
 
-                <aside className="flex flex-col items-center gap-2">
-                    <span>Sell</span>
+                        <aside className="flex flex-col items-center gap-2">
+                            <span>Sell</span>
 
-                    <Select
-                        value={drawerData.sellToken}
-                        onValueChange={(value) => setDrawerData((state) => ({ ...state, sellToken: value }))}
-                    >
-                        <SelectTrigger className="border-blue100 w-25 rounded-xl p-2">
-                            <SelectValue>
-                                {TOKENS.find((token) => token.value === drawerData.sellToken)?.title}
-                            </SelectValue>
-                        </SelectTrigger>
+                            <Select
+                                value={drawerData.sellToken}
+                                onValueChange={(value) => setDrawerData((state) => ({ ...state, sellToken: value }))}
+                            >
+                                <SelectTrigger className="border-blue100 w-25 rounded-xl p-2">
+                                    <SelectValue>
+                                        {TOKENS.find((token) => token.value === drawerData.sellToken)?.title}
+                                    </SelectValue>
+                                </SelectTrigger>
 
-                        <SelectContent>
-                            {TOKENS.map((token, index) => (
-                                <SelectItem key={index} value={token.value}>
-                                    {token.render}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                                <SelectContent>
+                                    {TOKENS.map((token, index) => (
+                                        <SelectItem key={index} value={token.value}>
+                                            {token.render}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
-                </aside>
+                            <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
+                        </aside>
+                    </Fragment>
+                ) : (
+                    <Fragment>
+                        <aside className="flex flex-col gap-3">
+                            <input
+                                type="text"
+                                placeholder="0.00"
+                                readOnly
+                                className="outline-none"
+                                value={drawerData.buyAmount}
+                            />
+                            <span className="text-xs text-black/60">{formatUSD(drawerData.buyAmount || "0")}</span>
+                        </aside>
+
+                        <aside className="flex flex-col items-center gap-2">
+                            <span>Buy</span>
+
+                            <div className="border-blue100 flex w-25 items-center justify-center gap-1 rounded-xl border px-2 py-1.75">
+                                <i className="size-5 overflow-hidden rounded-full">
+                                    <img src={streamer?.profilePicture} />
+                                </i>
+                                <span className="pt-0.5 text-xs">{streamer?.username}</span>
+                            </div>
+
+                            <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
+                        </aside>
+                    </Fragment>
+                )}
             </article>
 
             <div className="relative flex h-6 items-center justify-center">
-                <i className="bg-blue100 absolute h-10 w-14 rounded-lg px-4 py-2">
+                <i
+                    className="bg-blue100 absolute h-10 w-14 rounded-lg px-4 py-2"
+                    onClick={() => setIsSwapped(!isSwapped)}
+                >
                     <svg width={18} height={16} viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M7 4L4 1 1 4M4 15V1M11 12l3 3 3-3M14 1v14"
@@ -72,29 +108,71 @@ export function Swap() {
             </div>
 
             <article className="border-blue100 flex items-end justify-between rounded-xl border-2 px-3 py-2">
-                <aside className="flex flex-col gap-3">
-                    <input
-                        type="text"
-                        placeholder="0.00"
-                        readOnly
-                        className="outline-none"
-                        value={drawerData.buyAmount}
-                    />
-                    <span className="text-xs text-black/60">{formatUSD(drawerData.buyAmount)}</span>
-                </aside>
+                {!isSwapped ? (
+                    <Fragment>
+                        <aside className="flex flex-col gap-3">
+                            <input
+                                type="text"
+                                placeholder="0.00"
+                                readOnly
+                                className="outline-none"
+                                value={drawerData.buyAmount}
+                            />
+                            <span className="text-xs text-black/60">{formatUSD(drawerData.buyAmount || "0")}</span>
+                        </aside>
 
-                <aside className="flex flex-col items-center gap-2">
-                    <span>Buy</span>
+                        <aside className="flex flex-col items-center gap-2">
+                            <span>Buy</span>
 
-                    <div className="border-blue100 flex w-25 items-center justify-center gap-1 rounded-xl border p-2">
-                        <i className="size-5 overflow-hidden rounded-full">
-                            <img src={streamer?.profilePicture} />
-                        </i>
-                        <span className="pt-0.5 text-xs">{streamer?.username}</span>
-                    </div>
+                            <div className="border-blue100 flex w-25 items-center justify-center gap-1 rounded-xl border px-2 py-1.75">
+                                <i className="size-5 overflow-hidden rounded-full">
+                                    <img src={streamer?.profilePicture} />
+                                </i>
+                                <span className="pt-0.5 text-xs">{streamer?.username}</span>
+                            </div>
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
-                </aside>
+                            <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
+                        </aside>
+                    </Fragment>
+                ) : (
+                    <Fragment>
+                        <aside className="flex flex-col gap-3">
+                            <input
+                                type="text"
+                                placeholder="0.00"
+                                onChange={(event) => handleSellAmountChange(event)}
+                                value={drawerData.sellAmount}
+                                className="outline-none"
+                            />
+                            <span className="text-xs text-black/60">{formatUSD(drawerData.sellAmount || "0")}</span>
+                        </aside>
+
+                        <aside className="flex flex-col items-center gap-2">
+                            <span>Sell</span>
+
+                            <Select
+                                value={drawerData.sellToken}
+                                onValueChange={(value) => setDrawerData((state) => ({ ...state, sellToken: value }))}
+                            >
+                                <SelectTrigger className="border-blue100 w-25 rounded-xl p-2">
+                                    <SelectValue>
+                                        {TOKENS.find((token) => token.value === drawerData.sellToken)?.title}
+                                    </SelectValue>
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    {TOKENS.map((token, index) => (
+                                        <SelectItem key={index} value={token.value}>
+                                            {token.render}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <span className="text-xs text-black/60">Balance: {drawerData.sellBalance}</span>
+                        </aside>
+                    </Fragment>
+                )}
             </article>
         </section>
     );

@@ -1,4 +1,4 @@
-import { EIP1193Provider, useSignTypedData,useWallets } from "@privy-io/react-auth";
+import { EIP1193Provider, useSignTypedData, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import type { Address } from "viem";
 
@@ -14,11 +14,12 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
     const { wallets } = useWallets();
     const { signTypedData } = useSignTypedData();
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+    const [isSwapped, setIsSwapped] = useState<boolean>(false);
     const [drawerData, setDrawerData] = useState<TradeDrawerDataState>(() => ({
         buyAmount: "",
         buyBalance: "",
-        buyToken: "",
+        buyToken: streamer?.tokenAddress as Address,
         sellAmount: "",
         sellBalance: "",
         sellToken: "ETH",
@@ -34,7 +35,6 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 await wallets[0].switchChain(network.id);
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
-
                 console.log(drawerData);
                 // await buyCreatorToken(
                 //     streamer?.tokenAddress as Address,
@@ -44,31 +44,33 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 // );
 
                 await sellCreatorToken(
-                    streamer?.tokenAddress as Address,
+                    drawerData.buyToken,
                     drawerData.sellAmount,
                     provider,
                     signTypedData,
                     wallets[0].address as Address,
-                )
+                );
             } catch (error) {
                 console.error("Swap failed:", error);
                 // optionally show a toast or error UI here
             }
         },
-        [drawerData, signTypedData, streamer?.tokenAddress, wallets],
+        [drawerData, signTypedData, wallets],
     );
 
     const value = useMemo(
         () => ({
-            isDrawerOpen,
             closeDrawer: () => setIsDrawerOpen(false),
-            openDrawer: () => setIsDrawerOpen(true),
-            streamer,
             drawerData,
-            setDrawerData,
             handleSwap,
+            isDrawerOpen,
+            isSwapped,
+            openDrawer: () => setIsDrawerOpen(true),
+            setDrawerData,
+            setIsSwapped,
+            streamer,
         }),
-        [isDrawerOpen, streamer, drawerData, handleSwap],
+        [isDrawerOpen, streamer, drawerData, handleSwap, isSwapped],
     );
 
     return <TradeDrawerContext.Provider value={value}>{children}</TradeDrawerContext.Provider>;
