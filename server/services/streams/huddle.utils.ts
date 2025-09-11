@@ -1,4 +1,4 @@
-import { AccessToken } from "@huddle01/server-sdk/auth";
+import { AccessToken, Role, ROLE_PERMISSIONS } from "@huddle01/server-sdk/auth";
 
 import { SERVER_ENV } from "#config/constants.ts";
 import { huddleAPI, huddleRecorder } from "#config/huddle.ts";
@@ -9,8 +9,8 @@ export async function createHuddleRoom(title: string) {
     return roomId;
 }
 
-export async function generateHuddleAccessToken({ roomId, role }: { roomId: string; role: string }) {
-    let permissions;
+export async function generateHuddleAccessToken({ roomId, role }: { roomId: string; role: Role }) {
+    let permissions: (typeof ROLE_PERMISSIONS)[Role];
 
     if (role === "host" || role === "bot") {
         permissions = {

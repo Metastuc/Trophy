@@ -26,6 +26,7 @@ new Worker(
         const receipt = await client.waitForTransactionReceipt({ hash: txHash });
 
         if (receipt.status !== "success") {
+            logger.error({ txHash, status: receipt.status }, "Transaction failed");
             throw new Error(`Transaction ${txHash} failed`);
         }
 
@@ -39,6 +40,7 @@ new Worker(
                 tx.value === BigInt(amountRaw);
 
             if (!valid) {
+                logger.error({ txHash }, "ETH transfer mismatch");
                 throw new Error(`ETH transfer mismatch for ${txHash}`);
             }
         } else {
@@ -69,6 +71,7 @@ new Worker(
             valid = Boolean(logFound);
 
             if (!valid) {
+                logger.error({ txHash }, "Transfer event not found");
                 throw new Error(`ERC20 transfer mismatch for ${txHash}`);
             }
         }
@@ -103,10 +106,6 @@ new Worker(
         logger.info({ jobId: job.id }, "Job completed");
     })
     .on("failed", (job, err) => {
-        log.error({
-            module: "tip-worker",
-            msg: `💥 Job ${job?.id} failed`,
-            data: err.message,
-        });
+        log.error({ module: "tip-worker", msg: `💥 Job ${job?.id} failed`, data: err.message });
         logger.error({ jobId: job?.id, error: err }, "Job failed");
     });

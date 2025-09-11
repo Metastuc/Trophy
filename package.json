@@ -31,6 +31,8 @@
         "@radix-ui/react-slot": "^1.2.3",
         "@radix-ui/react-switch": "^1.2.6",
         "@tailwindcss/vite": "^4.1.13",
+        "@tanstack/query-db-collection": "^0.2.14",
+        "@tanstack/react-db": "^0.1.15",
         "@tanstack/react-query": "^5.86.0",
         "@tanstack/react-router": "^1.131.35",
         "axios": "^1.11.0",

@@ -47,6 +47,11 @@ export const SERVER_CONSTANTS = {
             KEY: (id: string) => `token:price:${id}`,
             TTL: toTime({ unit: "minutes", value: 5 }),
         },
+
+        ROOM: {
+            KEY: (id: string) => `room:${id}`,
+            TTL: toTime({ unit: "days", value: 7 }),
+        },
     },
 
     CURRENT_NETWORK: SERVER_ENV.ENVIRONMENT === "production" ? base : baseSepolia,

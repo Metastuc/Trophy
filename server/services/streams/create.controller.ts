@@ -4,6 +4,7 @@ import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
 import { createHuddleRoom, generateHuddleAccessToken, startHuddleStream } from "./huddle.utils";
+import { createRoomInRedis } from "./store.redis";
 
 export async function createStream(request: Request, response: Response, next: NextFunction) {
     const { date, title, username } = request.body;
@@ -27,6 +28,7 @@ export async function createStream(request: Request, response: Response, next: N
             await prisma.stream.create({
                 data: { roomId, scheduledAt: date, status: "SCHEDULED", streamerId: user.id, title },
             });
+
             response.customResponse<ScheduledStreamData>({
                 code: 201,
                 message: "stream scheduled succesfully",
@@ -53,6 +55,7 @@ export async function createStream(request: Request, response: Response, next: N
                 await startHuddleStream({ roomId, rtmpUrls: urls, token: liveStreamAccessToken });
             }
 
+            await createRoomInRedis({ hostId: user.id, roomId });
             response.customResponse<CreatedStreamData>({
                 code: 201,
                 message: "stream created successfully",

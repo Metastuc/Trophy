@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StreamRouteImport } from './routes/stream'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as UsernameRouteImport } from './routes/$username'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,6 +25,11 @@ const StreamRoute = StreamRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRoute
   '/discover': typeof DiscoverRoute
+  '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/stream': typeof StreamRoute
   '/live/$room': typeof LiveRoomRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRoute
   '/discover': typeof DiscoverRoute
+  '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/stream': typeof StreamRoute
   '/live/$room': typeof LiveRoomRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRoute
   '/discover': typeof DiscoverRoute
+  '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/stream': typeof StreamRoute
   '/live/$room': typeof LiveRoomRoute
@@ -78,16 +87,25 @@ export interface FileRouteTypes {
     | '/'
     | '/$username'
     | '/discover'
+    | '/notifications'
     | '/profile'
     | '/stream'
     | '/live/$room'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$username' | '/discover' | '/profile' | '/stream' | '/live/$room'
+  to:
+    | '/'
+    | '/$username'
+    | '/discover'
+    | '/notifications'
+    | '/profile'
+    | '/stream'
+    | '/live/$room'
   id:
     | '__root__'
     | '/'
     | '/$username'
     | '/discover'
+    | '/notifications'
     | '/profile'
     | '/stream'
     | '/live/$room'
@@ -97,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   UsernameRoute: typeof UsernameRoute
   DiscoverRoute: typeof DiscoverRoute
+  NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   StreamRoute: typeof StreamRoute
   LiveRoomRoute: typeof LiveRoomRoute
@@ -116,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discover': {
@@ -153,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   UsernameRoute: UsernameRoute,
   DiscoverRoute: DiscoverRoute,
+  NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   StreamRoute: StreamRoute,
   LiveRoomRoute: LiveRoomRoute,
