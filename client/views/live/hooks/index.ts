@@ -11,3 +11,7 @@ export function useLiveStreamContext(): LiveStreamContextValue {
 
     return context;
 }
+
+export function useLiveStreamPermissions() {
+    return useLiveStreamContext().permissions;
+}

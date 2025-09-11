@@ -4,6 +4,7 @@ import { useShallow } from "zustand/shallow";
 
 import { joinStream } from "@/api/join-stream";
 import { cn } from "@/lib/utils";
+import { LiveStreamScreen } from "@/views/live/components/screen";
 import { LiveStreamContextProvider } from "@/views/live/context";
 import { generateGuestId } from "@/views/live/utils";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
@@ -36,7 +37,9 @@ function RouteComponent() {
 
     return (
         <section className={cn("shell", "flex flex-col")}>
-            <LiveStreamContextProvider roomId={roomId}></LiveStreamContextProvider>
+            <LiveStreamContextProvider {...data} roomId={roomId}>
+                <LiveStreamScreen />
+            </LiveStreamContextProvider>
         </section>
     );
 }

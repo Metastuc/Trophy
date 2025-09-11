@@ -19,8 +19,6 @@ export function ExitButton() {
         })),
     );
 
-    console.log("isLiveRoom:", isLiveRoom);
-
     async function handleLogout() {
         if (isAuthenticated) {
             if (isLiveRoom) {
