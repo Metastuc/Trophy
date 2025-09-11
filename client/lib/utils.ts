@@ -8,7 +8,11 @@ export function cn(...inputs: ClassValue[]): string {
 
 export function useShouldShowExitButton(routes: string[]): boolean {
     const location = useLocation();
-    return routes.includes(location.pathname);
+    return routes.some((route) => {
+        const regexPattern = route.replace(/\$[a-zA-Z0-9_]+/g, "[^/]+").replace(/\//g, "\\/");
+        const regex = new RegExp(`^${regexPattern}$`);
+        return regex.test(location.pathname);
+    });
 }
 
 export function resetScroll(): void {
@@ -40,6 +44,6 @@ export function formatToken(amount: string): string {
     return `${(parseFloat(amount.toString()) * 1).toFixed(2)}`;
 }
 
-export function delay<T>(promise: Promise<T>, ms: number): Promise<T> {
+export function delay<T>({ promise, ms }: { promise: Promise<T>; ms: number }): Promise<T> {
     return new Promise((resolve) => setTimeout(() => resolve(promise), ms));
 }

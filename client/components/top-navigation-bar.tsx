@@ -9,7 +9,7 @@ import { ExitButton } from "./ui/exit-button";
 
 export function TopNavigationBar() {
     const checkRoute = useMatchRoute();
-    const showExitButton = useShouldShowExitButton(["/profile", "/stream"]);
+    const showExitButton = useShouldShowExitButton(["/profile", "/stream", "/live/$room"]);
 
     async function handleButtonClick() {
         await sleep(250);

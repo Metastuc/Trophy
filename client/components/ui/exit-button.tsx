@@ -1,5 +1,5 @@
 import { usePrivy } from "@privy-io/react-auth";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
@@ -9,6 +9,8 @@ import { useAuthenticationStore } from "#~/store/authentication.ts";
 export function ExitButton() {
     const { logout: privyLogout } = usePrivy();
     const navigate = useNavigate();
+    const location = useLocation();
+    const isLiveRoom = location.pathname.startsWith("/live/");
 
     const { isAuthenticated, logout: appLogout } = useAuthenticationStore(
         useShallow((state) => ({
@@ -17,15 +19,22 @@ export function ExitButton() {
         })),
     );
 
+    console.log("isLiveRoom:", isLiveRoom);
+
     async function handleLogout() {
         if (isAuthenticated) {
-            try {
-                privyLogout().then(() => appLogout());
-            } catch (error) {
-                toast.error((error as Error).message);
+            if (isLiveRoom) {
+                navigate({ to: "/" });
+            } else {
+                try {
+                    privyLogout().then(() => appLogout());
+                } catch (error) {
+                    toast.error((error as Error).message);
+                }
             }
+        } else {
+            navigate({ to: "/" });
         }
-        navigate({ to: "/" });
     }
 
     return (

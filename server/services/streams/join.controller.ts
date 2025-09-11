@@ -6,9 +6,9 @@ import { HttpError } from "#middleware/error.ts";
 
 import { generateHuddleAccessToken } from "./huddle.utils";
 import { addParticipantToRoom, getRoom } from "./store.redis";
+import { isGuest } from "./utils";
 
 export async function joinStream(request: Request, response: Response, next: NextFunction) {
-    let role: Role = "listener";
     const { id: roomId } = request.params;
     const { username } = request.body;
 
@@ -17,20 +17,29 @@ export async function joinStream(request: Request, response: Response, next: Nex
         if (!username) throw new HttpError({ message: "username is required", code: 422 });
 
         const stream = await prisma.stream.findUnique({
-            where: { roomId },
+            where: { roomId, status: "LIVE" },
             include: { streamer: { select: { username: true, profileImage: true } } },
         });
         if (!stream) throw new HttpError({ message: "stream not found", code: 404, data: { roomId } });
 
-        const user = await prisma.user.findUnique({ where: { username } });
-        if (!user) throw new HttpError({ message: "user not found", code: 404, data: { username } });
-
+        let role: Role = "listener";
+        let userId: string;
         const roomInRedis = await getRoom(roomId);
-        if (user.id === roomInRedis.host) role = "host";
-        else if (roomInRedis.invitedGuests.includes(user.id)) role = "guest";
 
-        const alreadyInRoom = roomInRedis.participants.some((participant) => participant.id === user.id);
-        if (!alreadyInRoom) addParticipantToRoom({ role, roomId, userId: user.id });
+        if (isGuest(username)) {
+            userId = username;
+        } else {
+            const user = await prisma.user.findUnique({ where: { username } });
+            if (!user) throw new HttpError({ message: "user not found", code: 404, data: { username } });
+
+            userId = user.id;
+
+            if (user.id === roomInRedis.host) role = "host";
+            else if (roomInRedis.invitedGuests.includes(user.id)) role = "guest";
+        }
+
+        const alreadyInRoom = roomInRedis.participants.some((participant) => participant.id === userId);
+        if (!alreadyInRoom) addParticipantToRoom({ role, roomId, userId });
 
         const token = await generateHuddleAccessToken({ role, roomId });
 
@@ -38,12 +47,12 @@ export async function joinStream(request: Request, response: Response, next: Nex
             code: 200,
             message: `joined stream ${roomId}`,
             data: {
+                participants: roomInRedis.participants,
                 profileImage: stream.streamer.profileImage,
                 role,
                 title: stream.title,
                 token,
                 username: stream.streamer.username,
-                participants: roomInRedis.participants,
             },
         });
     } catch (error) {

@@ -7,7 +7,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     return (
         <Fragment>
             <TopNavigationBar />
-            <main className="pb-20">{children}</main>
+            <main className="pb-16.75">{children}</main>
             <BottomNavigationBar />
         </Fragment>
     );

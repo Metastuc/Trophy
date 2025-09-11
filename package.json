@@ -7,7 +7,7 @@
         "build": "tsc -b && vite build",
         "db-pull": "bunx --bun dotenv -e .env.local -- bunx --bun prisma db pull",
         "dev": "bunx --bun vite",
-        "lint": "bunx --bun tsc -b &&bunx --bun prettier --write . && bunx --bun eslint --fix .",
+        "lint": "bunx --bun tsc -b && bunx --bun prettier --write . && bunx --bun eslint --fix .",
         "preview": "vite preview",
         "prod": "prisma db push && pnpm exec tsx server/index.ts",
         "server": "bun --watch server/index.ts",

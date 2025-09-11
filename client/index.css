@@ -162,6 +162,10 @@
     :is(.user-pfp) {
         @apply !size-7;
     }
+
+    .shell {
+        @apply h-[calc(100dvh-8rem)];
+    }
 }
 
 .host-only,
