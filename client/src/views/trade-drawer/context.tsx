@@ -43,12 +43,6 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 //     wallets[0].address as Addreconst flaunch = flaunchClient(provider, address);ss,
                 // );
 
-                const q = await getSwapQuote(provider,
-                    false,
-                    drawerData.sellAmount,
-                    "0x4d3efd7dca802e19d213bfc4f12b0576416a583a"
-                )
-
                 console.log("eth: ", formatEther(q))
 
                 const flaunch = flaunchClient(provider, wallets[0].address as Address);
