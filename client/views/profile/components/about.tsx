@@ -1,6 +1,7 @@
 import { BadgeDollarSign, Receipt } from "lucide-react";
 import { Address } from "viem";
 
+import { FollowUserButton } from "@/components/follow-button";
 import { TipDrawer } from "@/views/tip-token-drawer";
 
 import { useUserProfileContext } from "../hooks";
@@ -48,7 +49,7 @@ export function About() {
 
                 <div className="flex gap-2">
                     <span className="">
-                        <b className="text-blue100 font-normal">{profileData.followerCount}</b> Following
+                        <b className="text-blue100 font-normal">{profileData.followingCount}</b> Following
                     </span>
 
                     <span className="">
@@ -60,9 +61,7 @@ export function About() {
 
                 {!isCurrentUser ? (
                     <div className="mt-2 flex items-center gap-5">
-                        <button className="bg-blue100 flex w-22 items-center justify-center gap-1 rounded-xs py-1">
-                            <span className="pt-0.5 text-xs text-white">Follow</span>
-                        </button>
+                        <FollowUserButton username={profileData.username} />
 
                         <button className="bg-blue100 flex w-22 items-center justify-center gap-1 rounded-xs py-1 text-white">
                             <i className="size-3">

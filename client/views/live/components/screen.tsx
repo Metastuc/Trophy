@@ -1,15 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link, Loader } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Link as LinkIcon } from "lucide-react";
 import { Fragment } from "react";
 import { toast } from "sonner";
-import { useShallow } from "zustand/shallow";
 
-import { getFollowStatus } from "@/api/subscription";
+import { FollowUserButton } from "@/components/follow-button";
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
-import { useServer } from "@/hooks/server";
-import { API_ENDPOINTS, queryClient } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 import { useLiveStreamContext } from "../hooks";
 import { LiveStreamControls } from "./controls";
@@ -17,64 +12,6 @@ import { LiveStreamLayout } from "./layout";
 
 export function LiveStreamScreen() {
     const { username, title, profileImage } = useLiveStreamContext();
-    const { authenticatedUser, isAuthenticated } = useAuthenticationStore(
-        useShallow((state) => ({
-            authenticatedUser: state.user?.backendUserData.user.username,
-            isAuthenticated: state.isAuthenticated,
-        })),
-    );
-
-    const { data: isFollowingStatus, isPending: isFollowingStatusPending } = useQuery({
-        queryKey: ["follow-status", username],
-        queryFn: async () => getFollowStatus(username),
-        refetchOnWindowFocus: false,
-        enabled: isAuthenticated && !!username,
-    });
-
-    const isStreamer = isAuthenticated && username === authenticatedUser;
-    const isFollowing = isFollowingStatus?.isFollowing === true;
-
-    const { mutate, isPending: isMutating } = useServer(
-        {
-            METHOD: isFollowing ? "DELETE" : "POST",
-            URL: isFollowing
-                ? API_ENDPOINTS.SUBSCRIPTION.UNFOLLOW_USER(username)
-                : API_ENDPOINTS.SUBSCRIPTION.FOLLOW_USER(username),
-        },
-
-        {
-            onMutate() {
-                const previous = isFollowing;
-
-                queryClient.setQueryData(["follow-status", username], {
-                    isFollowing: !previous,
-                });
-
-                return { previous };
-            },
-
-            onSuccess(_data, _variables, context) {
-                if (typeof context === "object" && context !== null && "previous" in context) {
-                    const wasFollowing = context.previous;
-                    toast.success(
-                        wasFollowing ? `You have unfollowed ${username}` : `You are now following ${username}`,
-                    );
-                }
-
-                queryClient.invalidateQueries({
-                    queryKey: ["follow-status", username],
-                });
-            },
-
-            onError(_data, _variables, context) {
-                if (typeof context === "object" && context !== null && "previous" in context) {
-                    queryClient.setQueryData(["follow-status", username], {
-                        isFollowing: context.previous,
-                    });
-                }
-            },
-        },
-    );
 
     async function handleShare() {
         try {
@@ -100,27 +37,13 @@ export function LiveStreamScreen() {
                         <div className="size-10">
                             <StreamerPFP imageSrc={profileImage} imageAlt={`${username}-pfp`} isLive />
                         </div>
-                        <span>@{username}</span>
+
+                        <Link to="/$username" params={{ username }}>
+                            <span>@{username}</span>
+                        </Link>
                     </div>
 
-                    {!isStreamer ? (
-                        <button
-                            className={cn(
-                                "flex h-8 w-20 items-center justify-center rounded-xs px-2 text-white shadow-sm transition-colors",
-                                isMutating || isFollowingStatusPending
-                                    ? "cursor-not-allowed bg-gray-600"
-                                    : "bg-blue100",
-                            )}
-                            onClick={() => mutate({ username })}
-                            disabled={isMutating || isFollowingStatusPending}
-                        >
-                            {isMutating || isFollowingStatusPending ? (
-                                <Loader className="size-4 animate-spin" />
-                            ) : (
-                                <span className="text-sm">{isFollowing ? "Following" : "Follow"}</span>
-                            )}
-                        </button>
-                    ) : null}
+                    <FollowUserButton username={username} styles={{ button: "h-8", text: "text-sm" }} />
 
                     <button
                         className="bg-blue100 flex h-8 items-center justify-center gap-1 rounded-xs px-3 text-white shadow-sm"
@@ -128,7 +51,7 @@ export function LiveStreamScreen() {
                     >
                         <span className="text-sm">Share</span>
                         <i className="size-3.5">
-                            <Link />
+                            <LinkIcon />
                         </i>
                     </button>
                 </aside>

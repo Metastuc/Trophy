@@ -40,6 +40,8 @@ function NavigationButton({ href, icon, title }: NavigationButton) {
         }
     }
 
+    if (useRouterState().location.pathname.startsWith("/live/")) return null;
+
     return (
         <li>
             <Link
