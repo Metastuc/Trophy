@@ -6,7 +6,7 @@ import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
-// import { SignTypedData } from "./types";
+import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
@@ -166,19 +166,20 @@ export const sellCreatorToken = async (
     coinAddress: Address,
     amount: string,
     provider: EIP1193Provider,
-    // signTypedData: SignTypedData,
+    signTypedData: SignTypedData,
     address: Address,
-    signature?: string,
-    permitSingle?: PermitSingle
 ) => {
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseEther(amount);
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
-    console.log({ allowance })
-    console.log(signature, permitSingle)
-    // if (allowance < amountInUnits) {
-    //     // const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-    //     // const { signature } = await signTypedData(typedData, { address });
+
+    if (allowance < amountInUnits) {
+        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+
+        typedData.message.details.amount = typedData.message.details.amount.toString();
+        typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
+
+        const { signature } = await signTypedData(typedData, { address });
 
         const hash = await flaunch.sellCoin({
             coinAddress,
@@ -189,15 +190,15 @@ export const sellCreatorToken = async (
         });
 
         return await checkTx(hash);
-    // } else {
-        // const hash = await flaunch.sellCoin({
-        //     coinAddress,
-        //     amountIn: amountInUnits,
-        //     slippagePercent: 4,
-        // });
+    } else {
+        const hash = await flaunch.sellCoin({
+            coinAddress,
+            amountIn: amountInUnits,
+            slippagePercent: 4,
+        });
 
-        // return await checkTx(hash);
-    // }
+        return await checkTx(hash);
+    }
 };
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {
