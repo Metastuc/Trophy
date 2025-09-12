@@ -1,10 +1,9 @@
-import { EIP1193Provider, useSignTypedData,useWallets } from "@privy-io/react-auth";
+import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { type Address } from "viem";
 
 import { network } from "@/lib/constants";
-// import { buyCreatorToken } from "@/lib/flaunch";
-import { flaunchClient, sellCreatorToken } from "@/lib/flaunch";
+import { buyCreatorToken } from "@/lib/flaunch";
 
 import { TradeDrawerContext } from "./hooks";
 
@@ -12,7 +11,6 @@ type TradeDrawerContextProvider = PropsWithChildren<TradeDrawer>;
 
 export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerContextProvider) {
     const { wallets } = useWallets();
-    const { signTypedData } = useSignTypedData();
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [drawerData, setDrawerData] = useState<TradeDrawerDataState>(() => ({
@@ -34,43 +32,18 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 await wallets[0].switchChain(network.id);
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
-
-                console.log(drawerData);
-                // await buyCreatorToken(
-                //     streamer?.tokenAddress as Address,
-                //     drawerData.sellAmount,
-                //     provider,
-                //     wallets[0].address as Addreconst flaunch = flaunchClient(provider, address);ss,
-                // );
-
-                const flaunch = flaunchClient(provider, wallets[0].address as Address);
-                const { typedData, permitSingle } = await flaunch.getPermit2TypedData("0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address);
-                console.log({ typedData });
-                typedData.message.details.amount = typedData.message.details.amount.toString();
-                typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
-                console.log({ new: typedData });
-                let uiOptions: { [key: string]: string } | undefined = undefined;
-                if (wallets[0].walletClientType === "privy") {
-                    uiOptions = { buttonText: "Sign Message", title: "Sign Approval Message", description: "Sign message to approve spending of the creator token" }
-                }
-                const { signature } = await signTypedData(typedData, { uiOptions, address: wallets[0].address });
-                console.log({ signature });
-
-                await sellCreatorToken(
-                    "0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address,
+                await buyCreatorToken(
+                    streamer?.tokenAddress as Address,
                     drawerData.sellAmount,
                     provider,
-                    // signTypedData,
                     wallets[0].address as Address,
-                    signature,
-                    permitSingle
-                )
+                );
             } catch (error) {
                 console.error("Swap failed:", error);
                 // optionally show a toast or error UI here
             }
         },
-        [drawerData, signTypedData, wallets],
+        [drawerData.sellAmount, streamer?.tokenAddress, wallets],
     );
 
     const value = useMemo(
