@@ -49,7 +49,11 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 typedData.message.details.amount = typedData.message.details.amount.toString();
                 typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
                 console.log({ new: typedData });
-                const { signature } = await signTypedData(typedData, { address: wallets[0].address });
+                let uiOptions: { [key: string]: string } | undefined = undefined;
+                if (wallets[0].walletClientType === "privy") {
+                    uiOptions = { buttonText: "Sign Message", title: "Sign Approval Message", description: "Sign message to approve spending of the creator token" }
+                }
+                const { signature } = await signTypedData(typedData, { uiOptions, address: wallets[0].address });
                 console.log({ signature });
 
                 await sellCreatorToken(
