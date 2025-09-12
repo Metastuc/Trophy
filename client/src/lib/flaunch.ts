@@ -11,7 +11,7 @@ import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
-const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
+export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!fClient) {
         const walletClient = getWalletClient(provider, address);
 
@@ -149,12 +149,27 @@ export const getSwapQuote = async (
     return await flaunch.getSellQuoteExactInput(coinAddress, parseEther(amount));
 };
 
+export type PermitDetails = {
+    token: Address;
+    amount: bigint;
+    expiration: number;
+    nonce: number;
+};
+
+export type PermitSingle = {
+  details: PermitDetails;
+  spender: Address;
+  sigDeadline: bigint;
+};
+
 export const sellCreatorToken = async (
     coinAddress: Address,
     amount: string,
     provider: EIP1193Provider,
     signTypedData: SignTypedData,
     address: Address,
+    signature: string,
+    permitSingle: PermitSingle
 ) => {
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseEther(amount);
@@ -162,8 +177,8 @@ export const sellCreatorToken = async (
     console.log({ allowance })
     console.log({ signTypedData })
     if (allowance < amountInUnits) {
-        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-        const { signature } = await signTypedData(typedData, { address });
+        // const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+        // const { signature } = await signTypedData(typedData, { address });
 
         const hash = await flaunch.sellCoin({
             coinAddress,

@@ -1,10 +1,10 @@
 import { EIP1193Provider, useSignTypedData,useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
-import type { Address } from "viem";
+import { type Address,formatEther } from "viem";
 
 import { network } from "@/lib/constants";
 // import { buyCreatorToken } from "@/lib/flaunch";
-import { sellCreatorToken } from "@/lib/flaunch";
+import { flaunchClient, getSwapQuote, sellCreatorToken } from "@/lib/flaunch";
 
 import { TradeDrawerContext } from "./hooks";
 
@@ -40,15 +40,30 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 //     streamer?.tokenAddress as Address,
                 //     drawerData.sellAmount,
                 //     provider,
-                //     wallets[0].address as Address,
+                //     wallets[0].address as Addreconst flaunch = flaunchClient(provider, address);ss,
                 // );
 
+                const q = await getSwapQuote(provider,
+                    false,
+                    drawerData.sellAmount,
+                    "0x4d3efd7dca802e19d213bfc4f12b0576416a583a"
+                )
+
+                console.log("eth: ", formatEther(q))
+
+                const flaunch = flaunchClient(provider, wallets[0].address as Address);
+                const { typedData, permitSingle } = await flaunch.getPermit2TypedData("0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address);
+                console.log({ typedData });
+                const { signature } = await signTypedData(typedData, { address: wallets[0].address });
+
                 await sellCreatorToken(
-                    streamer?.tokenAddress as Address,
+                    "0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address,
                     drawerData.sellAmount,
                     provider,
                     signTypedData,
                     wallets[0].address as Address,
+                    signature,
+                    permitSingle
                 )
             } catch (error) {
                 console.error("Swap failed:", error);
