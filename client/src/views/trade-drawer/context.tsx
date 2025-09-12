@@ -1,10 +1,10 @@
 import { EIP1193Provider, useSignTypedData,useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
-import { type Address,formatEther } from "viem";
+import { type Address } from "viem";
 
 import { network } from "@/lib/constants";
 // import { buyCreatorToken } from "@/lib/flaunch";
-import { flaunchClient, getSwapQuote, sellCreatorToken } from "@/lib/flaunch";
+import { flaunchClient, sellCreatorToken } from "@/lib/flaunch";
 
 import { TradeDrawerContext } from "./hooks";
 
@@ -42,8 +42,6 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 //     provider,
                 //     wallets[0].address as Addreconst flaunch = flaunchClient(provider, address);ss,
                 // );
-
-                console.log("eth: ", formatEther(q))
 
                 const flaunch = flaunchClient(provider, wallets[0].address as Address);
                 const { typedData, permitSingle } = await flaunch.getPermit2TypedData("0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address);
