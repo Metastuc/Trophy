@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
+import { followQueue } from "./follow.worker";
+
 export async function followUser(request: Request, response: Response, next: NextFunction) {
     const privyId = request.privyUser?.userId;
     const { userId } = request.params;
@@ -26,7 +28,7 @@ export async function followUser(request: Request, response: Response, next: Nex
                 },
             })
         ) {
-            throw new HttpError({ message: "You are already following this user", code: 400 });
+            throw new HttpError({ message: `You are already following ${userId}`, code: 400 });
         }
 
         const follow = await prisma.follow.create({
@@ -36,28 +38,14 @@ export async function followUser(request: Request, response: Response, next: Nex
             },
         });
 
-        await Promise.all([
-            prisma.stats.upsert({
-                where: { userId: whoWantsToFollow?.id },
-                create: { userId: whoWantsToFollow?.id, followingCount: 1 },
-                update: { followingCount: { increment: 1 } },
-            }),
-
-            prisma.stats.upsert({
-                where: { userId: whoIsToBeFollowed?.id },
-                create: { userId: whoIsToBeFollowed?.id, followerCount: 1 },
-                update: { followerCount: { increment: 1 } },
-            }),
-
-            prisma.notification.create({
-                data: {
-                    userId: whoIsToBeFollowed?.id,
-                    type: "FOLLOW",
-                    message: `${whoWantsToFollow?.username} started following you.`,
-                    follow: { connect: { id: follow.id } },
-                },
-            }),
-        ]);
+        await followQueue.add(
+            "follow-user",
+            { follow, whoWantsToFollow, whoIsToBeFollowed },
+            {
+                attempts: 5,
+                backoff: { type: "exponential", delay: 1000 },
+            },
+        );
 
         response.customResponse<undefined>({
             code: 201,

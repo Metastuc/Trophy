@@ -56,7 +56,9 @@ export function LiveStreamScreen() {
             onSuccess(_data, _variables, context) {
                 if (typeof context === "object" && context !== null && "previous" in context) {
                     const wasFollowing = context.previous;
-                    toast.success(wasFollowing ? `You have unfollowed ${username}` : `You are now following ${username}`);
+                    toast.success(
+                        wasFollowing ? `You have unfollowed ${username}` : `You are now following ${username}`,
+                    );
                 }
 
                 queryClient.invalidateQueries({

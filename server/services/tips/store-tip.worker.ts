@@ -11,8 +11,8 @@ import { logger } from "#utils/logger.ts";
 export const tipsQueue = new Queue("tips", {
     connection: redis,
     defaultJobOptions: {
-        removeOnComplete: { age: toTime({ unit: "hours", value: 1 }), count: 1000 },
-        removeOnFail: { age: toTime({ unit: "days", value: 1 }) },
+        removeOnComplete: { age: toTime({ unit: "hours", value: 1 }), count: 100 },
+        removeOnFail: { age: toTime({ unit: "days", value: 1 }), count: 500 },
     },
 });
 
