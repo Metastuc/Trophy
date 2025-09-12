@@ -175,29 +175,28 @@ export const sellCreatorToken = async (
     const amountInUnits = parseEther(amount);
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
     console.log({ allowance })
-    console.log({ signTypedData })
     console.log(signature, permitSingle)
     // if (allowance < amountInUnits) {
     //     // const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
     //     // const { signature } = await signTypedData(typedData, { address });
 
-    //     const hash = await flaunch.sellCoin({
-    //         coinAddress,
-    //         slippagePercent: 4,
-    //         amountIn: amountInUnits,
-    //         permitSingle,
-    //         signature: signature as Address,
-    //     });
-
-    //     return await checkTx(hash);
-    // } else {
         const hash = await flaunch.sellCoin({
             coinAddress,
-            amountIn: amountInUnits,
             slippagePercent: 4,
+            amountIn: amountInUnits,
+            permitSingle,
+            signature: signature as Address,
         });
 
         return await checkTx(hash);
+    // } else {
+        // const hash = await flaunch.sellCoin({
+        //     coinAddress,
+        //     amountIn: amountInUnits,
+        //     slippagePercent: 4,
+        // });
+
+        // return await checkTx(hash);
     // }
 };
 
