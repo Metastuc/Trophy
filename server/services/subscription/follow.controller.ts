@@ -19,16 +19,13 @@ export async function followUser(request: Request, response: Response, next: Nex
             throw new HttpError({ message: "You cannot follow yourself", code: 400 });
         }
 
-        const isAlreadyFollowing = await prisma.follow.findUnique({
-            where: {
-                followerId_followingId: {
-                    followerId: whoWantsToFollow.id,
-                    followingId: whoIsToBeFollowed.id,
+        if (
+            await prisma.follow.findUnique({
+                where: {
+                    followerId_followingId: { followerId: whoWantsToFollow.id, followingId: whoIsToBeFollowed.id },
                 },
-            },
-        });
-
-        if (isAlreadyFollowing) {
+            })
+        ) {
             throw new HttpError({ message: "You are already following this user", code: 400 });
         }
 
