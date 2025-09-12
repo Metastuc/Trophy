@@ -40,14 +40,16 @@ export async function followUser(request: Request, response: Response, next: Nex
         });
 
         await Promise.all([
-            prisma.stats.update({
+            prisma.stats.upsert({
                 where: { userId: whoWantsToFollow?.id },
-                data: { followingCount: { increment: 1 } },
+                create: { userId: whoWantsToFollow?.id, followingCount: 1 },
+                update: { followingCount: { increment: 1 } },
             }),
 
-            prisma.stats.update({
+            prisma.stats.upsert({
                 where: { userId: whoIsToBeFollowed?.id },
-                data: { followerCount: { increment: 1 } },
+                create: { userId: whoIsToBeFollowed?.id, followerCount: 1 },
+                update: { followerCount: { increment: 1 } },
             }),
 
             prisma.notification.create({

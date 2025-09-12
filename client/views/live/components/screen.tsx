@@ -1,23 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "lucide-react";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
+import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { getFollowStatus } from "@/api/subscription";
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { useServer } from "@/hooks/server";
-import { useSocket } from "@/hooks/socket";
 import { API_ENDPOINTS } from "@/lib/constants";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
+import { cn } from "@/lib/utils";
 import { useLiveStreamContext } from "../hooks";
 import { LiveStreamControls } from "./controls";
 import { LiveStreamLayout } from "./layout";
 
 export function LiveStreamScreen() {
-    const socket = useSocket();
-
     const { username, title, profileImage } = useLiveStreamContext();
     const { authenticatedUser, isAuthenticated } = useAuthenticationStore(
         useShallow((state) => ({
@@ -60,19 +58,6 @@ export function LiveStreamScreen() {
         }
     }
 
-    useEffect(
-        function () {
-            socket.on("follow.confirmed", ({ message }) => {
-                toast.success(message);
-            });
-
-            return () => {
-                socket.off("follow.confirmed");
-            };
-        },
-        [socket],
-    );
-
     return (
         <Fragment>
             <section style={{ backgroundImage: "url(/tv-bg.svg)", backgroundSize: "cover" }} className="aspect-video">
@@ -93,7 +78,12 @@ export function LiveStreamScreen() {
 
                     {!isStreamer ? (
                         <button
-                            className="bg-blue100 flex h-8 items-center justify-center rounded-xs px-2 text-white shadow-sm"
+                            className={cn(
+                                "flex h-8 items-center justify-center rounded-xs px-2 text-white shadow-sm",
+                                isMutating || isFollowingStatusPending
+                                    ? "cursor-not-allowed opacity-50"
+                                    : "bg-blue100 opacity-100",
+                            )}
                             onClick={() => mutate({ username })}
                             disabled={isMutating || isFollowingStatusPending}
                         >

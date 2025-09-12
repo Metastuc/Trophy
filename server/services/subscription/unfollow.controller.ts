@@ -32,19 +32,26 @@ export async function unfollowUser(request: Request, response: Response, next: N
             throw new HttpError({ message: "You are not following this user", code: 400 });
         }
 
-        await prisma.follow.delete({
-            where: { id: followRecord.id },
-        });
+        await prisma.follow.delete({ where: { id: followRecord.id } });
+
+        const [unfollowerStats, unfollowedStats] = await Promise.all([
+            prisma.stats.findUnique({ where: { userId: whoWantsToUnfollow.id } }),
+            prisma.stats.findUnique({ where: { userId: whoIsToBeUnfollowed.id } }),
+        ]);
 
         await Promise.all([
-            prisma.stats.update({
+            prisma.stats.upsert({
                 where: { userId: whoWantsToUnfollow.id },
-                data: { followingCount: { decrement: 1 } },
+                create: { userId: whoWantsToUnfollow.id, followingCount: 0 },
+                update: {
+                    followingCount: { decrement: unfollowerStats && unfollowerStats.followingCount > 0 ? 1 : 0 },
+                },
             }),
 
-            prisma.stats.update({
+            prisma.stats.upsert({
                 where: { userId: whoIsToBeUnfollowed.id },
-                data: { followerCount: { decrement: 1 } },
+                create: { userId: whoIsToBeUnfollowed.id, followerCount: 0 },
+                update: { followerCount: { decrement: unfollowedStats && unfollowedStats.followerCount > 0 ? 1 : 0 } },
             }),
         ]);
 
