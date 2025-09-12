@@ -64,7 +64,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                     "0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address,
                     drawerData.sellAmount,
                     provider,
-                    signTypedData,
+                    // signTypedData,
                     wallets[0].address as Address,
                     signature,
                     permitSingle

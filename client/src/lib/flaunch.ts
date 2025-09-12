@@ -6,7 +6,7 @@ import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
-import { SignTypedData } from "./types";
+// import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
@@ -166,7 +166,7 @@ export const sellCreatorToken = async (
     coinAddress: Address,
     amount: string,
     provider: EIP1193Provider,
-    signTypedData: SignTypedData,
+    // signTypedData: SignTypedData,
     address: Address,
     signature?: string,
     permitSingle?: PermitSingle
