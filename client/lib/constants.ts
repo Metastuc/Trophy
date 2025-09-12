@@ -17,6 +17,7 @@ export const CLIENT_ENV = z
         VITE_PRIVY_APP_ID: z.string(),
         VITE_PRIVY_CLIENT_ID: z.string(),
         VITE_SERVER_URL: z.string(),
+        VITE_WS_URL: z.string(),
     })
     .parse(import.meta.env);
 

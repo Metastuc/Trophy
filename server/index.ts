@@ -1,9 +1,11 @@
 import cors from "cors";
 import express, { type Request, type Response } from "express";
+import { createServer } from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import path from "path";
 
 import { SERVER_ENV } from "#config/constants.ts";
+import { initIO } from "#config/socket.ts";
 import { errorHandler } from "#middleware/error.ts";
 import { loggingMiddleware } from "#middleware/logging.ts";
 import { customResponse } from "#middleware/response.ts";
@@ -12,6 +14,7 @@ import { getCwd } from "#utils/get-cwd.ts";
 import { logger } from "#utils/logger.ts";
 
 const app = express();
+const server = createServer(app);
 const port = SERVER_ENV.PORT;
 const url = SERVER_ENV.ENVIRONMENT === "development" ? `http://localhost:${port}` : SERVER_ENV.CLIENT_URL;
 const { dirname } = getCwd(import.meta.url);
@@ -27,6 +30,8 @@ app.use(loggingMiddleware);
 app.use(customResponse);
 app.use("/api", routes);
 app.use(errorHandler);
+
+initIO(server);
 
 switch (SERVER_ENV.ENVIRONMENT) {
     case "development":
@@ -57,6 +62,6 @@ switch (SERVER_ENV.ENVIRONMENT) {
         process.exit(1);
 }
 
-app.listen(port, function () {
+server.listen(port, function () {
     logger.info(`Server started on port ${port} \nAPI: ${url}/api`);
 });

@@ -2,16 +2,20 @@ import { useLocalPeer, useRoom } from "@huddle01/react";
 import { useEffect } from "react";
 
 import { log } from "#~/utils/logger.ts";
+import { useSocket } from "@/hooks/socket";
 
 export function useHuddleJoinRoom({ roomId, token }: { roomId: string; token: string }) {
     const { role } = useLocalPeer();
+    const socket = useSocket();
 
     const { joinRoom, leaveRoom } = useRoom({
         onJoin(data) {
             log({ data: { data }, module: "LIVE STREAM CONNECT", msg: "✅ joined Huddle room", tag: "HUDDLE" });
+            socket.emit("room.join", { roomId });
         },
         onLeave(data) {
             log({ data: { data }, module: "LIVE STREAM CONNECT", msg: "👋 left Huddle room", tag: "HUDDLE" });
+            socket.emit("room.leave", { roomId });
         },
     });
 
