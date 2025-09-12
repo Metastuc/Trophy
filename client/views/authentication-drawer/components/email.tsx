@@ -67,11 +67,23 @@ export function AuthenticateWithEmail() {
                 <div className="p-4">
                     <i
                         className={cn(
-                            "size-5 transition-colors",
+                            "size-6 transition-colors",
                             formState.email ? "text-white/70" : "text-black100/70",
                         )}
                     >
-                        <img src="/email.svg" alt="email_filled" />
+                        <span
+                            className="flex size-full items-center justify-center bg-current"
+                            style={{
+                                maskImage: "url(/email.svg)",
+                                WebkitMaskImage: "url(/email.svg)",
+                                maskRepeat: "no-repeat",
+                                WebkitMaskRepeat: "no-repeat",
+                                maskPosition: "center",
+                                WebkitMaskPosition: "center",
+                                maskSize: "contain",
+                                WebkitMaskSize: "contain",
+                            }}
+                        />
                     </i>
                 </div>
 

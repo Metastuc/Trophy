@@ -1,6 +1,13 @@
 interface LiveStreamContextValues {
-    roomId: string;
+    huddleRole: string;
+    participants: { id: string; role: string };
     permissions: RoomPermissions;
+    profileImage: string;
+    roomId: string;
+    serverRole: "host" | "guest" | "listener";
+    title: string;
+    token: string;
+    username: string;
 }
 
 interface LiveStreamContextActions {}

@@ -23,16 +23,6 @@ model User {
     streams       Stream[]       @relation("UserStreams")
     notifications Notification[]
 
-    // metrics & counters
-    tokenPrice     Float @default(0)
-    totalStreams   Int   @default(0)
-    epicStreams    Int   @default(0)
-    totalFees      Float @default(0)
-    followerCount  Int   @default(0)
-    followingCount Int   @default(0)
-    tipCount       Int   @default(0)
-    holdingCount   Int   @default(0)
-
     // socials
     xUrl  String?
     ytUrl String?
@@ -48,6 +38,8 @@ model User {
     // tokens held
     holdings Holding[] @relation("UserHoldings")
 
+    stats     Stats?
+    
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
 
@@ -198,4 +190,27 @@ model Follow {
 
     @@unique([followerId, followingId])
     @@map("follows")
+}
+
+model Stats {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    // creator
+    user   User   @relation(fields: [userId], references: [id])
+    userId String @unique @db.ObjectId
+
+    // metrics
+    followerCount  Int   @default(0)
+    followingCount Int   @default(0)
+    totalStreams   Int   @default(0)
+    epicStreams    Int   @default(0)
+    totalFees      Float @default(0)
+    tipCount       Int   @default(0)
+    holdingCount   Int   @default(0)
+    tokenPrice     Float @default(0)
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@map("stats")
 }

@@ -32,7 +32,7 @@ type RequestOptions = {
 };
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: CLIENT_ENV.VITE_SERVER_URL,
+    baseURL: `${CLIENT_ENV.VITE_SERVER_URL}/api`,
 });
 
 /**

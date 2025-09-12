@@ -43,11 +43,6 @@ export async function createStream(request: Request, response: Response, next: N
             const roomAccessToken = await generateHuddleAccessToken({ roomId, role: "host" });
             const liveStreamAccessToken = await generateHuddleAccessToken({ roomId, role: "bot" });
 
-            await prisma.user.update({
-                where: { username },
-                data: { totalStreams: user.totalStreams + 1 },
-            });
-
             if (user.xUrl) urls.push(user.xUrl);
             if (user.ytUrl) urls.push(user.ytUrl);
 
@@ -55,7 +50,15 @@ export async function createStream(request: Request, response: Response, next: N
                 await startHuddleStream({ roomId, rtmpUrls: urls, token: liveStreamAccessToken });
             }
 
-            await createRoomInRedis({ hostId: user.id, roomId });
+            await Promise.all([
+                prisma.stats.update({
+                    where: { userId: user.id },
+                    data: { totalStreams: { increment: 1 } },
+                }),
+
+                createRoomInRedis({ hostId: user.id, roomId }),
+            ]);
+
             response.customResponse<CreatedStreamData>({
                 code: 201,
                 message: "stream created successfully",

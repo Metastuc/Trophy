@@ -17,7 +17,6 @@ export const CLIENT_ENV = z
         VITE_PRIVY_APP_ID: z.string(),
         VITE_PRIVY_CLIENT_ID: z.string(),
         VITE_SERVER_URL: z.string(),
-        VITE_WS_URL: z.string(),
     })
     .parse(import.meta.env);
 
@@ -58,6 +57,12 @@ export const API_ENDPOINTS = {
         CREATE_STREAM: "/streams/create",
         JOIN_STREAM: (streamId: string) => `/streams/${streamId}/join`,
         LEAVE_STREAM: "/streams/leave",
+    },
+
+    SUBSCRIPTION: {
+        GET_FOLLOW_STATUS: (userId: string) => `/follow/${userId}/status`,
+        FOLLOW_USER: (userId: string) => `/follow/${userId}/subscribe`,
+        UNFOLLOW_USER: (userId: string) => `/follow/${userId}/unsubscribe`,
     },
 
     TIPS: {

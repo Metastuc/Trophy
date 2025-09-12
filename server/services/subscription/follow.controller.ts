@@ -1,0 +1,71 @@
+import { NextFunction, Request, Response } from "express";
+
+import { prisma } from "#config/prisma.ts";
+import { HttpError } from "#middleware/error.ts";
+
+export async function followUser(request: Request, response: Response, next: NextFunction) {
+    const privyId = request.privyUser?.userId;
+    const { userId } = request.params;
+
+    try {
+        const whoWantsToFollow = await prisma.user.findUnique({ where: { privyId } });
+        const whoIsToBeFollowed = await prisma.user.findUnique({ where: { username: userId } });
+
+        if (!whoWantsToFollow || !whoIsToBeFollowed) {
+            throw new HttpError({ message: "user not found", code: 404, data: { userId } });
+        }
+
+        if (whoWantsToFollow?.id === whoIsToBeFollowed?.id) {
+            throw new HttpError({ message: "You cannot follow yourself", code: 400 });
+        }
+
+        const isAlreadyFollowing = await prisma.follow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: whoWantsToFollow.id,
+                    followingId: whoIsToBeFollowed.id,
+                },
+            },
+        });
+
+        if (isAlreadyFollowing) {
+            throw new HttpError({ message: "You are already following this user", code: 400 });
+        }
+
+        const follow = await prisma.follow.create({
+            data: {
+                followerId: whoWantsToFollow?.id,
+                followingId: whoIsToBeFollowed?.id,
+            },
+        });
+
+        await Promise.all([
+            prisma.stats.update({
+                where: { userId: whoWantsToFollow?.id },
+                data: { followingCount: { increment: 1 } },
+            }),
+
+            prisma.stats.update({
+                where: { userId: whoIsToBeFollowed?.id },
+                data: { followerCount: { increment: 1 } },
+            }),
+
+            prisma.notification.create({
+                data: {
+                    userId: whoIsToBeFollowed?.id,
+                    type: "FOLLOW",
+                    message: `${whoWantsToFollow?.username} started following you.`,
+                    follow: { connect: { id: follow.id } },
+                },
+            }),
+        ]);
+
+        response.customResponse<undefined>({
+            code: 201,
+            message: "User followed successfully",
+            data: undefined,
+        });
+    } catch (error) {
+        next(error);
+    }
+}

@@ -28,5 +28,6 @@ export type UserProfile = Prisma.UserGetPayload<{
         creatorToken: { select: { address: true } };
         streams: { where: { status: "SCHEDULED" }; select: { id: true; title: true; scheduledAt: true; roomId: true } };
         holdings: true;
+        stats: { select: { followerCount: true; followingCount: true } };
     };
 }>;

@@ -1,8 +1,8 @@
 import { useLocalPeer, useRoom } from "@huddle01/react";
 import { useEffect } from "react";
 
-import { log } from "#~/utils/logger.ts";
 import { useSocket } from "@/hooks/socket";
+import { log } from "#~/utils/logger.ts";
 
 export function useHuddleJoinRoom({ roomId, token }: { roomId: string; token: string }) {
     const { role } = useLocalPeer();

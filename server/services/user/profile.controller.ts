@@ -40,6 +40,9 @@ export async function profile(request: Request, response: Response, next: NextFu
                         select: { id: true, title: true, scheduledAt: true, roomId: true },
                     },
                     holdings: true,
+                    stats: {
+                        select: { followerCount: true, followingCount: true },
+                    },
                 },
             });
         } else if (privyId) {
@@ -54,6 +57,9 @@ export async function profile(request: Request, response: Response, next: NextFu
                         select: { id: true, title: true, scheduledAt: true, roomId: true },
                     },
                     holdings: true,
+                    stats: {
+                        select: { followerCount: true, followingCount: true },
+                    },
                 },
             });
         }
@@ -66,8 +72,8 @@ export async function profile(request: Request, response: Response, next: NextFu
         const profileData: UserProfileData = {
             bio: user.bio,
             creatorToken: user.creatorToken?.address,
-            followerCount: user.followerCount,
-            followingCount: user.followingCount,
+            followerCount: user.stats?.followerCount ?? 0,
+            followingCount: user.stats?.followingCount ?? 0,
             holdings: user.holdings,
             profilePicture: user.profileImage,
             scheduledStreams: user.streams,
