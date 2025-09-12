@@ -114,6 +114,7 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
     return hash;
 };
 
+// removed the coin version (V1_1) incase e break
 export const buyCreatorToken = async (
     coinAddress: Address,
     amount: string,
@@ -128,8 +129,7 @@ export const buyCreatorToken = async (
             slippagePercent: 4,
             swapType: "EXACT_IN",
             amountIn: parseEther(amount),
-        },
-        "V1_1",
+        }
     );
 
     return await checkTx(hash);
@@ -168,36 +168,37 @@ export const sellCreatorToken = async (
     provider: EIP1193Provider,
     signTypedData: SignTypedData,
     address: Address,
-    signature: string,
-    permitSingle: PermitSingle
+    signature?: string,
+    permitSingle?: PermitSingle
 ) => {
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseEther(amount);
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
     console.log({ allowance })
     console.log({ signTypedData })
-    if (allowance < amountInUnits) {
-        // const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
-        // const { signature } = await signTypedData(typedData, { address });
+    console.log(signature, permitSingle)
+    // if (allowance < amountInUnits) {
+    //     // const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+    //     // const { signature } = await signTypedData(typedData, { address });
 
+    //     const hash = await flaunch.sellCoin({
+    //         coinAddress,
+    //         slippagePercent: 4,
+    //         amountIn: amountInUnits,
+    //         permitSingle,
+    //         signature: signature as Address,
+    //     });
+
+    //     return await checkTx(hash);
+    // } else {
         const hash = await flaunch.sellCoin({
             coinAddress,
-            slippagePercent: 4,
             amountIn: amountInUnits,
-            permitSingle,
-            signature: signature as Address,
+            slippagePercent: 4,
         });
 
         return await checkTx(hash);
-    } else {
-        const hash = await flaunch.sellCoin({
-            coinAddress,
-            amountIn: amountInUnits,
-            slippagePercent: 4,
-        });
-
-        return await checkTx(hash);
-    }
+    // }
 };
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {

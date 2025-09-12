@@ -55,6 +55,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 const { typedData, permitSingle } = await flaunch.getPermit2TypedData("0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address);
                 console.log({ typedData });
                 const { signature } = await signTypedData(typedData, { address: wallets[0].address });
+                console.log({ signature });
 
                 await sellCreatorToken(
                     "0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address,
@@ -70,7 +71,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 // optionally show a toast or error UI here
             }
         },
-        [drawerData, signTypedData, streamer?.tokenAddress, wallets],
+        [drawerData, signTypedData, wallets],
     );
 
     const value = useMemo(
