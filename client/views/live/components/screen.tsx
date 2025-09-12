@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "lucide-react";
+import { Link, Loader } from "lucide-react";
 import { Fragment } from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { getFollowStatus } from "@/api/subscription";
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { useServer } from "@/hooks/server";
-import { API_ENDPOINTS } from "@/lib/constants";
-
+import { API_ENDPOINTS, queryClient } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useAuthenticationStore } from "#~/store/authentication.ts";
+
 import { useLiveStreamContext } from "../hooks";
 import { LiveStreamControls } from "./controls";
 import { LiveStreamLayout } from "./layout";
@@ -32,7 +32,7 @@ export function LiveStreamScreen() {
     });
 
     const isStreamer = isAuthenticated && username === authenticatedUser;
-    const isFollowing = isFollowingStatus?.isFollowing;
+    const isFollowing = isFollowingStatus?.isFollowing === true;
 
     const { mutate, isPending: isMutating } = useServer(
         {
@@ -43,8 +43,33 @@ export function LiveStreamScreen() {
         },
 
         {
-            onSuccess() {
-                toast.success(isFollowing ? "Unfollowed successfully!" : "Followed successfully!");
+            onMutate() {
+                const previous = isFollowing;
+
+                queryClient.setQueryData(["follow-status", username], {
+                    isFollowing: !previous,
+                });
+
+                return { previous };
+            },
+
+            onSuccess(_data, _variables, context) {
+                if (typeof context === "object" && context !== null && "previous" in context) {
+                    const wasFollowing = context.previous;
+                    toast.success(wasFollowing ? "Unfollowed successfully!" : "Followed successfully!");
+                }
+
+                queryClient.invalidateQueries({
+                    queryKey: ["follow-status", username],
+                });
+            },
+
+            onError(_data, _variables, context) {
+                if (typeof context === "object" && context !== null && "previous" in context) {
+                    queryClient.setQueryData(["follow-status", username], {
+                        isFollowing: context.previous,
+                    });
+                }
             },
         },
     );
@@ -79,24 +104,28 @@ export function LiveStreamScreen() {
                     {!isStreamer ? (
                         <button
                             className={cn(
-                                "flex h-8 items-center justify-center rounded-xs px-2 text-white shadow-sm",
+                                "flex h-8 w-20 items-center justify-center rounded-xs px-2 text-white shadow-sm transition-colors",
                                 isMutating || isFollowingStatusPending
-                                    ? "cursor-not-allowed opacity-50"
-                                    : "bg-blue100 opacity-100",
+                                    ? "cursor-not-allowed bg-gray-600"
+                                    : "bg-blue100",
                             )}
                             onClick={() => mutate({ username })}
                             disabled={isMutating || isFollowingStatusPending}
                         >
-                            <span className="text-sm">{isFollowingStatus?.isFollowing ? "Following" : "Follow"}</span>
+                            {isMutating || isFollowingStatusPending ? (
+                                <Loader className="size-4 animate-spin" />
+                            ) : (
+                                <span className="text-sm">{isFollowing ? "Following" : "Follow"}</span>
+                            )}
                         </button>
                     ) : null}
 
                     <button
-                        className="bg-blue100 flex h-8 items-center justify-center gap-1 rounded-xs px-2 text-white shadow-sm"
+                        className="bg-blue100 flex h-8 items-center justify-center gap-1 rounded-xs px-3 text-white shadow-sm"
                         onClick={handleShare}
                     >
                         <span className="text-sm">Share</span>
-                        <i className="size-4">
+                        <i className="size-3.5">
                             <Link />
                         </i>
                     </button>
