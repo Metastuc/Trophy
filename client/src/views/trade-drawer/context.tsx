@@ -54,8 +54,8 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 const flaunch = flaunchClient(provider, wallets[0].address as Address);
                 const { typedData, permitSingle } = await flaunch.getPermit2TypedData("0x4d3efd7dca802e19d213bfc4f12b0576416a583a" as Address);
                 console.log({ typedData });
-                typedData.message.details.amount = Number(typedData.message.details.amount);
-                typedData.message.sigDeadline = Number(typedData.message.sigDeadline);
+                typedData.message.details.amount = typedData.message.details.amount.toString();
+                typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
                 console.log({ new: typedData });
                 const { signature } = await signTypedData(typedData, { address: wallets[0].address });
                 console.log({ signature });
