@@ -7,6 +7,7 @@ import { prisma } from "#config/prisma.ts";
 import { redis } from "#config/redis.ts";
 import { getIO } from "#config/socket.ts";
 import { client } from "#config/viem.ts";
+import { User } from "#generated/prisma/index.js";
 import { logger } from "#utils/logger.ts";
 
 export const tipsQueue = new Queue("tips", {
@@ -20,10 +21,24 @@ export const tipsQueue = new Queue("tips", {
 new Worker(
     "tips",
     async function (job) {
-        const { amountRaw, amountUsd, chainId, recipient, sender, token, tokenAddress, txHash, amountInToken } =
-            job.data;
+        const {
+            amountInToken,
+            amountRaw,
+            amountUsd,
+            chainId,
+            isAuthenticated,
+            recipient,
+            sender,
+            token,
+            tokenAddress,
+            txHash,
+        } = job.data;
 
-        const senderUser = await prisma.user.findUnique({ where: { walletAddress: sender } });
+        let senderUserAccount = null as null | User;
+        if (isAuthenticated && sender) {
+            senderUserAccount = await prisma.user.findUnique({ where: { walletAddress: sender } });
+        }
+
         const receipt = await client.waitForTransactionReceipt({ hash: txHash });
 
         if (receipt.status !== "success") {
@@ -104,14 +119,17 @@ new Worker(
 
             const payload = {
                 type: "tip",
-                message: `${senderUser?.username || "Anonymous"} tipped ${amountInToken} ${token}.`,
+                message: `tipped ${amountInToken} ${token}.`,
                 user: {
-                    username: senderUser?.username || "Anonymous",
+                    username: isAuthenticated && senderUserAccount?.username ? senderUserAccount.username : "TROPHER",
                     profileImage:
-                        senderUser?.profileImage || "https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg",
+                        isAuthenticated && senderUserAccount?.username
+                            ? senderUserAccount.profileImage
+                            : "https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg",
                 },
             };
 
+            await redis.rpush(`room:${roomId}:messages`, JSON.stringify(payload));
             getIO().to(roomId).emit("chat.receive.tip", { roomId, payload });
         }
 
