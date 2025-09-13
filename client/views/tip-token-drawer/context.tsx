@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { tipERC20, tipEther } from "@/lib/tip";
 import { makeRequest } from "#~/utils/axios.ts";
-import { log } from "#~/utils/logger.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
 import { TOKENS } from "./components/tokens";
@@ -17,12 +16,10 @@ import { TipDrawerContext } from "./hooks";
 type TipDrawerContextProviderProps = PropsWithChildren<TipDrawerProps>;
 
 export function TipDrawerContextProvider({ children, streamer }: TipDrawerContextProviderProps) {
+    const chainId = useChainId();
     const { wallets } = useWallets();
     const { connectWallet } = usePrivy();
-    const chainId = useChainId();
     const { switchChain } = useSwitchChain();
-
-    console.log({ chainId });
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [shouldReopenDrawer, setShouldReopenDrawer] = useState<boolean>(false);
@@ -61,13 +58,6 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                 switchChain({ chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id });
                 return;
             }
-
-            log({
-                module: "tip-token-drawer",
-                tag: "handleSendTip",
-                msg: "Sending tip",
-                data: { chainId, network: CLIENT_CONSTANTS.CURRENT_NETWORK.id },
-            });
 
             const promise = (async function () {
                 let hash = undefined as string | undefined;
