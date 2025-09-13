@@ -165,7 +165,7 @@ function ChatBubble({ message, type = "chat", user }: LiveStreamChatMessagesStat
             )}
         >
             <LiveStreamProfile
-                imgSrc={user.profileImage}
+                imgSrc={user.profileImage || undefined}
                 username={user.username}
                 styles={{ imageContainer: "size-7", imageWrapper: "size-6" }}
                 isInvitation={type === "tip"}

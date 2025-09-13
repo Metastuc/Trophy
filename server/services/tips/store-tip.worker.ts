@@ -3,6 +3,7 @@ import { decodeEventLog, parseAbiItem } from "viem";
 
 import { log } from "#~/utils/logger.ts";
 import { toTime } from "#~/utils/time.ts";
+import { truncateWalletAddress } from "#~/utils/truncate.ts";
 import { prisma } from "#config/prisma.ts";
 import { redis } from "#config/redis.ts";
 import { getIO } from "#config/socket.ts";
@@ -115,18 +116,13 @@ new Worker(
 
         const roomId = await redis.get(`liveroom:${recipient}`);
         if (roomId) {
-            console.log(`Emitting tip to room: ${roomId}`);
-
             const payload = {
                 type: "tip",
                 message: `tipped ${amountInToken} ${token}.`,
-                user: {
-                    username: isAuthenticated && senderUserAccount?.username ? senderUserAccount.username : "TROPHER",
-                    profileImage:
-                        isAuthenticated && senderUserAccount?.username
-                            ? senderUserAccount.profileImage
-                            : "https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg",
-                },
+                user:
+                    isAuthenticated && senderUserAccount?.username
+                        ? { username: senderUserAccount.username, profileImage: senderUserAccount.profileImage }
+                        : { username: truncateWalletAddress(sender), profileImage: null },
             };
 
             await redis.rpush(`room:${roomId}:messages`, JSON.stringify(payload));
