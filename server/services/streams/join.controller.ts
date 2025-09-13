@@ -1,11 +1,12 @@
 import { Role } from "@huddle01/server-sdk/auth";
 import { NextFunction, Request, Response } from "express";
 
+import { JOIN_STREAM_RESPONSE_SCHEMA } from "#~/schema/stream/index.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
 import { generateHuddleAccessToken } from "./huddle.utils";
-import { addParticipantToRoom, getRoom } from "./store.redis";
+import { addParticipantToRoom, getRoom } from "./redis.utils";
 import { isGuest } from "./utils";
 
 export async function joinStream(request: Request, response: Response, next: NextFunction) {
@@ -18,7 +19,16 @@ export async function joinStream(request: Request, response: Response, next: Nex
 
         const stream = await prisma.stream.findUnique({
             where: { roomId, status: "LIVE" },
-            include: { streamer: { select: { username: true, profileImage: true } } },
+            include: {
+                streamer: {
+                    select: {
+                        username: true,
+                        profileImage: true,
+                        creatorToken: { select: { address: true } },
+                        walletAddress: true,
+                    },
+                },
+            },
         });
         if (!stream) throw new HttpError({ message: "stream not found", code: 404, data: { roomId } });
 
@@ -43,17 +53,18 @@ export async function joinStream(request: Request, response: Response, next: Nex
 
         const token = await generateHuddleAccessToken({ role, roomId });
 
-        response.customResponse({
+        response.customResponse<JoinStreamData>({
             code: 200,
             message: `joined stream ${roomId}`,
-            data: {
-                participants: roomInRedis.participants,
-                profileImage: stream.streamer.profileImage,
+            data: JOIN_STREAM_RESPONSE_SCHEMA.parse({
+                creatorProfileImage: stream.streamer.profileImage,
+                creatorToken: stream.streamer.creatorToken?.address,
+                creatorUsername: stream.streamer.username,
+                creatorWalletAddress: stream.streamer.walletAddress,
                 role,
                 title: stream.title,
                 token,
-                username: stream.streamer.username,
-            },
+            }),
         });
     } catch (error) {
         next(error);

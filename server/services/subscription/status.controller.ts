@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { FOLLOW_STATUS_RESPONSE_SCHEMA } from "#~/schema/follow/index.ts";
 import { prisma } from "#config/prisma.ts";
 
 export async function followStatus(request: Request, response: Response, next: NextFunction) {
@@ -10,10 +11,10 @@ export async function followStatus(request: Request, response: Response, next: N
         const whoWantsToFollow = await prisma.user.findUnique({ where: { privyId } });
         const whoIsToBeFollowed = await prisma.user.findUnique({ where: { username: userId } });
 
-        response.customResponse({
+        response.customResponse<FollowStatusData>({
             code: 200,
             message: "Follow status retrieved successfully",
-            data: {
+            data: FOLLOW_STATUS_RESPONSE_SCHEMA.parse({
                 isFollowing: !!(await prisma.follow.findUnique({
                     where: {
                         followerId_followingId: {
@@ -22,7 +23,7 @@ export async function followStatus(request: Request, response: Response, next: N
                         },
                     },
                 })),
-            },
+            }),
         });
     } catch (error) {
         next(error);

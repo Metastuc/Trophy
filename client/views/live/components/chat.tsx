@@ -1,17 +1,20 @@
-import { MessageCircle, Send } from "lucide-react";
+import { CircleDollarSign, MessageCircle, Send } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
 import { useSocket } from "@/hooks/socket";
 import { cn } from "@/lib/utils";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
+import { TipDrawer } from "@/views/tip-token-drawer";
+import { TradeDrawer } from "@/views/trade-token-drawer";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 import { useLiveStreamContext } from "../hooks";
 import { LiveStreamProfile } from "./profile";
 
 export function LiveStreamChats() {
-    const { roomId } = useLiveStreamContext();
+    const { roomId, creatorProfileImage, creatorUsername, creatorWalletAddress, creatorToken } = useLiveStreamContext();
     const { isAuthenticated, profileImage, username } = useAuthenticationStore(
         useShallow((state) => ({
             profileImage: state.user?.backendUserData.user.profilePicture as string,
@@ -81,7 +84,7 @@ export function LiveStreamChats() {
                     </i>
                 </div>
 
-                {/* <TipDrawer
+                <TipDrawer
                     trigger={
                         <button className="flex items-center gap-1 rounded-xs bg-gradient-to-b from-[#2D57FF] to-[#1B3499] px-2 py-1 text-white">
                             <i className="size-3">
@@ -91,9 +94,22 @@ export function LiveStreamChats() {
                             <span className="text-sm">Send tip</span>
                         </button>
                     }
-                /> */}
+                    streamer={{
+                        profilePicture: creatorProfileImage,
+                        username: creatorUsername,
+                        walletAddress: creatorWalletAddress as Address,
+                    }}
+                />
 
-                {/* <TradeDrawer /> */}
+                {creatorToken ? (
+                    <TradeDrawer
+                        streamer={{
+                            tokenAddress: creatorToken as Address,
+                            profilePicture: creatorProfileImage,
+                            username: creatorUsername,
+                        }}
+                    />
+                ) : null}
             </header>
 
             <main className="relative flex-1 space-y-3.5 overflow-y-scroll">

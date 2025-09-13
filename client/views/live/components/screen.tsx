@@ -11,7 +11,7 @@ import { LiveStreamControls } from "./controls";
 import { LiveStreamLayout } from "./layout";
 
 export function LiveStreamScreen() {
-    const { username, title, profileImage } = useLiveStreamContext();
+    const { creatorUsername, title, creatorProfileImage } = useLiveStreamContext();
 
     async function handleShare() {
         try {
@@ -35,15 +35,15 @@ export function LiveStreamScreen() {
                 <aside className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                         <div className="size-10">
-                            <StreamerPFP imageSrc={profileImage} imageAlt={`${username}-pfp`} isLive />
+                            <StreamerPFP imageSrc={creatorProfileImage} imageAlt={`${creatorUsername}-pfp`} isLive />
                         </div>
 
-                        <Link to="/$username" params={{ username }}>
-                            <span>@{username}</span>
+                        <Link to="/$username" params={{ username: creatorUsername }}>
+                            <span>@{creatorUsername}</span>
                         </Link>
                     </div>
 
-                    <FollowUserButton username={username} styles={{ button: "h-8", text: "text-sm" }} />
+                    <FollowUserButton username={creatorUsername} styles={{ button: "h-8", text: "text-sm" }} />
 
                     <button
                         className="bg-blue100 flex h-8 items-center justify-center gap-1 rounded-xs px-3 text-white shadow-sm"

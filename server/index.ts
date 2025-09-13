@@ -31,8 +31,6 @@ app.use(customResponse);
 app.use("/api", routes);
 app.use(errorHandler);
 
-initIO(server);
-
 switch (SERVER_ENV.ENVIRONMENT) {
     case "development":
         console.log("Running in development mode");
@@ -62,6 +60,7 @@ switch (SERVER_ENV.ENVIRONMENT) {
         process.exit(1);
 }
 
+initIO(server);
 server.listen(port, function () {
     logger.info(`Server started on port ${port} \nAPI: ${url}/api`);
 });

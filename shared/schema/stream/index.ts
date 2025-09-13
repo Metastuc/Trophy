@@ -1,3 +1,4 @@
+import { isAddress } from "viem";
 import { z } from "zod";
 
 export const CREATED_STREAM_RESPONSE_SCHEMA = z.object({
@@ -10,15 +11,11 @@ export const SCHEDULED_STREAM_RESPONSE_SCHEMA = z.object({
 });
 
 export const JOIN_STREAM_RESPONSE_SCHEMA = z.object({
-    participants: z.array(
-        z.object({
-            id: z.string(),
-            role: z.string(),
-        }),
-    ),
-    profileImage: z.url(),
+    creatorProfileImage: z.url(),
+    creatorToken: z.string().optional().nullable(),
+    creatorUsername: z.string(),
+    creatorWalletAddress: z.string().refine((value) => isAddress(value)),
     role: z.enum(["host", "guest", "listener"]),
     title: z.string(),
     token: z.string(),
-    username: z.string(),
 });

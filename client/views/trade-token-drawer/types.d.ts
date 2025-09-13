@@ -16,7 +16,7 @@ declare global {
     type TradeDrawerContextValue = TradeDrawerContextValues & TradeDrawerContextActions;
 
     interface TradeDrawerProps {
-        streamer?: PublicFeedResponse["data"][number]["streamer"];
+        streamer?: { tokenAddress: Address; username: string; profilePicture: string };
         trigger?: React.ReactNode;
     }
 

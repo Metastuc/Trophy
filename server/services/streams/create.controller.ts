@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
+import { CREATED_STREAM_RESPONSE_SCHEMA } from "#~/schema/stream/index.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
 import { createHuddleRoom, generateHuddleAccessToken, startHuddleStream } from "./huddle.utils";
-import { createRoomInRedis } from "./store.redis";
+import { createRoomInRedis } from "./redis.utils";
 
 export async function createStream(request: Request, response: Response, next: NextFunction) {
     const { date, title, username } = request.body;
@@ -62,7 +63,10 @@ export async function createStream(request: Request, response: Response, next: N
             response.customResponse<CreatedStreamData>({
                 code: 201,
                 message: "stream created successfully",
-                data: { roomId, token: roomAccessToken },
+                data: CREATED_STREAM_RESPONSE_SCHEMA.parse({
+                    roomId,
+                    token: roomAccessToken,
+                }),
             });
         }
     } catch (error) {

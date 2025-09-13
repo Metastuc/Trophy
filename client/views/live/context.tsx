@@ -3,25 +3,21 @@ import { PropsWithChildren, useMemo } from "react";
 import { LiveStreamContext } from "./hooks";
 import { useHuddleJoinRoom } from "./hooks/huddle";
 
-type LiveStreamContextProviderProps = PropsWithChildren<{
-    participants: { id: string; role: string };
-    profileImage: string;
-    role: "host" | "guest" | "listener";
-    roomId: string;
-    title: string;
-    token: string;
-    username: string;
-}>;
+type LiveStreamContextProviderProps = JoinStreamData &
+    PropsWithChildren<{
+        roomId: string;
+    }>;
 
 export function LiveStreamContextProvider({
     children,
-    participants,
-    profileImage,
+    creatorProfileImage,
+    creatorToken,
+    creatorUsername,
+    creatorWalletAddress,
     role: serverRole,
     roomId,
     title,
     token,
-    username,
 }: LiveStreamContextProviderProps) {
     const huddle = useHuddleJoinRoom({ roomId, token });
 
@@ -39,17 +35,29 @@ export function LiveStreamContextProvider({
 
     const value = useMemo(
         () => ({
-            roomId,
+            creatorProfileImage,
+            creatorToken,
+            creatorUsername,
+            creatorWalletAddress,
+            huddleRole: huddle.role as JoinStreamData["role"],
             permissions,
-            title,
-            participants,
-            profileImage,
+            roomId,
             serverRole,
+            title,
             token,
-            username,
-            huddleRole: huddle.role as string,
         }),
-        [roomId, permissions, title, participants, profileImage, serverRole, token, username, huddle.role],
+        [
+            creatorProfileImage,
+            creatorToken,
+            creatorUsername,
+            creatorWalletAddress,
+            huddle.role,
+            permissions,
+            roomId,
+            serverRole,
+            title,
+            token,
+        ],
     );
 
     return <LiveStreamContext.Provider value={value}>{children}</LiveStreamContext.Provider>;

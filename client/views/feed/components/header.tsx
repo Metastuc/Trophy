@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Address } from "viem";
 
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { TradeDrawer } from "@/views/trade-token-drawer";
@@ -22,7 +23,15 @@ export function FeedStreamHeader() {
                 <span className="text-sm">@{streamer.username}</span>
             </Link>
 
-            {streamer.creatorToken ? <TradeDrawer streamer={streamer} /> : null}
+            {streamer.creatorToken ? (
+                <TradeDrawer
+                    streamer={{
+                        profilePicture: streamer.profileImage,
+                        tokenAddress: streamer.creatorToken.address as Address,
+                        username: streamer.username,
+                    }}
+                />
+            ) : null}
         </header>
     );
 }

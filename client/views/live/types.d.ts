@@ -1,13 +1,8 @@
-interface LiveStreamContextValues {
-    huddleRole: string;
-    participants: { id: string; role: string };
+interface LiveStreamContextValues extends Omit<JoinStreamData, "role"> {
+    huddleRole: JoinStreamData["role"];
     permissions: RoomPermissions;
-    profileImage: string;
     roomId: string;
-    serverRole: "host" | "guest" | "listener";
-    title: string;
-    token: string;
-    username: string;
+    serverRole: JoinStreamData["role"];
 }
 
 interface LiveStreamContextActions {}

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { CREATED_STREAM_RESPONSE_SCHEMA, JOIN_STREAM_RESPONSE_SCHEMA, SCHEDULED_STREAM_RESPONSE_SCHEMA } from ".";
 
 declare global {

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { FOLLOW_STATUS_RESPONSE_SCHEMA } from ".";
 
 declare global {
