@@ -1,12 +1,12 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { Loader } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTrigger } from "@/components/ui/drawer";
 
 import { AuthenticationDrawerBody } from "./components/body";
 import { AuthenticationDrawerDescription } from "./components/description";
@@ -15,7 +15,7 @@ import { AuthenticationDrawerHeader } from "./components/header";
 import { usePrivyLoginTrigger } from "./hooks";
 import { useAuthenticationDrawerNavigationStore, useAuthenticationDrawerStateStore } from "./store";
 
-export function AuthenticationDrawer() {
+export function AuthenticationDrawer({ trigger }: { trigger?: ReactNode }) {
     const { logout } = usePrivy();
     usePrivyLoginTrigger();
 
@@ -55,44 +55,54 @@ export function AuthenticationDrawer() {
             onOpenChange={(isDrawerOpen) => (isDrawerOpen ? openDrawer() : closeDrawer())}
             repositionInputs={false}
         >
-            <Button className="bg-blue100 h-6 w-15 rounded-xs" onClick={handleAuthentication} disabled={isLoggingOut}>
-                <AnimatePresence mode="wait" initial={false}>
-                    {isLoggingOut ? (
-                        <motion.i
-                            key="loading"
-                            className="size-4"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <Loader className="animate-spin" />
-                        </motion.i>
-                    ) : isAuthenticated ? (
-                        <motion.span
-                            key="logout"
-                            className="text-xs capitalize"
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -4 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            log out
-                        </motion.span>
-                    ) : (
-                        <motion.span
-                            key="login"
-                            className="text-xs capitalize"
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -4 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            log in
-                        </motion.span>
-                    )}
-                </AnimatePresence>
-            </Button>
+            <DrawerTrigger asChild>
+                {trigger ? (
+                    trigger
+                ) : (
+                    <Button
+                        className="bg-blue100 h-6 w-15 rounded-xs"
+                        onClick={handleAuthentication}
+                        disabled={isLoggingOut}
+                    >
+                        <AnimatePresence mode="wait" initial={false}>
+                            {isLoggingOut ? (
+                                <motion.i
+                                    key="loading"
+                                    className="size-4"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <Loader className="animate-spin" />
+                                </motion.i>
+                            ) : isAuthenticated ? (
+                                <motion.span
+                                    key="logout"
+                                    className="text-xs capitalize"
+                                    initial={{ opacity: 0, y: 4 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -4 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    log out
+                                </motion.span>
+                            ) : (
+                                <motion.span
+                                    key="login"
+                                    className="text-xs capitalize"
+                                    initial={{ opacity: 0, y: 4 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -4 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    log in
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
+                    </Button>
+                )}
+            </DrawerTrigger>
 
             <DrawerContent>
                 <AuthenticationDrawerFooter />

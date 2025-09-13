@@ -22,3 +22,12 @@ type RoomPermissions = {
     canToggleChat: boolean;
     canToggleVideo: boolean;
 };
+
+interface LiveStreamChatMessagesState {
+    message: string;
+    type: "chat" | "tip";
+    user: {
+        profileImage: string;
+        username: string;
+    };
+}
