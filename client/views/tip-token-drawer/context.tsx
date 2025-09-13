@@ -19,7 +19,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
     const chainId = useChainId();
     const { wallets } = useWallets();
     const { connectWallet } = usePrivy();
-    const { switchChain } = useSwitchChain();
+    const { switchChainAsync } = useSwitchChain();
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [shouldReopenDrawer, setShouldReopenDrawer] = useState<boolean>(false);
@@ -55,7 +55,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
             if (chainId !== CLIENT_CONSTANTS.CURRENT_NETWORK.id) {
                 toast.error("Please switch to the correct network");
-                switchChain({ chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id });
+                await switchChainAsync({ chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id });
                 return;
             }
 
@@ -123,7 +123,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             chainId,
             connectWallet,
             streamer?.walletAddress,
-            switchChain,
+            switchChainAsync,
             tipDrawerState.amountInToken,
             tipDrawerState.amountInUsd,
             tipDrawerState.token,
@@ -140,7 +140,6 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
             (async function () {
                 const wallet = wallets[0];
-                await wallet.switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
 
                 setUserWalletState({
                     address: wallet.address as Address,
