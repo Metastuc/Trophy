@@ -25,10 +25,10 @@ export function LiveStreamProfile({ imgSrc, username, isInvitation = false, styl
                     </i>
                 </span>
             ) : (
-                <>{username.slice(0, 2).toUpperCase()}</>
+                <>{username.slice(0, 5).toLowerCase()}...</>
             )}
 
-            <span className={cn(styles?.text)}>@{username}</span>
+            {imgSrc ? <span className={cn(styles?.text)}>@{username}</span> : null}
         </div>
     );
 }
