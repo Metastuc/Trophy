@@ -64,19 +64,30 @@ export function FollowUserButton({ username, styles }: { username: string; style
         },
     );
 
+    function handleFollowClick() {
+        if (!isAuthenticated) {
+            toast.error(`You must be logged in to follow ${username}.`);
+            return;
+        }
+
+        mutate({ username });
+    }
+
     if (isStreamer) return null;
 
     return (
         <button
             className={cn(
                 "flex w-22 items-center justify-center gap-1 rounded-xs py-1 text-white",
-                isMutating || isFollowingStatusPending ? "cursor-not-allowed bg-gray-600" : "bg-blue100",
+                isAuthenticated && (isMutating || isFollowingStatusPending)
+                    ? "cursor-not-allowed bg-gray-600"
+                    : "bg-blue100",
                 styles?.button,
             )}
-            onClick={() => mutate({ username })}
-            disabled={isMutating || isFollowingStatusPending}
+            onClick={handleFollowClick}
+            disabled={isAuthenticated && (isMutating || isFollowingStatusPending)}
         >
-            {isMutating || isFollowingStatusPending ? (
+            {isAuthenticated && (isMutating || isFollowingStatusPending) ? (
                 <Loader className="size-4 animate-spin" />
             ) : (
                 <span className={cn("pt-0.5 text-xs", styles?.text)}>{isFollowing ? "Following" : "Follow"}</span>

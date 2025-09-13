@@ -11,21 +11,16 @@ export function SocketProvider({ children }: PropsWithChildren) {
 
     useEffect(
         function () {
-            if (!token) {
-                setSocket(null);
-                return;
-            }
-
-            const ws = io(CLIENT_ENV.VITE_SERVER_URL, { auth: { token } });
+            const ws = io(CLIENT_ENV.VITE_SERVER_URL, { auth: token ? { token } : {} });
             setSocket(ws);
 
             return function () {
                 ws.disconnect();
+                setSocket(null);
             };
         },
         [token],
     );
 
-    if (!socket) return children;
     return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 }

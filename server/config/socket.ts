@@ -13,7 +13,8 @@ export function initIO(server: ReturnType<typeof createServer>) {
         const token = socket.handshake.auth.token;
 
         if (!token) {
-            return next(new Error("Authentication error: Token is required"));
+            socket.data.user = null;
+            return next();
         }
 
         try {
@@ -25,9 +26,10 @@ export function initIO(server: ReturnType<typeof createServer>) {
         }
     });
 
-    // io.on("connection", (socket) => {
-    //     registerSocketEvents({ io: getIO(), socket });
-    // });
+    io.on("connection", (socket) => {
+        //     registerSocketEvents({ io: getIO(), socket });
+        console.log(`Socket connected: ${socket.id}, User: ${socket.data.user}`);
+    });
 
     return io;
 }
