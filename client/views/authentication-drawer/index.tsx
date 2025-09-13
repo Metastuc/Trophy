@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from "motion/react";
 import { ReactNode, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTrigger } from "@/components/ui/drawer";
+import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 import { AuthenticationDrawerBody } from "./components/body";
 import { AuthenticationDrawerDescription } from "./components/description";

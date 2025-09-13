@@ -1,11 +1,12 @@
 import { MessageCircle, Send } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { useSocket } from "@/hooks/socket";
 import { cn } from "@/lib/utils";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import { useAuthenticationStore } from "#~/store/authentication.ts";
+
 import { useLiveStreamContext } from "../hooks";
 import { LiveStreamProfile } from "./profile";
 
@@ -41,11 +42,15 @@ export function LiveStreamChats() {
 
     useEffect(
         function () {
+            socket.emit("chat.history", { roomId });
+
+            function handleChatHistory(data: { roomId: string; messages: Array<LiveStreamChatMessagesState> }) {
+                if (data.roomId !== roomId) return;
+                setChatContents(data.messages);
+            }
+
             function handleChatReceiveText(data: { roomId: string; payload: LiveStreamChatMessagesState }) {
                 if (data.roomId !== roomId) return;
-
-                console.log("Received chat message:", data.payload);
-
                 setChatContents((state) => [...state, data.payload]);
             }
 
@@ -53,10 +58,12 @@ export function LiveStreamChats() {
                 if (data.roomId !== roomId) return;
             }
 
+            socket.on("chat.history", handleChatHistory);
             socket.on("chat.receive.text", handleChatReceiveText);
             socket.on("chat.receive.tip", handleChatReceiveTip);
 
             return function () {
+                socket.off("chat.history", handleChatHistory);
                 socket.off("chat.receive.text", handleChatReceiveText);
                 socket.off("chat.receive.tip", handleChatReceiveTip);
             };
@@ -107,11 +114,10 @@ export function LiveStreamChats() {
                             value={text}
                             onChange={(event) => setText(event.target.value)}
                             onKeyDown={(event) => {
-                                if (event.key === "Enter") {
-                                    sendMessage();
-                                }
+                                if (event.key === "Enter") sendMessage();
                             }}
                         />
+
                         <button
                             onClick={sendMessage}
                             className="flex size-10 items-center justify-center rounded-md bg-gradient-to-b from-[#2D57FF] to-[#1B3499] text-white"
@@ -138,7 +144,7 @@ function ChatBubble({ message, type = "chat", user }: LiveStreamChatMessagesStat
         <article
             className={cn(
                 "flex items-center px-2",
-                type === "tip" && "bg-gradient-to-r from-[#2D57FF] to-[#1B3499] p-2 rounded-xs text-white",
+                type === "tip" && "rounded-xs bg-gradient-to-r from-[#2D57FF] to-[#1B3499] p-2 text-white",
             )}
         >
             <LiveStreamProfile

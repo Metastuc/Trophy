@@ -88,10 +88,10 @@ export function Swap() {
 
                     <div className="border-blue100 flex w-25 items-center justify-center gap-1 rounded-xl border p-2">
                         <i className="size-5 overflow-hidden rounded-full">
-                            <img src={streamer.profileImage} />
+                            <img src={streamer?.profileImage} />
                         </i>
                         <span className="pt-0.5 text-xs">
-                            {truncateText({ text: streamer.username, maxLength: 8 })}
+                            {truncateText({ text: streamer?.username as string, maxLength: 8 })}
                         </span>
                     </div>
 

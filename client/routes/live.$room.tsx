@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { Fragment } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { joinStream } from "@/api/join-stream";
 import { cn } from "@/lib/utils";
 import { LiveStreamChats } from "@/views/live/components/chat";
 import { LiveStreamScreen } from "@/views/live/components/screen";
 import { LiveStreamContextProvider } from "@/views/live/context";
 import { generateGuestId } from "@/views/live/utils";
-import { Fragment } from "react";
+import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export const Route = createFileRoute("/live/$room")({
     component: RouteComponent,

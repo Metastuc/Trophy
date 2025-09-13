@@ -16,7 +16,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
     const [drawerData, setDrawerData] = useState<TradeDrawerDataState>(() => ({
         buyAmount: "",
         buyBalance: "",
-        buyToken: streamer.creatorToken?.address as Address,
+        buyToken: streamer?.creatorToken?.address as Address,
         sellAmount: "",
         sellBalance: "",
         sellToken: "ETH",
