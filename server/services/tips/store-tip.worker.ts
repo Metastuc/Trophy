@@ -5,6 +5,7 @@ import { log } from "#~/utils/logger.ts";
 import { toTime } from "#~/utils/time.ts";
 import { prisma } from "#config/prisma.ts";
 import { redis } from "#config/redis.ts";
+import { getIO } from "#config/socket.ts";
 import { client } from "#config/viem.ts";
 import { logger } from "#utils/logger.ts";
 
@@ -21,8 +22,8 @@ new Worker(
     async function (job) {
         const { amountRaw, amountUsd, chainId, recipient, sender, token, tokenAddress, txHash, amountInToken } =
             job.data;
-        logger.info({ jobId: job.id, txHash, token, sender, recipient }, "Job started");
 
+        const senderUser = await prisma.user.findUnique({ where: { walletAddress: sender } });
         const receipt = await client.waitForTransactionReceipt({ hash: txHash });
 
         if (receipt.status !== "success") {
@@ -96,6 +97,23 @@ new Worker(
                 },
             },
         });
+
+        const roomId = await redis.get(`liveroom:${recipient}`);
+        if (roomId) {
+            console.log(`Emitting tip to room: ${roomId}`);
+
+            const payload = {
+                type: "tip",
+                message: `${senderUser?.username || "Anonymous"} tipped ${amountInToken} ${token}.`,
+                user: {
+                    username: senderUser?.username || "Anonymous",
+                    profileImage:
+                        senderUser?.profileImage || "https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg",
+                },
+            };
+
+            getIO().to(roomId).emit("chat.receive.tip", { roomId, payload });
+        }
 
         logger.info({ txHash, tipId: tip.id }, "Tip stored successfully");
     },

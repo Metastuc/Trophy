@@ -3,11 +3,20 @@ import { Role } from "@huddle01/server-sdk/auth";
 import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { redis } from "#config/redis.ts";
 
-export async function createRoomInRedis({ hostId, roomId }: { hostId: string; roomId: string }) {
+interface RoomInRedisParams {
+    hostId: string;
+    roomId: string;
+    walletAddress: string;
+}
+
+export async function createRoomInRedis({ hostId, roomId, walletAddress }: RoomInRedisParams) {
     const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
 
-    await redis.hmset(roomKey, { host: hostId, status: "LIVE", createdAt: new Date().toISOString() });
-    await addParticipantToRoom({ role: "host", roomId, userId: hostId });
+    await Promise.all([
+        redis.set(`liveroom:${walletAddress}`, roomId),
+        redis.hmset(roomKey, { host: hostId, status: "LIVE", createdAt: new Date().toISOString() }),
+        addParticipantToRoom({ role: "host", roomId, userId: hostId }),
+    ]);
 }
 
 export async function addParticipantToRoom({ role, roomId, userId }: { roomId: string; userId: string; role: Role }) {
@@ -31,4 +40,8 @@ export async function getRoom(roomId: string): Promise<RedisRoom> {
     const invitedGuests = roomData.guests ? JSON.parse(roomData.guests) : [];
 
     return { host: roomData.host, status: roomData.status, createdAt: roomData.createdAt, participants, invitedGuests };
+}
+
+export async function endRoomInRedis({ walletAddress }: RoomInRedisParams) {
+    await redis.del(`liveroom:${walletAddress}`);
 }

@@ -1,5 +1,6 @@
 import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { redis } from "#config/redis.ts";
+import { getRoom } from "#services/streams/redis.utils.ts";
 
 export function roomHandler({ io, socket }: Handler) {
     socket.on("room.join", function ({ roomId }: { roomId: string }) {
@@ -41,4 +42,15 @@ export function roomHandler({ io, socket }: Handler) {
 
         socket.emit("chat.history", { roomId, messages });
     });
+
+    socket.on(
+        "chat.send.tip",
+        async function ({ roomId, payload }: { roomId: string; payload: LiveStreamChatMessagesState }) {
+            const room = await getRoom(roomId);
+
+            if (room.status === "LIVE") {
+                io.to(roomId).emit("chat.receive.tip", { roomId, payload });
+            }
+        },
+    );
 }

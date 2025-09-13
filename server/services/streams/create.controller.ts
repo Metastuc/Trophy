@@ -57,7 +57,7 @@ export async function createStream(request: Request, response: Response, next: N
                     data: { totalStreams: { increment: 1 } },
                 }),
 
-                createRoomInRedis({ hostId: user.id, roomId }),
+                createRoomInRedis({ hostId: user.id, roomId, walletAddress: user.walletAddress }),
             ]);
 
             response.customResponse<CreatedStreamData>({

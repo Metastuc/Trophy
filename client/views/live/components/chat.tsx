@@ -57,8 +57,9 @@ export function LiveStreamChats() {
                 setChatContents((state) => [...state, data.payload]);
             }
 
-            function handleChatReceiveTip(data: { roomId: string }) {
+            function handleChatReceiveTip(data: { roomId: string; payload: LiveStreamChatMessagesState }) {
                 if (data.roomId !== roomId) return;
+                setChatContents((state) => [...state, data.payload]);
             }
 
             socket.on("chat.history", handleChatHistory);
