@@ -2,7 +2,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
-import { useChainId, useSwitchChain } from "wagmi";
+import { useChainId } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
@@ -19,7 +19,6 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
     const chainId = useChainId();
     const { wallets } = useWallets();
     const { connectWallet } = usePrivy();
-    const { switchChainAsync } = useSwitchChain();
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [shouldReopenDrawer, setShouldReopenDrawer] = useState<boolean>(false);
@@ -55,7 +54,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
             if (chainId !== CLIENT_CONSTANTS.CURRENT_NETWORK.id) {
                 toast.error("Please switch to the correct network");
-                await switchChainAsync({ chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id });
+                await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
                 return;
             }
 
@@ -123,7 +122,6 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             chainId,
             connectWallet,
             streamer?.walletAddress,
-            switchChainAsync,
             tipDrawerState.amountInToken,
             tipDrawerState.amountInUsd,
             tipDrawerState.token,
@@ -131,6 +129,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             userWalletState.address,
             userWalletState.provider,
             userWalletState.walletType,
+            wallets,
         ],
     );
 
