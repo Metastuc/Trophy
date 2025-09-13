@@ -1,14 +1,14 @@
-// import { log } from "#~/utils/logger.ts";
-// import { roomHandler } from "./room";
+import { log } from "#~/utils/logger.ts";
+import { roomHandler } from "./room";
 // import { userHandler } from "./user";
 
-// export function registerSocketEvents({ io, socket }: Handler) {
-//     log({ data: { socketId: socket.id }, module: "socket", msg: "🔌 Client connected" });
+export function registerSocketEvents({ io, socket }: Handler) {
+    log({ data: { socketId: socket.id }, module: "socket", msg: "🔌 Client connected" });
 
-//     roomHandler({ io, socket });
-//     userHandler({ io, socket });
+    roomHandler({ io, socket });
+    // userHandler({ io, socket });
 
-//     socket.on("disconnect", function () {
-//         log({ data: { socketId: socket.id }, module: "socket", msg: "🔌 Client disconnected" });
-//     });
-// }
+    socket.on("disconnect", function () {
+        log({ data: { socketId: socket.id }, module: "socket", msg: "🔌 Client disconnected" });
+    });
+}

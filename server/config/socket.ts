@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 
+import { registerSocketEvents } from "#services/socket/index.ts";
 import { SERVER_ENV } from "./constants";
 import { privy } from "./privy";
 
@@ -27,7 +28,7 @@ export function initIO(server: ReturnType<typeof createServer>) {
     });
 
     io.on("connection", (socket) => {
-        //     registerSocketEvents({ io: getIO(), socket });
+        registerSocketEvents({ io: getIO(), socket });
         console.log(`Socket connected: ${socket.id}, User: ${socket.data.user}`);
     });
 

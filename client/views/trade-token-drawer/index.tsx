@@ -16,20 +16,24 @@ import { useTradeDrawerContext } from "./hooks";
 export function TradeDrawer(props: TradeDrawerProps) {
     return (
         <TradeDrawerContextProvider {...props}>
-            <TradeDrawerInner />
+            <TradeDrawerInner trigger={props.trigger} />
         </TradeDrawerContextProvider>
     );
 }
 
-function TradeDrawerInner() {
+function TradeDrawerInner({ trigger }: TradeDrawerProps) {
     const { closeDrawer, isDrawerOpen, openDrawer, handleSwap } = useTradeDrawerContext();
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
             <DrawerTrigger asChild>
-                <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
-                    <span className="text-green200 capitalize">trade</span>
-                </Button>
+                {trigger ? (
+                    trigger
+                ) : (
+                    <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
+                        <span className="text-green200 capitalize">trade</span>
+                    </Button>
+                )}
             </DrawerTrigger>
 
             <DrawerContent>
