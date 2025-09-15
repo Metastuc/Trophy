@@ -11,7 +11,7 @@ import { getWalletClient, publicClient } from "./viem";
 
 let fClient: ReadWriteFlaunchSDK | undefined;
 
-const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
+export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!fClient) {
         const walletClient = getWalletClient(provider, address);
 
@@ -114,6 +114,7 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
     return hash;
 };
 
+// removed the coin version (V1_1) incase e break
 export const buyCreatorToken = async (
     coinAddress: Address,
     amount: string,
@@ -128,8 +129,7 @@ export const buyCreatorToken = async (
             slippagePercent: 4,
             swapType: "EXACT_IN",
             amountIn: parseEther(amount),
-        },
-        "V1_1",
+        }
     );
 
     return await checkTx(hash);
@@ -149,6 +149,19 @@ export const getSwapQuote = async (
     return await flaunch.getSellQuoteExactInput(coinAddress, parseEther(amount));
 };
 
+export type PermitDetails = {
+    token: Address;
+    amount: bigint;
+    expiration: number;
+    nonce: number;
+};
+
+export type PermitSingle = {
+  details: PermitDetails;
+  spender: Address;
+  sigDeadline: bigint;
+};
+
 export const sellCreatorToken = async (
     coinAddress: Address,
     amount: string,
@@ -162,6 +175,10 @@ export const sellCreatorToken = async (
 
     if (allowance < amountInUnits) {
         const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+
+        typedData.message.details.amount = typedData.message.details.amount.toString();
+        typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
+
         const { signature } = await signTypedData(typedData, { address });
 
         const hash = await flaunch.sellCoin({
@@ -169,7 +186,7 @@ export const sellCreatorToken = async (
             slippagePercent: 4,
             amountIn: amountInUnits,
             permitSingle,
-            signature: signature as unknown as Address,
+            signature: signature as Address,
         });
 
         return await checkTx(hash);

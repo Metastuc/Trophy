@@ -1,10 +1,9 @@
-import { EIP1193Provider, useSignTypedData, useWallets } from "@privy-io/react-auth";
+import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
-import type { Address } from "viem";
+import { type Address } from "viem";
 
 import { network } from "@/lib/constants";
-// import { buyCreatorToken } from "@/lib/flaunch";
-import { sellCreatorToken } from "@/lib/flaunch";
+import { buyCreatorToken } from "@/lib/flaunch";
 
 import { TradeDrawerContext } from "./hooks";
 
@@ -12,14 +11,12 @@ type TradeDrawerContextProvider = PropsWithChildren<TradeDrawer>;
 
 export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerContextProvider) {
     const { wallets } = useWallets();
-    const { signTypedData } = useSignTypedData();
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
-    const [isSwapped, setIsSwapped] = useState<boolean>(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [drawerData, setDrawerData] = useState<TradeDrawerDataState>(() => ({
         buyAmount: "",
         buyBalance: "",
-        buyToken: streamer?.tokenAddress as Address,
+        buyToken: "",
         sellAmount: "",
         sellBalance: "",
         sellToken: "ETH",
@@ -35,19 +32,10 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 await wallets[0].switchChain(network.id);
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
-                console.log(drawerData);
-                // await buyCreatorToken(
-                //     streamer?.tokenAddress as Address,
-                //     drawerData.sellAmount,
-                //     provider,
-                //     wallets[0].address as Address,
-                // );
-
-                await sellCreatorToken(
-                    drawerData.buyToken,
+                await buyCreatorToken(
+                    streamer?.tokenAddress as Address,
                     drawerData.sellAmount,
                     provider,
-                    signTypedData,
                     wallets[0].address as Address,
                 );
             } catch (error) {
@@ -55,22 +43,20 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 // optionally show a toast or error UI here
             }
         },
-        [drawerData, signTypedData, wallets],
+        [drawerData.sellAmount, streamer?.tokenAddress, wallets],
     );
 
     const value = useMemo(
         () => ({
-            closeDrawer: () => setIsDrawerOpen(false),
-            drawerData,
-            handleSwap,
             isDrawerOpen,
-            isSwapped,
+            closeDrawer: () => setIsDrawerOpen(false),
             openDrawer: () => setIsDrawerOpen(true),
-            setDrawerData,
-            setIsSwapped,
             streamer,
+            drawerData,
+            setDrawerData,
+            handleSwap,
         }),
-        [isDrawerOpen, streamer, drawerData, handleSwap, isSwapped],
+        [isDrawerOpen, streamer, drawerData, handleSwap],
     );
 
     return <TradeDrawerContext.Provider value={value}>{children}</TradeDrawerContext.Provider>;
