@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { CREATED_STREAM_RESPONSE_SCHEMA } from "#~/schema/stream/index.ts";
+import { CREATED_STREAM_RESPONSE_SCHEMA, SCHEDULED_STREAM_RESPONSE_SCHEMA } from "#~/schema/stream/index.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
@@ -33,7 +33,7 @@ export async function createStream(request: Request, response: Response, next: N
             response.customResponse<ScheduledStreamData>({
                 code: 201,
                 message: "stream scheduled succesfully",
-                data: { roomId },
+                data: SCHEDULED_STREAM_RESPONSE_SCHEMA.parse({ roomId }),
             });
             return;
         } else {
@@ -57,7 +57,7 @@ export async function createStream(request: Request, response: Response, next: N
                     data: { totalStreams: { increment: 1 } },
                 }),
 
-                createRoomInRedis({ hostId: user.id, roomId, walletAddress: user.walletAddress }),
+                createRoomInRedis({ hostId: user.username, roomId, walletAddress: user.walletAddress }),
             ]);
 
             response.customResponse<CreatedStreamData>({

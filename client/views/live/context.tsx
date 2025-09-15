@@ -2,10 +2,12 @@ import { PropsWithChildren, useMemo } from "react";
 
 import { LiveStreamContext } from "./hooks";
 import { useHuddleJoinRoom } from "./hooks/huddle";
+// import { useHuddleHostPublish } from "./hooks/publish";
 
 type LiveStreamContextProviderProps = JoinStreamData &
     PropsWithChildren<{
         roomId: string;
+        roomUsername: string;
     }>;
 
 export function LiveStreamContextProvider({
@@ -16,10 +18,12 @@ export function LiveStreamContextProvider({
     creatorWalletAddress,
     role: serverRole,
     roomId,
+    roomUsername,
     title,
     token,
 }: LiveStreamContextProviderProps) {
-    const huddle = useHuddleJoinRoom({ roomId, token });
+    const huddle = useHuddleJoinRoom({ roomId, token, username: roomUsername });
+    // useHuddleHostPublish(huddle.role);
 
     const permissions = useMemo(
         () => ({
@@ -39,7 +43,7 @@ export function LiveStreamContextProvider({
             creatorToken,
             creatorUsername,
             creatorWalletAddress,
-            huddleRole: huddle.role as JoinStreamData["role"],
+            huddleRole: huddle.role,
             permissions,
             roomId,
             serverRole,

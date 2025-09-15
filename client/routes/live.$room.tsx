@@ -24,10 +24,10 @@ function RouteComponent() {
         })),
     );
 
-    const roomUsername = isAuthenticated ? username : generateGuestId();
+    const roomUsername = isAuthenticated ? (username as string) : generateGuestId();
     const { data, error, isPending } = useQuery({
         queryKey: ["join-stream", roomId, roomUsername],
-        queryFn: async () => await joinStream({ username: roomUsername as string, roomId }),
+        queryFn: async () => await joinStream({ username: roomUsername, roomId }),
         refetchOnWindowFocus: false,
     });
 
@@ -37,7 +37,7 @@ function RouteComponent() {
 
     return (
         <section className={cn("shell", "flex flex-col")}>
-            <LiveStreamContextProvider {...data} roomId={roomId}>
+            <LiveStreamContextProvider {...data} roomId={roomId} roomUsername={roomUsername}>
                 <Fragment>
                     <LiveStreamScreen />
                     <LiveStreamChats />

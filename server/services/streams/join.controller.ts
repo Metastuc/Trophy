@@ -42,10 +42,10 @@ export async function joinStream(request: Request, response: Response, next: Nex
             const user = await prisma.user.findUnique({ where: { username } });
             if (!user) throw new HttpError({ message: "user not found", code: 404, data: { username } });
 
-            userId = user.id;
+            userId = user.username;
 
-            if (user.id === roomInRedis.host) role = "host";
-            else if (roomInRedis.invitedGuests.includes(user.id)) role = "guest";
+            if (userId === roomInRedis.host) role = "host";
+            else if (roomInRedis.invitedGuests.includes(userId)) role = "guest";
         }
 
         const alreadyInRoom = roomInRedis.participants.some((participant) => participant.id === userId);

@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 
 interface LiveStreamProfileProps {
     imgSrc?: string;
-    username: string;
     isInvitation?: boolean;
     styles?: Record<string, string>;
+    username: string;
 }
 
 export function LiveStreamProfile({ imgSrc, username, isInvitation = false, styles }: LiveStreamProfileProps) {

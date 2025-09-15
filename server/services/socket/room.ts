@@ -1,7 +1,3 @@
-import { SERVER_CONSTANTS } from "#config/constants.ts";
-import { redis } from "#config/redis.ts";
-import { getRoom } from "#services/streams/redis.utils.ts";
-
 export function roomHandler({ io, socket }: Handler) {
     socket.on("room.join", function ({ roomId }: { roomId: string }) {
         console.log(`User ${socket.data.user} joined room: ${roomId}`);
@@ -17,40 +13,13 @@ export function roomHandler({ io, socket }: Handler) {
         io.to(roomId).emit("room.user.left", { userId: socket.data.user, roomId });
     });
 
-    socket.on(
-        "chat.send.text",
-        async function ({ roomId, payload }: { roomId: string; payload: LiveStreamChatMessagesState }) {
-            const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
-            const messagesKey = `${roomKey}:messages`;
-
-            const message = JSON.stringify({
-                ...payload,
-                timestamp: new Date().toISOString(),
-            });
-            await Promise.all([redis.rpush(messagesKey, message), redis.ltrim(messagesKey, -500, -1)]);
-
-            io.to(roomId).emit("chat.receive.text", { roomId, payload });
-        },
-    );
-
-    socket.on("chat.history", async function ({ roomId }: { roomId: string }) {
-        const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
-        const messagesKey = `${roomKey}:messages`;
-
-        const raw = await redis.lrange(messagesKey, -50, -1);
-        const messages = raw.map((message) => JSON.parse(message));
-
-        socket.emit("chat.history", { roomId, messages });
+    socket.on("room.stream.started", function ({ roomId }: { roomId: string }) {
+        console.log(`Stream started in room: ${roomId}`);
+        io.to(roomId).emit("room.stream.started", { roomId });
     });
 
-    socket.on(
-        "chat.send.tip",
-        async function ({ roomId, payload }: { roomId: string; payload: LiveStreamChatMessagesState }) {
-            const room = await getRoom(roomId);
-
-            if (room.status === "LIVE") {
-                io.to(roomId).emit("chat.receive.tip", { roomId, payload });
-            }
-        },
-    );
+    socket.on("room.stream.stopped", function ({ roomId }: { roomId: string }) {
+        console.log(`Stream stopped in room: ${roomId}`);
+        io.to(roomId).emit("room.stream.stopped", { roomId });
+    });
 }
