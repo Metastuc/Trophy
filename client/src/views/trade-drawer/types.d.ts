@@ -4,6 +4,7 @@ declare global {
     interface TradeDrawerContextValues extends Partial<TradeDrawer> {
         drawerData: TradeDrawerDataState;
         isDrawerOpen: boolean;
+        isSwapped: boolean;
     }
 
     interface TradeDrawerContextActions {
@@ -11,6 +12,7 @@ declare global {
         handleSwap: () => void;
         openDrawer: () => void;
         setDrawerData: React.Dispatch<React.SetStateAction<TradeDrawerDataState>>;
+        setIsSwapped: React.Dispatch<React.SetStateAction<boolean>>;
     }
 
     type TradeDrawerContext = TradeDrawerContextValues & TradeDrawerContextActions;
@@ -28,7 +30,7 @@ declare global {
     interface TradeDrawerDataState {
         buyAmount: string;
         buyBalance: string;
-        buyToken: string;
+        buyToken: Address;
         sellAmount: string;
         sellBalance: string;
         sellToken: string;
