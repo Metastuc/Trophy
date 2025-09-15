@@ -114,7 +114,6 @@ const checkTx = async (hash: Address, flaunch = fClient) => {
     return hash;
 };
 
-// removed the coin version (V1_1) incase e break
 export const buyCreatorToken = async (
     coinAddress: Address,
     amount: string,
@@ -129,7 +128,8 @@ export const buyCreatorToken = async (
             slippagePercent: 4,
             swapType: "EXACT_IN",
             amountIn: parseEther(amount),
-        }
+        },
+        "V1_1"
     );
 
     return await checkTx(hash);
