@@ -119,9 +119,13 @@
 //     );
 // }
 
+import { useWallets } from "@privy-io/react-auth";
 import { ChangeEvent } from "react";
+import { Address, formatEther } from "viem";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { network } from "@/lib/constants";
+import { getSwapQuote } from "@/lib/flaunch";
 import { tokenInputField } from "@/utils/truncate";
 
 import { TOKENS } from "../constants";
@@ -130,14 +134,40 @@ import { formatUSD } from "../utils";
 
 export function Swap() {
     const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
+    const { wallets } = useWallets();
 
-    function handleFromAmountChange(event: ChangeEvent<HTMLInputElement>) {
+    const toLocaleString = (number: bigint) => {
+        const format = formatEther(number);
+
+        return (Number(format)).toLocaleString();
+    }
+
+    async function handleFromAmountChange(event: ChangeEvent<HTMLInputElement>) {
+        const wallet = wallets[0];
+        await wallet.switchChain(network.id);
+        const provider = await wallet.getEthereumProvider();
+
         setDrawerData((state) => ({
             ...state,
             from: {
                 ...state.from,
                 amount: tokenInputField(event.target.value),
-            },
+            }
+        }));
+
+        const quote = await getSwapQuote(
+            provider,
+            drawerData.from.type === "native",
+            drawerData.from.amount,
+            streamer?.tokenAddress as Address
+        );
+
+        setDrawerData((state) => ({
+            ...state,
+            to: {
+                ...state.to,
+                amount: toLocaleString(quote)
+            }
         }));
     }
 
