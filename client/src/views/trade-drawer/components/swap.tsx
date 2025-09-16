@@ -119,8 +119,8 @@
 //     );
 // }
 
-import { useWallets } from "@privy-io/react-auth";
-import { ChangeEvent } from "react";
+import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Address, formatEther } from "viem";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -135,6 +135,7 @@ import { formatUSD } from "../utils";
 export function Swap() {
     const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
     const { wallets } = useWallets();
+    const [provider, setProvider] = useState<EIP1193Provider>();
 
     const toLocaleString = (number: bigint) => {
         const format = formatEther(number);
@@ -142,10 +143,16 @@ export function Swap() {
         return (Number(format)).toLocaleString();
     }
 
+    useEffect(() => {
+        (async () => {
+            const wallet = wallets[0];
+            console.log(wallet)
+            await wallet.switchChain(network.id);
+            setProvider(await wallet.getEthereumProvider());
+        })();
+    }, [wallets])
+
     async function handleFromAmountChange(event: ChangeEvent<HTMLInputElement>) {
-        const wallet = wallets[0];
-        await wallet.switchChain(network.id);
-        const provider = await wallet.getEthereumProvider();
 
         setDrawerData((state) => ({
             ...state,
@@ -156,7 +163,7 @@ export function Swap() {
         }));
 
         const quote = await getSwapQuote(
-            provider,
+            provider!,
             drawerData.from.type === "native",
             drawerData.from.amount,
             streamer?.tokenAddress as Address
