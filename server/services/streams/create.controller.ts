@@ -52,9 +52,10 @@ export async function createStream(request: Request, response: Response, next: N
             }
 
             await Promise.all([
-                prisma.stats.update({
+                prisma.stats.upsert({
                     where: { userId: user.id },
-                    data: { totalStreams: { increment: 1 } },
+                    update: { totalStreams: { increment: 1 } },
+                    create: { userId: user.id, totalStreams: 1 },
                 }),
 
                 createRoomInRedis({ hostId: user.username, roomId, walletAddress: user.walletAddress }),
