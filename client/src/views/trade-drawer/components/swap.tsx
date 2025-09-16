@@ -137,8 +137,12 @@ export function Swap() {
     const { wallets } = useWallets();
     const [provider, setProvider] = useState<EIP1193Provider>();
 
-    const toLocaleString = (number: bigint) => {
+    const toLocaleString = (number: bigint, e2c: boolean) => {
         const format = formatEther(number);
+
+        if (!e2c) {
+            return format;
+        }
 
         return (Number(format)).toLocaleString();
     }
@@ -162,9 +166,11 @@ export function Swap() {
             }
         }));
 
+        const ethToToken = drawerData.from.type === "native";
+
         const quote = await getSwapQuote(
             provider!,
-            drawerData.from.type === "native",
+            ethToToken,
             drawerData.from.amount,
             streamer?.tokenAddress as Address
         );
@@ -173,7 +179,7 @@ export function Swap() {
             ...state,
             to: {
                 ...state.to,
-                amount: toLocaleString(quote)
+                amount: toLocaleString(quote, ethToToken)
             }
         }));
     }
