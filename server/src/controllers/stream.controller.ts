@@ -95,7 +95,7 @@ export const createStream = async (req: Request, res: Response) => {
           layout: "spotlight",
           watermark: {
             url: "https://trophy-stream.s3.eu-north-1.amazonaws.com/watermark+2.png",
-            position: "top-right",
+            position: "top-left",
             size: {
               height: 72,
               width: 212,

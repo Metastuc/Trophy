@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { formatEther } from "viem";
 
 import { moralisChain } from "./constants";
 import MoralisClient from "./moralis";
@@ -21,6 +22,16 @@ export function truncateWalletAddress(address: string) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
+export const toLocaleString = (number: bigint, e2c: boolean = true) => {
+    const format = formatEther(number);
+
+    if (!e2c) {
+        return format;
+    }
+
+    return Number(format).toLocaleString();
+};
+
 export const moralisTokenFetch = async (address: string) => {
     const moralis = await MoralisClient();
 
@@ -30,4 +41,4 @@ export const moralisTokenFetch = async (address: string) => {
     });
 
     return result;
-}
+};

@@ -1,0 +1,2 @@
+[phases.setup]
+nixPkgs = ["nodePackages_latest.nodejs", "bun"]

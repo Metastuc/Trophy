@@ -1,4 +1,4 @@
-import { createFlaunch, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
+import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
 
@@ -9,17 +9,26 @@ import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
 
-let fClient: ReadWriteFlaunchSDK | undefined;
+let WriteClient: ReadWriteFlaunchSDK | undefined;
+let ReadClient: ReadFlaunchSDK | undefined
 
-const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
-    if (!fClient) {
+export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
+    if (!WriteClient) {
         const walletClient = getWalletClient(provider, address);
 
-        fClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
+        WriteClient = createFlaunch({ publicClient, walletClient }) as ReadWriteFlaunchSDK;
     }
 
-    return fClient;
+    return WriteClient;
 };
+
+const readClient = () => {
+    if (!ReadClient) {
+        ReadClient = createFlaunch({ publicClient });
+    }
+
+    return ReadClient;
+}
 
 export const createCreatorToken = async (
     name: string,
@@ -104,7 +113,7 @@ export const createCreatorToken = async (
     }
 };
 
-const checkTx = async (hash: Address, flaunch = fClient) => {
+const checkTx = async (hash: Address, flaunch = WriteClient) => {
     const txReceipt = await flaunch?.drift.waitForTransaction({ hash });
 
     if (txReceipt?.status !== "success") {
@@ -129,24 +138,42 @@ export const buyCreatorToken = async (
             swapType: "EXACT_IN",
             amountIn: parseEther(amount),
         },
-        "V1_1",
+        "V1_1"
     );
 
     return await checkTx(hash);
 };
 
+export const getCreatorTokenPrice = async (coinAddress: Address) => {
+    const flaunch = readClient();
+
+    return await flaunch.coinPriceInUSD({ coinAddress });
+}
+
 export const getSwapQuote = async (
-    provider: EIP1193Provider,
     ethToCreatorToken: boolean,
     amount: string,
     coinAddress: Address,
 ) => {
-    const flaunch = flaunchClient(provider);
+    const flaunch = readClient();
     if (ethToCreatorToken) {
         return await flaunch.getBuyQuoteExactInput(coinAddress, parseEther(amount));
     }
 
     return await flaunch.getSellQuoteExactInput(coinAddress, parseEther(amount));
+};
+
+export type PermitDetails = {
+    token: Address;
+    amount: bigint;
+    expiration: number;
+    nonce: number;
+};
+
+export type PermitSingle = {
+  details: PermitDetails;
+  spender: Address;
+  sigDeadline: bigint;
 };
 
 export const sellCreatorToken = async (
@@ -162,6 +189,10 @@ export const sellCreatorToken = async (
 
     if (allowance < amountInUnits) {
         const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+
+        typedData.message.details.amount = typedData.message.details.amount.toString();
+        typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
+
         const { signature } = await signTypedData(typedData, { address });
 
         const hash = await flaunch.sellCoin({
@@ -169,7 +200,7 @@ export const sellCreatorToken = async (
             slippagePercent: 4,
             amountIn: amountInUnits,
             permitSingle,
-            signature: signature as unknown as Address,
+            signature: signature as Address,
         });
 
         return await checkTx(hash);

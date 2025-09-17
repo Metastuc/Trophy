@@ -6,7 +6,7 @@ import { network } from "@/lib/constants";
 
 export const publicClient = createPublicClient({
     chain: network,
-    transport: http(),
+    transport: http("https://base-mainnet.g.alchemy.com/v2/9kiKlpCeF4z8k9VwVb8kGissHwepmntA"),
 }) as PublicClient;
 
 export const getWalletClient = (provider: EIP1193Provider, address?: Address) => {

@@ -119,8 +119,9 @@ function TipDrawerInner() {
 
     useEffect(() => {
         if (!balanceData || !tokenPrice) return;
+        console.log(balanceData);
 
-        const tokenBalance = parseFloat(balanceData.formatted);
+        const tokenBalance = parseFloat(balanceData.value.toString());
         const balanceInUsd = tokenBalance * tokenPrice.usdPrice;
 
         setInitialValues((state) => ({
