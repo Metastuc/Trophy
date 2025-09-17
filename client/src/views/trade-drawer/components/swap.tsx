@@ -119,13 +119,16 @@
 //     );
 // }
 
-import { EIP1193Provider, useWallets } from "@privy-io/react-auth";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Address, formatEther } from "viem";
+import { useWallets } from "@privy-io/react-auth";
+import { ChangeEvent, useEffect } from "react";
+import { Address } from "viem";
 
+import { useTokenPrice } from "@/api/get-token-prices";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { network } from "@/lib/constants";
-import { getSwapQuote } from "@/lib/flaunch";
+import { TOKEN_ADDRESSES } from "@/lib/contracts";
+import { getCreatorTokenPrice, getSwapQuote } from "@/lib/flaunch";
+import { getCreatorBalance, getQuote } from "@/lib/token-price";
+import { toLocaleString } from "@/lib/utils";
 import { tokenInputField } from "@/utils/truncate";
 
 import { TOKENS } from "../constants";
@@ -135,26 +138,41 @@ import { formatUSD } from "../utils";
 export function Swap() {
     const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
     const { wallets } = useWallets();
-    const [provider, setProvider] = useState<EIP1193Provider>();
-
-    const toLocaleString = (number: bigint, e2c: boolean) => {
-        const format = formatEther(number);
-
-        if (!e2c) {
-            return format;
-        }
-
-        return (Number(format)).toLocaleString();
-    }
+    const { data } = useTokenPrice(TOKEN_ADDRESSES.ETH as Address);
 
     useEffect(() => {
         (async () => {
-            const wallet = wallets[0];
-            console.log(wallet)
-            await wallet.switchChain(network.id);
-            setProvider(await wallet.getEthereumProvider());
+            const { ethBal, tokenBal } = await getCreatorBalance(wallets[0].address as Address, streamer!.tokenAddress);
+            const tokenPrice = await getCreatorTokenPrice(streamer?.tokenAddress as Address);
+            if (drawerData.from.type !== "native") {
+                setDrawerData((state) => ({
+                    from: {
+                        ...state.from,
+                        balance: tokenBal,
+                        usdPrice: tokenPrice
+                    },
+                    to: {
+                        ...state.to,
+                        balance: ethBal,
+                        usdPrice: data!.usdPrice.toString()
+                    }
+                }));
+            } else {
+                setDrawerData((state) => ({
+                    from: {
+                        ...state.from,
+                        balance: ethBal,
+                        usdPrice: data!.usdPrice.toString()
+                    },
+                    to: {
+                        ...state.to,
+                        balance: tokenBal,
+                        usdPrice: tokenPrice
+                    }
+                }));
+            }
         })();
-    }, [wallets])
+    }, [data, drawerData.from.type, setDrawerData, streamer, wallets]);
 
     async function handleFromAmountChange(event: ChangeEvent<HTMLInputElement>) {
 
@@ -169,7 +187,6 @@ export function Swap() {
         const ethToToken = drawerData.from.type === "native";
 
         const quote = await getSwapQuote(
-            provider!,
             ethToToken,
             drawerData.from.amount,
             streamer?.tokenAddress as Address
@@ -200,7 +217,7 @@ export function Swap() {
                         value={drawerData.from.amount}
                         className="outline-none"
                     />
-                    <span className="text-xs text-black/60">{formatUSD(drawerData.from.amount || "0")}</span>
+                    <span className="text-xs text-black/60">${getQuote({ quantity: drawerData.from.amount ?? "0", usdPrice: drawerData.from.usdPrice ?? "0" })}</span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">
@@ -242,7 +259,7 @@ export function Swap() {
                         </div>
                     )}
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.from.balance}</span>
+                    <span className="text-xs text-black/60">Balance: {drawerData.from.balance ?? "0"}</span>
                 </aside>
             </article>
 
@@ -274,7 +291,8 @@ export function Swap() {
                         className="outline-none"
                         value={drawerData.to.amount}
                     />
-                    <span className="text-xs text-black/60">{formatUSD(drawerData.to.amount || "0")}</span>
+                    {/* <span className="text-xs text-black/60">{formatUSD(drawerData.to.amount || "0")}</span> */}
+                    <span className="text-xs text-black/60">{formatUSD("0")}</span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">
@@ -316,7 +334,7 @@ export function Swap() {
                         </div>
                     )}
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.to.balance}</span>
+                    <span className="text-xs text-black/60">Balance: {drawerData.to.balance ?? "0"}</span>
                 </aside>
             </article>
         </section>
