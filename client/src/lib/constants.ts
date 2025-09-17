@@ -60,9 +60,9 @@ export const APPLICATION_CONSTANTS = {
             : `https://sepolia.basescan.org/tx/${hash}`,
 
     CURRENT_MORALIS_CHAIN:
-        ENV_SCHEMA.ENVIRONMENT === "production"
-            ? "base"
-            : "base%20sepolia",
+        ENV_SCHEMA.ENVIRONMENT === "development"
+            ? "base%20sepolia"
+            : "base",
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };
