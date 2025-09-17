@@ -1,8 +1,10 @@
 import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
 import axios from "axios";
+import { Address, parseAbi } from "viem";
 
 import { APPLICATION_CONSTANTS, BASE_TOKEN_INFO, COINGECKO_URL, ENV_SCHEMA } from "./constants";
 import { moralisTokenFetch } from "./moralis";
+import { toLocaleString } from "./utils";
 import { publicClient } from "./viem";
 
 type FoundTokens = Record<string, typeof BASE_TOKEN_INFO>;
@@ -58,10 +60,23 @@ export const getTokens = async (address: string) => {
     return foundTokens;
 };
 
-export const getTipQuote = async ({ quantity, usdPrice }: { quantity: string; usdPrice: string }) => {
+export const getQuote = ({ quantity, usdPrice }: { quantity: string; usdPrice: string }) => {
     try {
-        return Number(quantity) * Number(usdPrice);
+        return parseFloat(quantity) * parseFloat(usdPrice);
     } catch (error) {
         throw new Error((error as Error).message);
     }
+};
+
+export const getCreatorBalance = async (tokenAddress: Address, userAddress: Address) => {
+    const tokenBalance = await publicClient.readContract({
+        abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
+        args: [userAddress],
+        functionName: "balanceOf",
+        address: tokenAddress
+    });
+
+    const ethBalance = await publicClient.getBalance({ address: userAddress });
+
+    return { tokenBal: toLocaleString(tokenBalance) ?? 0, ethBal: toLocaleString(ethBalance, false) ?? 0 };
 };
