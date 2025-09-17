@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import Moralis from "moralis";
 import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
@@ -64,8 +65,8 @@ export const APPLICATION_CONSTANTS = {
 
     CURRENT_MORALIS_CHAIN:
         ENV_SCHEMA.ENVIRONMENT === "production"
-            ? "base"
-            : "base sepolia",
+            ? Moralis.EvmUtils.EvmChain.BASE
+            : Moralis.EvmUtils.EvmChain.BASE_SEPOLIA,
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };

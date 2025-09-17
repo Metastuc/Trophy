@@ -156,7 +156,7 @@ export function Swap() {
                     to: {
                         ...state.to,
                         balance: ethBal,
-                        usdPrice: data!.usdPrice.toString() || "0"
+                        usdPrice: data?.usdPrice.toString() || "0"
                     }
                 }));
             } else {
@@ -164,7 +164,7 @@ export function Swap() {
                     from: {
                         ...state.from,
                         balance: ethBal,
-                        usdPrice: data!.usdPrice.toString() || "0"
+                        usdPrice: data?.usdPrice.toString() || "0"
                     },
                     to: {
                         ...state.to,
