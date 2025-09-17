@@ -1,5 +1,4 @@
 import { QueryClient } from "@tanstack/react-query";
-import Moralis from "moralis";
 import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
@@ -18,6 +17,7 @@ export const ENV_SCHEMA = {
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
+    MAINNET_RPC: import.meta.env.VITE_MAINNET_RPC as string
 };
 
 export const queryClient = new QueryClient();
@@ -33,7 +33,7 @@ export const network = environment === "development" ? baseSepolia : base;
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL!;
 
 export const moralisChain =
-    environment === "development" ? Moralis.EvmUtils.EvmChain.BASE_SEPOLIA : Moralis.EvmUtils.EvmChain.BASE;
+    environment === "development" ? "base sepolia" : "base";
 
 const addresses = {
     development: [""],
@@ -64,8 +64,8 @@ export const APPLICATION_CONSTANTS = {
 
     CURRENT_MORALIS_CHAIN:
         ENV_SCHEMA.ENVIRONMENT === "production"
-            ? Moralis.EvmUtils.EvmChain.BASE
-            : Moralis.EvmUtils.EvmChain.BASE_SEPOLIA,
+            ? "base"
+            : "base sepolia",
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };
