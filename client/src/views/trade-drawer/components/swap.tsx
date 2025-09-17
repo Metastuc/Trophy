@@ -139,11 +139,13 @@ export function Swap() {
     const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
     const { wallets } = useWallets();
     const { data } = useTokenPrice(TOKEN_ADDRESSES.ETH as Address);
+    console.log({data})
 
     useEffect(() => {
         (async () => {
             const { ethBal, tokenBal } = await getViewerBalance(streamer!.tokenAddress, wallets[0].address as Address);
             const tokenPrice = await getCreatorTokenPrice(streamer?.tokenAddress as Address);
+            console.log({tokenPrice})
             if (drawerData.from.type !== "native") {
                 setDrawerData((state) => ({
                     from: {
@@ -154,7 +156,7 @@ export function Swap() {
                     to: {
                         ...state.to,
                         balance: ethBal,
-                        usdPrice: data!.usdPrice.toString()
+                        usdPrice: data!.usdPrice.toString() || "0"
                     }
                 }));
             } else {
@@ -162,7 +164,7 @@ export function Swap() {
                     from: {
                         ...state.from,
                         balance: ethBal,
-                        usdPrice: data!.usdPrice.toString()
+                        usdPrice: data!.usdPrice.toString() || "0"
                     },
                     to: {
                         ...state.to,
