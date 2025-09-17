@@ -68,7 +68,7 @@ export const getQuote = ({ quantity, usdPrice }: { quantity: string; usdPrice: s
     }
 };
 
-export const getCreatorBalance = async (tokenAddress: Address, userAddress: Address) => {
+export const getViewerBalance = async (tokenAddress: Address, userAddress: Address) => {
     const tokenBalance = await publicClient.readContract({
         abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
         args: [userAddress],

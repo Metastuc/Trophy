@@ -127,7 +127,7 @@ import { useTokenPrice } from "@/api/get-token-prices";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKEN_ADDRESSES } from "@/lib/contracts";
 import { getCreatorTokenPrice, getSwapQuote } from "@/lib/flaunch";
-import { getCreatorBalance, getQuote } from "@/lib/token-price";
+import { getQuote, getViewerBalance } from "@/lib/token-price";
 import { toLocaleString } from "@/lib/utils";
 import { tokenInputField } from "@/utils/truncate";
 
@@ -142,7 +142,7 @@ export function Swap() {
 
     useEffect(() => {
         (async () => {
-            const { ethBal, tokenBal } = await getCreatorBalance(wallets[0].address as Address, streamer!.tokenAddress);
+            const { ethBal, tokenBal } = await getViewerBalance(streamer!.tokenAddress, wallets[0].address as Address);
             const tokenPrice = await getCreatorTokenPrice(streamer?.tokenAddress as Address);
             if (drawerData.from.type !== "native") {
                 setDrawerData((state) => ({
@@ -217,7 +217,7 @@ export function Swap() {
                         value={drawerData.from.amount}
                         className="outline-none"
                     />
-                    <span className="text-xs text-black/60">${getQuote({ quantity: drawerData.from.amount ?? "0", usdPrice: drawerData.from.usdPrice ?? "0" })}</span>
+                    <span className="text-xs text-black/60">${getQuote({ quantity: drawerData.from.amount || "0", usdPrice: drawerData.from.usdPrice || "0" })}</span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">
@@ -259,7 +259,7 @@ export function Swap() {
                         </div>
                     )}
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.from.balance ?? "0"}</span>
+                    <span className="text-xs text-black/60">Balance: {drawerData.from.balance || "0"}</span>
                 </aside>
             </article>
 
@@ -334,7 +334,7 @@ export function Swap() {
                         </div>
                     )}
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.to.balance ?? "0"}</span>
+                    <span className="text-xs text-black/60">Balance: {drawerData.to.balance}</span>
                 </aside>
             </article>
         </section>
