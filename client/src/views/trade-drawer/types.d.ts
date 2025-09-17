@@ -51,6 +51,7 @@ declare global {
         type: "native" | "streamer"; // "native" = ETH, "streamer" = streamer token
         amount: string;
         balance: string;
+        usdPrice: string;
     }
 
     // overall state
