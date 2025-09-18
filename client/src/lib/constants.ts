@@ -32,9 +32,6 @@ export const network = environment === "development" ? baseSepolia : base;
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL!;
 
-export const moralisChain =
-    environment === "development" ? "base sepolia" : "base";
-
 const addresses = {
     development: [""],
     production: [DEGEN, USDC, ZORA, BNKR, FLAY],
@@ -63,9 +60,9 @@ export const APPLICATION_CONSTANTS = {
             : `https://sepolia.basescan.org/tx/${hash}`,
 
     CURRENT_MORALIS_CHAIN:
-        ENV_SCHEMA.ENVIRONMENT === "production"
-            ? "base"
-            : "base sepolia",
+        ENV_SCHEMA.ENVIRONMENT === "development"
+            ? "base%20sepolia"
+            : "base",
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };

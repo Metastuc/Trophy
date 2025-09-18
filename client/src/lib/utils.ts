@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatEther } from "viem";
 
-import { moralisChain } from "./constants";
+import { APPLICATION_CONSTANTS } from "./constants";
 import MoralisClient from "./moralis";
 
 export function cn(...inputs: ClassValue[]) {
@@ -36,7 +36,7 @@ export const moralisTokenFetch = async (address: string) => {
     const moralis = await MoralisClient();
 
     const { result } = await moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
-        chain: moralisChain,
+        chain: APPLICATION_CONSTANTS.CURRENT_MORALIS_CHAIN,
         address,
     });
 

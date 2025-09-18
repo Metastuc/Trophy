@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { Address } from "viem";
 
 import { APPLICATION_CONSTANTS } from "@/lib/constants";
-import MoralisClient from "@/lib/moralis";
+// import MoralisClient from "@/lib/moralis";
 
 export function useTokenPrice(address: Address) {
     return useQuery({
         queryKey: ["moralis-token-price", address],
         queryFn: async function () {
-            const moralis = await MoralisClient();
+            // const moralis = await MoralisClient();
 
-            return await moralis.EvmApi.token
-                .getTokenPrice({
-                    chain: APPLICATION_CONSTANTS.CURRENT_MORALIS_CHAIN,
-                    address,
-                })
-                .then((response) => response.result);
+            return await axios
+                .get(
+                    `https://deep-index.moralis.io/api/v2.2/erc20/${address}/price?chain=${APPLICATION_CONSTANTS.CURRENT_MORALIS_CHAIN}`,
+                )
+                .then((response) => response.data);
         },
         refetchInterval: false,
         staleTime: 60_000,
