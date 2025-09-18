@@ -42,6 +42,7 @@ export const createCreatorToken = async (
 
         const fairLaunchInBps = BigInt(60 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
+        const initialTokenFairLaunch = (100_000_000_000n * fairLaunchInBps) / 10_000n;
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
@@ -54,9 +55,9 @@ export const createCreatorToken = async (
                 name,
                 symbol: name.toUpperCase(),
                 tokenUri,
-                initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
+                initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: 0n,
+                premineAmount: initialTokenFairLaunch * BigInt(0.05),
                 creator: smartWalletClient.account.address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
