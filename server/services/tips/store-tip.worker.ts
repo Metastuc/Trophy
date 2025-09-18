@@ -8,7 +8,7 @@ import { prisma } from "#config/prisma.ts";
 import { redis } from "#config/redis.ts";
 import { getIO } from "#config/socket.ts";
 import { client } from "#config/viem.ts";
-import { User } from "#generated/prisma/index.js";
+import { User } from "#generated/prisma/client.ts";
 import { logger } from "#utils/logger.ts";
 
 export const tipsQueue = new Queue("tips", {

@@ -1,7 +1,7 @@
 import { isAddress } from "viem";
 import { z } from "zod";
 
-import { Prisma } from "#generated/prisma/index.js";
+import { Prisma } from "#generated/prisma/client.ts";
 
 export const AUTHENTICATE_USER_RESPONSE_SCHEMA = z.object({
     isBasicProfileComplete: z.boolean(),

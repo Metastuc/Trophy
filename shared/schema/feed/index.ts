@@ -1,4 +1,4 @@
-import { Prisma } from "#generated/prisma/index.js";
+import { Prisma } from "#generated/prisma/client.ts";
 
 export const publicFeedSelectFields = {
     id: true,
