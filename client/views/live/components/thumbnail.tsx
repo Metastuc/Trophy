@@ -34,7 +34,7 @@ export function LiveStreamThumbnail() {
                         await makeRequest({ method: "POST", url: API_ENDPOINTS.STREAMS.THUMBNAIL, data: formData });
                     });
                 },
-                toTime({ unit: "seconds", value: 60 }),
+                toTime({ unit: "seconds", value: 60, output: "milliseconds" }),
             );
         },
         [host, roomId],

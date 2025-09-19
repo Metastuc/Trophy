@@ -1,8 +1,9 @@
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 
 import { LiveStreamContext } from "./hooks";
 import { useHuddleJoinRoom } from "./hooks/huddle";
 import { useHuddleHostPublish } from "./hooks/publish";
+import { useRoomParticipants } from "./hooks/streamers";
 
 type LiveStreamContextProviderProps = JoinStreamData &
     PropsWithChildren<{
@@ -22,8 +23,9 @@ export function LiveStreamContextProvider({
     title,
     token,
 }: LiveStreamContextProviderProps) {
-    const huddle = useHuddleJoinRoom({ roomId, token, username: roomUsername });
+    const huddle = useHuddleJoinRoom({ roomId, token, username: roomUsername, serverRole });
     useHuddleHostPublish(huddle.role);
+    const roomParticipants = useRoomParticipants(roomId);
 
     const permissions: RoomPermissions = useMemo(
         () => ({
@@ -46,7 +48,16 @@ export function LiveStreamContextProvider({
         [huddle.role],
     );
 
-    const value: LiveStreamContextValues = useMemo(
+    const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
+    function openInvitationDrawer() {
+        setIsInvitationDrawerOpen(true);
+    }
+
+    function closeInvitationDrawer() {
+        setIsInvitationDrawerOpen(false);
+    }
+
+    const value: LiveStreamContextValue = useMemo(
         () => ({
             creatorProfileImage,
             creatorToken,
@@ -60,6 +71,10 @@ export function LiveStreamContextProvider({
             serverRole,
             title,
             token,
+            isInvitationDrawerOpen,
+            openInvitationDrawer,
+            closeInvitationDrawer,
+            roomParticipants,
         }),
         [
             creatorProfileImage,
@@ -74,6 +89,8 @@ export function LiveStreamContextProvider({
             serverRole,
             title,
             token,
+            isInvitationDrawerOpen,
+            roomParticipants,
         ],
     );
 

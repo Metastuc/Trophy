@@ -1,29 +1,27 @@
-import { useLocalPeer, usePeerIds } from "@huddle01/react";
-
-import { useLiveStreamRoles } from "../hooks";
+import { useLiveStreamParticipants } from "../hooks";
 import { LiveStreamLocalPeer } from "./local-peer";
 import { LiveStreamRemotePeer } from "./remote-peer";
 
 export function LiveStreamStreamers({ role }: { role: JoinStreamData["role"] }) {
-    const { host, guest } = useLiveStreamRoles();
+    const { localStreamer, remoteHosts, remoteGuests } = useLiveStreamParticipants();
 
-    const { peerId: localPeerId } = useLocalPeer();
-    const { peerIds } = usePeerIds({ roles: [role] });
+    console.log("LiveStreamStreamers", { localStreamer, remoteHosts, remoteGuests });
 
-    const isPeerLocal = (role === "host" && host) || (role === "guest" && guest);
-    const peersWithRole = isPeerLocal ? [localPeerId, ...peerIds] : peerIds;
+    const allPeers =
+        role === "host"
+            ? [...(localStreamer?.role === "host" ? [localStreamer] : []), ...remoteHosts]
+            : [...(localStreamer?.role === "guest" ? [localStreamer] : []), ...remoteGuests];
 
     const tileClass = role === "host" ? "host-tile" : "guest-tile";
-    const sorted = [...peersWithRole].sort(function (a, b) {
-        if (a === null || b === null) return 0;
-        return a.localeCompare(b);
-    });
+    const sorted = [...allPeers].sort((a, b) => a.peerId!.localeCompare(b.peerId!));
 
-    return sorted.map((peerId, index) =>
-        peerId && peerId === localPeerId ? (
-            <LiveStreamLocalPeer key={peerId} isLocal={isPeerLocal} tileClass={`${tileClass}-${index + 1}`} />
+    return sorted.map((peer, index) =>
+        peer.peerId && peer.peerId === localStreamer?.peerId ? (
+            <LiveStreamLocalPeer key={peer.peerId} isLocal tileClass={`${tileClass}-${index + 1}`} />
         ) : (
-            peerId && <LiveStreamRemotePeer key={peerId} peerId={peerId} tileClass={`${tileClass}-${index + 1}`} />
+            peer.peerId && (
+                <LiveStreamRemotePeer key={peer.peerId} peerId={peer.peerId} tileClass={`${tileClass}-${index + 1}`} />
+            )
         ),
     );
 }

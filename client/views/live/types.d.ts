@@ -5,9 +5,14 @@ interface LiveStreamContextValues extends Omit<JoinStreamData, "role"> {
     roomId: string;
     roomRole: RoomRoles;
     serverRole: JoinStreamData["role"];
+    isInvitationDrawerOpen: boolean;
+    roomParticipants: RoomParticipants;
 }
 
-interface LiveStreamContextActions {}
+interface LiveStreamContextActions {
+    openInvitationDrawer: () => void;
+    closeInvitationDrawer: () => void;
+}
 
 type LiveStreamContextValue = LiveStreamContextActions & LiveStreamContextValues;
 
@@ -24,6 +29,17 @@ type RoomRoles = {
     host: boolean;
     guest: boolean;
     listener: boolean;
+};
+
+type RoomParticipants = {
+    localStreamer: RedisParticipant | undefined;
+    remoteStreamers: RedisParticipant[];
+    hosts: RedisParticipant[];
+    guests: RedisParticipant[];
+    listeners: RedisParticipant[];
+    remoteHosts: RedisParticipant[];
+    remoteGuests: RedisParticipant[];
+    remoteListeners: RedisParticipant[];
 };
 
 interface LiveStreamChatMessagesState {

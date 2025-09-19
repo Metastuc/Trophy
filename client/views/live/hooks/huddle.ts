@@ -5,18 +5,30 @@ import { toast } from "sonner";
 import { useSocket } from "@/hooks/socket";
 import { log } from "#~/utils/logger.ts";
 
-export function useHuddleJoinRoom({ roomId, token, username }: { roomId: string; token: string; username: string }) {
+export function useHuddleJoinRoom({
+    roomId,
+    token,
+    username,
+    serverRole,
+}: {
+    roomId: string;
+    token: string;
+    username: string;
+    serverRole: JoinStreamData["role"];
+}) {
     const { role, peerId } = useLocalPeer();
     const socket = useSocket();
+
+    console.log(peerId);
 
     const { joinRoom, leaveRoom, state } = useRoom({
         onJoin(data) {
             log({ data: { data }, module: "LIVE STREAM CONNECT", msg: "✅ joined Huddle room", tag: "HUDDLE" });
-            socket.emit("room.join", { roomId, peerId, identifier: username });
+            socket.emit("room.join", { roomId, peerId, identifier: username, role: serverRole });
         },
         onLeave(data) {
             log({ data: { data }, module: "LIVE STREAM CONNECT", msg: "👋 left Huddle room", tag: "HUDDLE" });
-            socket.emit("room.leave", { roomId, peerId, identifier: username });
+            socket.emit("room.leave", { roomId, peerId, identifier: username, role: serverRole });
         },
     });
 

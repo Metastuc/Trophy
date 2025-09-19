@@ -18,7 +18,10 @@ export function LiveStreamControls() {
     function toggleControls() {
         setIsControlsVisible(true);
         if (hideTimeout.current) clearTimeout(hideTimeout.current);
-        hideTimeout.current = setTimeout(() => setIsControlsVisible(false), toTime({ unit: "seconds", value: 5 }));
+        hideTimeout.current = setTimeout(
+            () => setIsControlsVisible(false),
+            toTime({ unit: "seconds", value: 5, output: "milliseconds" }),
+        );
     }
 
     useEffect(function () {

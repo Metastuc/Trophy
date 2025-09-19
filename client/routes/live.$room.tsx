@@ -6,6 +6,7 @@ import { useShallow } from "zustand/shallow";
 import { joinStream } from "@/api/join-stream";
 import { cn } from "@/lib/utils";
 import { LiveStreamChats } from "@/views/live/components/chat";
+import { LiveStreamInvitationDrawer } from "@/views/live/components/guests";
 import { LiveStreamScreen } from "@/views/live/components/screen";
 import { LiveStreamContextProvider } from "@/views/live/context";
 import { generateGuestId } from "@/views/live/utils";
@@ -42,6 +43,8 @@ function RouteComponent() {
                     <LiveStreamScreen />
                     <LiveStreamChats />
                 </Fragment>
+
+                <LiveStreamInvitationDrawer />
             </LiveStreamContextProvider>
         </section>
     );

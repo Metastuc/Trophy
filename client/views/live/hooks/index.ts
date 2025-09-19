@@ -19,3 +19,7 @@ export function useLiveStreamPermissions() {
 export function useLiveStreamRoles() {
     return useLiveStreamContext().roomRole;
 }
+
+export function useLiveStreamParticipants() {
+    return useLiveStreamContext().roomParticipants;
+}

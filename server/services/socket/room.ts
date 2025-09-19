@@ -1,25 +1,69 @@
+import { log } from "#~/utils/logger.ts";
 import { addParticipantToRoom, getRoom, removeParticipantFromRoom } from "#services/redis/room.ts";
 
 export function roomHandler({ io, socket }: Handler) {
+    async function updateRoomStreamers(roomId: string) {
+        const { participants } = await getRoom(roomId);
+
+        io.to(roomId).emit(
+            "room.streamers.update",
+            participants.map((participant) => ({
+                peerId: participant.peerId,
+                role: participant.role,
+                userId: participant.id,
+            })),
+        );
+
+        log.info({
+            module: "roomHandler",
+            msg: `Updated streamers for room ${roomId}`,
+            data: participants,
+            tag: "SOCKET",
+        });
+    }
+
     socket.on(
         "room.join",
-        async function ({ identifier, peerId, roomId }: { identifier: string; peerId: string; roomId: string }) {
+        async function ({
+            identifier,
+            peerId,
+            roomId,
+            role: clientRole,
+        }: {
+            identifier: string;
+            peerId: string;
+            roomId: string;
+            role: JoinStreamData["role"];
+        }) {
             socket.join(roomId);
+
+            log.info({
+                module: "roomHandler",
+                msg: `User ${identifier} (${clientRole}) joined room: ${roomId}`,
+                tag: "SOCKET",
+            });
 
             const { participants } = await getRoom(roomId);
             const existing = participants.find((participant) => participant.id === identifier);
-            const role = existing ? existing.role : "listener";
+            const role = existing ? existing.role : clientRole;
 
             if (existing && (existing.role === "host" || existing.role === "guest") && existing.peerId) {
-                socket.emit("room.session.conflict", {
-                    message: "You are already streaming on another device.",
-                    existingPeerId: existing.peerId,
-                    role: existing.role,
+                log.warn({
+                    module: "roomHandler",
+                    msg: `Replacing existing ${existing.role} ${identifier} with new peerId ${peerId}`,
+                    data: { oldPeerId: existing.peerId, newPeerId: peerId },
+                    tag: "SOCKET",
                 });
-                return;
+
+                io.to(existing.peerId).emit("force.disconnect");
+                await removeParticipantFromRoom({ roomId, userId: existing.id });
             }
 
-            await addParticipantToRoom({ role, roomId, userId: identifier, peerId });
+            await Promise.all([
+                await addParticipantToRoom({ role, roomId, userId: identifier, peerId }),
+                await updateRoomStreamers(roomId),
+            ]);
+
             io.to(roomId).emit("room.user.joined", { userId: socket.data.user, roomId });
         },
     );

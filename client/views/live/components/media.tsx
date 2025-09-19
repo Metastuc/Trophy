@@ -128,7 +128,7 @@ export const LiveStreamMedia = memo(function ({
             >
                 {videoStream && videoStreamState === "playable" ? (
                     <div className="aspect-video">
-                        <video autoPlay className="size-full object-cover" muted={isLocal} ref={videoRef} />
+                        <video autoPlay className="size-full object-cover" muted ref={videoRef} />
                     </div>
                 ) : (
                     <span className="text-xl text-white">{tileClass}</span>
@@ -140,7 +140,7 @@ export const LiveStreamMedia = memo(function ({
             {screenVideo ? (
                 <div className={cn("streamer-screen", "grid size-full place-items-center bg-black")}>
                     <div className="aspect-video">
-                        <video autoPlay className="size-full" muted={isLocal} ref={screenVideoRef} />
+                        <video autoPlay className="size-full" muted ref={screenVideoRef} />
                     </div>
                 </div>
             ) : null}

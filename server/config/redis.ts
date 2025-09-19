@@ -13,21 +13,21 @@ export const redis = new Redis({
 });
 
 redis.on("connect", () => {
-    log({ module: "redis", msg: "🔌 Redis connected" });
+    log({ module: "REDIS", msg: "🔌 Redis connected" });
 });
 
 redis.on("ready", () => {
-    log.info({ module: "redis", msg: "✅ Redis ready" });
+    log.info({ module: "REDIS", msg: "✅ Redis ready" });
 });
 
-redis.on("error", (err) => {
-    log.error({ module: "redis", msg: "❌ Redis error", data: err });
+redis.on("error", (error) => {
+    log.error({ module: "REDIS", msg: "❌ Redis error", data: error });
 });
 
 redis.on("end", () => {
-    log.warn({ module: "redis", msg: "⚠️ Redis connection closed" });
+    log.warn({ module: "REDIS", msg: "⚠️ Redis connection closed" });
 });
 
 redis.on("reconnecting", (time: number) => {
-    log.warn({ module: "redis", msg: `♻️ Redis reconnecting in ${time}ms` });
+    log.warn({ module: "REDIS", msg: `♻️ Redis reconnecting in ${time}ms` });
 });
