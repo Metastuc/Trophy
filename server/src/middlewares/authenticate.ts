@@ -21,7 +21,7 @@ export async function authenticate(request: Request, response: Response, next: N
     console.error(error);
     response.status(403).json({
       error: (error as Error).message,
-      message: "invalid token",
+      message: "invalid token, please refresh",
     });
   }
 }

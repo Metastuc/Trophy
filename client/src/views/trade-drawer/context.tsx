@@ -69,6 +69,7 @@ import { EIP1193Provider, useSignTypedData, useWallets } from "@privy-io/react-a
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { type Address } from "viem";
 
+import { makeRequest } from "@/lib/axios";
 import { network } from "@/lib/constants";
 import { buyCreatorToken, sellCreatorToken } from "@/lib/flaunch";
 
@@ -88,15 +89,15 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
             type: "native",
             token: "ETH", // native side
             amount: "",
-            balance: "",
-            usdPrice: "",
+            balance: "0",
+            usdPrice: ""
         },
         to: {
             type: "streamer",
             token: streamer?.tokenAddress as Address, // streamer token must be address
             amount: "",
-            balance: "",
-            usdPrice: "",
+            balance: "0",
+            usdPrice: ""
         },
     }));
 
@@ -118,6 +119,12 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                         provider,
                         wallets[0].address as Address,
                     );
+
+                    await makeRequest({
+                        method: 'POST',
+                        url: "/send-buy-notis",
+                        data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address }
+                    });
                 } else if (drawerData.from.type === "streamer") {
                     // StreamerToken → ETH
                     await sellCreatorToken(
@@ -132,7 +139,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 console.error("Swap failed:", error);
             }
         },
-        [drawerData.from, streamer?.tokenAddress, wallets, signTypedData],
+        [wallets, drawerData.from.type, drawerData.from.amount, drawerData.to.amount, streamer?.tokenAddress, streamer?.username, signTypedData],
     );
 
     const value = useMemo(

@@ -29,6 +29,16 @@ export type Stream = $Result.DefaultSelection<Prisma.$StreamPayload>
  */
 export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 /**
+ * Model TipTxs
+ * 
+ */
+export type TipTxs = $Result.DefaultSelection<Prisma.$TipTxsPayload>
+/**
+ * Model cVolume
+ * 
+ */
+export type cVolume = $Result.DefaultSelection<Prisma.$cVolumePayload>
+/**
  * Model User
  * 
  */
@@ -169,6 +179,26 @@ export class PrismaClient<
     * ```
     */
   get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tipTxs`: Exposes CRUD operations for the **TipTxs** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TipTxs
+    * const tipTxs = await prisma.tipTxs.findMany()
+    * ```
+    */
+  get tipTxs(): Prisma.TipTxsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cVolume`: Exposes CRUD operations for the **cVolume** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CVolumes
+    * const cVolumes = await prisma.cVolume.findMany()
+    * ```
+    */
+  get cVolume(): Prisma.cVolumeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -621,6 +651,8 @@ export namespace Prisma {
   export const ModelName: {
     Stream: 'Stream',
     Notification: 'Notification',
+    TipTxs: 'TipTxs',
+    cVolume: 'cVolume',
     User: 'User'
   };
 
@@ -640,7 +672,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "stream" | "notification" | "user"
+      modelProps: "stream" | "notification" | "tipTxs" | "cVolume" | "user"
       txIsolationLevel: never
     }
     model: {
@@ -789,6 +821,154 @@ export namespace Prisma {
           count: {
             args: Prisma.NotificationCountArgs<ExtArgs>
             result: $Utils.Optional<NotificationCountAggregateOutputType> | number
+          }
+        }
+      }
+      TipTxs: {
+        payload: Prisma.$TipTxsPayload<ExtArgs>
+        fields: Prisma.TipTxsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TipTxsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TipTxsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>
+          }
+          findFirst: {
+            args: Prisma.TipTxsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TipTxsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>
+          }
+          findMany: {
+            args: Prisma.TipTxsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>[]
+          }
+          create: {
+            args: Prisma.TipTxsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>
+          }
+          createMany: {
+            args: Prisma.TipTxsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.TipTxsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>
+          }
+          update: {
+            args: Prisma.TipTxsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>
+          }
+          deleteMany: {
+            args: Prisma.TipTxsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TipTxsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TipTxsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TipTxsPayload>
+          }
+          aggregate: {
+            args: Prisma.TipTxsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTipTxs>
+          }
+          groupBy: {
+            args: Prisma.TipTxsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TipTxsGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.TipTxsFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.TipTxsAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.TipTxsCountArgs<ExtArgs>
+            result: $Utils.Optional<TipTxsCountAggregateOutputType> | number
+          }
+        }
+      }
+      cVolume: {
+        payload: Prisma.$cVolumePayload<ExtArgs>
+        fields: Prisma.cVolumeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.cVolumeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.cVolumeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>
+          }
+          findFirst: {
+            args: Prisma.cVolumeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.cVolumeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>
+          }
+          findMany: {
+            args: Prisma.cVolumeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>[]
+          }
+          create: {
+            args: Prisma.cVolumeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>
+          }
+          createMany: {
+            args: Prisma.cVolumeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.cVolumeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>
+          }
+          update: {
+            args: Prisma.cVolumeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>
+          }
+          deleteMany: {
+            args: Prisma.cVolumeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.cVolumeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.cVolumeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cVolumePayload>
+          }
+          aggregate: {
+            args: Prisma.CVolumeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCVolume>
+          }
+          groupBy: {
+            args: Prisma.cVolumeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CVolumeGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.cVolumeFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.cVolumeAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.cVolumeCountArgs<ExtArgs>
+            result: $Utils.Optional<CVolumeCountAggregateOutputType> | number
           }
         }
       }
@@ -947,6 +1127,8 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     stream?: StreamOmit
     notification?: NotificationOmit
+    tipTxs?: TipTxsOmit
+    cVolume?: cVolumeOmit
     user?: UserOmit
   }
 
@@ -3152,6 +3334,1984 @@ export namespace Prisma {
 
 
   /**
+   * Model TipTxs
+   */
+
+  export type AggregateTipTxs = {
+    _count: TipTxsCountAggregateOutputType | null
+    _avg: TipTxsAvgAggregateOutputType | null
+    _sum: TipTxsSumAggregateOutputType | null
+    _min: TipTxsMinAggregateOutputType | null
+    _max: TipTxsMaxAggregateOutputType | null
+  }
+
+  export type TipTxsAvgAggregateOutputType = {
+    USDC: number | null
+    ETH: number | null
+    FLAY: number | null
+    BNKR: number | null
+    ZORA: number | null
+    DEGEN: number | null
+    tx: number | null
+  }
+
+  export type TipTxsSumAggregateOutputType = {
+    USDC: number | null
+    ETH: number | null
+    FLAY: number | null
+    BNKR: number | null
+    ZORA: number | null
+    DEGEN: number | null
+    tx: number | null
+  }
+
+  export type TipTxsMinAggregateOutputType = {
+    id: string | null
+    username: string | null
+    USDC: number | null
+    ETH: number | null
+    FLAY: number | null
+    BNKR: number | null
+    ZORA: number | null
+    DEGEN: number | null
+    tx: number | null
+  }
+
+  export type TipTxsMaxAggregateOutputType = {
+    id: string | null
+    username: string | null
+    USDC: number | null
+    ETH: number | null
+    FLAY: number | null
+    BNKR: number | null
+    ZORA: number | null
+    DEGEN: number | null
+    tx: number | null
+  }
+
+  export type TipTxsCountAggregateOutputType = {
+    id: number
+    username: number
+    USDC: number
+    ETH: number
+    FLAY: number
+    BNKR: number
+    ZORA: number
+    DEGEN: number
+    tx: number
+    _all: number
+  }
+
+
+  export type TipTxsAvgAggregateInputType = {
+    USDC?: true
+    ETH?: true
+    FLAY?: true
+    BNKR?: true
+    ZORA?: true
+    DEGEN?: true
+    tx?: true
+  }
+
+  export type TipTxsSumAggregateInputType = {
+    USDC?: true
+    ETH?: true
+    FLAY?: true
+    BNKR?: true
+    ZORA?: true
+    DEGEN?: true
+    tx?: true
+  }
+
+  export type TipTxsMinAggregateInputType = {
+    id?: true
+    username?: true
+    USDC?: true
+    ETH?: true
+    FLAY?: true
+    BNKR?: true
+    ZORA?: true
+    DEGEN?: true
+    tx?: true
+  }
+
+  export type TipTxsMaxAggregateInputType = {
+    id?: true
+    username?: true
+    USDC?: true
+    ETH?: true
+    FLAY?: true
+    BNKR?: true
+    ZORA?: true
+    DEGEN?: true
+    tx?: true
+  }
+
+  export type TipTxsCountAggregateInputType = {
+    id?: true
+    username?: true
+    USDC?: true
+    ETH?: true
+    FLAY?: true
+    BNKR?: true
+    ZORA?: true
+    DEGEN?: true
+    tx?: true
+    _all?: true
+  }
+
+  export type TipTxsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TipTxs to aggregate.
+     */
+    where?: TipTxsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TipTxs to fetch.
+     */
+    orderBy?: TipTxsOrderByWithRelationInput | TipTxsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TipTxsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TipTxs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TipTxs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TipTxs
+    **/
+    _count?: true | TipTxsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TipTxsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TipTxsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TipTxsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TipTxsMaxAggregateInputType
+  }
+
+  export type GetTipTxsAggregateType<T extends TipTxsAggregateArgs> = {
+        [P in keyof T & keyof AggregateTipTxs]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTipTxs[P]>
+      : GetScalarType<T[P], AggregateTipTxs[P]>
+  }
+
+
+
+
+  export type TipTxsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TipTxsWhereInput
+    orderBy?: TipTxsOrderByWithAggregationInput | TipTxsOrderByWithAggregationInput[]
+    by: TipTxsScalarFieldEnum[] | TipTxsScalarFieldEnum
+    having?: TipTxsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TipTxsCountAggregateInputType | true
+    _avg?: TipTxsAvgAggregateInputType
+    _sum?: TipTxsSumAggregateInputType
+    _min?: TipTxsMinAggregateInputType
+    _max?: TipTxsMaxAggregateInputType
+  }
+
+  export type TipTxsGroupByOutputType = {
+    id: string
+    username: string
+    USDC: number
+    ETH: number
+    FLAY: number
+    BNKR: number
+    ZORA: number
+    DEGEN: number
+    tx: number
+    _count: TipTxsCountAggregateOutputType | null
+    _avg: TipTxsAvgAggregateOutputType | null
+    _sum: TipTxsSumAggregateOutputType | null
+    _min: TipTxsMinAggregateOutputType | null
+    _max: TipTxsMaxAggregateOutputType | null
+  }
+
+  type GetTipTxsGroupByPayload<T extends TipTxsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TipTxsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TipTxsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TipTxsGroupByOutputType[P]>
+            : GetScalarType<T[P], TipTxsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TipTxsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    USDC?: boolean
+    ETH?: boolean
+    FLAY?: boolean
+    BNKR?: boolean
+    ZORA?: boolean
+    DEGEN?: boolean
+    tx?: boolean
+  }, ExtArgs["result"]["tipTxs"]>
+
+
+
+  export type TipTxsSelectScalar = {
+    id?: boolean
+    username?: boolean
+    USDC?: boolean
+    ETH?: boolean
+    FLAY?: boolean
+    BNKR?: boolean
+    ZORA?: boolean
+    DEGEN?: boolean
+    tx?: boolean
+  }
+
+  export type TipTxsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "USDC" | "ETH" | "FLAY" | "BNKR" | "ZORA" | "DEGEN" | "tx", ExtArgs["result"]["tipTxs"]>
+
+  export type $TipTxsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TipTxs"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      username: string
+      USDC: number
+      ETH: number
+      FLAY: number
+      BNKR: number
+      ZORA: number
+      DEGEN: number
+      tx: number
+    }, ExtArgs["result"]["tipTxs"]>
+    composites: {}
+  }
+
+  type TipTxsGetPayload<S extends boolean | null | undefined | TipTxsDefaultArgs> = $Result.GetResult<Prisma.$TipTxsPayload, S>
+
+  type TipTxsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TipTxsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TipTxsCountAggregateInputType | true
+    }
+
+  export interface TipTxsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TipTxs'], meta: { name: 'TipTxs' } }
+    /**
+     * Find zero or one TipTxs that matches the filter.
+     * @param {TipTxsFindUniqueArgs} args - Arguments to find a TipTxs
+     * @example
+     * // Get one TipTxs
+     * const tipTxs = await prisma.tipTxs.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TipTxsFindUniqueArgs>(args: SelectSubset<T, TipTxsFindUniqueArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TipTxs that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TipTxsFindUniqueOrThrowArgs} args - Arguments to find a TipTxs
+     * @example
+     * // Get one TipTxs
+     * const tipTxs = await prisma.tipTxs.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TipTxsFindUniqueOrThrowArgs>(args: SelectSubset<T, TipTxsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TipTxs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsFindFirstArgs} args - Arguments to find a TipTxs
+     * @example
+     * // Get one TipTxs
+     * const tipTxs = await prisma.tipTxs.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TipTxsFindFirstArgs>(args?: SelectSubset<T, TipTxsFindFirstArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TipTxs that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsFindFirstOrThrowArgs} args - Arguments to find a TipTxs
+     * @example
+     * // Get one TipTxs
+     * const tipTxs = await prisma.tipTxs.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TipTxsFindFirstOrThrowArgs>(args?: SelectSubset<T, TipTxsFindFirstOrThrowArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TipTxs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TipTxs
+     * const tipTxs = await prisma.tipTxs.findMany()
+     * 
+     * // Get first 10 TipTxs
+     * const tipTxs = await prisma.tipTxs.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tipTxsWithIdOnly = await prisma.tipTxs.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TipTxsFindManyArgs>(args?: SelectSubset<T, TipTxsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TipTxs.
+     * @param {TipTxsCreateArgs} args - Arguments to create a TipTxs.
+     * @example
+     * // Create one TipTxs
+     * const TipTxs = await prisma.tipTxs.create({
+     *   data: {
+     *     // ... data to create a TipTxs
+     *   }
+     * })
+     * 
+     */
+    create<T extends TipTxsCreateArgs>(args: SelectSubset<T, TipTxsCreateArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TipTxs.
+     * @param {TipTxsCreateManyArgs} args - Arguments to create many TipTxs.
+     * @example
+     * // Create many TipTxs
+     * const tipTxs = await prisma.tipTxs.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TipTxsCreateManyArgs>(args?: SelectSubset<T, TipTxsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a TipTxs.
+     * @param {TipTxsDeleteArgs} args - Arguments to delete one TipTxs.
+     * @example
+     * // Delete one TipTxs
+     * const TipTxs = await prisma.tipTxs.delete({
+     *   where: {
+     *     // ... filter to delete one TipTxs
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TipTxsDeleteArgs>(args: SelectSubset<T, TipTxsDeleteArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TipTxs.
+     * @param {TipTxsUpdateArgs} args - Arguments to update one TipTxs.
+     * @example
+     * // Update one TipTxs
+     * const tipTxs = await prisma.tipTxs.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TipTxsUpdateArgs>(args: SelectSubset<T, TipTxsUpdateArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TipTxs.
+     * @param {TipTxsDeleteManyArgs} args - Arguments to filter TipTxs to delete.
+     * @example
+     * // Delete a few TipTxs
+     * const { count } = await prisma.tipTxs.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TipTxsDeleteManyArgs>(args?: SelectSubset<T, TipTxsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TipTxs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TipTxs
+     * const tipTxs = await prisma.tipTxs.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TipTxsUpdateManyArgs>(args: SelectSubset<T, TipTxsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TipTxs.
+     * @param {TipTxsUpsertArgs} args - Arguments to update or create a TipTxs.
+     * @example
+     * // Update or create a TipTxs
+     * const tipTxs = await prisma.tipTxs.upsert({
+     *   create: {
+     *     // ... data to create a TipTxs
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TipTxs we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TipTxsUpsertArgs>(args: SelectSubset<T, TipTxsUpsertArgs<ExtArgs>>): Prisma__TipTxsClient<$Result.GetResult<Prisma.$TipTxsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TipTxs that matches the filter.
+     * @param {TipTxsFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const tipTxs = await prisma.tipTxs.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: TipTxsFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a TipTxs.
+     * @param {TipTxsAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const tipTxs = await prisma.tipTxs.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: TipTxsAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of TipTxs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsCountArgs} args - Arguments to filter TipTxs to count.
+     * @example
+     * // Count the number of TipTxs
+     * const count = await prisma.tipTxs.count({
+     *   where: {
+     *     // ... the filter for the TipTxs we want to count
+     *   }
+     * })
+    **/
+    count<T extends TipTxsCountArgs>(
+      args?: Subset<T, TipTxsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TipTxsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TipTxs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TipTxsAggregateArgs>(args: Subset<T, TipTxsAggregateArgs>): Prisma.PrismaPromise<GetTipTxsAggregateType<T>>
+
+    /**
+     * Group by TipTxs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TipTxsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TipTxsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TipTxsGroupByArgs['orderBy'] }
+        : { orderBy?: TipTxsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TipTxsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTipTxsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TipTxs model
+   */
+  readonly fields: TipTxsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TipTxs.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TipTxsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TipTxs model
+   */
+  interface TipTxsFieldRefs {
+    readonly id: FieldRef<"TipTxs", 'String'>
+    readonly username: FieldRef<"TipTxs", 'String'>
+    readonly USDC: FieldRef<"TipTxs", 'Float'>
+    readonly ETH: FieldRef<"TipTxs", 'Float'>
+    readonly FLAY: FieldRef<"TipTxs", 'Float'>
+    readonly BNKR: FieldRef<"TipTxs", 'Float'>
+    readonly ZORA: FieldRef<"TipTxs", 'Float'>
+    readonly DEGEN: FieldRef<"TipTxs", 'Float'>
+    readonly tx: FieldRef<"TipTxs", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TipTxs findUnique
+   */
+  export type TipTxsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * Filter, which TipTxs to fetch.
+     */
+    where: TipTxsWhereUniqueInput
+  }
+
+  /**
+   * TipTxs findUniqueOrThrow
+   */
+  export type TipTxsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * Filter, which TipTxs to fetch.
+     */
+    where: TipTxsWhereUniqueInput
+  }
+
+  /**
+   * TipTxs findFirst
+   */
+  export type TipTxsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * Filter, which TipTxs to fetch.
+     */
+    where?: TipTxsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TipTxs to fetch.
+     */
+    orderBy?: TipTxsOrderByWithRelationInput | TipTxsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TipTxs.
+     */
+    cursor?: TipTxsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TipTxs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TipTxs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TipTxs.
+     */
+    distinct?: TipTxsScalarFieldEnum | TipTxsScalarFieldEnum[]
+  }
+
+  /**
+   * TipTxs findFirstOrThrow
+   */
+  export type TipTxsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * Filter, which TipTxs to fetch.
+     */
+    where?: TipTxsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TipTxs to fetch.
+     */
+    orderBy?: TipTxsOrderByWithRelationInput | TipTxsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TipTxs.
+     */
+    cursor?: TipTxsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TipTxs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TipTxs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TipTxs.
+     */
+    distinct?: TipTxsScalarFieldEnum | TipTxsScalarFieldEnum[]
+  }
+
+  /**
+   * TipTxs findMany
+   */
+  export type TipTxsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * Filter, which TipTxs to fetch.
+     */
+    where?: TipTxsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TipTxs to fetch.
+     */
+    orderBy?: TipTxsOrderByWithRelationInput | TipTxsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TipTxs.
+     */
+    cursor?: TipTxsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TipTxs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TipTxs.
+     */
+    skip?: number
+    distinct?: TipTxsScalarFieldEnum | TipTxsScalarFieldEnum[]
+  }
+
+  /**
+   * TipTxs create
+   */
+  export type TipTxsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TipTxs.
+     */
+    data?: XOR<TipTxsCreateInput, TipTxsUncheckedCreateInput>
+  }
+
+  /**
+   * TipTxs createMany
+   */
+  export type TipTxsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TipTxs.
+     */
+    data: TipTxsCreateManyInput | TipTxsCreateManyInput[]
+  }
+
+  /**
+   * TipTxs update
+   */
+  export type TipTxsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TipTxs.
+     */
+    data: XOR<TipTxsUpdateInput, TipTxsUncheckedUpdateInput>
+    /**
+     * Choose, which TipTxs to update.
+     */
+    where: TipTxsWhereUniqueInput
+  }
+
+  /**
+   * TipTxs updateMany
+   */
+  export type TipTxsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TipTxs.
+     */
+    data: XOR<TipTxsUpdateManyMutationInput, TipTxsUncheckedUpdateManyInput>
+    /**
+     * Filter which TipTxs to update
+     */
+    where?: TipTxsWhereInput
+    /**
+     * Limit how many TipTxs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TipTxs upsert
+   */
+  export type TipTxsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TipTxs to update in case it exists.
+     */
+    where: TipTxsWhereUniqueInput
+    /**
+     * In case the TipTxs found by the `where` argument doesn't exist, create a new TipTxs with this data.
+     */
+    create: XOR<TipTxsCreateInput, TipTxsUncheckedCreateInput>
+    /**
+     * In case the TipTxs was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TipTxsUpdateInput, TipTxsUncheckedUpdateInput>
+  }
+
+  /**
+   * TipTxs delete
+   */
+  export type TipTxsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+    /**
+     * Filter which TipTxs to delete.
+     */
+    where: TipTxsWhereUniqueInput
+  }
+
+  /**
+   * TipTxs deleteMany
+   */
+  export type TipTxsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TipTxs to delete
+     */
+    where?: TipTxsWhereInput
+    /**
+     * Limit how many TipTxs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TipTxs findRaw
+   */
+  export type TipTxsFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * TipTxs aggregateRaw
+   */
+  export type TipTxsAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * TipTxs without action
+   */
+  export type TipTxsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TipTxs
+     */
+    select?: TipTxsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TipTxs
+     */
+    omit?: TipTxsOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model cVolume
+   */
+
+  export type AggregateCVolume = {
+    _count: CVolumeCountAggregateOutputType | null
+    _avg: CVolumeAvgAggregateOutputType | null
+    _sum: CVolumeSumAggregateOutputType | null
+    _min: CVolumeMinAggregateOutputType | null
+    _max: CVolumeMaxAggregateOutputType | null
+  }
+
+  export type CVolumeAvgAggregateOutputType = {
+    volume: number | null
+  }
+
+  export type CVolumeSumAggregateOutputType = {
+    volume: number | null
+  }
+
+  export type CVolumeMinAggregateOutputType = {
+    id: string | null
+    volume: number | null
+    username: string | null
+  }
+
+  export type CVolumeMaxAggregateOutputType = {
+    id: string | null
+    volume: number | null
+    username: string | null
+  }
+
+  export type CVolumeCountAggregateOutputType = {
+    id: number
+    volume: number
+    username: number
+    _all: number
+  }
+
+
+  export type CVolumeAvgAggregateInputType = {
+    volume?: true
+  }
+
+  export type CVolumeSumAggregateInputType = {
+    volume?: true
+  }
+
+  export type CVolumeMinAggregateInputType = {
+    id?: true
+    volume?: true
+    username?: true
+  }
+
+  export type CVolumeMaxAggregateInputType = {
+    id?: true
+    volume?: true
+    username?: true
+  }
+
+  export type CVolumeCountAggregateInputType = {
+    id?: true
+    volume?: true
+    username?: true
+    _all?: true
+  }
+
+  export type CVolumeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cVolume to aggregate.
+     */
+    where?: cVolumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cVolumes to fetch.
+     */
+    orderBy?: cVolumeOrderByWithRelationInput | cVolumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: cVolumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cVolumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cVolumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned cVolumes
+    **/
+    _count?: true | CVolumeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CVolumeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CVolumeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CVolumeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CVolumeMaxAggregateInputType
+  }
+
+  export type GetCVolumeAggregateType<T extends CVolumeAggregateArgs> = {
+        [P in keyof T & keyof AggregateCVolume]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCVolume[P]>
+      : GetScalarType<T[P], AggregateCVolume[P]>
+  }
+
+
+
+
+  export type cVolumeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cVolumeWhereInput
+    orderBy?: cVolumeOrderByWithAggregationInput | cVolumeOrderByWithAggregationInput[]
+    by: CVolumeScalarFieldEnum[] | CVolumeScalarFieldEnum
+    having?: cVolumeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CVolumeCountAggregateInputType | true
+    _avg?: CVolumeAvgAggregateInputType
+    _sum?: CVolumeSumAggregateInputType
+    _min?: CVolumeMinAggregateInputType
+    _max?: CVolumeMaxAggregateInputType
+  }
+
+  export type CVolumeGroupByOutputType = {
+    id: string
+    volume: number
+    username: string
+    _count: CVolumeCountAggregateOutputType | null
+    _avg: CVolumeAvgAggregateOutputType | null
+    _sum: CVolumeSumAggregateOutputType | null
+    _min: CVolumeMinAggregateOutputType | null
+    _max: CVolumeMaxAggregateOutputType | null
+  }
+
+  type GetCVolumeGroupByPayload<T extends cVolumeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CVolumeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CVolumeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CVolumeGroupByOutputType[P]>
+            : GetScalarType<T[P], CVolumeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type cVolumeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    volume?: boolean
+    username?: boolean
+  }, ExtArgs["result"]["cVolume"]>
+
+
+
+  export type cVolumeSelectScalar = {
+    id?: boolean
+    volume?: boolean
+    username?: boolean
+  }
+
+  export type cVolumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "volume" | "username", ExtArgs["result"]["cVolume"]>
+
+  export type $cVolumePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "cVolume"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      volume: number
+      username: string
+    }, ExtArgs["result"]["cVolume"]>
+    composites: {}
+  }
+
+  type cVolumeGetPayload<S extends boolean | null | undefined | cVolumeDefaultArgs> = $Result.GetResult<Prisma.$cVolumePayload, S>
+
+  type cVolumeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<cVolumeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CVolumeCountAggregateInputType | true
+    }
+
+  export interface cVolumeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['cVolume'], meta: { name: 'cVolume' } }
+    /**
+     * Find zero or one CVolume that matches the filter.
+     * @param {cVolumeFindUniqueArgs} args - Arguments to find a CVolume
+     * @example
+     * // Get one CVolume
+     * const cVolume = await prisma.cVolume.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends cVolumeFindUniqueArgs>(args: SelectSubset<T, cVolumeFindUniqueArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CVolume that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {cVolumeFindUniqueOrThrowArgs} args - Arguments to find a CVolume
+     * @example
+     * // Get one CVolume
+     * const cVolume = await prisma.cVolume.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends cVolumeFindUniqueOrThrowArgs>(args: SelectSubset<T, cVolumeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CVolume that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cVolumeFindFirstArgs} args - Arguments to find a CVolume
+     * @example
+     * // Get one CVolume
+     * const cVolume = await prisma.cVolume.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends cVolumeFindFirstArgs>(args?: SelectSubset<T, cVolumeFindFirstArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CVolume that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cVolumeFindFirstOrThrowArgs} args - Arguments to find a CVolume
+     * @example
+     * // Get one CVolume
+     * const cVolume = await prisma.cVolume.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends cVolumeFindFirstOrThrowArgs>(args?: SelectSubset<T, cVolumeFindFirstOrThrowArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CVolumes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cVolumeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CVolumes
+     * const cVolumes = await prisma.cVolume.findMany()
+     * 
+     * // Get first 10 CVolumes
+     * const cVolumes = await prisma.cVolume.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cVolumeWithIdOnly = await prisma.cVolume.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends cVolumeFindManyArgs>(args?: SelectSubset<T, cVolumeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CVolume.
+     * @param {cVolumeCreateArgs} args - Arguments to create a CVolume.
+     * @example
+     * // Create one CVolume
+     * const CVolume = await prisma.cVolume.create({
+     *   data: {
+     *     // ... data to create a CVolume
+     *   }
+     * })
+     * 
+     */
+    create<T extends cVolumeCreateArgs>(args: SelectSubset<T, cVolumeCreateArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CVolumes.
+     * @param {cVolumeCreateManyArgs} args - Arguments to create many CVolumes.
+     * @example
+     * // Create many CVolumes
+     * const cVolume = await prisma.cVolume.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends cVolumeCreateManyArgs>(args?: SelectSubset<T, cVolumeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a CVolume.
+     * @param {cVolumeDeleteArgs} args - Arguments to delete one CVolume.
+     * @example
+     * // Delete one CVolume
+     * const CVolume = await prisma.cVolume.delete({
+     *   where: {
+     *     // ... filter to delete one CVolume
+     *   }
+     * })
+     * 
+     */
+    delete<T extends cVolumeDeleteArgs>(args: SelectSubset<T, cVolumeDeleteArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CVolume.
+     * @param {cVolumeUpdateArgs} args - Arguments to update one CVolume.
+     * @example
+     * // Update one CVolume
+     * const cVolume = await prisma.cVolume.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends cVolumeUpdateArgs>(args: SelectSubset<T, cVolumeUpdateArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CVolumes.
+     * @param {cVolumeDeleteManyArgs} args - Arguments to filter CVolumes to delete.
+     * @example
+     * // Delete a few CVolumes
+     * const { count } = await prisma.cVolume.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends cVolumeDeleteManyArgs>(args?: SelectSubset<T, cVolumeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CVolumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cVolumeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CVolumes
+     * const cVolume = await prisma.cVolume.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends cVolumeUpdateManyArgs>(args: SelectSubset<T, cVolumeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CVolume.
+     * @param {cVolumeUpsertArgs} args - Arguments to update or create a CVolume.
+     * @example
+     * // Update or create a CVolume
+     * const cVolume = await prisma.cVolume.upsert({
+     *   create: {
+     *     // ... data to create a CVolume
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CVolume we want to update
+     *   }
+     * })
+     */
+    upsert<T extends cVolumeUpsertArgs>(args: SelectSubset<T, cVolumeUpsertArgs<ExtArgs>>): Prisma__cVolumeClient<$Result.GetResult<Prisma.$cVolumePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CVolumes that matches the filter.
+     * @param {cVolumeFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const cVolume = await prisma.cVolume.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: cVolumeFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a CVolume.
+     * @param {cVolumeAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const cVolume = await prisma.cVolume.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: cVolumeAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of CVolumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cVolumeCountArgs} args - Arguments to filter CVolumes to count.
+     * @example
+     * // Count the number of CVolumes
+     * const count = await prisma.cVolume.count({
+     *   where: {
+     *     // ... the filter for the CVolumes we want to count
+     *   }
+     * })
+    **/
+    count<T extends cVolumeCountArgs>(
+      args?: Subset<T, cVolumeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CVolumeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CVolume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CVolumeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CVolumeAggregateArgs>(args: Subset<T, CVolumeAggregateArgs>): Prisma.PrismaPromise<GetCVolumeAggregateType<T>>
+
+    /**
+     * Group by CVolume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cVolumeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends cVolumeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: cVolumeGroupByArgs['orderBy'] }
+        : { orderBy?: cVolumeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, cVolumeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCVolumeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the cVolume model
+   */
+  readonly fields: cVolumeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for cVolume.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__cVolumeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the cVolume model
+   */
+  interface cVolumeFieldRefs {
+    readonly id: FieldRef<"cVolume", 'String'>
+    readonly volume: FieldRef<"cVolume", 'Int'>
+    readonly username: FieldRef<"cVolume", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * cVolume findUnique
+   */
+  export type cVolumeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * Filter, which cVolume to fetch.
+     */
+    where: cVolumeWhereUniqueInput
+  }
+
+  /**
+   * cVolume findUniqueOrThrow
+   */
+  export type cVolumeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * Filter, which cVolume to fetch.
+     */
+    where: cVolumeWhereUniqueInput
+  }
+
+  /**
+   * cVolume findFirst
+   */
+  export type cVolumeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * Filter, which cVolume to fetch.
+     */
+    where?: cVolumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cVolumes to fetch.
+     */
+    orderBy?: cVolumeOrderByWithRelationInput | cVolumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cVolumes.
+     */
+    cursor?: cVolumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cVolumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cVolumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cVolumes.
+     */
+    distinct?: CVolumeScalarFieldEnum | CVolumeScalarFieldEnum[]
+  }
+
+  /**
+   * cVolume findFirstOrThrow
+   */
+  export type cVolumeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * Filter, which cVolume to fetch.
+     */
+    where?: cVolumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cVolumes to fetch.
+     */
+    orderBy?: cVolumeOrderByWithRelationInput | cVolumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cVolumes.
+     */
+    cursor?: cVolumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cVolumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cVolumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cVolumes.
+     */
+    distinct?: CVolumeScalarFieldEnum | CVolumeScalarFieldEnum[]
+  }
+
+  /**
+   * cVolume findMany
+   */
+  export type cVolumeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * Filter, which cVolumes to fetch.
+     */
+    where?: cVolumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cVolumes to fetch.
+     */
+    orderBy?: cVolumeOrderByWithRelationInput | cVolumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing cVolumes.
+     */
+    cursor?: cVolumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cVolumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cVolumes.
+     */
+    skip?: number
+    distinct?: CVolumeScalarFieldEnum | CVolumeScalarFieldEnum[]
+  }
+
+  /**
+   * cVolume create
+   */
+  export type cVolumeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * The data needed to create a cVolume.
+     */
+    data: XOR<cVolumeCreateInput, cVolumeUncheckedCreateInput>
+  }
+
+  /**
+   * cVolume createMany
+   */
+  export type cVolumeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many cVolumes.
+     */
+    data: cVolumeCreateManyInput | cVolumeCreateManyInput[]
+  }
+
+  /**
+   * cVolume update
+   */
+  export type cVolumeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * The data needed to update a cVolume.
+     */
+    data: XOR<cVolumeUpdateInput, cVolumeUncheckedUpdateInput>
+    /**
+     * Choose, which cVolume to update.
+     */
+    where: cVolumeWhereUniqueInput
+  }
+
+  /**
+   * cVolume updateMany
+   */
+  export type cVolumeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update cVolumes.
+     */
+    data: XOR<cVolumeUpdateManyMutationInput, cVolumeUncheckedUpdateManyInput>
+    /**
+     * Filter which cVolumes to update
+     */
+    where?: cVolumeWhereInput
+    /**
+     * Limit how many cVolumes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * cVolume upsert
+   */
+  export type cVolumeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * The filter to search for the cVolume to update in case it exists.
+     */
+    where: cVolumeWhereUniqueInput
+    /**
+     * In case the cVolume found by the `where` argument doesn't exist, create a new cVolume with this data.
+     */
+    create: XOR<cVolumeCreateInput, cVolumeUncheckedCreateInput>
+    /**
+     * In case the cVolume was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<cVolumeUpdateInput, cVolumeUncheckedUpdateInput>
+  }
+
+  /**
+   * cVolume delete
+   */
+  export type cVolumeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+    /**
+     * Filter which cVolume to delete.
+     */
+    where: cVolumeWhereUniqueInput
+  }
+
+  /**
+   * cVolume deleteMany
+   */
+  export type cVolumeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cVolumes to delete
+     */
+    where?: cVolumeWhereInput
+    /**
+     * Limit how many cVolumes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * cVolume findRaw
+   */
+  export type cVolumeFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * cVolume aggregateRaw
+   */
+  export type cVolumeAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * cVolume without action
+   */
+  export type cVolumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cVolume
+     */
+    select?: cVolumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cVolume
+     */
+    omit?: cVolumeOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model User
    */
 
@@ -3190,7 +5350,10 @@ export namespace Prisma {
     bio: string | null
     epicStreams: number | null
     totalFees: number | null
+    claimDate: Date | null
+    emailVerified: boolean | null
     role: $Enums.StreamerRole | null
+    tokenImage: string | null
     xUrl: string | null
     ytUrl: string | null
     creatorToken: string | null
@@ -3209,7 +5372,10 @@ export namespace Prisma {
     bio: string | null
     epicStreams: number | null
     totalFees: number | null
+    claimDate: Date | null
+    emailVerified: boolean | null
     role: $Enums.StreamerRole | null
+    tokenImage: string | null
     xUrl: string | null
     ytUrl: string | null
     creatorToken: string | null
@@ -3228,7 +5394,10 @@ export namespace Prisma {
     bio: number
     epicStreams: number
     totalFees: number
+    claimDate: number
+    emailVerified: number
     role: number
+    tokenImage: number
     xUrl: number
     ytUrl: number
     followers: number
@@ -3266,7 +5435,10 @@ export namespace Prisma {
     bio?: true
     epicStreams?: true
     totalFees?: true
+    claimDate?: true
+    emailVerified?: true
     role?: true
+    tokenImage?: true
     xUrl?: true
     ytUrl?: true
     creatorToken?: true
@@ -3285,7 +5457,10 @@ export namespace Prisma {
     bio?: true
     epicStreams?: true
     totalFees?: true
+    claimDate?: true
+    emailVerified?: true
     role?: true
+    tokenImage?: true
     xUrl?: true
     ytUrl?: true
     creatorToken?: true
@@ -3304,7 +5479,10 @@ export namespace Prisma {
     bio?: true
     epicStreams?: true
     totalFees?: true
+    claimDate?: true
+    emailVerified?: true
     role?: true
+    tokenImage?: true
     xUrl?: true
     ytUrl?: true
     followers?: true
@@ -3404,7 +5582,7 @@ export namespace Prisma {
     id: string
     privyId: string
     username: string
-    email: string | null
+    email: string
     userPfp: string
     walletAddress: string
     sa_address: string | null
@@ -3413,7 +5591,10 @@ export namespace Prisma {
     bio: string
     epicStreams: number
     totalFees: number
+    claimDate: Date | null
+    emailVerified: boolean
     role: $Enums.StreamerRole
+    tokenImage: string | null
     xUrl: string | null
     ytUrl: string | null
     followers: string[]
@@ -3454,7 +5635,10 @@ export namespace Prisma {
     bio?: boolean
     epicStreams?: boolean
     totalFees?: boolean
+    claimDate?: boolean
+    emailVerified?: boolean
     role?: boolean
+    tokenImage?: boolean
     xUrl?: boolean
     ytUrl?: boolean
     followers?: boolean
@@ -3478,7 +5662,10 @@ export namespace Prisma {
     bio?: boolean
     epicStreams?: boolean
     totalFees?: boolean
+    claimDate?: boolean
+    emailVerified?: boolean
     role?: boolean
+    tokenImage?: boolean
     xUrl?: boolean
     ytUrl?: boolean
     followers?: boolean
@@ -3487,7 +5674,7 @@ export namespace Prisma {
     holdings?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "privyId" | "username" | "email" | "userPfp" | "walletAddress" | "sa_address" | "tokenPrice" | "totalStreams" | "bio" | "epicStreams" | "totalFees" | "role" | "xUrl" | "ytUrl" | "followers" | "following" | "creatorToken" | "holdings", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "privyId" | "username" | "email" | "userPfp" | "walletAddress" | "sa_address" | "tokenPrice" | "totalStreams" | "bio" | "epicStreams" | "totalFees" | "claimDate" | "emailVerified" | "role" | "tokenImage" | "xUrl" | "ytUrl" | "followers" | "following" | "creatorToken" | "holdings", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -3496,7 +5683,7 @@ export namespace Prisma {
       id: string
       privyId: string
       username: string
-      email: string | null
+      email: string
       userPfp: string
       walletAddress: string
       sa_address: string | null
@@ -3505,7 +5692,10 @@ export namespace Prisma {
       bio: string
       epicStreams: number
       totalFees: number
+      claimDate: Date | null
+      emailVerified: boolean
       role: $Enums.StreamerRole
+      tokenImage: string | null
       xUrl: string | null
       ytUrl: string | null
       followers: string[]
@@ -3916,7 +6106,10 @@ export namespace Prisma {
     readonly bio: FieldRef<"User", 'String'>
     readonly epicStreams: FieldRef<"User", 'Int'>
     readonly totalFees: FieldRef<"User", 'Float'>
+    readonly claimDate: FieldRef<"User", 'DateTime'>
+    readonly emailVerified: FieldRef<"User", 'Boolean'>
     readonly role: FieldRef<"User", 'StreamerRole'>
+    readonly tokenImage: FieldRef<"User", 'String'>
     readonly xUrl: FieldRef<"User", 'String'>
     readonly ytUrl: FieldRef<"User", 'String'>
     readonly followers: FieldRef<"User", 'String[]'>
@@ -4305,6 +6498,30 @@ export namespace Prisma {
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
+  export const TipTxsScalarFieldEnum: {
+    id: 'id',
+    username: 'username',
+    USDC: 'USDC',
+    ETH: 'ETH',
+    FLAY: 'FLAY',
+    BNKR: 'BNKR',
+    ZORA: 'ZORA',
+    DEGEN: 'DEGEN',
+    tx: 'tx'
+  };
+
+  export type TipTxsScalarFieldEnum = (typeof TipTxsScalarFieldEnum)[keyof typeof TipTxsScalarFieldEnum]
+
+
+  export const CVolumeScalarFieldEnum: {
+    id: 'id',
+    volume: 'volume',
+    username: 'username'
+  };
+
+  export type CVolumeScalarFieldEnum = (typeof CVolumeScalarFieldEnum)[keyof typeof CVolumeScalarFieldEnum]
+
+
   export const UserScalarFieldEnum: {
     id: 'id',
     privyId: 'privyId',
@@ -4318,7 +6535,10 @@ export namespace Prisma {
     bio: 'bio',
     epicStreams: 'epicStreams',
     totalFees: 'totalFees',
+    claimDate: 'claimDate',
+    emailVerified: 'emailVerified',
     role: 'role',
+    tokenImage: 'tokenImage',
     xUrl: 'xUrl',
     ytUrl: 'ytUrl',
     followers: 'followers',
@@ -4596,6 +6816,124 @@ export namespace Prisma {
     buy?: StringNullableListFilter<"Notification">
   }
 
+  export type TipTxsWhereInput = {
+    AND?: TipTxsWhereInput | TipTxsWhereInput[]
+    OR?: TipTxsWhereInput[]
+    NOT?: TipTxsWhereInput | TipTxsWhereInput[]
+    id?: StringFilter<"TipTxs"> | string
+    username?: StringFilter<"TipTxs"> | string
+    USDC?: FloatFilter<"TipTxs"> | number
+    ETH?: FloatFilter<"TipTxs"> | number
+    FLAY?: FloatFilter<"TipTxs"> | number
+    BNKR?: FloatFilter<"TipTxs"> | number
+    ZORA?: FloatFilter<"TipTxs"> | number
+    DEGEN?: FloatFilter<"TipTxs"> | number
+    tx?: IntFilter<"TipTxs"> | number
+  }
+
+  export type TipTxsOrderByWithRelationInput = {
+    id?: SortOrder
+    username?: SortOrder
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+  }
+
+  export type TipTxsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    username?: string
+    AND?: TipTxsWhereInput | TipTxsWhereInput[]
+    OR?: TipTxsWhereInput[]
+    NOT?: TipTxsWhereInput | TipTxsWhereInput[]
+    USDC?: FloatFilter<"TipTxs"> | number
+    ETH?: FloatFilter<"TipTxs"> | number
+    FLAY?: FloatFilter<"TipTxs"> | number
+    BNKR?: FloatFilter<"TipTxs"> | number
+    ZORA?: FloatFilter<"TipTxs"> | number
+    DEGEN?: FloatFilter<"TipTxs"> | number
+    tx?: IntFilter<"TipTxs"> | number
+  }, "id" | "username">
+
+  export type TipTxsOrderByWithAggregationInput = {
+    id?: SortOrder
+    username?: SortOrder
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+    _count?: TipTxsCountOrderByAggregateInput
+    _avg?: TipTxsAvgOrderByAggregateInput
+    _max?: TipTxsMaxOrderByAggregateInput
+    _min?: TipTxsMinOrderByAggregateInput
+    _sum?: TipTxsSumOrderByAggregateInput
+  }
+
+  export type TipTxsScalarWhereWithAggregatesInput = {
+    AND?: TipTxsScalarWhereWithAggregatesInput | TipTxsScalarWhereWithAggregatesInput[]
+    OR?: TipTxsScalarWhereWithAggregatesInput[]
+    NOT?: TipTxsScalarWhereWithAggregatesInput | TipTxsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TipTxs"> | string
+    username?: StringWithAggregatesFilter<"TipTxs"> | string
+    USDC?: FloatWithAggregatesFilter<"TipTxs"> | number
+    ETH?: FloatWithAggregatesFilter<"TipTxs"> | number
+    FLAY?: FloatWithAggregatesFilter<"TipTxs"> | number
+    BNKR?: FloatWithAggregatesFilter<"TipTxs"> | number
+    ZORA?: FloatWithAggregatesFilter<"TipTxs"> | number
+    DEGEN?: FloatWithAggregatesFilter<"TipTxs"> | number
+    tx?: IntWithAggregatesFilter<"TipTxs"> | number
+  }
+
+  export type cVolumeWhereInput = {
+    AND?: cVolumeWhereInput | cVolumeWhereInput[]
+    OR?: cVolumeWhereInput[]
+    NOT?: cVolumeWhereInput | cVolumeWhereInput[]
+    id?: StringFilter<"cVolume"> | string
+    volume?: IntFilter<"cVolume"> | number
+    username?: StringFilter<"cVolume"> | string
+  }
+
+  export type cVolumeOrderByWithRelationInput = {
+    id?: SortOrder
+    volume?: SortOrder
+    username?: SortOrder
+  }
+
+  export type cVolumeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    username?: string
+    AND?: cVolumeWhereInput | cVolumeWhereInput[]
+    OR?: cVolumeWhereInput[]
+    NOT?: cVolumeWhereInput | cVolumeWhereInput[]
+    volume?: IntFilter<"cVolume"> | number
+  }, "id" | "username">
+
+  export type cVolumeOrderByWithAggregationInput = {
+    id?: SortOrder
+    volume?: SortOrder
+    username?: SortOrder
+    _count?: cVolumeCountOrderByAggregateInput
+    _avg?: cVolumeAvgOrderByAggregateInput
+    _max?: cVolumeMaxOrderByAggregateInput
+    _min?: cVolumeMinOrderByAggregateInput
+    _sum?: cVolumeSumOrderByAggregateInput
+  }
+
+  export type cVolumeScalarWhereWithAggregatesInput = {
+    AND?: cVolumeScalarWhereWithAggregatesInput | cVolumeScalarWhereWithAggregatesInput[]
+    OR?: cVolumeScalarWhereWithAggregatesInput[]
+    NOT?: cVolumeScalarWhereWithAggregatesInput | cVolumeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"cVolume"> | string
+    volume?: IntWithAggregatesFilter<"cVolume"> | number
+    username?: StringWithAggregatesFilter<"cVolume"> | string
+  }
+
   export type UserWhereInput = {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
@@ -4603,7 +6941,7 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     privyId?: StringFilter<"User"> | string
     username?: StringFilter<"User"> | string
-    email?: StringNullableFilter<"User"> | string | null
+    email?: StringFilter<"User"> | string
     userPfp?: StringFilter<"User"> | string
     walletAddress?: StringFilter<"User"> | string
     sa_address?: StringNullableFilter<"User"> | string | null
@@ -4612,7 +6950,10 @@ export namespace Prisma {
     bio?: StringFilter<"User"> | string
     epicStreams?: IntFilter<"User"> | number
     totalFees?: FloatFilter<"User"> | number
+    claimDate?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerified?: BoolFilter<"User"> | boolean
     role?: EnumStreamerRoleFilter<"User"> | $Enums.StreamerRole
+    tokenImage?: StringNullableFilter<"User"> | string | null
     xUrl?: StringNullableFilter<"User"> | string | null
     ytUrl?: StringNullableFilter<"User"> | string | null
     followers?: StringNullableListFilter<"User">
@@ -4634,7 +6975,10 @@ export namespace Prisma {
     bio?: SortOrder
     epicStreams?: SortOrder
     totalFees?: SortOrder
+    claimDate?: SortOrder
+    emailVerified?: SortOrder
     role?: SortOrder
+    tokenImage?: SortOrder
     xUrl?: SortOrder
     ytUrl?: SortOrder
     followers?: SortOrder
@@ -4649,24 +6993,27 @@ export namespace Prisma {
     username?: string
     email?: string
     walletAddress?: string
-    sa_address?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     userPfp?: StringFilter<"User"> | string
+    sa_address?: StringNullableFilter<"User"> | string | null
     tokenPrice?: FloatFilter<"User"> | number
     totalStreams?: IntFilter<"User"> | number
     bio?: StringFilter<"User"> | string
     epicStreams?: IntFilter<"User"> | number
     totalFees?: FloatFilter<"User"> | number
+    claimDate?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerified?: BoolFilter<"User"> | boolean
     role?: EnumStreamerRoleFilter<"User"> | $Enums.StreamerRole
+    tokenImage?: StringNullableFilter<"User"> | string | null
     xUrl?: StringNullableFilter<"User"> | string | null
     ytUrl?: StringNullableFilter<"User"> | string | null
     followers?: StringNullableListFilter<"User">
     following?: StringNullableListFilter<"User">
     creatorToken?: StringNullableFilter<"User"> | string | null
     holdings?: StringNullableListFilter<"User">
-  }, "id" | "privyId" | "username" | "email" | "walletAddress" | "sa_address">
+  }, "id" | "privyId" | "username" | "email" | "walletAddress">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4681,7 +7028,10 @@ export namespace Prisma {
     bio?: SortOrder
     epicStreams?: SortOrder
     totalFees?: SortOrder
+    claimDate?: SortOrder
+    emailVerified?: SortOrder
     role?: SortOrder
+    tokenImage?: SortOrder
     xUrl?: SortOrder
     ytUrl?: SortOrder
     followers?: SortOrder
@@ -4702,7 +7052,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     privyId?: StringWithAggregatesFilter<"User"> | string
     username?: StringWithAggregatesFilter<"User"> | string
-    email?: StringNullableWithAggregatesFilter<"User"> | string | null
+    email?: StringWithAggregatesFilter<"User"> | string
     userPfp?: StringWithAggregatesFilter<"User"> | string
     walletAddress?: StringWithAggregatesFilter<"User"> | string
     sa_address?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -4711,7 +7061,10 @@ export namespace Prisma {
     bio?: StringWithAggregatesFilter<"User"> | string
     epicStreams?: IntWithAggregatesFilter<"User"> | number
     totalFees?: FloatWithAggregatesFilter<"User"> | number
+    claimDate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    emailVerified?: BoolWithAggregatesFilter<"User"> | boolean
     role?: EnumStreamerRoleWithAggregatesFilter<"User"> | $Enums.StreamerRole
+    tokenImage?: StringNullableWithAggregatesFilter<"User"> | string | null
     xUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     ytUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     followers?: StringNullableListFilter<"User">
@@ -4887,11 +7240,129 @@ export namespace Prisma {
     buy?: NotificationUpdatebuyInput | string[]
   }
 
+  export type TipTxsCreateInput = {
+    id?: string
+    username?: string
+    USDC?: number
+    ETH?: number
+    FLAY?: number
+    BNKR?: number
+    ZORA?: number
+    DEGEN?: number
+    tx?: number
+  }
+
+  export type TipTxsUncheckedCreateInput = {
+    id?: string
+    username?: string
+    USDC?: number
+    ETH?: number
+    FLAY?: number
+    BNKR?: number
+    ZORA?: number
+    DEGEN?: number
+    tx?: number
+  }
+
+  export type TipTxsUpdateInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    USDC?: FloatFieldUpdateOperationsInput | number
+    ETH?: FloatFieldUpdateOperationsInput | number
+    FLAY?: FloatFieldUpdateOperationsInput | number
+    BNKR?: FloatFieldUpdateOperationsInput | number
+    ZORA?: FloatFieldUpdateOperationsInput | number
+    DEGEN?: FloatFieldUpdateOperationsInput | number
+    tx?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type TipTxsUncheckedUpdateInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    USDC?: FloatFieldUpdateOperationsInput | number
+    ETH?: FloatFieldUpdateOperationsInput | number
+    FLAY?: FloatFieldUpdateOperationsInput | number
+    BNKR?: FloatFieldUpdateOperationsInput | number
+    ZORA?: FloatFieldUpdateOperationsInput | number
+    DEGEN?: FloatFieldUpdateOperationsInput | number
+    tx?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type TipTxsCreateManyInput = {
+    id?: string
+    username?: string
+    USDC?: number
+    ETH?: number
+    FLAY?: number
+    BNKR?: number
+    ZORA?: number
+    DEGEN?: number
+    tx?: number
+  }
+
+  export type TipTxsUpdateManyMutationInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    USDC?: FloatFieldUpdateOperationsInput | number
+    ETH?: FloatFieldUpdateOperationsInput | number
+    FLAY?: FloatFieldUpdateOperationsInput | number
+    BNKR?: FloatFieldUpdateOperationsInput | number
+    ZORA?: FloatFieldUpdateOperationsInput | number
+    DEGEN?: FloatFieldUpdateOperationsInput | number
+    tx?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type TipTxsUncheckedUpdateManyInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    USDC?: FloatFieldUpdateOperationsInput | number
+    ETH?: FloatFieldUpdateOperationsInput | number
+    FLAY?: FloatFieldUpdateOperationsInput | number
+    BNKR?: FloatFieldUpdateOperationsInput | number
+    ZORA?: FloatFieldUpdateOperationsInput | number
+    DEGEN?: FloatFieldUpdateOperationsInput | number
+    tx?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type cVolumeCreateInput = {
+    id?: string
+    volume: number
+    username?: string
+  }
+
+  export type cVolumeUncheckedCreateInput = {
+    id?: string
+    volume: number
+    username?: string
+  }
+
+  export type cVolumeUpdateInput = {
+    volume?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type cVolumeUncheckedUpdateInput = {
+    volume?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type cVolumeCreateManyInput = {
+    id?: string
+    volume: number
+    username?: string
+  }
+
+  export type cVolumeUpdateManyMutationInput = {
+    volume?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type cVolumeUncheckedUpdateManyInput = {
+    volume?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+  }
+
   export type UserCreateInput = {
     id?: string
     privyId: string
     username: string
-    email?: string | null
+    email: string
     userPfp?: string
     walletAddress: string
     sa_address?: string | null
@@ -4900,7 +7371,10 @@ export namespace Prisma {
     bio?: string
     epicStreams?: number
     totalFees?: number
+    claimDate?: Date | string | null
+    emailVerified?: boolean
     role?: $Enums.StreamerRole
+    tokenImage?: string | null
     xUrl?: string | null
     ytUrl?: string | null
     followers?: UserCreatefollowersInput | string[]
@@ -4913,7 +7387,7 @@ export namespace Prisma {
     id?: string
     privyId: string
     username: string
-    email?: string | null
+    email: string
     userPfp?: string
     walletAddress: string
     sa_address?: string | null
@@ -4922,7 +7396,10 @@ export namespace Prisma {
     bio?: string
     epicStreams?: number
     totalFees?: number
+    claimDate?: Date | string | null
+    emailVerified?: boolean
     role?: $Enums.StreamerRole
+    tokenImage?: string | null
     xUrl?: string | null
     ytUrl?: string | null
     followers?: UserCreatefollowersInput | string[]
@@ -4934,7 +7411,7 @@ export namespace Prisma {
   export type UserUpdateInput = {
     privyId?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
     sa_address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4943,7 +7420,10 @@ export namespace Prisma {
     bio?: StringFieldUpdateOperationsInput | string
     epicStreams?: IntFieldUpdateOperationsInput | number
     totalFees?: FloatFieldUpdateOperationsInput | number
+    claimDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumStreamerRoleFieldUpdateOperationsInput | $Enums.StreamerRole
+    tokenImage?: NullableStringFieldUpdateOperationsInput | string | null
     xUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ytUrl?: NullableStringFieldUpdateOperationsInput | string | null
     followers?: UserUpdatefollowersInput | string[]
@@ -4955,7 +7435,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     privyId?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
     sa_address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4964,7 +7444,10 @@ export namespace Prisma {
     bio?: StringFieldUpdateOperationsInput | string
     epicStreams?: IntFieldUpdateOperationsInput | number
     totalFees?: FloatFieldUpdateOperationsInput | number
+    claimDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumStreamerRoleFieldUpdateOperationsInput | $Enums.StreamerRole
+    tokenImage?: NullableStringFieldUpdateOperationsInput | string | null
     xUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ytUrl?: NullableStringFieldUpdateOperationsInput | string | null
     followers?: UserUpdatefollowersInput | string[]
@@ -4977,7 +7460,7 @@ export namespace Prisma {
     id?: string
     privyId: string
     username: string
-    email?: string | null
+    email: string
     userPfp?: string
     walletAddress: string
     sa_address?: string | null
@@ -4986,7 +7469,10 @@ export namespace Prisma {
     bio?: string
     epicStreams?: number
     totalFees?: number
+    claimDate?: Date | string | null
+    emailVerified?: boolean
     role?: $Enums.StreamerRole
+    tokenImage?: string | null
     xUrl?: string | null
     ytUrl?: string | null
     followers?: UserCreatefollowersInput | string[]
@@ -4998,7 +7484,7 @@ export namespace Prisma {
   export type UserUpdateManyMutationInput = {
     privyId?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
     sa_address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5007,7 +7493,10 @@ export namespace Prisma {
     bio?: StringFieldUpdateOperationsInput | string
     epicStreams?: IntFieldUpdateOperationsInput | number
     totalFees?: FloatFieldUpdateOperationsInput | number
+    claimDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumStreamerRoleFieldUpdateOperationsInput | $Enums.StreamerRole
+    tokenImage?: NullableStringFieldUpdateOperationsInput | string | null
     xUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ytUrl?: NullableStringFieldUpdateOperationsInput | string | null
     followers?: UserUpdatefollowersInput | string[]
@@ -5019,7 +7508,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateManyInput = {
     privyId?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     userPfp?: StringFieldUpdateOperationsInput | string
     walletAddress?: StringFieldUpdateOperationsInput | string
     sa_address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5028,7 +7517,10 @@ export namespace Prisma {
     bio?: StringFieldUpdateOperationsInput | string
     epicStreams?: IntFieldUpdateOperationsInput | number
     totalFees?: FloatFieldUpdateOperationsInput | number
+    claimDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumStreamerRoleFieldUpdateOperationsInput | $Enums.StreamerRole
+    tokenImage?: NullableStringFieldUpdateOperationsInput | string | null
     xUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ytUrl?: NullableStringFieldUpdateOperationsInput | string | null
     followers?: UserUpdatefollowersInput | string[]
@@ -5309,6 +7801,116 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type TipTxsCountOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+  }
+
+  export type TipTxsAvgOrderByAggregateInput = {
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+  }
+
+  export type TipTxsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+  }
+
+  export type TipTxsMinOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+  }
+
+  export type TipTxsSumOrderByAggregateInput = {
+    USDC?: SortOrder
+    ETH?: SortOrder
+    FLAY?: SortOrder
+    BNKR?: SortOrder
+    ZORA?: SortOrder
+    DEGEN?: SortOrder
+    tx?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type cVolumeCountOrderByAggregateInput = {
+    id?: SortOrder
+    volume?: SortOrder
+    username?: SortOrder
+  }
+
+  export type cVolumeAvgOrderByAggregateInput = {
+    volume?: SortOrder
+  }
+
+  export type cVolumeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    volume?: SortOrder
+    username?: SortOrder
+  }
+
+  export type cVolumeMinOrderByAggregateInput = {
+    id?: SortOrder
+    volume?: SortOrder
+    username?: SortOrder
+  }
+
+  export type cVolumeSumOrderByAggregateInput = {
+    volume?: SortOrder
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    isSet?: boolean
+  }
+
   export type EnumStreamerRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.StreamerRole | EnumStreamerRoleFieldRefInput<$PrismaModel>
     in?: $Enums.StreamerRole[] | ListEnumStreamerRoleFieldRefInput<$PrismaModel>
@@ -5329,7 +7931,10 @@ export namespace Prisma {
     bio?: SortOrder
     epicStreams?: SortOrder
     totalFees?: SortOrder
+    claimDate?: SortOrder
+    emailVerified?: SortOrder
     role?: SortOrder
+    tokenImage?: SortOrder
     xUrl?: SortOrder
     ytUrl?: SortOrder
     followers?: SortOrder
@@ -5358,7 +7963,10 @@ export namespace Prisma {
     bio?: SortOrder
     epicStreams?: SortOrder
     totalFees?: SortOrder
+    claimDate?: SortOrder
+    emailVerified?: SortOrder
     role?: SortOrder
+    tokenImage?: SortOrder
     xUrl?: SortOrder
     ytUrl?: SortOrder
     creatorToken?: SortOrder
@@ -5377,7 +7985,10 @@ export namespace Prisma {
     bio?: SortOrder
     epicStreams?: SortOrder
     totalFees?: SortOrder
+    claimDate?: SortOrder
+    emailVerified?: SortOrder
     role?: SortOrder
+    tokenImage?: SortOrder
     xUrl?: SortOrder
     ytUrl?: SortOrder
     creatorToken?: SortOrder
@@ -5390,20 +8001,19 @@ export namespace Prisma {
     totalFees?: SortOrder
   }
 
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    isSet?: boolean
   }
 
   export type EnumStreamerRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -5480,6 +8090,14 @@ export namespace Prisma {
     push?: string | string[]
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserCreatefollowersInput = {
     set: string[]
   }
@@ -5492,12 +8110,9 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+    unset?: boolean
   }
 
   export type EnumStreamerRoleFieldUpdateOperationsInput = {
@@ -5697,13 +8312,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumStreamerRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.StreamerRole | EnumStreamerRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.StreamerRole[] | ListEnumStreamerRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StreamerRole[] | ListEnumStreamerRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumStreamerRoleFilter<$PrismaModel> | $Enums.StreamerRole
-  }
-
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -5718,6 +8326,40 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    isSet?: boolean
+  }
+
+  export type NestedEnumStreamerRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.StreamerRole | EnumStreamerRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.StreamerRole[] | ListEnumStreamerRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StreamerRole[] | ListEnumStreamerRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumStreamerRoleFilter<$PrismaModel> | $Enums.StreamerRole
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    isSet?: boolean
   }
 
   export type NestedEnumStreamerRoleWithAggregatesFilter<$PrismaModel = never> = {

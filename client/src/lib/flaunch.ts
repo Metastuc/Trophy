@@ -104,6 +104,13 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
             url: `/save-creator-token`,
             data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
         });
+
+        await makeRequest({
+            method: 'POST',
+            url: "/set-date",
+            data: { username: name }
+        });
+
         return { creatorToken, sa_address: smartWalletClient.account.address };
     } catch (error: unknown) {
         console.error(error);
@@ -178,7 +185,7 @@ export const sellCreatorToken = async (
     address: Address,
 ) => {
     const flaunch = flaunchClient(provider, address);
-    const amountInUnits = parseEther(amount);
+    const amountInUnits = parseEther(amount.replace(/,/g, ""));
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
     if (allowance < amountInUnits) {

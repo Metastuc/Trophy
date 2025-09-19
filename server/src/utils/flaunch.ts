@@ -2,6 +2,8 @@ import * as flaunch from "@flaunch/sdk";
 import { http, createPublicClient, type PublicClient, type Address } from "viem";
 import { NETWORK } from "./env";
 
+const { createFlaunch, ReadFlaunchSDK } = flaunch;
+
 export const getTokenDetails = async (coinAddress: Address, profile = false) => {
   let tokenImage: string | undefined = undefined;
   let tokenSymbol: string | undefined = undefined;
@@ -11,7 +13,7 @@ export const getTokenDetails = async (coinAddress: Address, profile = false) => 
     transport: http(),
   }) as PublicClient;
 
-  const flaunchClient = flaunch.createFlaunch({ publicClient }) as flaunch.ReadFlaunchSDK;
+  const flaunchClient = createFlaunch({ publicClient }) as flaunch.ReadFlaunchSDK;
 
   const mcap = await flaunchClient.coinMarketCapInUSD({ coinAddress });
 

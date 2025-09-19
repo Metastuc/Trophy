@@ -67,7 +67,7 @@ export const createStream = async (req: Request, res: Response) => {
         await RedisClient.set(`stream:${username}`, JSON.stringify(streams));
       }
 
-      // await sendScheduleEmail({ username, email: user.email }, `📌 ${title} Scheduled!`, calendarProps);
+      await sendScheduleEmail({ username, email: user.email }, `📌 ${title} Scheduled!`, calendarProps);
       res.status(201).json({
         roomId,
         message: "Stream scheduled successfully",
@@ -88,21 +88,21 @@ export const createStream = async (req: Request, res: Response) => {
       const recordToken = await generateAccessToken(roomId, "bot");
       const liveStreamToken = await generateAccessToken(roomId, "bot");
 
-      setTimeout(async () => {
-        await recorder.startRecording({
-          roomId,
-          token: recordToken,
-          layout: "spotlight",
-          watermark: {
-            url: "https://trophy-stream.s3.eu-north-1.amazonaws.com/watermark+2.png",
-            position: "top-left",
-            size: {
-              height: 72,
-              width: 212,
-            },
-          },
-        })
-      }, 60000);
+      // setTimeout(async () => {
+      //   await recorder.startRecording({
+      //     roomId,
+      //     token: recordToken,
+      //     layout: "spotlight",
+      //     watermark: {
+      //       url: "https://trophy-stream.s3.eu-north-1.amazonaws.com/watermark+2.png",
+      //       position: "top-left",
+      //       size: {
+      //         height: 72,
+      //         width: 212,
+      //       },
+      //     },
+      //   })
+      // }, 60000);
 
       await prisma.user.update({
         where: { username },
