@@ -1,7 +1,9 @@
 interface LiveStreamContextValues extends Omit<JoinStreamData, "role"> {
     huddleRole: JoinStreamData["role"];
+    isHuddleConnected: boolean;
     permissions: RoomPermissions;
     roomId: string;
+    roomRole: RoomRoles;
     serverRole: JoinStreamData["role"];
 }
 
@@ -16,6 +18,12 @@ type RoomPermissions = {
     canToggleAudio: boolean;
     canToggleChat: boolean;
     canToggleVideo: boolean;
+};
+
+type RoomRoles = {
+    host: boolean;
+    guest: boolean;
+    listener: boolean;
 };
 
 interface LiveStreamChatMessagesState {

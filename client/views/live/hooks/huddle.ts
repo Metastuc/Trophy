@@ -9,7 +9,7 @@ export function useHuddleJoinRoom({ roomId, token, username }: { roomId: string;
     const { role, peerId } = useLocalPeer();
     const socket = useSocket();
 
-    const { joinRoom, leaveRoom } = useRoom({
+    const { joinRoom, leaveRoom, state } = useRoom({
         onJoin(data) {
             log({ data: { data }, module: "LIVE STREAM CONNECT", msg: "✅ joined Huddle room", tag: "HUDDLE" });
             socket.emit("room.join", { roomId, peerId, identifier: username });
@@ -35,5 +35,33 @@ export function useHuddleJoinRoom({ roomId, token, username }: { roomId: string;
         [joinRoom, leaveRoom, roomId, token],
     );
 
-    return { role: role as JoinStreamData["role"] };
+    useEffect(
+        function () {
+            socket.on(
+                "room.session.conflict",
+                function ({ message, existingPeerId }: { message: string; existingPeerId: string }) {
+                    log({
+                        data: { message, existingPeerId },
+                        module: "LIVE STREAM CONNECT",
+                        msg: "Session conflict detected",
+                        tag: "HUDDLE",
+                    });
+
+                    // showModal({
+                    //     message,
+                    //     actions: [
+                    //         {
+                    //             label: "Switch Here",
+                    //             onClick: () => socket.emit("room.session.switch", { roomId, identifier: username, existingPeerId }),
+                    //         },
+                    //         { label: "Cancel", onClick: () => leaveRoom() },
+                    //     ],
+                    // });
+                },
+            );
+        },
+        [socket],
+    );
+
+    return { role: role as JoinStreamData["role"], isHuddleConnected: state === "connected" };
 }

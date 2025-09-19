@@ -15,27 +15,43 @@ export async function createRoomInRedis({ hostId, roomId, walletAddress }: RoomI
     await Promise.all([
         redis.set(`liveroom:${walletAddress}`, roomId),
         redis.hmset(roomKey, { host: hostId, status: "LIVE", createdAt: new Date().toISOString() }),
-        addParticipantToRoom({ role: "host", roomId, userId: hostId }),
+        addParticipantToRoom({ role: "host", roomId, userId: hostId, peerId: undefined }),
     ]);
 }
 
-export async function addParticipantToRoom({ role, roomId, userId }: { roomId: string; userId: string; role: Role }) {
-    const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
-    const participantsKey = `${roomKey}:participants`;
+export async function addParticipantToRoom({
+    peerId,
+    role,
+    roomId,
+    userId,
+}: {
+    peerId?: string;
+    role: Role;
+    roomId: string;
+    userId: string;
+}) {
+    const participantsKey = `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:participants`;
+    await redis.hset(participantsKey, userId, JSON.stringify({ id: userId, role, peerId: peerId ?? null }));
+}
 
-    await redis.sadd(participantsKey, JSON.stringify({ id: userId, role }));
+export async function removeParticipantFromRoom({ userId, roomId }: { userId: string; roomId: string }) {
+    const participantsKey = `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:participants`;
+    return (await redis.hdel(participantsKey, userId)) > 0;
 }
 
 export async function getRoom(roomId: string): Promise<RedisRoom> {
     const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
+    const participantsKey = `${roomKey}:participants`;
 
-    const roomData = await redis.hgetall(roomKey);
-    const allParticipants = await redis.smembers(`${roomKey}:participants`);
-    const participants: Array<RedisParticipant> = allParticipants.map((participant) => JSON.parse(participant));
+    const [roomData, allParticipants] = await Promise.all([redis.hgetall(roomKey), redis.hgetall(participantsKey)]);
 
     if (!roomData.host || !roomData.status || !roomData.createdAt) {
         throw new Error(`Room ${roomId} is missing required fields in Redis`);
     }
+
+    const participants: Array<RedisParticipant> = Object.values(allParticipants).map((participant) =>
+        JSON.parse(participant),
+    );
 
     const invitedGuests = roomData.guests ? JSON.parse(roomData.guests) : [];
 

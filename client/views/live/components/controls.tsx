@@ -5,8 +5,9 @@ import { toast } from "sonner";
 
 import { LiveSignal } from "@/components/ui/live-signal";
 import { cn } from "@/lib/utils";
+import { toTime } from "#~/utils/time.ts";
 
-import { useLiveStreamPermissions } from "../hooks";
+import { useLiveStreamContext, useLiveStreamPermissions } from "../hooks";
 
 export function LiveStreamControls() {
     // const { viewerCount } = useStreamingUIContext();
@@ -17,7 +18,7 @@ export function LiveStreamControls() {
     function toggleControls() {
         setIsControlsVisible(true);
         if (hideTimeout.current) clearTimeout(hideTimeout.current);
-        hideTimeout.current = setTimeout(() => setIsControlsVisible(false), 5000);
+        hideTimeout.current = setTimeout(() => setIsControlsVisible(false), toTime({ unit: "seconds", value: 5 }));
     }
 
     useEffect(function () {
@@ -66,6 +67,8 @@ export function LiveStreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
+    const { isHuddleConnected } = useLiveStreamContext();
+
     // const navigate = useNavigate();
 
     // const { closeRoom } = useRoom();
@@ -171,6 +174,10 @@ function RenderControlsBasedOnRole() {
     //     },
     //     [shareStream, metadata, updateMetadata],
     // );
+
+    if (!isHuddleConnected) {
+        return null;
+    }
 
     return (
         <Fragment>

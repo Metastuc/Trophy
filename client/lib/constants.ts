@@ -55,8 +55,10 @@ export const API_ENDPOINTS = {
 
     STREAMS: {
         CREATE_STREAM: "/streams/create",
+        END_STREAM: (streamId: string) => `/streams/${streamId}/end`,
         JOIN_STREAM: (streamId: string) => `/streams/${streamId}/join`,
         LEAVE_STREAM: "/streams/leave",
+        THUMBNAIL: "/streams/thumbnail",
     },
 
     SUBSCRIPTION: {

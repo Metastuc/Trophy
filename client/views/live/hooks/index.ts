@@ -15,3 +15,7 @@ export function useLiveStreamContext(): LiveStreamContextValue {
 export function useLiveStreamPermissions() {
     return useLiveStreamContext().permissions;
 }
+
+export function useLiveStreamRoles() {
+    return useLiveStreamContext().roomRole;
+}

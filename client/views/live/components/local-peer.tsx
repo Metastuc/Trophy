@@ -2,12 +2,7 @@ import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/rea
 
 import { LiveStreamMedia } from "./media";
 
-interface LiveStreamLocalPeerProps {
-    isLocal?: boolean;
-    tileClass?: string;
-}
-
-export function LiveStreamLocalPeer({ isLocal, tileClass }: LiveStreamLocalPeerProps) {
+export function LiveStreamLocalPeer({ isLocal, tileClass }: { isLocal?: boolean; tileClass?: string }) {
     const { stream: audioStream, isAudioOn } = useLocalAudio();
     const { stream: videoStream, isVideoOn } = useLocalVideo();
     const { shareStream } = useLocalScreenShare();

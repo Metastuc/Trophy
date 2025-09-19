@@ -2,13 +2,7 @@ import { useRemoteAudio, useRemoteScreenShare, useRemoteVideo } from "@huddle01/
 
 import { LiveStreamMedia } from "./media";
 
-interface LiveStreamRemotePeerProps {
-    peerId: string;
-    tileClass?: string;
-    isLocal?: boolean;
-}
-
-export function LiveStreamRemotePeer({ peerId, tileClass, isLocal }: LiveStreamRemotePeerProps) {
+export function LiveStreamRemotePeer({ peerId, tileClass }: { peerId: string; tileClass?: string }) {
     const { stream: audioStream, state: audioState } = useRemoteAudio({ peerId });
     const { stream: videoStream, state: videoStreamState } = useRemoteVideo({ peerId });
     const { videoStream: screenVideo, audioStream: screenAudio } = useRemoteScreenShare({ peerId });
@@ -22,7 +16,7 @@ export function LiveStreamRemotePeer({ peerId, tileClass, isLocal }: LiveStreamR
             videoStream={videoStream}
             videoStreamState={videoStreamState}
             tileClass={tileClass}
-            isLocal={isLocal}
+            isLocal={false}
         />
     );
 }

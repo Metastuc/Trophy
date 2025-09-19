@@ -1,6 +1,7 @@
 type RedisParticipant = {
     id: string;
     role: Role;
+    peerId?: string;
 };
 
 type RedisRoom = {

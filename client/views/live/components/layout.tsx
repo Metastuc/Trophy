@@ -1,14 +1,13 @@
-// import { useLocalPeer, usePeerIds } from "@huddle01/react";
-import { LiveStreamLocalPeer } from "./local-peer";
+import { cn } from "@/lib/utils";
+
+import { LiveStreamStreamers } from "./streamers";
 
 export function LiveStreamLayout() {
-    // const { peerId: localPeerId } = useLocalPeer();
-    // const { peerIds: hostPeerIds } = usePeerIds({ roles: ["host"] });
-    // const { peerIds: guestPeerIds } = usePeerIds({ roles: ["guest"] });
-
     return (
-        <div>
-            <LiveStreamLocalPeer />
-        </div>
+        <section className={cn("size-full")} id="live-stream-layout">
+            <LiveStreamStreamers role="host" />
+            <LiveStreamStreamers role="guest" />
+            {/* <LiveStreamThumbnail/> */}
+        </section>
     );
 }
