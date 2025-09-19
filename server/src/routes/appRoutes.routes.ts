@@ -20,6 +20,8 @@ import { leaderboard } from "@/controllers/leaderboard.controller";
 import { fetchStreams } from "@/controllers/fetchStreams.controller";
 import { createTokenUri } from "@/controllers/pinata";
 import { trackTipTxs, getTrophyTxs, saveCreatorTokenVolume } from "@/controllers/txs.controller";
+import { buyNotis, setClaimDate, claimToken } from "@/controllers/token.controller";
+import { validateEmail, validationLink } from "@/controllers/email.controller";
 
 const router = Router();
 
@@ -31,6 +33,7 @@ router
   .post("/update-fees", authenticate, feesUpdate)
   .post("/stop-stream", authenticate, stopStream)
   .post("/save-volume", saveCreatorTokenVolume)
+  .post("/set-date", authenticate, setClaimDate)
 
   .post("/get-user", getUser)
   .patch("/update-profile", authenticate, uploadImg.single("profilePicture"), updateProfile)
@@ -38,10 +41,14 @@ router
   .post("/add-guest", getGuestAccessToken)
   .post("/update-pfp", authenticate, uploadImg.single("pfp"), updatePfp)
   .post("/save-thumbnail", authenticate, uploadImg.single("thumbnail"), saveStreamThumbnail)
+  .post("/send-buy-notis", buyNotis)
+  .post("/claim-allocation", authenticate, claimToken)
 
   .get("/fetch-streams", fetchStreams)
   .post("/create-token-uri", authenticate, createTokenUri)
   .get("/leaderboard", leaderboard)
+  .get("/validate-email", validateEmail)
+  .post("/send-validation-link", authenticate, validationLink)
   .post("/track-tip", trackTipTxs)
   .get("/trophy-txs", getTrophyTxs)
   .post("/save-creator-token", authenticate, creatorTokenCreated)
