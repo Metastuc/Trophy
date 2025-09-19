@@ -3,7 +3,7 @@ import hbs, { type NodemailerExpressHandlebarsOptions } from "nodemailer-express
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASSWORD, EMAIL_PORT } from "./env";
-import type { UserProp, MailOptions } from "../types/types";
+import type { EmailProp, MailOptions } from "../types/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -45,7 +45,43 @@ export const sendRegisterEmail = async (email: string, username: string) => {
   }
 };
 
-export const sendStreamEmail = async (user: UserProp, subject: string) => {
+export const sendBuyNotis = async ({username, email, buyer, amount}: EmailProp) => {
+  try {
+    await transporter.sendMail({
+      from: EMAIL_USER,
+      to: email,
+      subject: `🎉 $${username} bought`,
+      template: "buy",
+      context: {
+        username,
+        buyer,
+        amount
+      },
+    } as MailOptions);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error sending buy notis mail");
+  }
+};
+
+export const sendValidationLinkEmail = async (email: string) => {
+  try {
+    await transporter.sendMail({
+      from: EMAIL_USER,
+      to: email,
+      subject: "Confirm your email address",
+      template: "validateEmail",
+      context: {
+        email
+      }
+    } as MailOptions);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error sending validate email mail");
+  }
+};
+
+export const sendStreamEmail = async (user: EmailProp, subject: string) => {
   try {
     await transporter.sendMail({
       from: EMAIL_USER,
@@ -63,7 +99,7 @@ export const sendStreamEmail = async (user: UserProp, subject: string) => {
 };
 
 export const sendScheduleEmail = async (
-  user: UserProp,
+  user: EmailProp,
   subject: string,
   calendarProps: { dtStamp: string; date: string; streamTitle: string; streamLink: String },
 ) => {
@@ -81,7 +117,7 @@ export const sendScheduleEmail = async (
       DTSTART:${date}
       DTEND:${date}
       SUMMARY:${streamTitle}
-      DESCRIPTION:Click the link to join the event: ${streamLink}
+      DESCRIPTION:Click the link to join the stream: ${streamLink}
       LOCATION:${streamLink}
       STATUS:CONFIRMED
       SEQUENCE:0
@@ -94,10 +130,7 @@ export const sendScheduleEmail = async (
       from: EMAIL_USER,
       to: user.email,
       subject: subject,
-      template: "schedule",
-      context: {
-        username: user.username,
-      },
+      text: "Here is your scheduled stream",
       icalEvent: {
         filename: "stream-schedule.ics",
         content: icsCalendarContent,
