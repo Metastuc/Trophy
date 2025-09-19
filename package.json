@@ -4,12 +4,12 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "build": "tsc -b && vite build",
+        "build": "bunx --bun tsc -b && bunx --bun vite build",
         "db-pull": "bunx --bun dotenv -e .env.local -- bunx --bun prisma db pull",
         "dev": "bunx --bun vite",
         "lint": "bunx --bun tsc -b && bunx --bun prettier --write . && bunx --bun eslint --fix .",
         "preview": "vite preview",
-        "prod": "prisma db push && pnpm exec tsx server/index.ts",
+        "prod": "prisma db push && bun server/index.ts",
         "server": "bun --watch server/index.ts",
         "start": "concurrently \"npm run server\" \"npm run dev\""
     },
