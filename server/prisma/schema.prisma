@@ -79,7 +79,7 @@ model User {
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
   privyId       String       @unique
   username      String       @unique
-  email         String?      @unique
+  email         String       @unique
   userPfp       String       @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
   walletAddress String       @unique
   sa_address    String?
@@ -88,6 +88,8 @@ model User {
   bio           String       @default("")
   epicStreams   Int          @default(0)
   totalFees     Float        @default(0)
+  claimDate     DateTime?
+  emailVerified Boolean      @default(false)
   role          StreamerRole @default(viewer)
   tokenImage    String?
   xUrl          String?
