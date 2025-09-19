@@ -96,7 +96,9 @@ function RenderControlsBasedOnRole() {
             if (isVideoOn) {
                 await disableVideo();
             } else {
-                await enableVideo({ prefferedCodec: "video/vp8" }).then((response) => console.log("enable video:", response));
+                await enableVideo({ prefferedCodec: "video/vp8" }).then((response) =>
+                    console.log("enable video:", response),
+                );
             }
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to toggle video.";

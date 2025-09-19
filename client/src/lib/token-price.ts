@@ -73,7 +73,7 @@ export const getViewerBalance = async (tokenAddress: Address, userAddress: Addre
         abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
         args: [userAddress],
         functionName: "balanceOf",
-        address: tokenAddress
+        address: tokenAddress,
     });
 
     const ethBalance = await publicClient.getBalance({ address: userAddress });

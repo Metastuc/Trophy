@@ -89,14 +89,14 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
             token: "ETH", // native side
             amount: "",
             balance: "",
-            usdPrice: ""
+            usdPrice: "",
         },
         to: {
             type: "streamer",
             token: streamer?.tokenAddress as Address, // streamer token must be address
             amount: "",
             balance: "",
-            usdPrice: ""
+            usdPrice: "",
         },
     }));
 
