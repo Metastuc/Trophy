@@ -23,8 +23,7 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
             }),
             chain: network,
             paymaster: createBicoPaymasterClient({
-                paymasterUrl:
-                    ENV_SCHEMA.PAYMASTER,
+                paymasterUrl: ENV_SCHEMA.PAYMASTER,
             }),
             bundlerUrl: ENV_SCHEMA.BUNDLER,
         });
