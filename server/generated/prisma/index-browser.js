@@ -137,6 +137,24 @@ exports.Prisma.NotificationScalarFieldEnum = {
   buy: 'buy'
 };
 
+exports.Prisma.TipTxsScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  USDC: 'USDC',
+  ETH: 'ETH',
+  FLAY: 'FLAY',
+  BNKR: 'BNKR',
+  ZORA: 'ZORA',
+  DEGEN: 'DEGEN',
+  tx: 'tx'
+};
+
+exports.Prisma.CVolumeScalarFieldEnum = {
+  id: 'id',
+  volume: 'volume',
+  username: 'username'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   privyId: 'privyId',
@@ -150,7 +168,10 @@ exports.Prisma.UserScalarFieldEnum = {
   bio: 'bio',
   epicStreams: 'epicStreams',
   totalFees: 'totalFees',
+  claimDate: 'claimDate',
+  emailVerified: 'emailVerified',
   role: 'role',
+  tokenImage: 'tokenImage',
   xUrl: 'xUrl',
   ytUrl: 'ytUrl',
   followers: 'followers',
@@ -183,6 +204,8 @@ exports.StreamerRole = exports.$Enums.StreamerRole = {
 exports.Prisma.ModelName = {
   Stream: 'Stream',
   Notification: 'Notification',
+  TipTxs: 'TipTxs',
+  cVolume: 'cVolume',
   User: 'User'
 };
 

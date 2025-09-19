@@ -51,26 +51,47 @@ model Notification {
   @@map("notifications")
 }
 
+model TipTxs {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique @default("trophy")
+  USDC     Float  @default(0)
+  ETH      Float  @default(0)
+  FLAY     Float  @default(0)
+  BNKR     Float  @default(0)
+  ZORA     Float  @default(0)
+  DEGEN    Float  @default(0)
+  tx       Int    @default(1)
+}
+
 type TipEntry {
   token  String?
   amount String?
   tipper String?
 }
 
+model cVolume {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  volume   Int
+  username String @unique @default("trophy")
+}
+
 model User {
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
   privyId       String       @unique
   username      String       @unique
-  email         String?      @unique
+  email         String       @unique
   userPfp       String       @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
   walletAddress String       @unique
-  sa_address    String?      @unique
+  sa_address    String?
   tokenPrice    Float        @default(0)
   totalStreams  Int          @default(0)
   bio           String       @default("")
   epicStreams   Int          @default(0)
   totalFees     Float        @default(0)
+  claimDate     DateTime?
+  emailVerified Boolean      @default(false)
   role          StreamerRole @default(viewer)
+  tokenImage    String?
   xUrl          String?
   ytUrl         String?
   followers     String[]
