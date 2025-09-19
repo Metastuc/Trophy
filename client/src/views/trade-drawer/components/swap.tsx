@@ -151,55 +151,50 @@ export function Swap() {
                     from: {
                         ...state.from,
                         balance: tokenBal,
-                        usdPrice: tokenPrice
+                        usdPrice: tokenPrice,
                     },
                     to: {
                         ...state.to,
                         balance: ethBal,
-                        usdPrice: data?.usdPrice.toString() || "0"
-                    }
+                        usdPrice: data?.usdPrice.toString() || "0",
+                    },
                 }));
             } else {
                 setDrawerData((state) => ({
                     from: {
                         ...state.from,
                         balance: ethBal,
-                        usdPrice: data?.usdPrice.toString() || "0"
+                        usdPrice: data?.usdPrice.toString() || "0",
                     },
                     to: {
                         ...state.to,
                         balance: tokenBal,
-                        usdPrice: tokenPrice
-                    }
+                        usdPrice: tokenPrice,
+                    },
                 }));
             }
         })();
     }, [data, drawerData.from.type, setDrawerData, streamer, wallets]);
 
     async function handleFromAmountChange(event: ChangeEvent<HTMLInputElement>) {
-
         setDrawerData((state) => ({
             ...state,
             from: {
                 ...state.from,
                 amount: tokenInputField(event.target.value),
-            }
+            },
         }));
 
         const ethToToken = drawerData.from.type === "native";
 
-        const quote = await getSwapQuote(
-            ethToToken,
-            drawerData.from.amount,
-            streamer?.tokenAddress as Address
-        );
+        const quote = await getSwapQuote(ethToToken, drawerData.from.amount, streamer?.tokenAddress as Address);
 
         setDrawerData((state) => ({
             ...state,
             to: {
                 ...state.to,
-                amount: toLocaleString(quote, ethToToken)
-            }
+                amount: toLocaleString(quote, ethToToken),
+            },
         }));
     }
 
@@ -219,7 +214,13 @@ export function Swap() {
                         value={drawerData.from.amount}
                         className="outline-none"
                     />
-                    <span className="text-xs text-black/60">${getQuote({ quantity: drawerData.from.amount || "0", usdPrice: drawerData.from.usdPrice || "0" })}</span>
+                    <span className="text-xs text-black/60">
+                        $
+                        {getQuote({
+                            quantity: drawerData.from.amount || "0",
+                            usdPrice: drawerData.from.usdPrice || "0",
+                        })}
+                    </span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">

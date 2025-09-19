@@ -59,11 +59,10 @@ export const tipCreatorToken = async ({
     senderAddress,
     provider,
     contractAddress,
-    wallet
+    wallet,
 }: TipToken) => {
     return await tipERC20Token(recipientAddress, contractAddress, amount, senderAddress, provider, 18, wallet);
 };
-
 
 const tipERC20Token = async (
     recipient: string,
@@ -75,7 +74,7 @@ const tipERC20Token = async (
     wallet?: string,
 ) => {
     if (!wallet) {
-        console.log("hehe")
+        console.log("hehe");
     }
     const walletClient = getWalletClient(signer, senderAddress);
 
@@ -87,11 +86,11 @@ const tipERC20Token = async (
         abi: parseAbi(["function transfer(address to, uint amount)"]),
         args: [recipient as Address, amountInUnits],
         chain: network,
-        account: senderAddress
+        account: senderAddress,
     });
 
     return hash;
-}
+};
 
 // const tipToken = async (
 //     recipient: string,

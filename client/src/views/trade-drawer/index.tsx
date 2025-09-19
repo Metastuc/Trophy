@@ -178,7 +178,9 @@ function TradeDrawerInner() {
 
                 <DrawerFooter>
                     <Button className="bg-blue100 mx-auto h-13.5 w-3/4 rounded-lg" onClick={handleSwap}>
-                        <span className="text-xl font-normal">{drawerData.from.type === "native" ? "Buy" : "Sell"}</span>
+                        <span className="text-xl font-normal">
+                            {drawerData.from.type === "native" ? "Buy" : "Sell"}
+                        </span>
                     </Button>
                 </DrawerFooter>
             </DrawerContent>

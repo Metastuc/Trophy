@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import type { Address } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
-import { BNKR, DEGEN, FLAY,USDC, ZORA } from "./contracts";
+import { BNKR, DEGEN, FLAY, USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
     BUNDLER: import.meta.env.VITE_BUNDLER_URL as string,
@@ -17,7 +17,7 @@ export const ENV_SCHEMA = {
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
-    MAINNET_RPC: import.meta.env.VITE_MAINNET_RPC as string
+    MAINNET_RPC: import.meta.env.VITE_MAINNET_RPC as string,
 };
 
 export const queryClient = new QueryClient();
@@ -59,10 +59,7 @@ export const APPLICATION_CONSTANTS = {
             ? `https://basescan.org/tx/${hash}`
             : `https://sepolia.basescan.org/tx/${hash}`,
 
-    CURRENT_MORALIS_CHAIN:
-        ENV_SCHEMA.ENVIRONMENT === "development"
-            ? "base%20sepolia"
-            : "base",
+    CURRENT_MORALIS_CHAIN: ENV_SCHEMA.ENVIRONMENT === "development" ? "base%20sepolia" : "base",
 };
 
 export const BASE_TOKEN_INFO = { tokenPrice: "0", tokenPriceInUsd: "0", balance: "0" };

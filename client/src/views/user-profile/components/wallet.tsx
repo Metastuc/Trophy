@@ -1,8 +1,30 @@
 import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
+import { useState } from "react";
 
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
+import { Button } from "@/components/ui/button";
+import { useAuthenticationStore } from "@/store/authentication";
 
 export function UserWallet() {
+    const { user } = useAuthenticationStore((state) => state);
+
+    const [copied, setCopied] = useState(false);
+
+    const copyAddressToClipboard = () => {
+        if (user?.wallet?.address) {
+            navigator.clipboard
+                .writeText(user.wallet.address)
+                .then(() => {
+                    setCopied(true);
+                    // Reset the "Copied!" status after 2 seconds
+                    setTimeout(() => setCopied(false), 2000);
+                })
+                .catch((err) => {
+                    console.error("Failed to copy: ", err);
+                });
+        }
+    };
+
     return (
         <section className="my-4">
             <header className="flex flex-col">
@@ -40,7 +62,14 @@ export function UserWallet() {
                 </div>
             </main>
 
-            <footer></footer>
+            <footer>
+                <span className="text-blue100 text-xs">Your wallet address: </span>
+                <b className="cursor-pointer hover:underline" onClick={copyAddressToClipboard} title="Click to copy">
+                    {user?.wallet?.address}
+                </b>
+                <Button onClick={copyAddressToClipboard}>copy</Button>
+                {copied && <span className="text-xs text-green-500">Copied!</span>}
+            </footer>
         </section>
     );
 }

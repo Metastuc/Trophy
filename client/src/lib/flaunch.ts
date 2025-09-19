@@ -10,7 +10,7 @@ import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
 
 let WriteClient: ReadWriteFlaunchSDK | undefined;
-let ReadClient: ReadFlaunchSDK | undefined
+let ReadClient: ReadFlaunchSDK | undefined;
 
 export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!WriteClient) {
@@ -28,12 +28,9 @@ const readClient = () => {
     }
 
     return ReadClient;
-}
+};
 
-export const createCreatorToken = async (
-    name: string,
-    provider: EIP1193Provider,
-) => {
+export const createCreatorToken = async (name: string, provider: EIP1193Provider) => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
@@ -146,7 +143,7 @@ export const buyCreatorToken = async (
             swapType: "EXACT_IN",
             amountIn: parseEther(amount),
         },
-        "V1_1"
+        "V1_1",
     );
 
     return await checkTx(hash);
@@ -156,13 +153,9 @@ export const getCreatorTokenPrice = async (coinAddress: Address) => {
     const flaunch = readClient();
 
     return await flaunch.coinPriceInUSD({ coinAddress });
-}
+};
 
-export const getSwapQuote = async (
-    ethToCreatorToken: boolean,
-    amount: string,
-    coinAddress: Address,
-) => {
+export const getSwapQuote = async (ethToCreatorToken: boolean, amount: string, coinAddress: Address) => {
     const flaunch = readClient();
     if (ethToCreatorToken) {
         return await flaunch.getBuyQuoteExactInput(coinAddress, parseEther(amount));
@@ -179,9 +172,9 @@ export type PermitDetails = {
 };
 
 export type PermitSingle = {
-  details: PermitDetails;
-  spender: Address;
-  sigDeadline: bigint;
+    details: PermitDetails;
+    spender: Address;
+    sigDeadline: bigint;
 };
 
 export const sellCreatorToken = async (
