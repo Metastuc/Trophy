@@ -9,7 +9,7 @@ export function registerSocketEvents({ io, socket }: Handler) {
 
     roomHandler({ io, socket });
     chatHandler({ io, socket });
-    // userHandler({ io, socket });
+    // guestsHandler({ io, socket });
 
     socket.on("disconnect", function () {
         log({ data: { socketId: socket.id }, module: "socket", msg: "🔌 Client disconnected" });

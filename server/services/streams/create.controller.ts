@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { CREATED_STREAM_RESPONSE_SCHEMA, SCHEDULED_STREAM_RESPONSE_SCHEMA } from "#~/schema/stream/index.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
+import { createRoomInRedis } from "#services/redis/room.ts";
 
-import { createHuddleRoom, generateHuddleAccessToken, startHuddleStream } from "./huddle.utils";
-import { createRoomInRedis } from "./redis.utils";
+import { createHuddleRoom, generateHuddleAccessToken, startHuddleStream } from "./utils";
 
 export async function createStream(request: Request, response: Response, next: NextFunction) {
     const { date, title, username } = request.body;

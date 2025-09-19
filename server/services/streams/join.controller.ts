@@ -4,10 +4,9 @@ import { NextFunction, Request, Response } from "express";
 import { JOIN_STREAM_RESPONSE_SCHEMA } from "#~/schema/stream/index.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
+import { addParticipantToRoom, getRoom } from "#services/redis/room.ts";
 
-import { generateHuddleAccessToken } from "./huddle.utils";
-import { addParticipantToRoom, getRoom } from "./redis.utils";
-import { isGuest } from "./utils";
+import { generateHuddleAccessToken, isGuest } from "./utils";
 
 export async function joinStream(request: Request, response: Response, next: NextFunction) {
     const { id: roomId } = request.params;

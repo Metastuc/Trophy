@@ -1,6 +1,6 @@
 import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { redis } from "#config/redis.ts";
-import { getRoom } from "#services/streams/redis.utils.ts";
+import { getRoom } from "#services/redis/room.ts";
 
 export function chatHandler({ io, socket }: Handler) {
     socket.on(

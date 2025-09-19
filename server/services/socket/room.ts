@@ -1,4 +1,4 @@
-import { addParticipantToRoom, getRoom, removeParticipantFromRoom } from "#services/streams/redis.utils.ts";
+import { addParticipantToRoom, getRoom, removeParticipantFromRoom } from "#services/redis/room.ts";
 
 export function roomHandler({ io, socket }: Handler) {
     socket.on(
