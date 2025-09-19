@@ -3,17 +3,15 @@ import { LiveStreamLocalPeer } from "./local-peer";
 import { LiveStreamRemotePeer } from "./remote-peer";
 
 export function LiveStreamStreamers({ role }: { role: JoinStreamData["role"] }) {
-    const { localStreamer, remoteHosts, remoteGuests } = useLiveStreamParticipants();
-
-    console.log("LiveStreamStreamers", { localStreamer, remoteHosts, remoteGuests });
+    const { localStreamer, streamerByRole } = useLiveStreamParticipants();
 
     const allPeers =
         role === "host"
-            ? [...(localStreamer?.role === "host" ? [localStreamer] : []), ...remoteHosts]
-            : [...(localStreamer?.role === "guest" ? [localStreamer] : []), ...remoteGuests];
+            ? [...(localStreamer?.role === "host" ? [localStreamer] : []), ...streamerByRole.hosts]
+            : [...(localStreamer?.role === "guest" ? [localStreamer] : []), ...streamerByRole.guests];
 
     const tileClass = role === "host" ? "host-tile" : "guest-tile";
-    const sorted = [...allPeers].sort((a, b) => a.peerId!.localeCompare(b.peerId!));
+    const sorted = [...allPeers].sort((a, b) => (a.peerId as string).localeCompare(b.peerId as string));
 
     return sorted.map((peer, index) =>
         peer.peerId && peer.peerId === localStreamer?.peerId ? (
