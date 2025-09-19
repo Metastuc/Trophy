@@ -5,9 +5,11 @@ export interface CustomRequest extends Request {
   user?: object | string;
 }
 
-export type UserProp = {
+export type EmailProp = {
   email: string;
   username: string;
+  buyer?: string;
+  amount?: string;
 };
 
 export interface MailOptions extends nodemailer.SendMailOptions {
