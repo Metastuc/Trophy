@@ -46,17 +46,15 @@ declare global {
         };
     };
 
-    type GuestsInvitations = {
+    type GuestsInvitations = LiveStreamGuestsActionsState & {
         acceptInvite: (userId: string) => Socket<DefaultEventsMap, DefaultEventsMap>;
         addPendingGuestInvitation: (userId: RedisParticipant["id"]) => void;
         cancelInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
         denyInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
-        incomingInvites: Array<RedisParticipant["id"]>;
+        handleSearchQuery: (query: string) => void;
         inviteGuest: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
-        pendingGuestsInvitations: Array<RedisParticipant["id"]>;
         removePendingGuestInvitation: (userId: RedisParticipant["id"]) => void;
         revokeInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
-        selectedGuests: Array<RedisParticipant["id"]>;
         toggleSelectedGuest: (userId: RedisParticipant["id"]) => void;
     };
 
@@ -68,16 +66,14 @@ declare global {
     interface LiveStreamChatMessagesState {
         message: string;
         type: "chat" | "tip";
-        user: {
-            profileImage: string;
-            username: string;
-        };
+        user: { profileImage: string; username: string };
     }
 
     interface LiveStreamGuestsActionsState {
-        pendingGuestsInvitations: Array<RedisParticipant["id"]>;
-        selectedGuests: Array<RedisParticipant["id"]>;
         incomingInvites: Array<RedisParticipant["id"]>;
+        pendingGuestsInvitations: Array<RedisParticipant["id"]>;
+        searchQuery: string;
+        selectedGuests: Array<RedisParticipant["id"]>;
     }
 }
 

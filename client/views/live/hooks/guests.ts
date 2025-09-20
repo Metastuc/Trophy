@@ -6,10 +6,17 @@ export function useGuestsInvitations(roomId: string) {
     const socket = useSocket();
 
     const [guestActionsState, setGuestActionsState] = useState<LiveStreamGuestsActionsState>({
-        pendingGuestsInvitations: [],
-        selectedGuests: [],
         incomingInvites: [],
+        pendingGuestsInvitations: [],
+        searchQuery: "",
+        selectedGuests: [],
     });
+
+    console.log(guestActionsState);
+
+    const handleSearchQuery = useCallback(function (query: string) {
+        setGuestActionsState((state) => ({ ...state, searchQuery: query }));
+    }, []);
 
     const addPendingGuestInvitation = useCallback(function (userId: RedisParticipant["id"]) {
         setGuestActionsState((state) => ({
@@ -35,6 +42,7 @@ export function useGuestsInvitations(roomId: string) {
                 : [...state.selectedGuests, userId],
         }));
     }, []);
+
     const inviteGuest = useCallback(
         (userId: RedisParticipant["id"]) => socket.emit("guest.invite", { roomId, userId }),
         [socket, roomId],
@@ -107,6 +115,7 @@ export function useGuestsInvitations(roomId: string) {
         addPendingGuestInvitation,
         cancelInvite,
         denyInvite,
+        handleSearchQuery,
         inviteGuest,
         removePendingGuestInvitation,
         revokeInvite,

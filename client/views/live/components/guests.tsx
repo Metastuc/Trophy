@@ -1,5 +1,5 @@
 import { Projector, Search, X } from "lucide-react";
-import { ChangeEvent, Fragment, useState } from "react";
+import { Fragment } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,33 +11,14 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer";
 
-import { useLiveStreamContext, useLiveStreamParticipants } from "../hooks";
+import { useLiveStreamContext, useLiveStreamGuests, useLiveStreamParticipants } from "../hooks";
 import { AuthenticatedPeer, SelectedGuests } from "./peers-list";
 
 export function LiveStreamInvitationDrawer() {
     const { closeInvitationDrawer, openInvitationDrawer, isInvitationDrawerOpen } = useLiveStreamContext();
     const { authenticatedStreamers } = useLiveStreamParticipants();
-
-    const [drawerInternalState, setDrawerInternalState] = useState<LiveStreamGuestInvitationDrawerState>(() => ({
-        searchQuery: "",
-        selectedGuests: [],
-    }));
-
-    function handleSearchChange(event: ChangeEvent<HTMLInputElement>) {
-        setDrawerInternalState((state) => ({ ...state, searchQuery: event.target.value }));
-    }
-
-    function handleInvitationToggle(userId: string) {
-        setDrawerInternalState(function (state) {
-            const isSelected = state.selectedGuests.includes(userId);
-            return {
-                ...state,
-                selectedGuests: isSelected
-                    ? state.selectedGuests.filter((id) => id !== userId)
-                    : [...state.selectedGuests, userId],
-            };
-        });
-    }
+    const { selectedGuests, incomingInvites, toggleSelectedGuest, searchQuery, handleSearchQuery } =
+        useLiveStreamGuests();
 
     return (
         <Drawer
@@ -60,9 +41,9 @@ export function LiveStreamInvitationDrawer() {
 
                 <DrawerFooter>
                     <header className="border-blue100 space-y-2 rounded-xs border px-3 py-2">
-                        {drawerInternalState.selectedGuests.length ? (
+                        {selectedGuests.length ? (
                             <div className="flex flex-wrap gap-2">
-                                {drawerInternalState.selectedGuests.map((userId) => {
+                                {selectedGuests.map((userId) => {
                                     const participant = authenticatedStreamers.find(
                                         (participant) => participant.id === userId,
                                     );
@@ -72,6 +53,7 @@ export function LiveStreamInvitationDrawer() {
                                 })}
                             </div>
                         ) : null}
+
                         <div className="flex items-center justify-start gap-1 text-[#060606B2]">
                             <i className="size-4">
                                 <Search />
@@ -80,8 +62,8 @@ export function LiveStreamInvitationDrawer() {
                             <input
                                 type="text"
                                 placeholder="Search by username"
-                                value={drawerInternalState.searchQuery.trim()}
-                                onChange={handleSearchChange}
+                                value={searchQuery.trim()}
+                                onChange={(event) => handleSearchQuery(event.target.value)}
                                 className="outline-none"
                             />
                         </div>
@@ -103,10 +85,10 @@ export function LiveStreamInvitationDrawer() {
                                     <Fragment key={participant.id}>
                                         <AuthenticatedPeer
                                             participant={participant}
-                                            search={drawerInternalState.searchQuery}
-                                            onToggle={() => handleInvitationToggle(participant.id)}
-                                            isPending={false} // hook this up later if needed
-                                            isCoHost={drawerInternalState.selectedGuests.includes(participant.id)}
+                                            search={searchQuery}
+                                            onToggle={() => toggleSelectedGuest(participant.id)}
+                                            isPending={incomingInvites.includes(participant.id)}
+                                            isCoHost={selectedGuests.includes(participant.id)}
                                         />
                                     </Fragment>
                                 ))}

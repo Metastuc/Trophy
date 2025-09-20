@@ -23,3 +23,7 @@ export function useLiveStreamRoles() {
 export function useLiveStreamParticipants() {
     return useLiveStreamContext().roomParticipants;
 }
+
+export function useLiveStreamGuests() {
+    return useLiveStreamContext().guestInvitations;
+}
