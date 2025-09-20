@@ -164,17 +164,17 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
                 });
             }
 
-            socket.on("guest.invited", handleInvited);
             socket.on("guest.accepted", handleAccepted);
             socket.on("guest.canceled", handleRemoved);
             socket.on("guest.denied", handleRemoved);
+            socket.on("guest.invited", handleInvited);
             socket.on("guest.revoked", handleRemoved);
 
             return () => {
-                socket.off("guest.invited", handleInvited);
                 socket.off("guest.accepted", handleAccepted);
                 socket.off("guest.canceled", handleRemoved);
                 socket.off("guest.denied", handleRemoved);
+                socket.off("guest.invited", handleInvited);
                 socket.off("guest.revoked", handleRemoved);
             };
         },
