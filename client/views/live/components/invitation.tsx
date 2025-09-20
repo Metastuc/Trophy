@@ -11,6 +11,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
 
 import { useLiveStreamGuests, useLiveStreamParticipants, useLiveStreamRoles } from "../hooks";
 
@@ -73,7 +74,7 @@ function RenderPopup({ peerId }: { peerId: string }) {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
 
-                <AlertDialogFooter className="flex-row items-center justify-between">
+                <AlertDialogFooter className={cn("flex-row items-center justify-between", "sm:justify-center")}>
                     <AlertDialogAction className="text-blue100 h-10 w-28 bg-white" onClick={handleAccept}>
                         Accept
                     </AlertDialogAction>

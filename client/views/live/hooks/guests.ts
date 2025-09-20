@@ -139,6 +139,7 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
                     if (from === username) {
                         return {
                             ...state,
+                            pendingGuests: state.pendingGuests.filter((id) => id !== to),
                             incomingInvites: state.incomingInvites.filter((id) => id !== to),
                             activeGuests: state.activeGuests.includes(to)
                                 ? state.activeGuests
@@ -172,11 +173,20 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
                 });
             }
 
-            function handleIvitesRestore({ sent, received }: { sent: Array<string>; received: Array<string> }) {
+            function handleIvitesRestore({
+                sent,
+                received,
+                activeGuests,
+            }: {
+                sent: Array<string>;
+                received: Array<string>;
+                activeGuests: Array<string>;
+            }) {
                 setGuestActionsState((state) => ({
                     ...state,
                     pendingGuests: Array.from(new Set([...state.pendingGuests, ...sent])),
                     incomingInvites: Array.from(new Set([...state.incomingInvites, ...received])),
+                    activeGuests: Array.from(new Set([...state.activeGuests, ...activeGuests])),
                 }));
             }
 

@@ -1,6 +1,7 @@
 import {
     addPendingInvite,
     demoteParticipant,
+    getActiveGuests,
     getPendingInvites,
     isUserInvited,
     promoteParticipant,
@@ -11,10 +12,12 @@ export function guestsHandler({ io, socket }: Handler) {
     // 🔄 Restore invitations on reconnect
     socket.on("guest.sync", async function ({ roomId, username }: { roomId: string; username: string }) {
         const invites = await getPendingInvites(roomId);
+        const activeGuests = await getActiveGuests(roomId);
+
         const sent = invites.filter((invite) => invite.from === username).map((invite) => invite.to);
         const received = invites.filter((invite) => invite.to === username).map((invite) => invite.from);
 
-        socket.emit("guest.invites.restore", { sent, received });
+        socket.emit("guest.invites.restore", { sent, received, activeGuests });
     });
 
     // 📩 Invite a user
