@@ -49,6 +49,7 @@ export function LiveStreamContextProvider({
     );
 
     const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
+
     function openInvitationDrawer() {
         setIsInvitationDrawerOpen(true);
     }

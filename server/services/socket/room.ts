@@ -5,14 +5,7 @@ export function roomHandler({ io, socket }: Handler) {
     async function updateRoomStreamers(roomId: string) {
         const { participants } = await getRoom(roomId);
 
-        io.to(roomId).emit(
-            "room.streamers.update",
-            participants.map((participant) => ({
-                peerId: participant.peerId,
-                role: participant.role,
-                userId: participant.id,
-            })),
-        );
+        io.to(roomId).emit("room.streamers.update", participants);
 
         log.info({
             module: "roomHandler",
@@ -56,11 +49,11 @@ export function roomHandler({ io, socket }: Handler) {
                 });
 
                 io.to(existing.peerId).emit("force.disconnect");
-                await removeParticipantFromRoom({ roomId, userId: existing.id });
+                // await removeParticipantFromRoom({ roomId, userId: existing.id });
             }
 
             await Promise.all([
-                await addParticipantToRoom({ role, roomId, userId: identifier, peerId }),
+                await addParticipantToRoom({ role, roomId, id: identifier, peerId }),
                 await updateRoomStreamers(roomId),
             ]);
 
@@ -72,8 +65,15 @@ export function roomHandler({ io, socket }: Handler) {
         console.log(`User ${socket.data.user} left room: ${roomId}`);
         socket.leave(roomId);
 
-        await removeParticipantFromRoom({ roomId, userId: identifier });
+        await addParticipantToRoom({
+            role: "listener",
+            roomId,
+            id: identifier,
+            peerId: undefined,
+        });
+
         io.to(roomId).emit("room.user.left", { userId: socket.data.user, roomId });
+        await updateRoomStreamers(roomId);
     });
 
     socket.on("room.stream.started", function ({ roomId }: { roomId: string }) {
@@ -108,7 +108,7 @@ export function roomHandler({ io, socket }: Handler) {
             await addParticipantToRoom({
                 role: participant?.role ?? "listener",
                 roomId,
-                userId: identifier,
+                id: identifier,
                 peerId: socket.id,
             });
         },

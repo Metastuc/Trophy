@@ -35,6 +35,11 @@ export function useRoomParticipants(roomId: string) {
         [roomStreamers, localPeerId],
     );
 
+    const authenticatedStreamers = useMemo(
+        () => roomStreamers.filter((streamer) => streamer.isGuest !== true),
+        [roomStreamers],
+    );
+
     const streamerByRole = useMemo(
         () => ({
             hosts: remoteStreamers.filter((streamer) => streamer.role === "host"),
@@ -45,9 +50,8 @@ export function useRoomParticipants(roomId: string) {
     );
 
     return {
+        authenticatedStreamers,
         localStreamer,
-        remoteStreamers,
-        roomStreamers,
         streamerByRole,
     };
 }

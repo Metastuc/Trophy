@@ -1,5 +1,3 @@
-import { Role } from "@huddle01/server-sdk/auth";
-
 import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { redis } from "#config/redis.ts";
 
@@ -15,23 +13,18 @@ export async function createRoomInRedis({ hostId, roomId, walletAddress }: RoomI
     await Promise.all([
         redis.set(`liveroom:${walletAddress}`, roomId),
         redis.hmset(roomKey, { host: hostId, status: "LIVE", createdAt: new Date().toISOString() }),
-        addParticipantToRoom({ role: "host", roomId, userId: hostId, peerId: undefined }),
+        addParticipantToRoom({ role: "host", roomId, id: hostId, peerId: undefined }),
     ]);
 }
 
-export async function addParticipantToRoom({
-    peerId,
-    role,
-    roomId,
-    userId,
-}: {
-    peerId?: string;
-    role: Role;
-    roomId: string;
-    userId: string;
-}) {
+export async function addParticipantToRoom(participant: RedisParticipant & { roomId: string }) {
+    const { roomId, ...rest } = participant;
     const participantsKey = `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:participants`;
-    await redis.hset(participantsKey, userId, JSON.stringify({ id: userId, role, peerId: peerId ?? null }));
+
+    const existing = await redis.hget(participantsKey, rest.id);
+    const parsedExisting = existing ? JSON.parse(existing) : {};
+
+    await redis.hset(participantsKey, rest.id, JSON.stringify({ ...rest, ...parsedExisting }));
 }
 
 export async function removeParticipantFromRoom({ userId, roomId }: { userId: string; roomId: string }) {

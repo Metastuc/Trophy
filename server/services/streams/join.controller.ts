@@ -31,14 +31,15 @@ export async function joinStream(request: Request, response: Response, next: Nex
         });
         if (!stream) throw new HttpError({ message: "stream not found", code: 404, data: { roomId } });
 
-        let role: Role = "listener";
-        let userId: string;
         const roomInRedis = await getRoom(roomId);
+        let role: Role = "listener";
+        let user;
+        let userId: string;
 
         if (isGuest(username)) {
             userId = username;
         } else {
-            const user = await prisma.user.findUnique({ where: { username } });
+            user = await prisma.user.findUnique({ where: { username } });
             if (!user) throw new HttpError({ message: "user not found", code: 404, data: { username } });
 
             userId = user.username;
@@ -48,7 +49,15 @@ export async function joinStream(request: Request, response: Response, next: Nex
         }
 
         const alreadyInRoom = roomInRedis.participants.some((participant) => participant.id === userId);
-        if (!alreadyInRoom) addParticipantToRoom({ role, roomId, userId });
+        if (!alreadyInRoom)
+            addParticipantToRoom({
+                role,
+                roomId,
+                id: userId,
+                peerId: undefined,
+                profileImage: isGuest(userId) ? null : (user?.profileImage ?? null),
+                isGuest: isGuest(userId),
+            });
 
         const token = await generateHuddleAccessToken({ role, roomId });
 

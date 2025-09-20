@@ -2,6 +2,8 @@ type RedisParticipant = {
     id: string;
     role: Role;
     peerId?: string;
+    profileImage?: string | null;
+    isGuest?: boolean;
 };
 
 type RedisRoom = {

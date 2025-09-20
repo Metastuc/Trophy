@@ -32,15 +32,19 @@ type RoomRoles = {
 };
 
 type RoomParticipants = {
-    roomStreamers: RedisParticipant[];
+    authenticatedStreamers: RedisParticipant[];
     localStreamer: RedisParticipant | undefined;
-    remoteStreamers: RedisParticipant[];
     streamerByRole: {
         hosts: RedisParticipant[];
         guests: RedisParticipant[];
         listeners: RedisParticipant[];
     };
 };
+
+interface LiveStreamGuestInvitationDrawerState {
+    searchQuery: string;
+    selectedGuests: Array<RedisParticipant["id"]>;
+}
 
 interface LiveStreamChatMessagesState {
     message: string;

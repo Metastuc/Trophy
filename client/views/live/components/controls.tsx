@@ -70,7 +70,8 @@ export function LiveStreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
-    const { isHuddleConnected } = useLiveStreamContext();
+    const { isHuddleConnected, isInvitationDrawerOpen, openInvitationDrawer, closeInvitationDrawer } =
+        useLiveStreamContext();
 
     // const navigate = useNavigate();
 
@@ -151,7 +152,8 @@ function RenderControlsBasedOnRole() {
     }
 
     function toggleCoHostDrawer() {
-        // setIsCoHostDrawerOpen((state) => !state);
+        if (isInvitationDrawerOpen) closeInvitationDrawer();
+        else openInvitationDrawer();
     }
 
     async function handleEndStream() {
