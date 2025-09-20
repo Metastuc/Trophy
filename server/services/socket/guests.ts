@@ -15,10 +15,8 @@ export function guestsHandler({ io, socket }: Handler) {
     });
 
     // 📩 Invite a user
-    socket.on("guest.invite", async function ({ roomId, userId: to }: { roomId: string; userId: string }) {
-        const from = socket.data.user; // or socket.data.username if you prefer names
+    socket.on("guest.invite", async function ({ roomId, from, to }: { roomId: string; from: string; to: string }) {
         await addPendingInvite({ roomId, fromUserId: from, toUserId: to });
-
         io.to(roomId).emit("guest.invited", { from, to, roomId });
     });
 

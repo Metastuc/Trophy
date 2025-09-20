@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useSocket } from "@/hooks/socket";
 
@@ -11,6 +11,14 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
         pendingGuests: [],
         searchQuery: "",
     });
+
+    const stateRef = useRef<LiveStreamGuestsActionsState>(guestActionsState);
+    useEffect(
+        function () {
+            stateRef.current = guestActionsState;
+        },
+        [guestActionsState],
+    );
 
     const inviteGuest = useCallback(
         function (to: RedisParticipant["id"]) {
@@ -63,29 +71,19 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
 
     const toggleSelectedGuest = useCallback(
         function (userId: RedisParticipant["id"]) {
-            setGuestActionsState(function (state) {
-                if (state.activeGuests.includes(userId)) {
-                    revokeInvite(userId);
-                    return {
-                        ...state,
-                        activeGuests: state.activeGuests.filter((id) => id !== userId),
-                    };
-                }
+            const state = stateRef.current;
 
-                if (state.pendingGuests.includes(userId)) {
-                    cancelInvite(userId);
-                    return {
-                        ...state,
-                        pendingGuests: state.pendingGuests.filter((id) => id !== userId),
-                    };
-                }
+            if (state.activeGuests.includes(userId)) {
+                revokeInvite(userId);
+                return;
+            }
 
-                inviteGuest(userId);
-                return {
-                    ...state,
-                    pendingGuests: [...state.pendingGuests, userId],
-                };
-            });
+            if (state.pendingGuests.includes(userId)) {
+                cancelInvite(userId);
+                return;
+            }
+
+            inviteGuest(userId);
         },
         [cancelInvite, inviteGuest, revokeInvite],
     );
