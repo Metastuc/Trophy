@@ -48,10 +48,8 @@ declare global {
 
     type GuestsInvitations = LiveStreamGuestsActionsState & {
         acceptInvite: (userId: string) => Socket<DefaultEventsMap, DefaultEventsMap>;
-        addPendingGuestInvitation: (userId: RedisParticipant["id"]) => void;
         denyInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
         handleSearchQuery: (query: string) => void;
-        removePendingGuestInvitation: (userId: RedisParticipant["id"]) => void;
         toggleSelectedGuest: (userId: RedisParticipant["id"]) => void;
     };
 

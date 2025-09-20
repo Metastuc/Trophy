@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useSocket } from "@/hooks/socket";
 
-export function useGuestsInvitations(roomId: string) {
+export function useGuestsInvitations({ roomId, username }: { roomId: string; username: string }) {
     const socket = useSocket();
 
     const [guestActionsState, setGuestActionsState] = useState<LiveStreamGuestsActionsState>({
@@ -13,45 +13,43 @@ export function useGuestsInvitations(roomId: string) {
     });
 
     const inviteGuest = useCallback(
-        function (userId: RedisParticipant["id"]) {
-            socket.emit("guest.invite", { roomId, userId });
+        function (to: RedisParticipant["id"]) {
+            socket.emit("guest.invite", { roomId, from: username, to });
             setGuestActionsState((state) => ({
                 ...state,
-                pendingGuests: state.pendingGuests.includes(userId)
-                    ? state.pendingGuests
-                    : [...state.pendingGuests, userId],
+                pendingGuests: state.pendingGuests.includes(to) ? state.pendingGuests : [...state.pendingGuests, to],
             }));
         },
-        [socket, roomId],
+        [socket, roomId, username],
     );
 
     const cancelInvite = useCallback(
-        function (userId: RedisParticipant["id"]) {
-            socket.emit("guest.cancel", { roomId, userId });
+        function (to: RedisParticipant["id"]) {
+            socket.emit("guest.cancel", { roomId, from: username, to });
             setGuestActionsState((state) => ({
                 ...state,
-                pendingGuests: state.pendingGuests.filter((id) => id !== userId),
+                pendingGuests: state.pendingGuests.filter((id) => id !== to),
             }));
         },
-        [socket, roomId],
+        [socket, roomId, username],
     );
 
     const acceptInvite = useCallback(
-        (userId: RedisParticipant["id"]) => socket.emit("guest.accept", { roomId, userId }),
-        [socket, roomId],
+        (from: RedisParticipant["id"]) => socket.emit("guest.accept", { roomId, from, to: username }),
+        [socket, roomId, username],
     );
 
     const denyInvite = useCallback(
-        (userId: RedisParticipant["id"]) => socket.emit("guest.deny", { roomId, userId }),
-        [socket, roomId],
+        (from: RedisParticipant["id"]) => socket.emit("guest.deny", { roomId, from, to: username }),
+        [socket, roomId, username],
     );
 
     const revokeInvite = useCallback(
-        function (userId: RedisParticipant["id"]) {
-            socket.emit("guest.revoke", { roomId, userId });
+        function (to: RedisParticipant["id"]) {
+            socket.emit("guest.revoke", { roomId, userId: to });
             setGuestActionsState((state) => ({
                 ...state,
-                activeGuests: state.activeGuests.filter((id) => id !== userId),
+                activeGuests: state.activeGuests.filter((id) => id !== to),
             }));
         },
         [socket, roomId],
@@ -61,22 +59,6 @@ export function useGuestsInvitations(roomId: string) {
 
     const handleSearchQuery = useCallback(function (query: string) {
         setGuestActionsState((state) => ({ ...state, searchQuery: query }));
-    }, []);
-
-    const addPendingGuestInvitation = useCallback(function (userId: RedisParticipant["id"]) {
-        setGuestActionsState((state) => ({
-            ...state,
-            pendingGuests: state.pendingGuests.includes(userId)
-                ? state.pendingGuests
-                : [...state.pendingGuests, userId],
-        }));
-    }, []);
-
-    const removePendingGuestInvitation = useCallback(function (userId: RedisParticipant["id"]) {
-        setGuestActionsState((state) => ({
-            ...state,
-            pendingGuests: state.pendingGuests.filter((id) => id !== userId),
-        }));
     }, []);
 
     const toggleSelectedGuest = useCallback(
@@ -112,32 +94,76 @@ export function useGuestsInvitations(roomId: string) {
         function () {
             if (!roomId) return;
 
-            function handleInvited({ userId }: { userId: string }) {
-                setGuestActionsState((state) => ({
-                    ...state,
-                    incomingInvites: state.incomingInvites.includes(userId)
-                        ? state.incomingInvites
-                        : [...state.incomingInvites, userId],
-                }));
+            function handleInvited({ from, to }: { from: string; to: string }) {
+                setGuestActionsState(function (state) {
+                    if (from === username) {
+                        return {
+                            ...state,
+                            pendingGuests: state.pendingGuests.includes(to)
+                                ? state.pendingGuests
+                                : [...state.pendingGuests, to],
+                        };
+                    }
+
+                    if (to === username) {
+                        return {
+                            ...state,
+                            incomingInvites: state.incomingInvites.includes(from)
+                                ? state.incomingInvites
+                                : [...state.incomingInvites, from],
+                        };
+                    }
+
+                    return state;
+                });
             }
 
-            function handleAccepted({ userId }: { userId: string }) {
-                setGuestActionsState((state) => ({
-                    ...state,
-                    pendingGuests: state.pendingGuests.filter((id) => id !== userId),
-                    activeGuests: state.activeGuests.includes(userId)
-                        ? state.activeGuests
-                        : [...state.activeGuests, userId],
-                }));
+            function handleAccepted({ from, to }: { from: string; to: string }) {
+                setGuestActionsState(function (state) {
+                    if (to === username) {
+                        return {
+                            ...state,
+                            pendingGuests: state.pendingGuests.filter((id) => id !== from),
+                            activeGuests: state.activeGuests.includes(from)
+                                ? state.activeGuests
+                                : [...state.activeGuests, from],
+                        };
+                    }
+
+                    if (from === username) {
+                        return {
+                            ...state,
+                            incomingInvites: state.incomingInvites.filter((id) => id !== to),
+                            activeGuests: state.activeGuests.includes(to)
+                                ? state.activeGuests
+                                : [...state.activeGuests, to],
+                        };
+                    }
+
+                    return state;
+                });
             }
 
-            function handleRemoved({ userId }: { userId: string }) {
-                setGuestActionsState((state) => ({
-                    ...state,
-                    pendingGuests: state.pendingGuests.filter((id) => id !== userId),
-                    activeGuests: state.activeGuests.filter((id) => id !== userId),
-                    incomingInvites: state.incomingInvites.filter((id) => id !== userId),
-                }));
+            function handleRemoved({ from, to }: { from: string; to: string }) {
+                setGuestActionsState(function (state) {
+                    if (from === username) {
+                        return {
+                            ...state,
+                            pendingGuests: state.pendingGuests.filter((id) => id !== to),
+                            activeGuests: state.activeGuests.filter((id) => id !== to),
+                        };
+                    }
+
+                    if (to === username) {
+                        return {
+                            ...state,
+                            incomingInvites: state.incomingInvites.filter((id) => id !== from),
+                            activeGuests: state.activeGuests.filter((id) => id !== from),
+                        };
+                    }
+
+                    return state;
+                });
             }
 
             socket.on("guest.invited", handleInvited);
@@ -155,16 +181,14 @@ export function useGuestsInvitations(roomId: string) {
             };
         },
 
-        [socket, roomId, addPendingGuestInvitation, removePendingGuestInvitation],
+        [socket, roomId, username],
     );
 
     return {
         ...guestActionsState,
         acceptInvite,
-        addPendingGuestInvitation,
         denyInvite,
         handleSearchQuery,
-        removePendingGuestInvitation,
         toggleSelectedGuest,
     };
 }

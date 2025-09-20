@@ -12,7 +12,7 @@ export function initIO(server: ReturnType<typeof createServer>) {
     io = new Server(server, { cors: { origin: SERVER_ENV.CLIENT_URL } });
 
     io.use(async function (socket, next) {
-        const token = socket.handshake.auth.token;
+        const { profileImage, token, username } = socket.handshake.auth;
 
         if (!token) {
             socket.data.user = null;
@@ -22,6 +22,8 @@ export function initIO(server: ReturnType<typeof createServer>) {
         try {
             const privyUser = await privy.verifyAuthToken(token, SERVER_ENV.PRIVY_KEY);
             socket.data.user = privyUser.userId;
+            socket.data.profileImage = profileImage;
+            socket.data.username = username;
             next();
         } catch (error) {
             next(new Error("Unauthorized: " + (error as Error).message));

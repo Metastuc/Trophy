@@ -28,10 +28,9 @@ export function LiveStreamContextProvider({
     useHuddleHostPublish(huddle.role);
 
     const roomParticipants = useRoomParticipants(roomId);
-    const guestInvitations = useGuestsInvitations(roomId);
+    const guestInvitations = useGuestsInvitations({ roomId, username: roomUsername });
 
     const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
-
 
     function openInvitationDrawer() {
         setIsInvitationDrawerOpen(true);
