@@ -70,6 +70,14 @@ declare global {
         pendingGuests: Array<RedisParticipant["id"]>;
         searchQuery: string;
     }
+
+    interface UpdateLiveStreamGuestsInvitationsState {
+        action: "invite" | "cancel" | "accept" | "deny" | "revoke";
+        from: RedisParticipant["id"];
+        state: LiveStreamGuestsActionsState;
+        to?: RedisParticipant["id"];
+        username: string;
+    }
 }
 
 export {};

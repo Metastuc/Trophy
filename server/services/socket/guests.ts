@@ -8,6 +8,8 @@ import {
     removePendingInvite,
 } from "#services/redis/guests.ts";
 
+import { updateRoomStreamers } from ".";
+
 export function guestsHandler({ io, socket }: Handler) {
     // 🔄 Restore invitations on reconnect
     socket.on("guest.sync", async function ({ roomId, username }: { roomId: string; username: string }) {
@@ -31,6 +33,8 @@ export function guestsHandler({ io, socket }: Handler) {
         if (!(await isUserInvited({ roomId, userId: to }))) return;
 
         await promoteParticipant({ roomId, userId: to });
+        await updateRoomStreamers({ io, roomId });
+
         io.to(roomId).emit("guest.accepted", { from, to, roomId });
     });
 
@@ -49,6 +53,7 @@ export function guestsHandler({ io, socket }: Handler) {
     // 🔽 Revoke guest status (demote)
     socket.on("guest.revoke", async function ({ roomId, userId }: { roomId: string; userId: string }) {
         await demoteParticipant({ roomId, userId });
+        await updateRoomStreamers({ io, roomId });
         io.to(roomId).emit("guest.revoked", { userId, roomId });
     });
 }

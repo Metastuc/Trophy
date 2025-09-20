@@ -1,20 +1,9 @@
 import { log } from "#~/utils/logger.ts";
 import { addParticipantToRoom, getRoom, removeParticipantFromRoom } from "#services/redis/room.ts";
 
+import { updateRoomStreamers } from ".";
+
 export function roomHandler({ io, socket }: Handler) {
-    async function updateRoomStreamers(roomId: string) {
-        const { participants } = await getRoom(roomId);
-
-        io.to(roomId).emit("room.streamers.update", participants);
-
-        log.info({
-            module: "roomHandler",
-            msg: `Updated streamers for room ${roomId}`,
-            data: participants,
-            tag: "SOCKET",
-        });
-    }
-
     socket.on(
         "room.join",
         async function ({
@@ -49,13 +38,17 @@ export function roomHandler({ io, socket }: Handler) {
                 });
 
                 io.to(existing.peerId).emit("force.disconnect");
-                // await removeParticipantFromRoom({ roomId, userId: existing.id });
             }
 
-            await Promise.all([
-                await addParticipantToRoom({ role, roomId, id: identifier, peerId }),
-                await updateRoomStreamers(roomId),
-            ]);
+            await addParticipantToRoom({
+                role,
+                roomId,
+                id: identifier,
+                peerId,
+                profileImage: socket.data.profileImage,
+                isGuest: !socket.data.username,
+            });
+            await updateRoomStreamers({ io, roomId });
 
             io.to(roomId).emit("room.user.joined", { userId: socket.data.user, roomId });
         },
@@ -73,7 +66,7 @@ export function roomHandler({ io, socket }: Handler) {
         });
 
         io.to(roomId).emit("room.user.left", { userId: socket.data.user, roomId });
-        await updateRoomStreamers(roomId);
+        await updateRoomStreamers({ io, roomId });
     });
 
     socket.on("room.stream.started", function ({ roomId }: { roomId: string }) {

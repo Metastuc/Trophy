@@ -10,11 +10,9 @@ interface RoomInRedisParams {
 export async function createRoomInRedis({ hostId, roomId, walletAddress }: RoomInRedisParams) {
     const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
 
-    await Promise.all([
-        redis.set(`liveroom:${walletAddress}`, roomId),
-        redis.hmset(roomKey, { host: hostId, status: "LIVE", createdAt: new Date().toISOString() }),
-        addParticipantToRoom({ role: "host", roomId, id: hostId, peerId: undefined }),
-    ]);
+    await redis.set(`liveroom:${walletAddress}`, roomId);
+    await redis.hmset(roomKey, { host: hostId, status: "LIVE", createdAt: new Date().toISOString() });
+    await addParticipantToRoom({ role: "host", roomId, id: hostId, peerId: undefined });
 }
 
 export async function addParticipantToRoom(participant: RedisParticipant & { roomId: string }) {
