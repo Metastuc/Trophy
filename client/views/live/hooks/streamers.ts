@@ -30,11 +30,6 @@ export function useRoomParticipants(roomId: string) {
         [roomStreamers, localPeerId],
     );
 
-    const remoteStreamers = useMemo(
-        () => roomStreamers.filter((streamer) => streamer.peerId !== localPeerId),
-        [roomStreamers, localPeerId],
-    );
-
     const authenticatedStreamers = useMemo(
         () => roomStreamers.filter((streamer) => streamer.isGuest !== true),
         [roomStreamers],
@@ -42,14 +37,12 @@ export function useRoomParticipants(roomId: string) {
 
     const streamerByRole = useMemo(
         () => ({
-            hosts: remoteStreamers.filter((streamer) => streamer.role === "host"),
-            guests: remoteStreamers.filter((streamer) => streamer.role === "guest"),
-            listeners: remoteStreamers.filter((streamer) => streamer.role === "listener"),
+            hosts: roomStreamers.filter((streamer) => streamer.role === "host"),
+            guests: roomStreamers.filter((streamer) => streamer.role === "guest"),
+            listeners: roomStreamers.filter((streamer) => streamer.role === "listener"),
         }),
-        [remoteStreamers],
+        [roomStreamers],
     );
-
-    console.log({ localStreamer, localPeerId, roomStreamers });
 
     return {
         authenticatedStreamers,

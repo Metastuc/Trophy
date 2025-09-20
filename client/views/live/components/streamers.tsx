@@ -7,11 +7,16 @@ export function LiveStreamStreamers({ role }: { role: JoinStreamData["role"] }) 
 
     const allPeers =
         role === "host"
-            ? [...(localStreamer?.role === "host" ? [localStreamer] : []), ...streamerByRole.hosts]
-            : [...(localStreamer?.role === "guest" ? [localStreamer] : []), ...streamerByRole.guests];
+            ? streamerByRole.hosts
+            : [
+                  ...(localStreamer?.role === "guest" ? [localStreamer] : []),
+                  ...streamerByRole.guests.filter((peer) => peer.peerId !== localStreamer?.peerId),
+              ];
 
     const tileClass = role === "host" ? "host-tile" : "guest-tile";
-    const sorted = [...allPeers].sort((a, b) => (a.peerId as string).localeCompare(b.peerId as string));
+    const sorted = [...allPeers]
+        .filter((peer) => peer.peerId)
+        .sort((a, b) => (a.peerId as string).localeCompare(b.peerId as string));
 
     return sorted.map((peer, index) =>
         peer.peerId && peer.peerId === localStreamer?.peerId ? (

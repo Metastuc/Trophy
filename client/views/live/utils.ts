@@ -1,3 +1,5 @@
+import { layoutMap } from "./constants";
+
 export function generateGuestId() {
     let guestId = localStorage.getItem("trophy-guest-id");
 
@@ -110,4 +112,14 @@ export function updateGuestInvitationsState({
         default:
             return state;
     }
+}
+
+export function getStreamLayoutKey({
+    coHostCount,
+    isScreenSharing,
+}: {
+    coHostCount: number;
+    isScreenSharing: boolean;
+}): LiveStreamLayoutKey {
+    return layoutMap[`${coHostCount}-${isScreenSharing ? "screen" : "no-screen"}`] || "unsupported";
 }

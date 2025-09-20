@@ -55,11 +55,11 @@ export function LiveStreamContextProvider({
 
     const roomRole: RoomRoles = useMemo(
         () => ({
-            host: huddle.role === "host",
-            guest: huddle.role === "guest",
-            listener: huddle.role === "listener",
+            host: localRole === "host",
+            guest: localRole === "guest",
+            listener: localRole === "listener",
         }),
-        [huddle.role],
+        [localRole],
     );
 
     const value: LiveStreamContextValue = useMemo(

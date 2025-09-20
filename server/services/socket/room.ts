@@ -1,33 +1,25 @@
 import { log } from "#~/utils/logger.ts";
-import { addParticipantToRoom, getRoom, removeParticipantFromRoom } from "#services/redis/room.ts";
+import { addParticipantToRoom, getRoom } from "#services/redis/room.ts";
 
 import { updateRoomStreamers } from ".";
 
 export function roomHandler({ io, socket }: Handler) {
     socket.on(
         "room.join",
-        async function ({
-            identifier,
-            peerId,
-            roomId,
-            role: clientRole,
-        }: {
-            identifier: string;
-            peerId: string;
-            roomId: string;
-            role: JoinStreamData["role"];
-        }) {
+        async function ({ identifier, peerId, roomId }: { identifier: string; peerId: string; roomId: string }) {
             socket.join(roomId);
 
-            log.info({
-                module: "roomHandler",
-                msg: `User ${identifier} (${clientRole}, peerId: ${peerId}) joined room: ${roomId}`,
-                tag: "SOCKET",
-            });
+            let role: JoinStreamData["role"];
+            const roomData = await getRoom(roomId);
+            const existing = roomData.participants.find((participant) => participant.id === identifier);
 
-            const { participants } = await getRoom(roomId);
-            const existing = participants.find((participant) => participant.id === identifier);
-            const role = existing ? existing.role : clientRole;
+            if (identifier === roomData.host) {
+                role = "host";
+            } else if (roomData.invitedGuests.includes(identifier)) {
+                role = "guest";
+            } else {
+                role = "listener";
+            }
 
             if (existing && (existing.role === "host" || existing.role === "guest") && existing.peerId) {
                 log.warn({
@@ -38,7 +30,7 @@ export function roomHandler({ io, socket }: Handler) {
                 });
 
                 io.to(existing.peerId).emit("force.disconnect");
-                await removeParticipantFromRoom({ roomId, userId: existing.id });
+                await addParticipantToRoom({ ...existing, peerId, roomId });
             }
 
             await addParticipantToRoom({
@@ -49,8 +41,8 @@ export function roomHandler({ io, socket }: Handler) {
                 profileImage: socket.data.profileImage,
                 isGuest: !socket.data.username,
             });
-            await updateRoomStreamers({ io, roomId });
 
+            await updateRoomStreamers({ io, roomId });
             io.to(roomId).emit("room.user.joined", { userId: socket.data.user, roomId });
         },
     );
@@ -80,31 +72,31 @@ export function roomHandler({ io, socket }: Handler) {
         io.to(roomId).emit("room.stream.stopped", { roomId });
     });
 
-    socket.on(
-        "room.session.switch",
-        async function ({
-            roomId,
-            existingPeerId,
-            identifier,
-        }: {
-            roomId: string;
-            existingPeerId: string;
-            identifier: string;
-        }) {
-            const { participants } = await getRoom(roomId);
-            const participant = participants.find((participant) => participant.peerId === existingPeerId);
+    // socket.on(
+    //     "room.session.switch",
+    //     async function ({
+    //         roomId,
+    //         existingPeerId,
+    //         identifier,
+    //     }: {
+    //         roomId: string;
+    //         existingPeerId: string;
+    //         identifier: string;
+    //     }) {
+    //         const { participants } = await getRoom(roomId);
+    //         const participant = participants.find((participant) => participant.peerId === existingPeerId);
 
-            if (participant) {
-                io.to(existingPeerId).emit("force.disconnect");
-                await removeParticipantFromRoom({ roomId, userId: participant.id });
-            }
+    //         if (participant) {
+    //             io.to(existingPeerId).emit("force.disconnect");
+    //             await removeParticipantFromRoom({ roomId, userId: participant.id });
+    //         }
 
-            await addParticipantToRoom({
-                role: participant?.role ?? "listener",
-                roomId,
-                id: identifier,
-                peerId: socket.id,
-            });
-        },
-    );
+    //         await addParticipantToRoom({
+    //             role: participant?.role ?? "listener",
+    //             roomId,
+    //             id: identifier,
+    //             peerId: socket.id,
+    //         });
+    //     },
+    // );
 }
