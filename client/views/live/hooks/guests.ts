@@ -13,12 +13,6 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
     });
 
     const stateRef = useRef<LiveStreamGuestsActionsState>(guestActionsState);
-    useEffect(
-        function () {
-            stateRef.current = guestActionsState;
-        },
-        [guestActionsState],
-    );
 
     const inviteGuest = useCallback(
         function (to: RedisParticipant["id"]) {
@@ -87,6 +81,20 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
         },
         [cancelInvite, inviteGuest, revokeInvite],
     );
+
+    useEffect(
+        function () {
+            stateRef.current = guestActionsState;
+        },
+        [guestActionsState],
+    );
+
+    useEffect(() => {
+        if (!roomId || !username) return;
+        console.log("Syncing guests invitations");
+
+        socket.emit("guest.sync", { roomId, username });
+    }, [socket, roomId, username]);
 
     useEffect(
         function () {
@@ -164,10 +172,19 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
                 });
             }
 
+            function handleIvitesRestore({ sent, received }: { sent: Array<string>; received: Array<string> }) {
+                setGuestActionsState((state) => ({
+                    ...state,
+                    pendingGuests: Array.from(new Set([...state.pendingGuests, ...sent])),
+                    incomingInvites: Array.from(new Set([...state.incomingInvites, ...received])),
+                }));
+            }
+
             socket.on("guest.accepted", handleAccepted);
             socket.on("guest.canceled", handleRemoved);
             socket.on("guest.denied", handleRemoved);
             socket.on("guest.invited", handleInvited);
+            socket.on("guest.invites.restore", handleIvitesRestore);
             socket.on("guest.revoked", handleRemoved);
 
             return () => {
@@ -175,6 +192,7 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
                 socket.off("guest.canceled", handleRemoved);
                 socket.off("guest.denied", handleRemoved);
                 socket.off("guest.invited", handleInvited);
+                socket.off("guest.invites.restore", handleIvitesRestore);
                 socket.off("guest.revoked", handleRemoved);
             };
         },

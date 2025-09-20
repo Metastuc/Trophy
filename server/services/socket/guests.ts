@@ -9,9 +9,12 @@ import {
 
 export function guestsHandler({ io, socket }: Handler) {
     // 🔄 Restore invitations on reconnect
-    socket.on("guest.sync", async function ({ roomId }: { roomId: string }) {
+    socket.on("guest.sync", async function ({ roomId, username }: { roomId: string; username: string }) {
         const invites = await getPendingInvites(roomId);
-        socket.emit("guest.invites.restore", { roomId, invites });
+        const sent = invites.filter((invite) => invite.from === username).map((invite) => invite.to);
+        const received = invites.filter((invite) => invite.to === username).map((invite) => invite.from);
+
+        socket.emit("guest.invites.restore", { sent, received });
     });
 
     // 📩 Invite a user
