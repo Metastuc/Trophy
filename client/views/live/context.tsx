@@ -29,6 +29,7 @@ export function LiveStreamContextProvider({
 
     const roomParticipants = useRoomParticipants(roomId);
     const guestInvitations = useGuestsInvitations({ roomId, username: roomUsername });
+    const localRole = roomParticipants.localStreamer?.role;
 
     const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
 
@@ -42,14 +43,14 @@ export function LiveStreamContextProvider({
 
     const permissions: RoomPermissions = useMemo(
         () => ({
-            canEndStream: huddle.role === "host",
-            canInvite: huddle.role === "host",
-            canShareScreen: huddle.role === "host" || huddle.role === "guest",
-            canToggleAudio: huddle.role === "host" || huddle.role === "guest",
-            canToggleChat: huddle.role === "host",
-            canToggleVideo: huddle.role === "host" || huddle.role === "guest",
+            canEndStream: localRole === "host",
+            canInvite: localRole === "host",
+            canShareScreen: localRole === "host" || localRole === "guest",
+            canToggleAudio: localRole === "host" || localRole === "guest",
+            canToggleChat: localRole === "host",
+            canToggleVideo: localRole === "host" || localRole === "guest",
         }),
-        [huddle.role],
+        [localRole],
     );
 
     const roomRole: RoomRoles = useMemo(

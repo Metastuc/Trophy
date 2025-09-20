@@ -22,7 +22,7 @@ export async function addParticipantToRoom(participant: RedisParticipant & { roo
     const existing = await redis.hget(participantsKey, rest.id);
     const parsedExisting = existing ? JSON.parse(existing) : {};
 
-    await redis.hset(participantsKey, rest.id, JSON.stringify({ ...rest, ...parsedExisting }));
+    await redis.hset(participantsKey, rest.id, JSON.stringify({ ...parsedExisting, ...rest }));
 }
 
 export async function removeParticipantFromRoom({ userId, roomId }: { userId: string; roomId: string }) {

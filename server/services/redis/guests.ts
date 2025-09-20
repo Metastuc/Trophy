@@ -21,9 +21,6 @@ export async function removePendingInvite({ roomId, toUserId }: { roomId: string
     await redis.hdel(pendingInviteKey(roomId), toUserId);
 }
 
-/**
- * Promote user from listener to guest
- */
 export async function promoteParticipant({ roomId, userId }: { roomId: string; userId: string }) {
     const participants = await redis.hgetall(participantsKey(roomId));
     if (!participants[userId]) return;
@@ -42,9 +39,6 @@ export async function promoteParticipant({ roomId, userId }: { roomId: string; u
     }
 }
 
-/**
- * Demote guest back to listener
- */
 export async function demoteParticipant({ roomId, userId }: { roomId: string; userId: string }) {
     const participants = await redis.hgetall(participantsKey(roomId));
     if (!participants[userId]) return;
@@ -54,18 +48,11 @@ export async function demoteParticipant({ roomId, userId }: { roomId: string; us
     await redis.hset(participantsKey(roomId), userId, JSON.stringify(updated));
 }
 
-/**
- * Get all pending invites in a room
- * -> returns array of { from, to }
- */
 export async function getPendingInvites(roomId: string): Promise<{ from: string; to: string }[]> {
     const raw = await redis.hgetall(pendingInviteKey(roomId));
     return Object.entries(raw).map(([to, from]) => ({ from, to }));
 }
 
-/**
- * Check if a user is invited
- */
 export async function isUserInvited({ roomId, userId }: { roomId: string; userId: string }): Promise<boolean> {
     const exists = await redis.hexists(pendingInviteKey(roomId), userId);
     return exists === 1;

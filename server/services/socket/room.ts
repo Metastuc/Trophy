@@ -21,7 +21,7 @@ export function roomHandler({ io, socket }: Handler) {
 
             log.info({
                 module: "roomHandler",
-                msg: `User ${identifier} (${clientRole}) joined room: ${roomId}`,
+                msg: `User ${identifier} (${clientRole}, peerId: ${peerId}) joined room: ${roomId}`,
                 tag: "SOCKET",
             });
 
@@ -38,6 +38,7 @@ export function roomHandler({ io, socket }: Handler) {
                 });
 
                 io.to(existing.peerId).emit("force.disconnect");
+                await removeParticipantFromRoom({ roomId, userId: existing.id });
             }
 
             await addParticipantToRoom({

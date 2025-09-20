@@ -49,6 +49,8 @@ export function useRoomParticipants(roomId: string) {
         [remoteStreamers],
     );
 
+    console.log({ localStreamer, localPeerId, roomStreamers });
+
     return {
         authenticatedStreamers,
         localStreamer,
