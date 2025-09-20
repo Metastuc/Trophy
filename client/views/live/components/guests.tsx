@@ -17,8 +17,7 @@ import { AuthenticatedPeer, SelectedGuests } from "./peers-list";
 export function LiveStreamInvitationDrawer() {
     const { closeInvitationDrawer, openInvitationDrawer, isInvitationDrawerOpen } = useLiveStreamContext();
     const { authenticatedStreamers } = useLiveStreamParticipants();
-    const { selectedGuests, incomingInvites, toggleSelectedGuest, searchQuery, handleSearchQuery } =
-        useLiveStreamGuests();
+    const { incomingInvites, toggleSelectedGuest, searchQuery, handleSearchQuery } = useLiveStreamGuests();
 
     return (
         <Drawer
@@ -41,16 +40,16 @@ export function LiveStreamInvitationDrawer() {
 
                 <DrawerFooter>
                     <header className="border-blue100 space-y-2 rounded-xs border px-3 py-2">
-                        {selectedGuests.length ? (
+                        {authenticatedStreamers.some((participant) => participant.role === "guest") ? (
                             <div className="flex flex-wrap gap-2">
-                                {selectedGuests.map((userId) => {
-                                    const participant = authenticatedStreamers.find(
-                                        (participant) => participant.id === userId,
-                                    );
-                                    return (
-                                        participant && <SelectedGuests key={participant.id} participant={participant} />
-                                    );
-                                })}
+                                {authenticatedStreamers
+                                    .filter((participant) => participant.role === "guest")
+                                    .map(
+                                        (participant) =>
+                                            participant && (
+                                                <SelectedGuests key={participant.id} participant={participant} />
+                                            ),
+                                    )}
                             </div>
                         ) : null}
 
@@ -88,7 +87,7 @@ export function LiveStreamInvitationDrawer() {
                                             search={searchQuery}
                                             onToggle={() => toggleSelectedGuest(participant.id)}
                                             isPending={incomingInvites.includes(participant.id)}
-                                            isCoHost={selectedGuests.includes(participant.id)}
+                                            isCoHost={participant.role === "guest"}
                                         />
                                     </Fragment>
                                 ))}
