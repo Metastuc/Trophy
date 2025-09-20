@@ -19,8 +19,6 @@ export function useHuddleJoinRoom({
     const { role, peerId } = useLocalPeer();
     const socket = useSocket();
 
-    console.log(peerId);
-
     const { joinRoom, leaveRoom, state } = useRoom({
         onJoin(data) {
             log({ data: { data }, module: "LIVE STREAM CONNECT", msg: "✅ joined Huddle room", tag: "HUDDLE" });

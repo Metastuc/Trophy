@@ -23,6 +23,7 @@ export function AuthenticatedPeer({ isCoHost, isPending, onToggle, participant, 
                     />
                 </i>
             </span>
+
             <span>@{participant.id}</span>
 
             {isCoHost && (

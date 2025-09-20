@@ -39,8 +39,6 @@ export function LiveStreamInvitationDrawer() {
         });
     }
 
-    console.log("Authenticated Streamers:", authenticatedStreamers);
-
     return (
         <Drawer
             open={isInvitationDrawerOpen}
@@ -78,6 +76,7 @@ export function LiveStreamInvitationDrawer() {
                             <i className="size-4">
                                 <Search />
                             </i>
+
                             <input
                                 type="text"
                                 placeholder="Search by username"
@@ -91,6 +90,7 @@ export function LiveStreamInvitationDrawer() {
                     <footer>
                         <div className="mt-6 mb-3 flex items-center justify-start gap-1">
                             <span className="text-blue100 font-medium">People on your livestream</span>
+
                             <i className="size-4 text-[#E120E1]">
                                 <Projector />
                             </i>

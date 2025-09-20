@@ -1,56 +1,84 @@
-interface LiveStreamContextValues extends Omit<JoinStreamData, "role"> {
-    huddleRole: JoinStreamData["role"];
-    isHuddleConnected: boolean;
-    permissions: RoomPermissions;
-    roomId: string;
-    roomRole: RoomRoles;
-    serverRole: JoinStreamData["role"];
-    isInvitationDrawerOpen: boolean;
-    roomParticipants: RoomParticipants;
-}
+import { DefaultEventsMap } from "socket.io";
+import { Socket } from "socket.io-client";
 
-interface LiveStreamContextActions {
-    openInvitationDrawer: () => void;
-    closeInvitationDrawer: () => void;
-}
+declare global {
+    interface LiveStreamContextValues extends Omit<JoinStreamData, "role"> {
+        huddleRole: JoinStreamData["role"];
+        isHuddleConnected: boolean;
+        isInvitationDrawerOpen: boolean;
+        permissions: RoomPermissions;
+        roomId: string;
+        roomParticipants: RoomParticipants;
+        roomRole: RoomRoles;
+        serverRole: JoinStreamData["role"];
+        guestInvitations: GuestsInvitations;
+    }
 
-type LiveStreamContextValue = LiveStreamContextActions & LiveStreamContextValues;
+    interface LiveStreamContextActions {
+        closeInvitationDrawer: () => void;
+        openInvitationDrawer: () => void;
+    }
 
-type RoomPermissions = {
-    canEndStream: boolean;
-    canInvite: boolean;
-    canShareScreen: boolean;
-    canToggleAudio: boolean;
-    canToggleChat: boolean;
-    canToggleVideo: boolean;
-};
+    type LiveStreamContextValue = LiveStreamContextActions & LiveStreamContextValues;
 
-type RoomRoles = {
-    host: boolean;
-    guest: boolean;
-    listener: boolean;
-};
-
-type RoomParticipants = {
-    authenticatedStreamers: RedisParticipant[];
-    localStreamer: RedisParticipant | undefined;
-    streamerByRole: {
-        hosts: RedisParticipant[];
-        guests: RedisParticipant[];
-        listeners: RedisParticipant[];
+    type RoomPermissions = {
+        canEndStream: boolean;
+        canInvite: boolean;
+        canShareScreen: boolean;
+        canToggleAudio: boolean;
+        canToggleChat: boolean;
+        canToggleVideo: boolean;
     };
-};
 
-interface LiveStreamGuestInvitationDrawerState {
-    searchQuery: string;
-    selectedGuests: Array<RedisParticipant["id"]>;
-}
-
-interface LiveStreamChatMessagesState {
-    message: string;
-    type: "chat" | "tip";
-    user: {
-        profileImage: string;
-        username: string;
+    type RoomRoles = {
+        host: boolean;
+        guest: boolean;
+        listener: boolean;
     };
+
+    type RoomParticipants = {
+        authenticatedStreamers: RedisParticipant[];
+        localStreamer: RedisParticipant | undefined;
+        streamerByRole: {
+            hosts: RedisParticipant[];
+            guests: RedisParticipant[];
+            listeners: RedisParticipant[];
+        };
+    };
+
+    type GuestsInvitations = {
+        acceptInvite: (userId: string) => Socket<DefaultEventsMap, DefaultEventsMap>;
+        addPendingGuestInvitation: (userId: RedisParticipant["id"]) => void;
+        cancelInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
+        denyInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
+        incomingInvites: Array<RedisParticipant["id"]>;
+        inviteGuest: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
+        pendingGuestsInvitations: Array<RedisParticipant["id"]>;
+        removePendingGuestInvitation: (userId: RedisParticipant["id"]) => void;
+        revokeInvite: (userId: RedisParticipant["id"]) => Socket<DefaultEventsMap, DefaultEventsMap>;
+        selectedGuests: Array<RedisParticipant["id"]>;
+        toggleSelectedGuest: (userId: RedisParticipant["id"]) => void;
+    };
+
+    interface LiveStreamGuestInvitationDrawerState {
+        searchQuery: string;
+        selectedGuests: Array<RedisParticipant["id"]>;
+    }
+
+    interface LiveStreamChatMessagesState {
+        message: string;
+        type: "chat" | "tip";
+        user: {
+            profileImage: string;
+            username: string;
+        };
+    }
+
+    interface LiveStreamGuestsActionsState {
+        pendingGuestsInvitations: Array<RedisParticipant["id"]>;
+        selectedGuests: Array<RedisParticipant["id"]>;
+        incomingInvites: Array<RedisParticipant["id"]>;
+    }
 }
+
+export {};

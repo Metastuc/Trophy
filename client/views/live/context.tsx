@@ -1,6 +1,7 @@
 import { PropsWithChildren, useMemo, useState } from "react";
 
 import { LiveStreamContext } from "./hooks";
+import { useGuestsInvitations } from "./hooks/guests";
 import { useHuddleJoinRoom } from "./hooks/huddle";
 import { useHuddleHostPublish } from "./hooks/publish";
 import { useRoomParticipants } from "./hooks/streamers";
@@ -25,7 +26,19 @@ export function LiveStreamContextProvider({
 }: LiveStreamContextProviderProps) {
     const huddle = useHuddleJoinRoom({ roomId, token, username: roomUsername, serverRole });
     useHuddleHostPublish(huddle.role);
+
     const roomParticipants = useRoomParticipants(roomId);
+    const guestInvitations = useGuestsInvitations(roomId);
+
+    const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
+
+    function openInvitationDrawer() {
+        setIsInvitationDrawerOpen(true);
+    }
+
+    function closeInvitationDrawer() {
+        setIsInvitationDrawerOpen(false);
+    }
 
     const permissions: RoomPermissions = useMemo(
         () => ({
@@ -48,34 +61,25 @@ export function LiveStreamContextProvider({
         [huddle.role],
     );
 
-    const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
-
-    function openInvitationDrawer() {
-        setIsInvitationDrawerOpen(true);
-    }
-
-    function closeInvitationDrawer() {
-        setIsInvitationDrawerOpen(false);
-    }
-
     const value: LiveStreamContextValue = useMemo(
         () => ({
+            closeInvitationDrawer,
             creatorProfileImage,
             creatorToken,
             creatorUsername,
             creatorWalletAddress,
             huddleRole: huddle.role,
             isHuddleConnected: huddle.isHuddleConnected,
+            isInvitationDrawerOpen,
+            openInvitationDrawer,
             permissions,
             roomId,
+            roomParticipants,
             roomRole,
             serverRole,
             title,
             token,
-            isInvitationDrawerOpen,
-            openInvitationDrawer,
-            closeInvitationDrawer,
-            roomParticipants,
+            guestInvitations,
         }),
         [
             creatorProfileImage,
@@ -84,14 +88,15 @@ export function LiveStreamContextProvider({
             creatorWalletAddress,
             huddle.isHuddleConnected,
             huddle.role,
+            isInvitationDrawerOpen,
             permissions,
             roomId,
+            roomParticipants,
             roomRole,
             serverRole,
             title,
             token,
-            isInvitationDrawerOpen,
-            roomParticipants,
+            guestInvitations,
         ],
     );
 
