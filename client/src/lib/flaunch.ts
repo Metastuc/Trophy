@@ -54,7 +54,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
                 tokenUri,
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: initialTokenFairLaunch * BigInt(Math.round(0.05 * 10e18)),
+                premineAmount: (initialTokenFairLaunch * 5n) / 100n,
                 creator: smartWalletClient.account.address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
