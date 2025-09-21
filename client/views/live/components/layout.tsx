@@ -1,14 +1,17 @@
 import { cn } from "@/lib/utils";
 
-import { useLiveStreamParticipants } from "../hooks";
+import { useLiveStreamParticipants, useLiveStreamScreenSharing } from "../hooks";
 import { getStreamLayoutKey } from "../utils";
 import { LiveStreamStreamers } from "./streamers";
 
 export function LiveStreamLayout() {
     const { streamerByRole } = useLiveStreamParticipants();
-    const streamLayoutKey = getStreamLayoutKey({ coHostCount: streamerByRole.guests.length, isScreenSharing: false });
+    const { someoneIsSharingTheirScreen } = useLiveStreamScreenSharing();
 
-    console.log({ guests: streamerByRole.guests.length, streamLayoutKey });
+    const streamLayoutKey = getStreamLayoutKey({
+        coHostCount: streamerByRole.guests.length,
+        isScreenSharing: someoneIsSharingTheirScreen,
+    });
 
     return (
         <section className={cn("size-full", streamLayoutKey)} id="live-stream-layout">

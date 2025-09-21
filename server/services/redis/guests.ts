@@ -1,6 +1,8 @@
 import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { redis } from "#config/redis.ts";
 
+import { verifyRoomGuestLimit } from "../socket";
+
 const pendingInviteKey = (roomId: string) => `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:pendingInvites`;
 const participantsKey = (roomId: string) => `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:participants`;
 const roomKey = (roomId: string) => `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}`;
@@ -25,6 +27,7 @@ export async function promoteParticipant({ roomId, userId }: { roomId: string; u
     const participants = await redis.hgetall(participantsKey(roomId));
     if (!participants[userId]) return;
 
+    await verifyRoomGuestLimit({ roomId, socket: undefined });
     const parsed = JSON.parse(participants[userId]);
     const updated = { ...parsed, role: "guest" };
     await redis.hset(participantsKey(roomId), userId, JSON.stringify(updated));
@@ -46,6 +49,13 @@ export async function demoteParticipant({ roomId, userId }: { roomId: string; us
     const parsed = JSON.parse(participants[userId]);
     const updated = { ...parsed, role: "listener" };
     await redis.hset(participantsKey(roomId), userId, JSON.stringify(updated));
+
+    const roomData = await redis.hget(roomKey(roomId), "guests");
+    const guests: string[] = roomData ? JSON.parse(roomData) : [];
+    const filtered = guests.filter((id) => id !== userId);
+
+    if (filtered.length === 0) await redis.hdel(roomKey(roomId), "guests");
+    else if (filtered.length !== guests.length) await redis.hset(roomKey(roomId), "guests", JSON.stringify(filtered));
 }
 
 export async function getPendingInvites(roomId: string): Promise<{ from: string; to: string }[]> {

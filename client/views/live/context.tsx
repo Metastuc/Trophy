@@ -4,6 +4,7 @@ import { LiveStreamContext } from "./hooks";
 import { useGuestsInvitations } from "./hooks/guests";
 import { useHuddleJoinRoom } from "./hooks/huddle";
 import { useHuddleHostPublish } from "./hooks/publish";
+import { useRoomScreenShareSync } from "./hooks/screen-sharing";
 import { useRoomParticipants } from "./hooks/streamers";
 
 type LiveStreamContextProviderProps = JoinStreamData &
@@ -29,9 +30,10 @@ export function LiveStreamContextProvider({
 
     const roomParticipants = useRoomParticipants(roomId);
     const guestInvitations = useGuestsInvitations({ roomId, username: roomUsername });
-    const localRole = roomParticipants.localStreamer?.role;
+    const screenSharing = useRoomScreenShareSync({ roomId, username: roomUsername });
 
     const [isInvitationDrawerOpen, setIsInvitationDrawerOpen] = useState<boolean>(false);
+    const localRole = roomParticipants.localStreamer?.role;
 
     function openInvitationDrawer() {
         setIsInvitationDrawerOpen(true);
@@ -69,6 +71,7 @@ export function LiveStreamContextProvider({
             creatorToken,
             creatorUsername,
             creatorWalletAddress,
+            guestInvitations,
             huddleRole: huddle.role,
             isHuddleConnected: huddle.isHuddleConnected,
             isInvitationDrawerOpen,
@@ -77,16 +80,17 @@ export function LiveStreamContextProvider({
             roomId,
             roomParticipants,
             roomRole,
+            screenSharing,
             serverRole,
             title,
             token,
-            guestInvitations,
         }),
         [
             creatorProfileImage,
             creatorToken,
             creatorUsername,
             creatorWalletAddress,
+            guestInvitations,
             huddle.isHuddleConnected,
             huddle.role,
             isInvitationDrawerOpen,
@@ -94,10 +98,10 @@ export function LiveStreamContextProvider({
             roomId,
             roomParticipants,
             roomRole,
+            screenSharing,
             serverRole,
             title,
             token,
-            guestInvitations,
         ],
     );
 

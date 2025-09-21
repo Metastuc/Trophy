@@ -7,6 +7,8 @@ export function LiveStreamLocalPeer({ isLocal, tileClass }: { isLocal?: boolean;
     const { stream: videoStream, isVideoOn } = useLocalVideo();
     const { shareStream } = useLocalScreenShare();
 
+    console.log({ shareStream });
+
     return (
         <LiveStreamMedia
             audioStream={audioStream}

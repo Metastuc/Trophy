@@ -27,3 +27,7 @@ export function useLiveStreamParticipants() {
 export function useLiveStreamGuests() {
     return useLiveStreamContext().guestInvitations;
 }
+
+export function useLiveStreamScreenSharing() {
+    return useLiveStreamContext().screenSharing;
+}

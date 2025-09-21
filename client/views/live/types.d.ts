@@ -3,6 +3,7 @@ import { Socket } from "socket.io-client";
 
 declare global {
     interface LiveStreamContextValues extends Omit<JoinStreamData, "role"> {
+        guestInvitations: GuestsInvitations;
         huddleRole: JoinStreamData["role"];
         isHuddleConnected: boolean;
         isInvitationDrawerOpen: boolean;
@@ -10,8 +11,8 @@ declare global {
         roomId: string;
         roomParticipants: RoomParticipants;
         roomRole: RoomRoles;
+        screenSharing: RoomScreenShareSync;
         serverRole: JoinStreamData["role"];
-        guestInvitations: GuestsInvitations;
     }
 
     interface LiveStreamContextActions {
@@ -53,6 +54,13 @@ declare global {
         toggleSelectedGuest: (userId: RedisParticipant["id"]) => void;
     };
 
+    type RoomScreenShareSync = {
+        someoneIsSharingTheirScreen: boolean;
+        startScreenShare: () => void;
+        stopScreenShare: () => void;
+        whoIsSharingTheirScreen: string | null;
+    };
+
     type LiveStreamLayoutKey =
         | "host-only"
         | "host-only-with-screen"
@@ -90,6 +98,11 @@ declare global {
         state: LiveStreamGuestsActionsState;
         to?: RedisParticipant["id"];
         username: string;
+    }
+
+    interface LiveStreamScreenSharingState {
+        someoneIsSharingTheirScreen: boolean;
+        whoIsSharingTheirScreen: RedisParticipant["id"] | null;
     }
 }
 

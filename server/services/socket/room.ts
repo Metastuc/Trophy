@@ -1,4 +1,3 @@
-import { log } from "#~/utils/logger.ts";
 import { addParticipantToRoom, getRoom } from "#services/redis/room.ts";
 
 import { updateRoomStreamers } from ".";
@@ -22,13 +21,6 @@ export function roomHandler({ io, socket }: Handler) {
             }
 
             if (existing && (existing.role === "host" || existing.role === "guest") && existing.peerId) {
-                log.warn({
-                    module: "roomHandler",
-                    msg: `Replacing existing ${existing.role} ${identifier} with new peerId ${peerId}`,
-                    data: { oldPeerId: existing.peerId, newPeerId: peerId },
-                    tag: "SOCKET",
-                });
-
                 io.to(existing.peerId).emit("force.disconnect");
                 await addParticipantToRoom({ ...existing, peerId, roomId });
             }
@@ -72,31 +64,24 @@ export function roomHandler({ io, socket }: Handler) {
         io.to(roomId).emit("room.stream.stopped", { roomId });
     });
 
-    // socket.on(
-    //     "room.session.switch",
-    //     async function ({
-    //         roomId,
-    //         existingPeerId,
-    //         identifier,
-    //     }: {
-    //         roomId: string;
-    //         existingPeerId: string;
-    //         identifier: string;
-    //     }) {
-    //         const { participants } = await getRoom(roomId);
-    //         const participant = participants.find((participant) => participant.peerId === existingPeerId);
+    const currentScreenShareSession: Record<string, string | null> = {};
 
-    //         if (participant) {
-    //             io.to(existingPeerId).emit("force.disconnect");
-    //             await removeParticipantFromRoom({ roomId, userId: participant.id });
-    //         }
+    socket.on("room.screen.share.start", function ({ roomId, userId }: { roomId: string; userId: string }) {
+        if (currentScreenShareSession[roomId]) {
+            socket.emit("room.screen.share.denied", { message: "Another streamer is currently sharing their screen." });
+            return;
+        }
 
-    //         await addParticipantToRoom({
-    //             role: participant?.role ?? "listener",
-    //             roomId,
-    //             id: identifier,
-    //             peerId: socket.id,
-    //         });
-    //     },
-    // );
+        currentScreenShareSession[roomId] = userId;
+        io.to(roomId).emit("room.screen.share.started", { roomId, userId });
+    });
+
+    socket.on("room.screen.share.stop", function ({ roomId, userId }: { roomId: string; userId: string }) {
+        if (currentScreenShareSession[roomId] !== userId) {
+            return;
+        }
+
+        currentScreenShareSession[roomId] = null;
+        io.to(roomId).emit("room.screen.share.stopped", { roomId, userId });
+    });
 }

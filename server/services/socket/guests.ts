@@ -8,10 +8,9 @@ import {
     removePendingInvite,
 } from "#services/redis/guests.ts";
 
-import { updateRoomStreamers } from ".";
+import { updateRoomStreamers, verifyRoomGuestLimit } from ".";
 
 export function guestsHandler({ io, socket }: Handler) {
-    // 🔄 Restore invitations on reconnect
     socket.on("guest.sync", async function ({ roomId, username }: { roomId: string; username: string }) {
         const invites = await getPendingInvites(roomId);
         const activeGuests = await getActiveGuests(roomId);
@@ -22,35 +21,31 @@ export function guestsHandler({ io, socket }: Handler) {
         socket.emit("guest.invites.restore", { sent, received, activeGuests });
     });
 
-    // 📩 Invite a user
     socket.on("guest.invite", async function ({ roomId, from, to }: { roomId: string; from: string; to: string }) {
         await addPendingInvite({ roomId, fromUserId: from, toUserId: to });
         io.to(roomId).emit("guest.invited", { from, to, roomId });
     });
 
-    // ✅ Accept invitation
     socket.on("guest.accept", async function ({ roomId, from, to }: { roomId: string; from: string; to: string }) {
         if (!(await isUserInvited({ roomId, userId: to }))) return;
 
+        await verifyRoomGuestLimit({ roomId, socket });
         await promoteParticipant({ roomId, userId: to });
         await updateRoomStreamers({ io, roomId });
 
         io.to(roomId).emit("guest.accepted", { from, to, roomId });
     });
 
-    // ❌ Deny invitation
     socket.on("guest.deny", async function ({ roomId, from, to }: { roomId: string; from: string; to: string }) {
         await removePendingInvite({ roomId, toUserId: to });
         io.to(roomId).emit("guest.denied", { from, to, roomId });
     });
 
-    // 🚫 Cancel invitation (by inviter/host)
     socket.on("guest.cancel", async function ({ roomId, from, to }: { roomId: string; from: string; to: string }) {
         await removePendingInvite({ roomId, toUserId: to });
         io.to(roomId).emit("guest.canceled", { from, to, roomId });
     });
 
-    // 🔽 Revoke guest status (demote)
     socket.on("guest.revoke", async function ({ roomId, userId }: { roomId: string; userId: string }) {
         await demoteParticipant({ roomId, userId });
         await updateRoomStreamers({ io, roomId });

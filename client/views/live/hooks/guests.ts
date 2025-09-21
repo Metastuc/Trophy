@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { useSocket } from "@/hooks/socket";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
 
 import { updateGuestInvitationsState } from "../utils";
 
@@ -68,6 +70,15 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
     const toggleSelectedGuest = useCallback(
         function (userId: RedisParticipant["id"]) {
             const state = stateRef.current;
+
+            if (
+                !state.activeGuests.includes(userId) &&
+                !state.pendingGuests.includes(userId) &&
+                state.activeGuests.length >= CLIENT_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED
+            ) {
+                toast.error(`Maximum of ${CLIENT_CONSTANTS.TOTAL_CO_HOSTS_ALLOWED} co-hosts reached.`);
+                return;
+            }
 
             if (state.activeGuests.includes(userId)) return revokeInvite(userId);
             if (state.pendingGuests.includes(userId)) return cancelInvite(userId);
@@ -146,6 +157,7 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
             socket.on("guest.denied", handleDenied);
             socket.on("guest.invited", handleInvited);
             socket.on("guest.invites.restore", handleIvitesRestore);
+            socket.on("guest.limit", ({ message }) => toast.error(message));
             socket.on("guest.revoked", handleRevoked);
 
             return () => {
@@ -154,6 +166,7 @@ export function useGuestsInvitations({ roomId, username }: { roomId: string; use
                 socket.off("guest.denied", handleDenied);
                 socket.off("guest.invited", handleInvited);
                 socket.off("guest.invites.restore", handleIvitesRestore);
+                socket.off("guest.limit");
                 socket.off("guest.revoked", handleRevoked);
             };
         },

@@ -1,4 +1,4 @@
-import { Fragment, memo, useEffect, useRef } from "react";
+import { Fragment, memo, ReactNode, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ interface LiveStreamMediaProps {
     screenAudio?: MediaStream | null;
 
     tileClass?: string;
+    metadata?: ReactNode;
     isLocal?: boolean;
 }
 
@@ -23,8 +24,9 @@ export const LiveStreamMedia = memo(function ({
     videoStreamState,
     screenAudio,
     screenVideo,
-    tileClass,
     isLocal,
+    metadata,
+    tileClass,
 }: LiveStreamMediaProps) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -127,9 +129,9 @@ export const LiveStreamMedia = memo(function ({
                 )}
             >
                 {videoStream && videoStreamState === "playable" ? (
-                    <div className="aspect-video">
-                        <video autoPlay className="size-full object-cover" muted ref={videoRef} />
-                    </div>
+                    <video autoPlay className="size-full object-cover" muted ref={videoRef} />
+                ) : metadata ? (
+                    <Fragment> {metadata} </Fragment>
                 ) : (
                     <span className="text-xl text-white">{tileClass}</span>
                 )}

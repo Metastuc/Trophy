@@ -1,5 +1,5 @@
-import { useLocalAudio, useLocalVideo } from "@huddle01/react/hooks";
-import { Mic, MicOff, MonitorX, UserPlus, Users, Video, VideoOff } from "lucide-react";
+import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
+import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Users, Video, VideoOff } from "lucide-react";
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -79,7 +79,8 @@ function RenderControlsBasedOnRole() {
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
     // const { peerId: localPeerId, metadata, updateMetadata } = useLocalPeer();
-    // const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
+    const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
+    // const { startScreenShare, stopScreenShare } = useLiveStreamScreenSharing();
 
     // const { screenSharing } = useStreamingUIScreenShare();
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useLiveStreamPermissions();
@@ -127,27 +128,14 @@ function RenderControlsBasedOnRole() {
 
     async function handleToggleScreenShare() {
         try {
-            // if (shareStream) {
-            //     await stopScreenShare();
-            //     updateMetadata({
-            //         ...metadata,
-            //         isPeerSharingTheirScreen: false,
-            //     }).catch(console.error);
-            //     return;
-            // }
-            // if (screenSharing.someoneIsSharingTheirScreen && screenSharing.whoIsSharingTheirScreen !== localPeerId) {
-            //     toast.error("Someone is already sharing their screen.");
-            //     return;
-            // }
-            // await startScreenShare();
-            // updateMetadata({
-            //     ...metadata,
-            //     isPeerSharingTheirScreen: true,
-            // }).catch(console.error);
+            if (shareStream) {
+                await stopScreenShare();
+            } else {
+                await startScreenShare();
+            }
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to share screen.";
             toast.error(message);
-            console.error("Error toggling screen share:", error);
         }
     }
 
@@ -197,7 +185,7 @@ function RenderControlsBasedOnRole() {
 
             {canShareScreen ? (
                 <ControlButton onClick={handleToggleScreenShare}>
-                    {/* <i className="size-4">{shareStream ? <MonitorDown /> : <MonitorUp />}</i> */}
+                    <i className="size-4">{shareStream ? <MonitorDown /> : <MonitorUp />}</i>
                 </ControlButton>
             ) : null}
 
