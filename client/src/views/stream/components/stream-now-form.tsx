@@ -38,7 +38,7 @@ export function StreamNowForm() {
         const data = Object.fromEntries(formData.entries()) as tCreateStreamFormRequest;
 
         try {
-            // if (!formState.creatorToken && formState.creatorTokenEnabled) {
+            if (!formState.creatorToken && formState.creatorTokenEnabled) {
                 await wallets[0].switchChain(network.id);
                 const provider = await wallets[0].getEthereumProvider();
                 if (!provider) throw new Error("No provider found");
@@ -59,7 +59,7 @@ export function StreamNowForm() {
                 } finally {
                     setIsCreatingToken(false);
                 }
-            // }
+            }
 
             mutate(data);
         } catch (error) {
@@ -72,7 +72,7 @@ export function StreamNowForm() {
         date: "",
         username: "",
         walletAddress: "",
-        // creatorToken: "",
+        creatorToken: "",
         creatorTokenEnabled: false,
     }));
 
@@ -82,11 +82,11 @@ export function StreamNowForm() {
 
             setFormState((state) => ({
                 ...state,
-                // creatorToken: user.backendUserData.user.creatorToken as string,
+                creatorToken: user.backendUserData.user.creatorToken as string,
                 date: new Date().toISOString(),
                 username: user.backendUserData.user.username,
                 walletAddress: user.wallet?.address as string,
-                creatorTokenEnabled: false,
+                creatorTokenEnabled: !!user.backendUserData.user.creatorToken,
             }));
         },
         [user],
