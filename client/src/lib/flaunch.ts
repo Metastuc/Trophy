@@ -102,11 +102,11 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         console.log(receipt.logs)
         const creatorToken = receipt.logs[6].address;
 
-        // await makeRequest({
-        //     method: "POST",
-        //     url: `/save-creator-token`,
-        //     data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
-        // });
+        await makeRequest({
+            method: "POST",
+            url: `/save-creator-token`,
+            data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
+        });
 
         await makeRequest({
             method: 'POST',
