@@ -56,7 +56,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
                 tokenUri,
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: BigInt(allocation),
+                premineAmount: allocation,
                 creator: smartWalletClient.account.address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
@@ -99,14 +99,14 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
 
         const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
-        console.log(receipt)
+        console.log(receipt.logs)
         const creatorToken = receipt.logs[6].address;
 
-        await makeRequest({
-            method: "POST",
-            url: `/save-creator-token`,
-            data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
-        });
+        // await makeRequest({
+        //     method: "POST",
+        //     url: `/save-creator-token`,
+        //     data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
+        // });
 
         await makeRequest({
             method: 'POST',
