@@ -41,7 +41,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const fairLaunchInBps = BigInt(60 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
         const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
-        const allocation = supply * 0.05;
+        const allocation = supply * 0.05 * 10 ** 18;
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
