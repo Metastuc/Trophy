@@ -35,11 +35,13 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const smartWalletClient = await getSmartAccount(provider);
 
         const initialMCapInUSDCWei = parseUnits("5000", 6);
+        const supply = 100_000_000_000;
         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
         const fairLaunchInBps = BigInt(60 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
-        const initialTokenFairLaunch = (100_000_000_000n * fairLaunchInBps) / 10_000n;
+        const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
+        // const allocation = supply * 0.05 * 10 ** 18;
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
@@ -54,7 +56,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
                 tokenUri,
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: initialTokenFairLaunch * BigInt(Math.round(0.05 * 10e18)),
+                premineAmount: 0n,
                 creator: smartWalletClient.account.address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
@@ -97,7 +99,8 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
 
         const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
-        const creatorToken = receipt.logs[4].address;
+        console.log(receipt.logs)
+        const creatorToken = receipt.logs[6].address;
 
         await makeRequest({
             method: "POST",
