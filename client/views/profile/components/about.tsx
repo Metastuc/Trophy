@@ -2,7 +2,6 @@ import { BadgeDollarSign, Receipt } from "lucide-react";
 import { Address } from "viem";
 
 import { FollowUserButton } from "@/components/follow-button";
-import { Button } from "@/components/ui/button";
 import { TipDrawer } from "@/views/tip-token-drawer";
 
 import { useUserProfileContext } from "../hooks";
@@ -60,12 +59,12 @@ export function About() {
 
                     {/* {isCurrentUser ? <EditProfile /> : null} */}
                     {isCurrentUser ? (
-                        <Button
+                        <button
                             className="bg-blue100 ml-auto flex items-center justify-center rounded-xs px-2"
                             onClick={() => openDrawer({ view: "edit" })}
                         >
                             <span className="text-[0.5rem] text-white">Edit Profile</span>
-                        </Button>
+                        </button>
                     ) : null}
                 </div>
 

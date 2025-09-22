@@ -1,26 +1,18 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { ProfileForm } from "@/components/layout/profile-form";
-import { Button } from "@/components/ui/button";
-import {
-    Drawer,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer";
 import { useServer } from "@/hooks/server";
+import { API_ENDPOINTS } from "@/lib/constants";
 
 import { useUserProfileContext } from "../hooks";
+import { useUserProfileDrawerStore } from "../store";
 import { EditProfileSchema } from "../utils";
 
 export function EditProfile() {
     const { profileData } = useUserProfileContext();
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const closeDrawer = useUserProfileDrawerStore((state) => state.closeDrawer);
 
     const formInitialValues = useMemo(
         () => ({
@@ -34,7 +26,7 @@ export function EditProfile() {
     );
 
     const { mutate, isPending } = useServer<ProfileFormValues, unknown>(
-        { METHOD: "PATCH", URL: "/update-profile" },
+        { METHOD: "PATCH", URL: API_ENDPOINTS.USER.UPDATE_USER(profileData.username) },
 
         {
             async onSuccess() {
@@ -42,7 +34,7 @@ export function EditProfile() {
                     duration: 3000,
                 });
 
-                setIsOpen(false);
+                closeDrawer();
             },
         },
 
@@ -92,36 +84,13 @@ export function EditProfile() {
     }
 
     return (
-        <Drawer dismissible={false} open={isOpen} onOpenChange={setIsOpen}>
-            <DrawerTrigger className="bg-blue100 ml-auto flex items-center justify-center rounded-xs px-2">
-                <span className="text-[0.5rem] text-white">Edit Profile</span>
-            </DrawerTrigger>
-
-            <DrawerContent>
-                <DrawerHeader className="flex items-center justify-center">
-                    <DrawerTitle className="text-blue100 text-center font-normal">Edit Profile</DrawerTitle>
-                    <DrawerDescription className="max-w-[15.75rem] text-center text-sm font-light text-[#000000B2]">
-                        GM! Kindly input the changes you want to make on your profile below.
-                    </DrawerDescription>
-                </DrawerHeader>
-
-                <DrawerFooter>
-                    <ProfileForm
-                        onSubmit={handleSubmit}
-                        fields={["profilePicture", "email", "bio", "xUrl", "YTUrl"] as const}
-                        initialValues={formInitialValues}
-                        isSubmitting={isPending}
-                    />
-
-                    <Button
-                        className="rounded tracking-[.0625rem]"
-                        variant={"outline"}
-                        onClick={() => setIsOpen(false)}
-                    >
-                        Cancel
-                    </Button>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
+        <div className="p-4 pb-0">
+            <ProfileForm
+                onSubmit={handleSubmit}
+                fields={["profilePicture", "email", "bio", "xUrl", "YTUrl"] as const}
+                initialValues={formInitialValues}
+                isSubmitting={isPending}
+            />
+        </div>
     );
 }

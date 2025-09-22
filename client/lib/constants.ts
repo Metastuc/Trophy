@@ -50,7 +50,7 @@ export const API_ENDPOINTS = {
         GET_USER: (userId: string) => `/user/${userId}/profile`,
         ME: "/user/me",
         SAVE_TOKEN: (userId: string) => `/user/${userId}/save-creator-token`,
-        UPDATE_USER: (userId: string) => `/user/${userId}`,
+        UPDATE_USER: (userId: string) => `/user/${userId}/update`,
     },
 
     STREAMS: {
