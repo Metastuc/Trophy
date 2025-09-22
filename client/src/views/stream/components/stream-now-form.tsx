@@ -39,8 +39,10 @@ export function StreamNowForm() {
 
         try {
             if (!formState.creatorToken && formState.creatorTokenEnabled) {
-                await wallets[0].switchChain(network.id);
-                const provider = await wallets[0].getEthereumProvider();
+                const wallet = wallets[0];
+                await wallet.switchChain(network.id);
+                const provider = await wallet.getEthereumProvider();
+                console.log({type: wallet.type, wType: wallet.walletClientType})
                 if (!provider) throw new Error("No provider found");
 
                 const toastId = toast.loading("Creating creator token...");
