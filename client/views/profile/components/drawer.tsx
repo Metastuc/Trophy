@@ -30,7 +30,10 @@ export function UserProfileDrawer() {
         <Drawer open={!!drawerView} onOpenChange={(isOpen) => !isOpen && closeDrawer()}>
             <DrawerContent>
                 <DrawerHeader
-                    className={cn("flex justify-center", drawerView === "add" ? "items-start" : "items-center")}
+                    className={cn(
+                        "flex justify-center",
+                        drawerView === "add" ? "items-start pb-0" : "items-center pb-4",
+                    )}
                 >
                     <DrawerClose asChild>
                         <Button variant="outline" className="bg-white200 ml-auto size-5 rounded-full p-0">
@@ -62,7 +65,7 @@ function UserProfileDrawerHeader() {
         case "add":
             return (
                 <>
-                    <DrawerTitle>Your balance</DrawerTitle>
+                    <DrawerTitle className="text-blue100 text-xs font-normal">Your balance</DrawerTitle>
                 </>
             );
 

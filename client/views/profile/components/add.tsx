@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
 import { useTabSwitcher } from "@/hooks/tab-switch";
-import { cn } from "@/lib/utils";
+import { cn, formatUSD } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
 import { UserProfileReceive } from "./receive";
@@ -11,14 +11,18 @@ import { TabHeader } from "./tab";
 
 export function Add() {
     const addViewCurentTab = useUserProfileDrawerStore((state) => state.addViewCurentTab);
+    const token = useUserProfileDrawerStore((state) => state.payload?.token);
+
     const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<AddDrawerTab>(addViewCurentTab as AddDrawerTab);
 
     return (
         <section className="">
-            <div className="flex flex-col p-4">
-                <span className="text-blue100 text-xs">Total Money</span>
-                <b className="text-2xl font-medium">${"0.00"}</b>
+            <div className="flex flex-col p-4 pt-0">
+                <b className="text-2xl font-medium">{formatUSD("0")}</b>
+
                 <div className=" flex items-center justify-start gap-1">
+                    <span className="text-xs text-gray-500">0.00 {token}</span>
+
                     <i className="size-2 rotate-180 text-[#2DC24E]">
                         <ARROW_DOWN_FILLED />
                     </i>
