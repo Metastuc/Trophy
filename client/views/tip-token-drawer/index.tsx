@@ -51,19 +51,7 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
-            <DrawerTrigger asChild>
-                {/* <Button
-                    variant="default"
-                    className="flex h-6 w-20 items-center justify-center gap-1 rounded bg-gradient-to-b from-[#2D57FF] to-[#1B3499] p-0 text-white"
-                >
-                    <i className="size-4">
-                        <CircleDollarSign />
-                    </i>
-                    <span className="pt-0.5 text-xs">Send tip</span>
-                </Button> */}
-
-                {trigger}
-            </DrawerTrigger>
+            <DrawerTrigger asChild>{trigger}</DrawerTrigger>
 
             <DrawerContent>
                 <DrawerHeader>

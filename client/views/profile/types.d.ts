@@ -1,42 +1,49 @@
-type AddDrawerTab = "receive" | "send";
+import { Address } from "viem";
 
-type ProfileScreens = "wallet" | "streams" | "holdings";
+declare global {
+    type AddDrawerTab = "receive" | "send";
 
-type StreamSelection = "scheduled" | "recorded";
+    type ProfileScreens = "wallet" | "streams" | "holdings";
 
-type Tab<T extends string> = { id: T; label: string; icon?: React.ReactNode };
+    type StreamSelection = "scheduled" | "recorded";
 
-type UserProfileDrawerStore = UserProfileDrawerValues & UserProfileDrawerActions;
+    type Tab<T extends string> = { id: T; label: string; icon?: React.ReactNode };
 
-type UserProfileDrawerView = "add" | "earned" | "edit" | "withdraw" | null;
+    type UserProfileDrawerStore = UserProfileDrawerValues & UserProfileDrawerActions;
 
-type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
+    type UserProfileDrawerView = "add" | "earned" | "edit" | "withdraw" | null;
 
-interface UserProfileContextValue {
-    isCurrentUser: boolean;
-    isPending: boolean;
-    profileData: UserProfileResponse["data"];
+    type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
+
+    interface UserProfileContextValue {
+        isCurrentUser: boolean;
+        isPending: boolean;
+        profileData: UserProfileResponse["data"];
+    }
+
+    interface TabHeader<T extends string> {
+        activeTab: T;
+        onTabClick: (id: T) => void;
+        tabs: Array<Tab<T>>;
+        styles?: Record<string, string | ((id: T) => string)>;
+    }
+
+    interface UserProfileDrawerActions {
+        closeDrawer: () => void;
+        openDrawer: ({ view, tab }: { view: Exclude<UserProfileDrawerView, null>; tab?: AddDrawerTab }) => void;
+        setAddViewCurentTab: (tab: AddDrawerTab) => void;
+    }
+
+    interface UserProfileDrawerValues {
+        drawerView: UserProfileDrawerView;
+        addViewCurentTab?: AddDrawerTab;
+        payload?: UserProfileDrawerPayload;
+    }
+
+    interface UserProfileDrawerPayload {
+        token: string;
+        tokenAddress: Address;
+    }
 }
 
-interface TabHeader<T extends string> {
-    activeTab: T;
-    onTabClick: (id: T) => void;
-    tabs: Array<Tab<T>>;
-    styles?: Record<string, string | ((id: T) => string)>;
-}
-
-interface UserProfileDrawerActions {
-    closeDrawer: () => void;
-    openDrawer: ({ view, tab }: { view: Exclude<UserProfileDrawerView, null>; tab?: AddDrawerTab }) => void;
-    setAddViewCurentTab: (tab: AddDrawerTab) => void;
-}
-
-interface UserProfileDrawerValues {
-    drawerView: UserProfileDrawerView;
-    addViewCurentTab?: AddDrawerTab;
-    payload?: UserProfileDrawerPayload;
-}
-
-interface UserProfileDrawerPayload {
-    token: string;
-}
+export {};

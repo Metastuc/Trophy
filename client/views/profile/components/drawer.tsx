@@ -47,7 +47,7 @@ export function UserProfileDrawer() {
                     <UserProfileDrawerMain />
                 </main>
 
-                <DrawerFooter className={cn(drawerView === "edit" && "pt-2")}>
+                <DrawerFooter className={cn(drawerView === "edit" && "pt-2", drawerView === "add" && "p-1")}>
                     <UserProfileDrawerFooter />
                 </DrawerFooter>
             </DrawerContent>
