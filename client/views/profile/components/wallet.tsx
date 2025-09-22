@@ -2,7 +2,11 @@ import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
 
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
 
+import { useUserProfileDrawerStore } from "../store";
+
 export function UserWallet() {
+    const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
+
     return (
         <section className="my-4">
             <header className="flex flex-col">
@@ -15,23 +19,31 @@ export function UserWallet() {
                     <span className="pt-0.5 text-[.5rem] text-black/50">0.00%</span>
                 </div>
             </header>
-
             <main className="mt-5 mb-7.5 flex items-center gap-5">
-                <button className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white">
+                <button
+                    className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white"
+                    onClick={() => openDrawer({ view: "add" })}
+                >
                     <span className="pt-0.5 text-xs">Add money</span>
                     <i className="size-3">
                         <BadgeDollarSign />
                     </i>
                 </button>
 
-                <button className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white">
+                <button
+                    className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white"
+                    onClick={() => openDrawer({ view: "withdraw" })}
+                >
                     <span className="pt-0.5 text-xs">Withdraw</span>
                     <i className="size-3 text-[#FE1313]">
                         <BanknoteArrowDown />
                     </i>
                 </button>
 
-                <div className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white">
+                <div
+                    className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white"
+                    onClick={() => openDrawer({ view: "earned" })}
+                >
                     <i className="size-3">
                         <Receipt />
                     </i>

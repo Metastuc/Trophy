@@ -2,13 +2,15 @@ import { BadgeDollarSign, Receipt } from "lucide-react";
 import { Address } from "viem";
 
 import { FollowUserButton } from "@/components/follow-button";
+import { Button } from "@/components/ui/button";
 import { TipDrawer } from "@/views/tip-token-drawer";
 
 import { useUserProfileContext } from "../hooks";
-import { EditProfile } from "./edit";
+import { useUserProfileDrawerStore } from "../store";
 
 export function About() {
     const { isCurrentUser, profileData } = useUserProfileContext();
+    const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
 
     return (
         <header className="flex items-start gap-1 px-4">
@@ -56,7 +58,15 @@ export function About() {
                         <b className="text-blue100 font-normal">{profileData.followerCount}</b> Followers
                     </span>
 
-                    {isCurrentUser ? <EditProfile /> : null}
+                    {/* {isCurrentUser ? <EditProfile /> : null} */}
+                    {isCurrentUser ? (
+                        <Button
+                            className="bg-blue100 ml-auto flex items-center justify-center rounded-xs px-2"
+                            onClick={() => openDrawer({ view: "edit" })}
+                        >
+                            <span className="text-[0.5rem] text-white">Edit Profile</span>
+                        </Button>
+                    ) : null}
                 </div>
 
                 {!isCurrentUser ? (

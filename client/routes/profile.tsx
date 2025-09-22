@@ -7,6 +7,7 @@ import { getMyProfile } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layout/page-content";
 import { useTabSwitcher } from "@/hooks/tab-switch";
 import { About } from "@/views/profile/components/about";
+import { UserProfileDrawer } from "@/views/profile/components/drawer";
 import { Streams } from "@/views/profile/components/streams";
 import { TabHeader } from "@/views/profile/components/tab";
 import { UserWallet } from "@/views/profile/components/wallet";
@@ -76,6 +77,8 @@ function RouteComponent() {
                             </aside>
                         </div>
                     </footer>
+
+                    <UserProfileDrawer />
                 </UserProfileContextProvider>
             ) : (
                 <>no data</>

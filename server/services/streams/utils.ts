@@ -1,7 +1,11 @@
+import * as flaunch from "@flaunch/sdk";
 import { AccessToken, Role, ROLE_PERMISSIONS } from "@huddle01/server-sdk/auth";
+import { Address } from "viem";
 
+import { log } from "#~/utils/logger.ts";
 import { SERVER_ENV } from "#config/constants.ts";
 import { huddleAPI, huddleRecorder } from "#config/huddle.ts";
+import { client } from "#config/viem.ts";
 import { HttpError } from "#middleware/error.ts";
 
 export function isGuest(username: string): boolean {
@@ -69,4 +73,19 @@ export async function startHuddleStream({
             data: { error: (error as Error).message },
         });
     }
+}
+
+export async function getCreatorTokenDetails(address: Address) {
+    const flaunchClient = flaunch.createFlaunch({ publicClient: client }) as flaunch.ReadFlaunchSDK;
+    const { symbol, name, image } = await flaunchClient.getCoinMetadata("0xB28EbB68056D066fb23dc244d943f9712094bB51");
+
+    log({ tag: "info", msg: "Fetched token metadata", data: { symbol, name, image }, module: "FLAUNCH" });
+
+    const marketCap = await flaunchClient.coinMarketCapInUSD({
+        coinAddress: "0xB28EbB68056D066fb23dc244d943f9712094bB51",
+        version: "V1_1_1",
+    });
+    const price = await flaunchClient.coinPriceInUSD({ coinAddress: address });
+
+    return { marketCap: marketCap.toString(), price: price.toString() };
 }
