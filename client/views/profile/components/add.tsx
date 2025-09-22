@@ -1,8 +1,12 @@
+import { AnimatePresence, motion } from "motion/react";
+
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
 import { useTabSwitcher } from "@/hooks/tab-switch";
 import { cn } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
+import { UserProfileReceive } from "./receive";
+import { UserProfileSend } from "./send";
 import { TabHeader } from "./tab";
 
 export function Add() {
@@ -24,8 +28,8 @@ export function Add() {
 
             <TabHeader
                 tabs={[
-                    { id: "receive", label: "Receive" },
                     { id: "send", label: "Send" },
+                    { id: "receive", label: "Receive" },
                 ]}
                 activeTab={activeTab}
                 onTabClick={handleTabClick}
@@ -41,6 +45,34 @@ export function Add() {
                     indicator: "bottom-[0.25px] h-[.0625rem] hidden",
                 }}
             />
+
+            <aside className="w-full overflow-hidden">
+                <AnimatePresence mode="wait" initial={false}>
+                    {activeTab === "send" ? (
+                        <motion.div
+                            key="send"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.15 }}
+                        >
+                            <UserProfileSend />
+                        </motion.div>
+                    ) : null}
+
+                    {activeTab === "receive" ? (
+                        <motion.div
+                            key="receive"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.15 }}
+                        >
+                            <UserProfileReceive />
+                        </motion.div>
+                    ) : null}
+                </AnimatePresence>
+            </aside>
         </section>
     );
 }
