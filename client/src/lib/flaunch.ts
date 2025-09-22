@@ -99,8 +99,8 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
         const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
 
         const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
-        console.log(receipt.logs)
-        const creatorToken = receipt.logs[4].address;
+        console.log({logs: receipt.logs, tx: receipt.transactionHash})
+        const creatorToken = receipt.logs[6].address;
 
         await makeRequest({
             method: "POST",
