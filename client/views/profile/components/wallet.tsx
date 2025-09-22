@@ -19,10 +19,11 @@ export function UserWallet() {
                     <span className="pt-0.5 text-[.5rem] text-black/50">0.00%</span>
                 </div>
             </header>
+
             <main className="mt-5 mb-7.5 flex items-center gap-5">
                 <button
                     className="bg-blue100 flex h-8 w-25 items-center justify-center gap-1 rounded-sm text-white"
-                    onClick={() => openDrawer({ view: "add" })}
+                    onClick={() => openDrawer({ view: "add", tab: "receive" })}
                 >
                     <span className="pt-0.5 text-xs">Add money</span>
                     <i className="size-3">
@@ -52,7 +53,9 @@ export function UserWallet() {
                 </div>
             </main>
 
-            <footer></footer>
+            <footer>
+                <button onClick={() => openDrawer({ view: "add", tab: "send" })}>trigger send asset</button>
+            </footer>
         </section>
     );
 }

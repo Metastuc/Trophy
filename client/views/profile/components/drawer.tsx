@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
+import { Add } from "./add";
 import { EditProfile } from "./edit";
 
 export function UserProfileDrawer() {
@@ -98,7 +99,7 @@ function UserProfileDrawerMain() {
 
     switch (drawerView) {
         case "add":
-            return <></>;
+            return <Add />;
 
         case "earned":
             return <></>;

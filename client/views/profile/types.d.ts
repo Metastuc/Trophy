@@ -1,10 +1,16 @@
+type AddDrawerTab = "receive" | "send";
+
 type ProfileScreens = "wallet" | "streams" | "holdings";
 
 type StreamSelection = "scheduled" | "recorded";
 
-type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
+type Tab<T extends string> = { id: T; label: string; icon?: React.ReactNode };
+
+type UserProfileDrawerStore = UserProfileDrawerValues & UserProfileDrawerActions;
 
 type UserProfileDrawerView = "add" | "earned" | "edit" | "withdraw" | null;
+
+type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
 
 interface UserProfileContextValue {
     isCurrentUser: boolean;
@@ -12,14 +18,25 @@ interface UserProfileContextValue {
     profileData: UserProfileResponse["data"];
 }
 
-interface TabHeader {
-    activeTab: string;
-    onTabClick: (id: ProfileScreens) => void;
-    tabs: Array<{ id: ProfileScreens; label: string; icon?: React.ReactNode }>;
+interface TabHeader<T extends string> {
+    activeTab: T;
+    onTabClick: (id: T) => void;
+    tabs: Array<Tab<T>>;
+    styles?: Record<string, string | ((id: T) => string)>;
 }
 
-interface UserProfileDrawerStore {
-    drawerView: UserProfileDrawerView;
+interface UserProfileDrawerActions {
     closeDrawer: () => void;
-    openDrawer: ({ view }: { view: Exclude<UserProfileDrawerView, null> }) => void;
+    openDrawer: ({ view, tab }: { view: Exclude<UserProfileDrawerView, null>; tab?: AddDrawerTab }) => void;
+    setAddViewCurentTab: (tab: AddDrawerTab) => void;
+}
+
+interface UserProfileDrawerValues {
+    drawerView: UserProfileDrawerView;
+    addViewCurentTab?: AddDrawerTab;
+    payload?: UserProfileDrawerPayload;
+}
+
+interface UserProfileDrawerPayload {
+    token: string;
 }

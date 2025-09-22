@@ -57,7 +57,6 @@ export function About() {
                         <b className="text-blue100 font-normal">{profileData.followerCount}</b> Followers
                     </span>
 
-                    {/* {isCurrentUser ? <EditProfile /> : null} */}
                     {isCurrentUser ? (
                         <button
                             className="bg-blue100 ml-auto flex items-center justify-center rounded-xs px-2"
