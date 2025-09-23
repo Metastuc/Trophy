@@ -21,7 +21,14 @@ export const ONBOARD_USER_RESPONSE_SCHEMA = z.object({
     isBasicProfileComplete: z.boolean(),
 });
 
-export const PROFILE_RESPONSE_SCHEMA = z.object({});
+export const WALLET_TOKEN_BALANCES = z.array(
+    z.object({
+        balance: z.string(),
+        icon: z.string(),
+        name: z.string(),
+        symbol: z.string(),
+    }),
+);
 
 export type UserProfile = Prisma.UserGetPayload<{
     include: {

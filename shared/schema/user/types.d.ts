@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { AUTHENTICATE_USER_RESPONSE_SCHEMA, ONBOARD_USER_RESPONSE_SCHEMA, UserProfile } from ".";
+import { AUTHENTICATE_USER_RESPONSE_SCHEMA, ONBOARD_USER_RESPONSE_SCHEMA, UserProfile, WALLET_TOKEN_BALANCES } from ".";
 
 declare global {
     type AuthenticateUserData = z.infer<typeof AUTHENTICATE_USER_RESPONSE_SCHEMA>;
@@ -24,6 +24,9 @@ declare global {
         ytUrl?: string | null;
     };
     type UserProfileResponse = ApiResponse<UserProfileData>;
+
+    type UserWalletTokenBalancesData = z.infer<typeof WALLET_TOKEN_BALANCES>;
+    type UserWalletTokenBalancesResponse = ApiResponse<UserWalletTokenBalancesData>;
 }
 
 export {};
