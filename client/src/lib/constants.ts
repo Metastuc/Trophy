@@ -5,7 +5,6 @@ import { base, baseSepolia } from "viem/chains";
 import { BNKR, DEGEN, FLAY, USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
-    ALCHEMY_API_KEY: import.meta.env.VITE_ALCHEMY_API_KEY as string,
     BUNDLER: import.meta.env.VITE_BUNDLER_URL as string,
     CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string,
     COINGECKO_API_KEY: import.meta.env.VITE_COINGECKO_API_KEY as string,
@@ -19,6 +18,7 @@ export const ENV_SCHEMA = {
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
+    TESTNET_RPC: import.meta.env.VITE_TESTNET_RPC as string,
     ZERODEV_RPC: import.meta.env.VITE_ZERODEV_RPC as string,
 };
 
@@ -29,6 +29,8 @@ export const PUBLIC_ROUTES = ["/auth"];
 export const COINGECKO_URL = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=ethereum";
 
 const environment = ENV_SCHEMA.ENVIRONMENT;
+
+export const RPC = environment === "development" ? ENV_SCHEMA.TESTNET_RPC : ENV_SCHEMA.MAINNET_RPC;
 
 export const network = environment === "development" ? baseSepolia : base;
 
