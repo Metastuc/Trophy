@@ -1,11 +1,17 @@
 import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
+import { useTabSwitcher } from "@/hooks/tab-switch";
+import { cn } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
+import { Crypto } from "./crypto";
+import { TabHeader } from "./tab";
 
 export function UserWallet() {
     const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
+    const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<WalletScreens>("crypto");
 
     return (
         <section className="my-4">
@@ -53,8 +59,53 @@ export function UserWallet() {
                 </div>
             </main>
 
-            <footer>
-                <button onClick={() => openDrawer({ view: "add", tab: "send" })}>trigger send asset</button>
+            <footer className="flex w-full flex-col items-center justify-center">
+                {/* <button onClick={() => openDrawer({ view: "add", tab: "send" })}>trigger send asset</button> */}
+
+                <TabHeader
+                    tabs={[
+                        { id: "crypto", label: "Crypto" },
+                        { id: "trophs", label: "Trophs" },
+                    ]}
+                    activeTab={activeTab}
+                    onTabClick={handleTabClick}
+                    styles={{
+                        wrapper: "static w-4/5",
+                        list_wrapper: "mx-auto",
+                        list_button: (id) => cn("w-full", tabIsActive(id) ? "text-blue100" : "text-blue100/75"),
+                        indicator: "bottom-[0.25px] h-[.0625rem]",
+                    }}
+                />
+
+                <aside className="w-full overflow-hidden">
+                    <AnimatePresence mode="wait" initial={false}>
+                        {activeTab === "crypto" ? (
+                            <motion.div
+                                key="crypto"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.15 }}
+                                className="space-y-8 p-4"
+                            >
+                                <Crypto />
+                            </motion.div>
+                        ) : null}
+
+                        {activeTab === "trophs" ? (
+                            <motion.div
+                                key="trophs"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.15 }}
+                                className="p-4"
+                            >
+                                {/* <UserProfileReceive /> */}
+                            </motion.div>
+                        ) : null}
+                    </AnimatePresence>
+                </aside>
             </footer>
         </section>
     );
