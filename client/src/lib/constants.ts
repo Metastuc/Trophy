@@ -5,19 +5,20 @@ import { base, baseSepolia } from "viem/chains";
 import { BNKR, DEGEN, FLAY, USDC, ZORA } from "./contracts";
 
 export const ENV_SCHEMA = {
+    ALCHEMY_API_KEY: import.meta.env.VITE_ALCHEMY_API_KEY as string,
     BUNDLER: import.meta.env.VITE_BUNDLER_URL as string,
     CDP_CLIENT_KEY: import.meta.env.VITE_CDP_CLIENT_API_KEY as string,
     COINGECKO_API_KEY: import.meta.env.VITE_COINGECKO_API_KEY as string,
     ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT as "development" | "production",
     FLAUNCH_CA: import.meta.env.VITE_FLAUNCH_CA as Address,
     HUDDLE_PROJECT_ID: import.meta.env.VITE_HUDDLE_PROJECT_ID as string,
+    MAINNET_RPC: import.meta.env.VITE_MAINNET_RPC as string,
     MORALIS_API_KEY: import.meta.env.VITE_MORALIS_API_KEY as string,
     PAYMASTER: import.meta.env.VITE_PAYMASTER_URL as string,
     PINATA_JWT: import.meta.env.VITE_PINATA_JWT as string,
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
-    MAINNET_RPC: import.meta.env.VITE_MAINNET_RPC as string,
 };
 
 export const queryClient = new QueryClient();
