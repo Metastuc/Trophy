@@ -1,10 +1,10 @@
 import { ChangeEvent } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getTokens } from "@/components/ui/tokens";
 import { formatUSD, tokenInputField, truncateText } from "@/lib/utils";
 
 import { useTradeDrawerContext } from "../hooks";
-import { getTokens } from "./tokens";
 
 export function Swap() {
     const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
