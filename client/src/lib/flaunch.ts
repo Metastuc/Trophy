@@ -4,7 +4,7 @@ import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnit
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
-import { ENV_SCHEMA } from "./constants";
+import { ENV_SCHEMA, network } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
@@ -86,7 +86,7 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
         let creatorToken: string;
 
         if (type === "farcaster") {
-            console.log("fc did!")
+            console.log("fc hit!")
             const zeroDevClient = await zeroDevSA({ provider });
             sa_address = zeroDevClient.account.address;
 
@@ -103,6 +103,35 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                     // flaunchParams._treasuryManagerParams,
                 ],
             });
+    
+            const domain = {
+                name: "CreatorTokenDeployment",
+                version: "1",
+                chainId: network.id,
+                verifyingContract: "0x312706b6599bb406cb21a91c3314ec7883b014a1" as Address,
+            };
+
+            const types = {
+                CreatorTokenDeployment: [
+                    { name: 'name', type: 'string' },
+                    { name: 'symbol', type: 'string' },
+                    { name: 'tokenUri', type: 'string' },
+                    { name: 'initialTokenFairLaunch', type: 'uint256' },
+                    { name: 'fairLaunchDuration', type: 'uint256' },
+                    { name: 'premineAmoiunt', type: 'uint256' },
+                    { name: 'creator', type: 'address' },
+                    { name: 'creatorFeeAllocation', type: 'uint256' },
+                    { name: 'flaunchAt', type: 'uint256' },
+                    { name: 'feeCalculatorParams', type: 'address' },
+                ]
+            };
+    
+            const signature = await zeroDevClient.signTypedData({
+                domain,
+                types,
+                primaryType: 'CreatorTokenDeployment',
+                message: flaunchParams._flaunchParams,
+            });
 
             const uo = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
@@ -111,6 +140,7 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                         data: uoCallData,
                     },
                 ]),
+                signature
             });
 
             const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
