@@ -28,9 +28,10 @@ declare global {
         tokenAddress: Address;
     }
 
-    interface TokenDropdownConfig {
+    interface TokenConfig {
         address: Address;
         icon: string;
+        name: string;
         symbol: string;
     }
 }

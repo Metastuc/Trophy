@@ -15,6 +15,8 @@ declare global {
 
     type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
 
+    type WalletScreens = "crypto" | "trophs";
+
     interface UserProfileContextValue {
         isCurrentUser: boolean;
         isPending: boolean;
