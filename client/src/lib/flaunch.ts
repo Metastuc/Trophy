@@ -1,14 +1,14 @@
 import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, encodeFunctionData, Hex, parseEther, parseUnits, zeroHash } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
-import { alchemySmartAccount } from "./alchemy-sa";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
+import { zeroDevSA } from "./zerodev";
 
 let WriteClient: ReadWriteFlaunchSDK | undefined;
 let ReadClient: ReadFlaunchSDK | undefined;
@@ -31,7 +31,7 @@ const readClient = () => {
     return ReadClient;
 };
 
-export const createCreatorToken = async ({ name, provider, type, address }: {name: string, provider: EIP1193Provider, type: string, address: Address }) => {
+export const createCreatorToken = async ({ name, provider, type }: { name: string, provider: EIP1193Provider, type: string }) => {
     try {
         const initialMCapInUSDCWei = parseUnits("5000", 6);
         const supply = 100_000_000_000;
@@ -40,7 +40,7 @@ export const createCreatorToken = async ({ name, provider, type, address }: {nam
         const fairLaunchInBps = BigInt(60 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
         const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
-        const allocation = supply * 0.05 * 10 ** 18;
+        // const allocation = supply * 0.05 * 10 ** 18;
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
@@ -55,7 +55,7 @@ export const createCreatorToken = async ({ name, provider, type, address }: {nam
                 tokenUri,
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: BigInt(allocation),
+                premineAmount: 0n,
                 creator: "" as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
@@ -84,11 +84,10 @@ export const createCreatorToken = async ({ name, provider, type, address }: {nam
 
         let sa_address: string;
         let creatorToken: string;
-        let tx: Hex;
 
         if (type === "farcaster") {
-            const alchemyClient = await alchemySmartAccount({ provider, address });
-            sa_address = alchemyClient.account.address;
+            const zeroDevClient = await zeroDevSA({ provider });
+            sa_address = zeroDevClient.account.address;
 
             flaunchParams._flaunchParams.creator = sa_address as Address;
 
@@ -104,17 +103,20 @@ export const createCreatorToken = async ({ name, provider, type, address }: {nam
                 ]
             });
 
-            const uo = await alchemyClient.sendUserOperation({
-                uo: {
-                    target: ENV_SCHEMA.FLAUNCH_CA,
-                    data: uoCallData,
-                },
+            const uo = await zeroDevClient.sendUserOperation({
+                callData: await zeroDevClient.account.encodeCalls([
+                    {
+                        to: ENV_SCHEMA.FLAUNCH_CA,
+                        data: uoCallData,
+                    },
+                ]),
             });
 
-            tx = await alchemyClient.waitForUserOperationTransaction(uo);
-            const uoReceipt = await alchemyClient.getUserOperationReceipt(tx);
+            const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
+                hash: uo
+            });
 
-            console.log({ uo: uoReceipt?.logs });
+            console.log({ uo: uoReceipt?.logs, tx: uo });
             creatorToken = ""
         } else {
             const smartWalletClient = await getSmartAccount(provider);

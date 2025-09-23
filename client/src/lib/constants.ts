@@ -19,6 +19,7 @@ export const ENV_SCHEMA = {
     PRIVY_APP_ID: import.meta.env.VITE_PRIVY_APP_ID as string,
     PRIVY_CLIENT_ID: import.meta.env.VITE_PRIVY_CLIENT_ID as string,
     REVENUE_MANAGER_ADDRESS: import.meta.env.VITE_REVENUE_MANAGER as Address,
+    ZERODEV_RPC: import.meta.env.VITE_ZERODEV_RPC as string,
 };
 
 export const queryClient = new QueryClient();
