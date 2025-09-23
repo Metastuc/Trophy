@@ -113,24 +113,43 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
 
             const types = {
                 CreatorTokenDeployment: [
-                    { name: 'name', type: 'string' },
-                    { name: 'symbol', type: 'string' },
-                    { name: 'tokenUri', type: 'string' },
-                    { name: 'initialTokenFairLaunch', type: 'uint256' },
-                    { name: 'fairLaunchDuration', type: 'uint256' },
-                    { name: 'premineAmoiunt', type: 'uint256' },
-                    { name: 'creator', type: 'address' },
-                    { name: 'creatorFeeAllocation', type: 'uint256' },
-                    { name: 'flaunchAt', type: 'uint256' },
-                    { name: 'feeCalculatorParams', type: 'address' },
-                ]
+                    { name: "name", type: "string" },
+                    { name: "symbol", type: "string" },
+                    { name: "tokenUri", type: "string" },
+                    { name: "initialTokenFairLaunch", type: "uint256" },
+                    { name: "fairLaunchDuration", type: "uint256" },
+                    { name: "premineAmoiunt", type: "uint256" },
+                    { name: "creator", type: "address" },
+                    { name: "creatorFeeAllocation", type: "uint256" },
+                    { name: "flaunchAt", type: "uint256" },
+                    { name: "feeCalculatorParams", type: "address" },
+                    { name: "nonce", type: "uint256" },
+                    { name: "deadline", type: "uint256" },
+                ],
+            };
+
+            const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+            const message = {
+                name,
+                symbol: name.toUpperCase(),
+                tokenUri,
+                initialTokenFairLaunch,
+                fairLaunchDuration: BigInt(20 * 60),
+                premineAmount: 0n,
+                creator: "" as Address,
+                creatorFeeAllocation: creatorFeeAllocationInBps,
+                flaunchAt: 0n,
+                initialPriceParams,
+                feeCalculatorParams: "0x" as Address,
+                nonce: 0n,
+                deadline
             };
     
             const signature = await zeroDevClient.signTypedData({
                 domain,
                 types,
                 primaryType: 'CreatorTokenDeployment',
-                message: flaunchParams._flaunchParams,
+                message,
             });
 
             const uo = await zeroDevClient.sendUserOperation({
