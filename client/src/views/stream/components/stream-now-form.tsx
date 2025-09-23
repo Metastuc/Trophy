@@ -3,6 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Address } from "viem";
 
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ export function StreamNowForm() {
                 setIsCreatingToken(true);
 
                 try {
-                    const tokenAddress = await createCreatorToken(formState.username, provider);
+                    const tokenAddress = await createCreatorToken({ name: formState.username, provider, type: wallet.walletClientType, address: wallet.address as Address });
                     toast.success("Creator token created!", { id: toastId });
                     setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 } catch (error) {
