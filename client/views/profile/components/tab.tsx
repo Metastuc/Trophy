@@ -15,7 +15,12 @@ export function TabHeader<T extends string>({ activeTab, onTabClick, tabs, style
                         )}
                     >
                         <button
-                            className={cn("text-blue100 flex items-center justify-center gap-1", styles?.list_button)}
+                            className={cn(
+                                "text-blue100 flex items-center justify-center gap-1",
+                                typeof styles?.list_button === "function"
+                                    ? styles.list_button(tab.id)
+                                    : styles?.list_button,
+                            )}
                             onClick={() => onTabClick(tab.id)}
                         >
                             {tab.id !== "streams" && tab.icon && <i className="size-4">{tab.icon}</i>}

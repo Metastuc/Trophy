@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { Fragment } from "react";
 import { useShallow } from "zustand/shallow";
 
+import { ARROW_DOWN_FILLED } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -12,7 +13,7 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer";
-import { cn } from "@/lib/utils";
+import { cn, formatUSD } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
 import { Add } from "./add";
@@ -30,10 +31,7 @@ export function UserProfileDrawer() {
         <Drawer open={!!drawerView} onOpenChange={(isOpen) => !isOpen && closeDrawer()}>
             <DrawerContent>
                 <DrawerHeader
-                    className={cn(
-                        "flex justify-center",
-                        drawerView === "add" ? "items-start pb-0" : "items-center pb-4",
-                    )}
+                    className={cn("flex justify-center", drawerView === "add" ? "items-start" : "items-center")}
                 >
                     <DrawerClose asChild>
                         <Button variant="outline" className="bg-white200 ml-auto size-5 rounded-full p-0">
@@ -59,14 +57,30 @@ export function UserProfileDrawer() {
 }
 
 function UserProfileDrawerHeader() {
-    const drawerView = useUserProfileDrawerStore((state) => state.drawerView);
+    const { drawerView, token } = useUserProfileDrawerStore(
+        useShallow((state) => ({ drawerView: state.drawerView, token: state.payload?.token })),
+    );
 
     switch (drawerView) {
         case "add":
             return (
-                <>
+                <Fragment>
                     <DrawerTitle className="text-blue100 text-xs font-normal">Your balance</DrawerTitle>
-                </>
+
+                    <DrawerDescription className="flex flex-col p-0">
+                        <b className="text-black100 text-2xl font-medium">{formatUSD("0")}</b>
+
+                        <div className=" flex items-center justify-start gap-1">
+                            <span className="text-xs text-gray-500">0.00 {token}</span>
+
+                            <i className="size-2 rotate-180 text-[#2DC24E]">
+                                <ARROW_DOWN_FILLED />
+                            </i>
+
+                            <span className="pt-0.5 text-[.5rem] text-black/50">0.00%</span>
+                        </div>
+                    </DrawerDescription>
+                </Fragment>
             );
 
         case "earned":
