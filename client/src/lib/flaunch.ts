@@ -1,4 +1,4 @@
-import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
+import { createFlaunch, FlaunchZapAbi, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
 
@@ -86,27 +86,28 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
         let creatorToken: string;
 
         if (type === "farcaster") {
+            console.log("fc did!")
             const zeroDevClient = await zeroDevSA({ provider });
             sa_address = zeroDevClient.account.address;
 
             flaunchParams._flaunchParams.creator = sa_address as Address;
 
             const uoCallData = encodeFunctionData({
-                abi: FLAUNCH_ZAP_ABI,
+                abi: FlaunchZapAbi,
                 functionName: "flaunch",
                 args: [
                     flaunchParams._flaunchParams,
-                    "0x",
-                    flaunchParams._whitelistParams,
-                    flaunchParams._airdropParams,
-                    flaunchParams._treasuryManagerParams,
-                ]
+                    // "0x",
+                    // flaunchParams._whitelistParams,
+                    // flaunchParams._airdropParams,
+                    // flaunchParams._treasuryManagerParams,
+                ],
             });
 
             const uo = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
                     {
-                        to: ENV_SCHEMA.FLAUNCH_CA,
+                        to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
                         data: uoCallData,
                     },
                 ]),
