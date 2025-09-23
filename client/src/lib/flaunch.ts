@@ -128,7 +128,6 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                 ],
             };
 
-            const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
             const message = {
                 name,
                 symbol: name.toUpperCase(),
@@ -142,7 +141,7 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                 initialPriceParams,
                 feeCalculatorParams: "0x0000000000000000000000000000000000000000" as Address,
                 nonce: 0n,
-                deadline,
+                deadline: 3600n,
             };
     
             const signature = await zeroDevClient.signTypedData({
