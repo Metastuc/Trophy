@@ -4,7 +4,7 @@ import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnit
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
-import { ENV_SCHEMA, network } from "./constants";
+import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
@@ -103,13 +103,16 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                     // flaunchParams._treasuryManagerParams,
                 ],
             });
+
+            console.log("data")
     
             const domain = {
                 name: "CreatorTokenDeployment",
                 version: "1",
-                chainId: network.id,
+                chainId: 84532,
                 verifyingContract: "0x312706b6599bb406cb21a91c3314ec7883b014a1" as Address,
             };
+            console.log({domain})
 
             const types = {
                 CreatorTokenDeployment: [
@@ -143,6 +146,7 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                 nonce: 0n,
                 deadline: 3600n,
             };
+            console.log({message})
     
             const signature = await zeroDevClient.signTypedData({
                 domain,
@@ -150,6 +154,7 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                 primaryType: 'CreatorTokenDeployment',
                 message,
             });
+            console.log("signature")
 
             const uo = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
