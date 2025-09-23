@@ -39,6 +39,8 @@
         "@types/react-lazy-load-image-component": "^1.6.4",
         "@uidotdev/usehooks": "^2.4.1",
         "@wagmi/core": "^2.21.0",
+        "@zerodev/ecdsa-validator": "^5.4.9",
+        "@zerodev/sdk": "^5.5.2",
         "axios": "^1.12.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
