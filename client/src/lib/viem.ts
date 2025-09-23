@@ -1,5 +1,5 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, createPublicClient, createWalletClient, custom, http, type PublicClient } from "viem";
+import { Address, createPublicClient, createWalletClient, custom, http, type PublicClient, type WalletClient } from "viem";
 
 // import { baseSepolia } from "viem/chains"
 import { network } from "@/lib/constants";
@@ -9,10 +9,10 @@ export const publicClient = createPublicClient({
     transport: http("https://base-mainnet.g.alchemy.com/v2/9kiKlpCeF4z8k9VwVb8kGissHwepmntA"),
 }) as PublicClient;
 
-export const getWalletClient = (provider: EIP1193Provider, address?: Address) => {
+export const getWalletClient = (provider: EIP1193Provider, address?: Address): WalletClient => {
     return createWalletClient({
         chain: network,
         transport: custom(provider),
         account: address,
-    });
+    }) as WalletClient;
 };
