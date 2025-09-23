@@ -13,7 +13,7 @@ import { network } from "@/lib/constants";
 import { createCreatorToken } from "@/lib/flaunch";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
-
+ 
 export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const user = useAuthenticationStore((state) => state.user);
