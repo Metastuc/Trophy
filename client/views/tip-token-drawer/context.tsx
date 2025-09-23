@@ -5,12 +5,12 @@ import { Address } from "viem";
 import { useChainId } from "wagmi";
 
 import { Button } from "@/components/ui/button";
+import { TOKENS } from "@/components/ui/tokens";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { tipERC20, tipEther } from "@/lib/tip";
 import { makeRequest } from "#~/utils/axios.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
-import { TOKENS } from "./components/tokens";
 import { TipDrawerContext } from "./hooks";
 
 type TipDrawerContextProviderProps = PropsWithChildren<TipDrawerProps>;

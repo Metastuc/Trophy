@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
+import { TOKENS } from "@/components/ui/tokens";
 import { TOKEN_CONFIG } from "@/lib/constants";
 import { formatToken, formatUSD, tokenInputField } from "@/lib/utils";
 
-import { TOKENS } from "./components/tokens";
 import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
 
