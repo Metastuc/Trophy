@@ -10,6 +10,9 @@
         "preview": "bunx --bun vite preview"
     },
     "dependencies": {
+        "@alchemy/aa-accounts": "^3.19.0",
+        "@alchemy/aa-alchemy": "^3.19.0",
+        "@alchemy/aa-core": "^3.19.0",
         "@biconomy/abstractjs": "1.1.7",
         "@coinbase/onchainkit": "^1.0.2",
         "@delvtech/drift": "^1.0.1",
