@@ -1,8 +1,9 @@
 import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, Hex, parseEther, parseUnits, zeroHash } from "viem";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
+import { alchemySmartAccount } from "./alchemy-sa";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
@@ -30,10 +31,8 @@ const readClient = () => {
     return ReadClient;
 };
 
-export const createCreatorToken = async (name: string, provider: EIP1193Provider) => {
+export const createCreatorToken = async ({ name, provider, type, address }: {name: string, provider: EIP1193Provider, type: string, address: Address }) => {
     try {
-        const smartWalletClient = await getSmartAccount(provider);
-
         const initialMCapInUSDCWei = parseUnits("5000", 6);
         const supply = 100_000_000_000;
         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
@@ -57,7 +56,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(20 * 60),
                 premineAmount: BigInt(allocation),
-                creator: smartWalletClient.account.address as Address,
+                creator: "" as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
                 initialPriceParams,
@@ -83,29 +82,70 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
             },
         };
 
-        const tx = {
-            abi: FLAUNCH_ZAP_ABI,
-            functionName: "flaunch",
-            args: [
-                flaunchParams._flaunchParams,
-                "0x",
-                flaunchParams._whitelistParams,
-                flaunchParams._airdropParams,
-                flaunchParams._treasuryManagerParams,
-            ],
-            to: ENV_SCHEMA.FLAUNCH_CA,
-        };
+        let sa_address: string;
+        let creatorToken: string;
+        let tx: Hex;
 
-        const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
+        if (type === "farcaster") {
+            const alchemyClient = await alchemySmartAccount({ provider, address });
+            sa_address = alchemyClient.account.address;
 
-        const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
-        console.log({logs: receipt.logs, tx: receipt.transactionHash})
-        const creatorToken = receipt.logs[6].address;
+            flaunchParams._flaunchParams.creator = sa_address as Address;
+
+            const uoCallData = encodeFunctionData({
+                abi: FLAUNCH_ZAP_ABI,
+                functionName: "flaunch",
+                args: [
+                    flaunchParams._flaunchParams,
+                    "0x",
+                    flaunchParams._whitelistParams,
+                    flaunchParams._airdropParams,
+                    flaunchParams._treasuryManagerParams,
+                ]
+            });
+
+            const uo = await alchemyClient.sendUserOperation({
+                uo: {
+                    target: ENV_SCHEMA.FLAUNCH_CA,
+                    data: uoCallData,
+                },
+            });
+
+            tx = await alchemyClient.waitForUserOperationTransaction(uo);
+            const uoReceipt = await alchemyClient.getUserOperationReceipt(tx);
+
+            console.log({ uo: uoReceipt?.logs });
+            creatorToken = ""
+        } else {
+            const smartWalletClient = await getSmartAccount(provider);
+            sa_address = smartWalletClient.account.address;
+
+            flaunchParams._flaunchParams.creator = sa_address as Address;
+
+            const tx = {
+                abi: FLAUNCH_ZAP_ABI,
+                functionName: "flaunch",
+                args: [
+                    flaunchParams._flaunchParams,
+                    "0x",
+                    flaunchParams._whitelistParams,
+                    flaunchParams._airdropParams,
+                    flaunchParams._treasuryManagerParams,
+                ],
+                to: ENV_SCHEMA.FLAUNCH_CA,
+            };
+    
+            const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
+    
+            const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
+            console.log({logs: receipt.logs, tx: receipt.transactionHash})
+            creatorToken = receipt.logs[6].address;
+        }
 
         await makeRequest({
             method: "POST",
             url: `/save-creator-token`,
-            data: { creatorToken, sa_address: smartWalletClient.account.address, username: name },
+            data: { creatorToken, sa_address, username: name },
         });
 
         await makeRequest({
@@ -114,7 +154,7 @@ export const createCreatorToken = async (name: string, provider: EIP1193Provider
             data: { username: name }
         });
 
-        return { creatorToken, sa_address: smartWalletClient.account.address };
+        return { creatorToken, sa_address };
     } catch (error: unknown) {
         console.error(error);
         throw new Error((error as Error).message);
@@ -229,19 +269,22 @@ export const fetchFeeBalance = async (provider: EIP1193Provider) => {
     });
 };
 
+type claimType = "claim";
+
 export const claimCreatorFees = async (provider: EIP1193Provider) => {
     try {
         const smartWalletClient = await getSmartAccount(provider);
 
-        const { request } = await publicClient.simulateContract({
-            address: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+        const tx = {
             abi: RevenueManagerAbi,
-            functionName: "claim",
-            args: [],
-            account: smartWalletClient.account,
-        });
+            functionName: "claim" as claimType,
+            args: undefined,
+            to: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+        };
 
-        return await smartWalletClient.writeContract(request);
+        const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
+
+        return await smartWalletClient.waitForTransactionReceipt({ hash });
     } catch (error: unknown) {
         console.error(error);
         throw new Error((error as Error).message);
