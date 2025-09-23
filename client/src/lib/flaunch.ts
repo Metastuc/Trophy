@@ -140,9 +140,9 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
                 initialPriceParams,
-                feeCalculatorParams: "0x" as Address,
+                feeCalculatorParams: "0x0000000000000000000000000000000000000000" as Address,
                 nonce: 0n,
-                deadline
+                deadline,
             };
     
             const signature = await zeroDevClient.signTypedData({
