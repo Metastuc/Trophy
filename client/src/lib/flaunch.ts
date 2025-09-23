@@ -1,6 +1,6 @@
 import { createFlaunch, FlaunchZapAbi, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, encodeFunctionData, hexToBytes, keccak256, parseEther, parseUnits, zeroHash } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, keccak256, parseEther, parseUnits, zeroHash } from "viem";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
@@ -151,7 +151,7 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
             console.log("message")
     
             const signature = await zeroDevClient.signMessage({
-                message: { raw: hexToBytes(message) }
+                message: { raw: message }
             });
             console.log("signature")
 
