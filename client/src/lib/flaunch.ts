@@ -1,6 +1,6 @@
 import { createFlaunch, FlaunchZapAbi, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, hexToBytes, keccak256, parseEther, parseUnits, zeroHash } from "viem";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
@@ -114,45 +114,44 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
             };
             console.log({domain})
 
-            const types = {
-                CreatorTokenDeployment: [
-                    { name: "name", type: "string" },
-                    { name: "symbol", type: "string" },
-                    { name: "tokenUri", type: "string" },
-                    { name: "initialTokenFairLaunch", type: "uint256" },
-                    { name: "fairLaunchDuration", type: "uint256" },
-                    { name: "premineAmoiunt", type: "uint256" },
-                    { name: "creator", type: "address" },
-                    { name: "creatorFeeAllocation", type: "uint256" },
-                    { name: "flaunchAt", type: "uint256" },
-                    { name: "feeCalculatorParams", type: "address" },
-                    { name: "nonce", type: "uint256" },
-                    { name: "deadline", type: "uint256" },
-                ],
-            };
+            // const types = {
+            //     CreatorTokenDeployment: [
+            //         { name: "name", type: "string" },
+            //         { name: "symbol", type: "string" },
+            //         { name: "tokenUri", type: "string" },
+            //         { name: "initialTokenFairLaunch", type: "uint256" },
+            //         { name: "fairLaunchDuration", type: "uint256" },
+            //         { name: "premineAmoiunt", type: "uint256" },
+            //         { name: "creator", type: "address" },
+            //         { name: "creatorFeeAllocation", type: "uint256" },
+            //         { name: "flaunchAt", type: "uint256" },
+            //         { name: "feeCalculatorParams", type: "address" },
+            //         { name: "nonce", type: "uint256" },
+            //         { name: "deadline", type: "uint256" },
+            //     ],
+            // };
 
-            const message = {
-                name,
-                symbol: name.toUpperCase(),
-                tokenUri,
-                initialTokenFairLaunch,
-                fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: 0n,
-                creator: sa_address as Address,
-                creatorFeeAllocation: creatorFeeAllocationInBps,
-                flaunchAt: 0n,
-                initialPriceParams,
-                feeCalculatorParams: "0x0000000000000000000000000000000000000000" as Address,
-                nonce: 0n,
-                deadline: 3600n,
-            };
-            console.log({message})
+            // const message = {
+            //     name,
+            //     symbol: name.toUpperCase(),
+            //     tokenUri,
+            //     initialTokenFairLaunch,
+            //     fairLaunchDuration: BigInt(20 * 60),
+            //     premineAmount: 0n,
+            //     creator: sa_address as Address,
+            //     creatorFeeAllocation: creatorFeeAllocationInBps,
+            //     flaunchAt: 0n,
+            //     initialPriceParams,
+            //     feeCalculatorParams: "0x0000000000000000000000000000000000000000" as Address,
+            //     nonce: 0n,
+            //     deadline: 3600n,
+            // };
+            
+            const message = keccak256(uoCallData);
+            console.log("message")
     
-            const signature = await zeroDevClient.signTypedData({
-                domain,
-                types,
-                primaryType: 'CreatorTokenDeployment',
-                message,
+            const signature = await zeroDevClient.signMessage({
+                message: { raw: hexToBytes(message) }
             });
             console.log("signature")
 
