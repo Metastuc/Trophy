@@ -48,6 +48,7 @@ export const API_ENDPOINTS = {
 
     USER: {
         GET_USER: (userId: string) => `/user/${userId}/profile`,
+        GET_WALLET_TOKEN_BALANCES: (userId: string) => `/user/${userId}/wallet-token-balances`,
         ME: "/user/me",
         SAVE_TOKEN: (userId: string) => `/user/${userId}/save-creator-token`,
         UPDATE_USER: (userId: string) => `/user/${userId}/update`,
@@ -107,35 +108,46 @@ export const CLIENT_CONSTANTS = {
             : `https://sepolia.basescan.org/tx/${hash}`,
 };
 
-export const TOKEN_CONFIG: Record<keyof typeof CLIENT_CONSTANTS.SUPPORTED_TOKENS, TokenDropdownConfig> = {
+export const TOKEN_CONFIG: Record<keyof typeof CLIENT_CONSTANTS.SUPPORTED_TOKENS, TokenConfig> = {
     ETH: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.ETH,
         icon: "/ethereum.svg",
+        name: "Ethereum",
         symbol: "ETH",
     },
+
     USDC: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.USDC,
         icon: "/usdc.svg",
+        name: "USD Coin",
         symbol: "USDC",
     },
+
     DEGEN: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.DEGEN,
         icon: "/degen.svg",
+        name: "Degen",
         symbol: "DEGEN",
     },
+
     ZORA: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.ZORA,
         icon: "/zora.svg",
+        name: "Zora",
         symbol: "ZORA",
     },
+
     BANKR: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.BANKR,
         icon: "/bankr.svg",
+        name: "BankrCoin",
         symbol: "BNKR",
     },
+
     FLAY: {
         address: CLIENT_CONSTANTS.SUPPORTED_TOKENS.FLAY,
         icon: "/flay.svg",
+        name: "Flayer",
         symbol: "FLAY",
     },
 };
