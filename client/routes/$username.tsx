@@ -36,8 +36,8 @@ function RouteComponent() {
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
-            {data?.data ? (
-                <UserProfileContextProvider isPending={isPending} profileData={data?.data} isCurrentUser={false}>
+            {data ? (
+                <UserProfileContextProvider isPending={isPending} profileData={data} isCurrentUser={false}>
                     <About />
 
                     <footer className="border-blue100 rounded-t-xl border-t">
@@ -62,7 +62,7 @@ function RouteComponent() {
                                             transition={{ duration: 0.15 }}
                                         >
                                             <span className="block h-20">
-                                                {data.data.username} does not hold any creator token yet
+                                                {data.username} does not hold any creator token yet
                                             </span>
                                         </motion.div>
                                     ) : null}

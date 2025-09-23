@@ -33,8 +33,8 @@ function RouteComponent() {
 
     return (
         <PageContentLayout className="space-y-16.5 !px-0">
-            {data?.data ? (
-                <UserProfileContextProvider profileData={data?.data} isCurrentUser={true} isPending={isPending}>
+            {data ? (
+                <UserProfileContextProvider profileData={data} isCurrentUser={true} isPending={isPending}>
                     <About />
 
                     <footer className="border-blue100 rounded-t-xl border-t">
