@@ -49,11 +49,11 @@ export function UserProfileDrawer() {
                     <UserProfileDrawerHeader />
                 </DrawerHeader>
 
-                <main>
+                <main className={cn(drawerView === "edit" && "overflow-y-auto pb-4")}>
                     <UserProfileDrawerMain />
                 </main>
 
-                <DrawerFooter className={cn(drawerView === "edit" && "pt-2", drawerView === "add" && "p-1")}>
+                <DrawerFooter className={cn(drawerView === "edit" && "hidden", drawerView === "add" && "p-1")}>
                     <UserProfileDrawerFooter />
                 </DrawerFooter>
             </DrawerContent>
@@ -74,7 +74,7 @@ function UserProfileDrawerHeader() {
 
                     <DrawerDescription asChild>
                         <section className="flex flex-col p-0">
-                            <b className="text-black100 text-2xl font-medium text-left">{formatUSD("0")}</b>
+                            <b className="text-black100 text-left text-2xl font-medium">{formatUSD("0")}</b>
 
                             <div className=" flex items-center justify-start gap-1">
                                 <span className="text-xs text-gray-500">0.00 {token}</span>
@@ -145,15 +145,6 @@ function UserProfileDrawerFooter() {
         case "earned":
             return <Button variant="outline">Claim fees</Button>;
 
-        case "edit":
-            return (
-                <DrawerClose asChild>
-                    <Button className="w-full rounded tracking-[.0625rem]" variant={"outline"}>
-                        Cancel
-                    </Button>
-                </DrawerClose>
-            );
-
         case "withdraw":
             return (
                 <Button variant="outline" className="bg-blue100 mt-5 h-13.5 w-full">
@@ -162,6 +153,7 @@ function UserProfileDrawerFooter() {
             );
 
         case "add":
+        case "edit":
         default:
             return;
     }
