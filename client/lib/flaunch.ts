@@ -1,9 +1,10 @@
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK } from "@flaunch/sdk";
 import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
 
+import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
 import { makeRequest } from "#~/utils/axios.ts";
 
-import { API_ENDPOINTS, CONTRACT_ADDRESSES } from "./constants";
+import { API_ENDPOINTS } from "./constants";
 import { initSmartAccount } from "./smart-account";
 import { getWalletClient, publicClient } from "./viem";
 

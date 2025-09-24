@@ -8,7 +8,9 @@ import {
 } from "@biconomy/abstractjs";
 import { custom, parseAbi, parseEther, parseUnits } from "viem";
 
-import { CLIENT_CONSTANTS, CONTRACT_ADDRESSES } from "./constants";
+import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
+
+import { CLIENT_CONSTANTS } from "./constants";
 import { getWalletClient } from "./viem";
 
 export async function tipEther({ amount, provider, recipientAddress, senderAddress }: TipETH) {
