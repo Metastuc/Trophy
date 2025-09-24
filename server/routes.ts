@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import { getTokenPrice } from "#services/get-token-price.ts";
+import { user } from "#app/authentication/user.controller.ts";
+import { getTokenPrice } from "#app/get-token-price.ts";
 
-import { authentication } from "./services/authentication";
-import { streams } from "./services/streams";
-import { follow } from "./services/subscription";
-import { tips } from "./services/tips";
-import { user } from "./services/user";
+import { authentication } from "./app/authentication";
+import { streams } from "./app/streams";
+import { follow } from "./app/subscription";
+import { tips } from "./app/tips";
 
 export const routes = Router();
 
