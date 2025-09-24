@@ -4,7 +4,7 @@ import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnit
 
 // import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
-import { ENV_SCHEMA } from "./constants";
+import { ENV_SCHEMA, network } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
@@ -97,44 +97,39 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens }: 
             },
         };
 
+        const data = encodeFunctionData({
+            abi: FlaunchZapAbi,
+            functionName: "flaunch",
+            args: [
+                flaunchParams._flaunchParams,
+                // "0x",
+                // flaunchParams._whitelistParams,
+                // flaunchParams._airdropParams,
+                // flaunchParams._treasuryManagerParams,
+            ],
+        });
+
         if (ethAmount !== 0n) {
             const walletClient = getWalletClient(provider);
-            const { result, request } = await publicClient.simulateContract({
-                address: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
-                abi: FlaunchZapAbi,
-                functionName: "flaunch",
-                args: [
-                    flaunchParams._flaunchParams,
-                    // "0x"
-                    // flaunchparams._whitelistParams,
-                    // flaunchparams._airdropParams,
-                    // flaunchparams._treasuryManagerParams,
-                ],
-                account: walletClient.account,
-                value: ethAmount
+            console.log("addy:", walletClient.account!.address);
+
+            const hash = await walletClient.sendTransaction({
+                to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+                data,
+                value: ethAmount,
+                account: walletClient.account!.address,
+                chain: network
             });
 
-            console.log({ logs: result });
-            const hash = await walletClient.writeContract(request);
+            const { logs } = await publicClient.getTransactionReceipt({ hash });
+            console.log({ logs });
             console.log(hash);
         } else {
-            const uoCallData = encodeFunctionData({
-                abi: FlaunchZapAbi,
-                functionName: "flaunch",
-                args: [
-                    flaunchParams._flaunchParams,
-                    // "0x",
-                    // flaunchParams._whitelistParams,
-                    // flaunchParams._airdropParams,
-                    // flaunchParams._treasuryManagerParams,
-                ],
-            });
-    
-            const uo = await zeroDevClient.sendUserOperation({
+                const uo = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
                     {
                         to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
-                        data: uoCallData,
+                        data,
                     },
                 ]),
             });
