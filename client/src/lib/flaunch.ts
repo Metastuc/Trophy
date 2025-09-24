@@ -97,33 +97,55 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens }: 
             },
         };
 
-        const uoCallData = encodeFunctionData({
-            abi: FlaunchZapAbi,
-            functionName: "flaunch",
-            args: [
-                flaunchParams._flaunchParams,
-                // "0x",
-                // flaunchParams._whitelistParams,
-                // flaunchParams._airdropParams,
-                // flaunchParams._treasuryManagerParams,
-            ],
-        });
+        if (ethAmount !== 0n) {
+            const walletClient = getWalletClient(provider);
+            const { result, request } = await publicClient.simulateContract({
+                address: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+                abi: FlaunchZapAbi,
+                functionName: "flaunch",
+                args: [
+                    flaunchParams._flaunchParams,
+                    // "0x"
+                    // flaunchparams._whitelistParams,
+                    // flaunchparams._airdropParams,
+                    // flaunchparams._treasuryManagerParams,
+                ],
+                account: walletClient.account,
+                value: ethAmount
+            });
 
-        const uo = await zeroDevClient.sendUserOperation({
-            callData: await zeroDevClient.account.encodeCalls([
-                {
-                    to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
-                    data: uoCallData,
-                    value: ethAmount,
-                },
-            ]),
-        });
+            console.log({ logs: result });
+            const hash = await walletClient.writeContract(request);
+            console.log(hash);
+        } else {
+            const uoCallData = encodeFunctionData({
+                abi: FlaunchZapAbi,
+                functionName: "flaunch",
+                args: [
+                    flaunchParams._flaunchParams,
+                    // "0x",
+                    // flaunchParams._whitelistParams,
+                    // flaunchParams._airdropParams,
+                    // flaunchParams._treasuryManagerParams,
+                ],
+            });
+    
+            const uo = await zeroDevClient.sendUserOperation({
+                callData: await zeroDevClient.account.encodeCalls([
+                    {
+                        to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+                        data: uoCallData,
+                    },
+                ]),
+            });
+    
+            const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
+                hash: uo,
+            });
+    
+            console.log({ uo: uoReceipt?.logs, tx: uo });
+        }
 
-        const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
-            hash: uo,
-        });
-
-        console.log({ uo: uoReceipt?.logs, tx: uo });
         const creatorToken = "";
 
         await makeRequest({
