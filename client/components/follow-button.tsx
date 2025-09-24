@@ -4,10 +4,10 @@ import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 import { getFollowStatus } from "@/api/subscription";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS, queryClient } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export function FollowUserButton({ username, styles }: { username: string; styles?: Record<string, string> }) {
     const { authenticatedUser, isAuthenticated } = useAuthenticationStore(

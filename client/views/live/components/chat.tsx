@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useSocket } from "@/hooks/socket";
 import { cn } from "@/lib/utils";
 import { AuthenticationDrawer } from "@/views/authentication-drawer";
 import { TipDrawer } from "@/views/tip-token-drawer";
 import { TradeDrawer } from "@/views/trade-token-drawer";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 import { useLiveStreamContext } from "../hooks";
 import { LiveStreamProfile } from "./profile";

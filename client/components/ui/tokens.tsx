@@ -1,4 +1,4 @@
-import { TOKEN_CONFIG } from "@/lib/constants";
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 export const TOKENS = Object.values(TOKEN_CONFIG).map((token) => ({
     address: token.address,

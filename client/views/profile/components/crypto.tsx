@@ -4,8 +4,8 @@ import { useShallow } from "zustand/shallow";
 
 import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Loading } from "@/components/ui/loading";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { formatUSD } from "@/lib/utils";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export function Crypto() {
     const { isAuthenticated, walletAddress } = useAuthenticationStore(

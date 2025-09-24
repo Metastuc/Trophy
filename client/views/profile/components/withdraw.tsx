@@ -2,8 +2,8 @@ import { ChangeEvent, useState } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
-import { TOKEN_CONFIG } from "@/lib/constants";
 import { formatUSD } from "@/lib/utils";
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 export function Withdraw() {
     const [recieverTabState, setRecieverTabState] = useState(() => ({

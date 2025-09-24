@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { useAuthenticationStore } from "@/hooks/authentication";
 
 export function ExitButton() {
     const { logout: privyLogout } = usePrivy();

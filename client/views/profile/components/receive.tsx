@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { Address } from "viem";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { truncateWalletAddress } from "#~/utils/truncate.ts";
 
 export function UserProfileReceive() {
