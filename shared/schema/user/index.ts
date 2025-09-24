@@ -21,7 +21,7 @@ export const ONBOARD_USER_RESPONSE_SCHEMA = z.object({
     isBasicProfileComplete: z.boolean(),
 });
 
-export const WALLET_TOKEN_BALANCES = z.array(
+export const WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA = z.array(
     z.object({
         balance: z.string(),
         icon: z.string(),
