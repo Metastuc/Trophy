@@ -1,4 +1,4 @@
-import { useWallets } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
@@ -18,6 +18,7 @@ export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const user = useAuthenticationStore((state) => state.user);
     const { wallets } = useWallets();
+    const { user: privyUser } = usePrivy();
     const [isCreatingToken, setIsCreatingToken] = useState<boolean>(false);
 
     const { isPending, mutate } = useServer<tCreateStreamFormRequest, tCreateStreamFormResponse>(
@@ -49,7 +50,7 @@ export function StreamNowForm() {
                 setIsCreatingToken(true);
 
                 try {
-                    const tokenAddress = await createCreatorToken({ name: formState.username, provider, type: wallet.walletClientType });
+                    const tokenAddress = await createCreatorToken({ name: formState.username, provider, type: wallet.walletClientType, privyUser });
                     toast.success("Creator token created!", { id: toastId });
                     setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 } catch (error) {

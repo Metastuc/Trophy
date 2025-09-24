@@ -10,7 +10,7 @@ import { custom } from "viem";
 
 import { ENV_SCHEMA, network } from "@/lib/constants";
 
-export const getSmartAccount = async (provider: EIP1193Provider) => {
+export const getSmartAccount = async (provider: EIP1193Provider, fid?: bigint) => {
     try {
         const nexusAccountClient = createSmartAccountClient({
             account: await toNexusAccount({
@@ -20,6 +20,7 @@ export const getSmartAccount = async (provider: EIP1193Provider) => {
                     transport: custom(provider),
                     version: getMEEVersion(DEFAULT_MEE_VERSION),
                 },
+                index: fid
             }),
             chain: network,
             paymaster: createBicoPaymasterClient({

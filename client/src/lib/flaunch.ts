@@ -1,6 +1,7 @@
-import { createFlaunch, FlaunchZapAbi, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
-import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
+import { ModularSmartAccount, NexusClient } from "@biconomy/abstractjs";
+import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
+import { EIP1193Provider, User } from "@privy-io/react-auth";
+import { Address, Chain, Client, encodeAbiParameters, parseEther, parseUnits, Transport, zeroHash } from "viem";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
@@ -8,7 +9,7 @@ import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
-import { zeroDevSA } from "./zerodev";
+// import { zeroDevSA } from "./zerodev";
 
 let WriteClient: ReadWriteFlaunchSDK | undefined;
 let ReadClient: ReadFlaunchSDK | undefined;
@@ -31,7 +32,7 @@ const readClient = () => {
     return ReadClient;
 };
 
-export const createCreatorToken = async ({ name, provider, type }: { name: string, provider: EIP1193Provider, type: string }) => {
+export const createCreatorToken = async ({ name, provider, type, privyUser }: { name: string, provider: EIP1193Provider, type: string, privyUser: User | null }) => {
     try {
         const initialMCapInUSDCWei = parseUnits("5000", 6);
         const supply = 100_000_000_000;
@@ -82,49 +83,58 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
             },
         };
 
-        let sa_address: string;
-        let creatorToken: string;
+        // let sa_address: string;
+        // let creatorToken: string;
 
+        // if (type === "farcaster") {
+        //     console.log("fc hit!")
+        //     const zeroDevClient = await zeroDevSA({ provider });
+        //     sa_address = zeroDevClient.account.address;
+
+        //     flaunchParams._flaunchParams.creator = sa_address as Address;
+
+        //     const uoCallData = encodeFunctionData({
+        //         abi: FlaunchZapAbi,
+        //         functionName: "flaunch",
+        //         args: [
+        //             flaunchParams._flaunchParams,
+        //             // "0x",
+        //             // flaunchParams._whitelistParams,
+        //             // flaunchParams._airdropParams,
+        //             // flaunchParams._treasuryManagerParams,
+        //         ],
+        //     });
+
+        //     console.log("coded")
+
+        //     const uo = await zeroDevClient.sendUserOperation({
+        //         callData: await zeroDevClient.account.encodeCalls([
+        //             {
+        //                 to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+        //                 data: uoCallData,
+        //             },
+        //         ]),
+        //     });
+        //     console.log("done!")
+
+        //     const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
+        //         hash: uo
+        //     });
+
+        //     console.log({ uo: uoReceipt?.logs, tx: uo });
+        //     creatorToken = ""
+        // } else {
+        
+        let smartWalletClient: NexusClient<Transport, Chain | undefined, ModularSmartAccount | undefined, Client | undefined, undefined>;
         if (type === "farcaster") {
-            console.log("fc hit!")
-            const zeroDevClient = await zeroDevSA({ provider });
-            sa_address = zeroDevClient.account.address;
-
-            flaunchParams._flaunchParams.creator = sa_address as Address;
-
-            const uoCallData = encodeFunctionData({
-                abi: FlaunchZapAbi,
-                functionName: "flaunch",
-                args: [
-                    flaunchParams._flaunchParams,
-                    // "0x",
-                    // flaunchParams._whitelistParams,
-                    // flaunchParams._airdropParams,
-                    // flaunchParams._treasuryManagerParams,
-                ],
-            });
-
-            console.log("coded")
-
-            const uo = await zeroDevClient.sendUserOperation({
-                callData: await zeroDevClient.account.encodeCalls([
-                    {
-                        to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
-                        data: uoCallData,
-                    },
-                ]),
-            });
-            console.log("done!")
-
-            const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
-                hash: uo
-            });
-
-            console.log({ uo: uoReceipt?.logs, tx: uo });
-            creatorToken = ""
+            console.log("fc")
+            console.log({ fid: privyUser?.farcaster?.fid });
+            const fid = BigInt(privyUser!.farcaster!.fid as number);
+            smartWalletClient = await getSmartAccount(provider, fid);
         } else {
-            const smartWalletClient = await getSmartAccount(provider);
-            sa_address = smartWalletClient.account.address;
+            smartWalletClient = await getSmartAccount(provider);
+        }
+            const sa_address = smartWalletClient.account.address;
 
             flaunchParams._flaunchParams.creator = sa_address as Address;
 
@@ -145,8 +155,9 @@ export const createCreatorToken = async ({ name, provider, type }: { name: strin
     
             const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
             console.log({logs: receipt.logs, tx: receipt.transactionHash})
-            creatorToken = receipt.logs[6].address;
-        }
+        const creatorToken = receipt.logs[6].address;
+
+        // }
 
         await makeRequest({
             method: "POST",
