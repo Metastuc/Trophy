@@ -6,10 +6,11 @@ export const useUserProfileDrawerStore: UseBoundStore<StoreApi<UserProfileDrawer
             set({ drawerView: null, addViewCurentTab: undefined, payload: undefined });
         },
 
-        openDrawer({ view, tab }) {
+        openDrawer({ payload, tab, view }) {
             set((state) => ({
                 drawerView: view,
                 addViewCurentTab: view === "add" ? tab || "receive" : state.addViewCurentTab,
+                payload: view === "add" ? payload : undefined,
             }));
         },
 

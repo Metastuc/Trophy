@@ -32,7 +32,15 @@ declare global {
 
     interface UserProfileDrawerActions {
         closeDrawer: () => void;
-        openDrawer: ({ view, tab }: { view: Exclude<UserProfileDrawerView, null>; tab?: AddDrawerTab }) => void;
+        openDrawer: ({
+            payload,
+            tab,
+            view,
+        }: {
+            payload?: UserProfileDrawerPayload;
+            tab?: AddDrawerTab;
+            view: Exclude<UserProfileDrawerView, null>;
+        }) => void;
         setAddViewCurentTab: (tab: AddDrawerTab) => void;
     }
 
