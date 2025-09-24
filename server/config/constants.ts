@@ -54,6 +54,11 @@ export const SERVER_CONSTANTS = {
             KEY: (id: string) => `room:${id}`,
             TTL: toTime({ unit: "days", value: 7 }),
         },
+
+        WALLET_BALANCES: {
+            KEY: (id: string) => `user:wallet:balances:${id}`,
+            TTL: toTime({ unit: "minutes", value: 1 }),
+        },
     },
 
     CURRENT_NETWORK: SERVER_ENV.ENVIRONMENT === "production" ? base : baseSepolia,

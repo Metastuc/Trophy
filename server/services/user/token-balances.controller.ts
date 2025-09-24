@@ -1,17 +1,33 @@
 import { NextFunction, Request, Response } from "express";
 
-import { TOKEN_CONFIG } from "@/lib/constants";
+import { WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA } from "#~/schema/user/index.ts";
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { MoralisClient } from "#config/moralis.ts";
 import { prisma } from "#config/prisma.ts";
+import { redis } from "#config/redis.ts";
 import { HttpError } from "#middleware/error.ts";
+
+import { formatBalance } from "./utils";
 
 export async function getWalletTokenBalances(request: Request, response: Response, next: NextFunction) {
     const { userId } = request.params;
     const moralis = await MoralisClient();
+    const cacheKey = SERVER_CONSTANTS.REDIS_KEYS.WALLET_BALANCES.KEY(userId);
 
     try {
         const isWalletValid = await prisma.user.findUnique({ where: { walletAddress: userId } });
         if (!isWalletValid) throw new HttpError({ message: "user not found", code: 404, data: { userId } });
+
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            response.customResponse<UserWalletTokenBalancesData>({
+                code: 200,
+                data: WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA.parse(JSON.parse(cached)),
+                message: "wallet token balances fetched successfully from cache",
+            });
+            return;
+        }
 
         const result = await moralis.EvmApi.token
             .getWalletTokenBalances({
@@ -20,24 +36,27 @@ export async function getWalletTokenBalances(request: Request, response: Respons
             })
             .then((response) => response.toJSON());
 
-        console.log("result", result);
-
         const tokenBalances = Object.entries(TOKEN_CONFIG).map(function ([_key, value]) {
-            const balance = result.find((token) => token.token_address.toLowerCase() === value.address.toLowerCase());
-
-            console.log("balance", balance);
+            const supportedToken = result.find(
+                (token) => token.token_address.toLowerCase() === value.address.toLowerCase(),
+            );
 
             return {
                 symbol: value.symbol,
                 name: value.name,
                 icon: value.icon,
-                balance: balance ? (Number(balance.balance) / 10 ** balance.decimals).toString : "0",
+                balance: supportedToken
+                    ? formatBalance({ balance: supportedToken.balance, decimals: supportedToken.decimals })
+                    : "0",
             };
         });
 
-        response.customResponse({
+        const parsed = WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA.parse(tokenBalances);
+        await redis.setex(cacheKey, SERVER_CONSTANTS.REDIS_KEYS.WALLET_BALANCES.TTL, JSON.stringify(parsed));
+
+        response.customResponse<UserWalletTokenBalancesData>({
             code: 200,
-            data: tokenBalances,
+            data: parsed,
             message: "wallet token balances fetched successfully",
         });
     } catch (error) {
