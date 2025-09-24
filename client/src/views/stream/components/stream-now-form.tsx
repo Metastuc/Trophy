@@ -55,7 +55,7 @@ export function StreamNowForm() {
 
                 console.log({ tokens, ethAmount })
                 try {
-                    const tokenAddress = await createCreatorToken({ name: formState.username, provider, ethAmount, tokens });
+                    const tokenAddress = await createCreatorToken({ address: formState.walletAddress as `0x${string}`, name: formState.username, provider, ethAmount, tokens });
                     toast.success("Creator token created!", { id: toastId });
                     setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 } catch (error) {

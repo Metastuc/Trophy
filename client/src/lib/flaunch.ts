@@ -13,11 +13,12 @@ import { zeroDevSA } from "./zerodev";
 let WriteClient: ReadWriteFlaunchSDK | undefined;
 
 interface createTokenParams {
+    address: Address;
+    ethAmount: bigint;
     name: string;
     provider: EIP1193Provider;
-    ethAmount: bigint;
     tokens: bigint;
-}
+};
 
 const supply = 100_000_000_000;
 
@@ -44,7 +45,7 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
 }
 
-export const createCreatorToken = async ({ name, provider, ethAmount, tokens }: createTokenParams) => {
+export const createCreatorToken = async ({ name, provider, ethAmount, tokens, address }: createTokenParams) => {
     try {
         const zeroDevClient = await zeroDevSA({ provider });
 
@@ -110,7 +111,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens }: 
         });
 
         if (ethAmount !== 0n) {
-            const walletClient = getWalletClient(provider);
+            const walletClient = getWalletClient(provider, address);
             console.log("addy:", walletClient.account!.address);
 
             const hash = await walletClient.sendTransaction({
