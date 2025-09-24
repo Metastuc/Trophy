@@ -3,12 +3,12 @@ import { ReactNode, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { authenticateUser } from "@/api/authenticate-user";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import {
     useAuthenticationDrawerFormStore,
     useAuthenticationDrawerNavigationStore,
     useAuthenticationDrawerStateStore,
 } from "@/views/authentication-drawer/store";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
 export function AuthenticationProvider({ children }: { children: ReactNode }) {

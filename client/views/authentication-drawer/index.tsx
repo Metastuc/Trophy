@@ -6,7 +6,7 @@ import { useShallow } from "zustand/shallow";
 
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTrigger } from "@/components/ui/drawer";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { useAuthenticationStore } from "@/hooks/authentication";
 
 import { AuthenticationDrawerBody } from "./components/body";
 import { AuthenticationDrawerDescription } from "./components/description";

@@ -8,10 +8,10 @@ import { useShallow } from "zustand/shallow";
 import { authenticateUser } from "@/api/authenticate-user";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-field";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
 import {
