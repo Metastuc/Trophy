@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { joinStream } from "@/api/join-stream";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { cn } from "@/lib/utils";
 import { LiveStreamChats } from "@/views/live/components/chat";
 import { LiveStreamInvitationDrawer } from "@/views/live/components/guests";
@@ -11,7 +12,6 @@ import { LiveStreamGuestInvitation } from "@/views/live/components/invitation";
 import { LiveStreamScreen } from "@/views/live/components/screen";
 import { LiveStreamContextProvider } from "@/views/live/context";
 import { generateGuestId } from "@/views/live/utils";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export const Route = createFileRoute("/live/$room")({
     component: RouteComponent,

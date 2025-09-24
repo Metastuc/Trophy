@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 import { getMyProfile } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layout/page-content";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useTabSwitcher } from "@/hooks/tab-switch";
 import { About } from "@/views/profile/components/about";
 import { UserProfileDrawer } from "@/views/profile/components/drawer";
@@ -12,7 +13,6 @@ import { Streams } from "@/views/profile/components/streams";
 import { TabHeader } from "@/views/profile/components/tab";
 import { UserWallet } from "@/views/profile/components/wallet";
 import { UserProfileContextProvider } from "@/views/profile/context";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export const Route = createFileRoute("/profile")({
     component: RouteComponent,
