@@ -116,12 +116,12 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             const walletClient = getWalletClient(provider, address);
             console.log("addy:", address);
 
-            const gas = await publicClient.estimateGas({
-                to: TEST_CA,
-                account: address,
-                data,
-                value: ethAmount,
-            });
+            // const gas = await publicClient.estimateGas({
+            //     to: TEST_CA,
+            //     account: address,
+            //     data,
+            //     value: ethAmount,
+            // });
 
             const hash = await walletClient.sendTransaction({
                 to: TEST_CA,
@@ -129,7 +129,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 value: ethAmount,
                 account: address,
                 chain: network,
-                gas
+                gas: 500000n
             });
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
