@@ -46,13 +46,14 @@ export function StreamNowForm() {
 
                 const toastId = toast.loading("Creating creator token...");
                 setIsCreatingToken(true);
-                const tokens = BigInt("0");
-                const ethAmount = BigInt("0");
+                // const tokens = BigInt("0");
+                // const ethAmount = BigInt("0");
 
                 const ethRequiredData1 = await ethRequiredToGetAllocation({ tokenPercent: "0" })
-                console.log(ethRequiredData1)
-                const ethRequiredData2 = await ethRequiredToGetAllocation({ tokenPercent: "0.1" })
-                console.log(ethRequiredData2)
+                console.log({ethRequiredData1})
+                const { tokens, ethAmount } = await ethRequiredToGetAllocation({ tokenPercent: "0.1" })
+
+                console.log({ tokens, ethAmount })
                 try {
                     const tokenAddress = await createCreatorToken({ name: formState.username, provider, ethAmount, tokens });
                     toast.success("Creator token created!", { id: toastId });
