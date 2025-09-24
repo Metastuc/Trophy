@@ -42,12 +42,13 @@ export async function getWalletTokenBalances(request: Request, response: Respons
             );
 
             return {
-                symbol: value.symbol,
-                name: value.name,
-                icon: value.icon,
+                address: value.address,
                 balance: supportedToken
                     ? formatBalance({ balance: supportedToken.balance, decimals: supportedToken.decimals })
                     : "0",
+                icon: value.icon,
+                name: value.name,
+                symbol: value.symbol,
             };
         });
 
