@@ -110,16 +110,26 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             ],
         });
 
+        const TEST_CA = "0x312706b6599bb406cb21a91c3314ec7883b014a1";
+
         if (ethAmount !== 0n) {
             const walletClient = getWalletClient(provider, address);
-            console.log("addy:", walletClient.account!.address);
+            console.log("addy:", address);
 
-            const hash = await walletClient.sendTransaction({
-                to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+            const gas = await publicClient.estimateGas({
+                to: TEST_CA,
+                account: address,
                 data,
                 value: ethAmount,
-                account: walletClient.account!.address,
-                chain: network
+            });
+
+            const hash = await walletClient.sendTransaction({
+                to: TEST_CA,
+                data,
+                value: ethAmount,
+                account: address,
+                chain: network,
+                gas
             });
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
@@ -129,7 +139,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 const uo = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
                     {
-                        to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+                        to: TEST_CA,
                         data,
                     },
                 ]),
