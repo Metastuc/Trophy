@@ -1,7 +1,7 @@
 import { getAccessToken } from "@privy-io/react-auth";
 import { useEffect } from "react";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { useAuthenticationStore } from "@/hooks/authentication";
 
 export function useRunningInBrowser() {
     const setToken = useAuthenticationStore((state) => state.setToken);

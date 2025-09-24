@@ -2,9 +2,9 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useShallow } from "zustand/shallow";
 
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { SocketContext } from "@/hooks/socket";
 import { CLIENT_ENV } from "@/lib/constants";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export function SocketProvider({ children }: PropsWithChildren) {
     const [socket, setSocket] = useState<Socket | null>(null);

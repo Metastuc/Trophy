@@ -2,7 +2,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { useShallow } from "zustand/shallow";
 
-import { useAuthenticationStore } from "#~/store/authentication.ts";
+import { useAuthenticationStore } from "@/hooks/authentication.ts";
 
 import { LoadingScreen } from "./components/loading-screen.tsx";
 import { useRunningInBrowser } from "./hooks/running-in-browser-init.ts";

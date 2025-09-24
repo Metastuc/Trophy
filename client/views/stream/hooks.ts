@@ -4,9 +4,9 @@ import { toast } from "sonner";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { CLIENT_CONSTANTS } from "@/lib/constants";
 import { createCreatorToken } from "@/lib/flaunch";
-import { useAuthenticationStore } from "#~/store/authentication.ts";
 
 export function useStreamForm(): UseStreamForm {
     const { wallets } = useWallets();

@@ -1,7 +1,7 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address } from "viem";
 
-import { CONTRACT_ADDRESSES } from "@/lib/constants";
+import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
 
 declare global {
     type TokenAddresses = keyof typeof CONTRACT_ADDRESSES;
@@ -26,13 +26,6 @@ declare global {
         buyerAddress: Address;
         provider: EIP1193Provider;
         tokenAddress: Address;
-    }
-
-    interface TokenConfig {
-        address: Address;
-        icon: string;
-        name: string;
-        symbol: string;
     }
 }
 
