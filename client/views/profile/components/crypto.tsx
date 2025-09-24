@@ -7,7 +7,10 @@ import { Loading } from "@/components/ui/loading";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { formatUSD } from "@/lib/utils";
 
+import { useUserProfileDrawerStore } from "../store";
+
 export function Crypto() {
+    const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
     const { isAuthenticated, walletAddress } = useAuthenticationStore(
         useShallow((state) => ({
             isAuthenticated: state.isAuthenticated,
@@ -25,7 +28,17 @@ export function Crypto() {
     if (isPending || !data) return <Loading />;
 
     return data.map((value, index) => (
-        <article key={index} className="flex">
+        <article
+            key={index}
+            className="flex"
+            onClick={() =>
+                openDrawer({
+                    view: "add",
+                    tab: "send",
+                    payload: { token: value.symbol, tokenAddress: value.address as Address },
+                })
+            }
+        >
             <aside className="relative size-11">
                 <img src={value.icon} className="size-full" alt={`${value.symbol}-logo`} />
                 <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-4" alt="base-logo" />

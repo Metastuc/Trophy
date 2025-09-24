@@ -74,7 +74,7 @@ function UserProfileDrawerHeader() {
 
                     <DrawerDescription asChild>
                         <section className="flex flex-col p-0">
-                            <b className="text-black100 text-2xl font-medium">{formatUSD("0")}</b>
+                            <b className="text-black100 text-2xl font-medium text-left">{formatUSD("0")}</b>
 
                             <div className=" flex items-center justify-start gap-1">
                                 <span className="text-xs text-gray-500">0.00 {token}</span>

@@ -1,10 +1,10 @@
-// import { useTokenPrice } from "@/api/get-token-price";
 import { ChangeEvent, useState } from "react";
+import { Address } from "viem";
 
+import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
-import { formatUSD } from "@/lib/utils";
+import { formatUSD, tokenInputField } from "@/lib/utils";
 
-// import { Address } from "viem";
 import { useUserProfileDrawerStore } from "../store";
 
 export function UserProfileSend() {
@@ -17,13 +17,15 @@ export function UserProfileSend() {
         tokenAddress: payload?.tokenAddress,
     }));
 
-    // const { data: tokenPrices } = useTokenPrice(recieverTabState.tokenAddress as Address);
+    const { data: tokenPrices } = useTokenPrice(recieverTabState.tokenAddress as Address);
 
-    function handleAmountChange(event: ChangeEvent<HTMLInputElement>) {
+    function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
+        const inputValue = tokenInputField(event.target.value);
+
         setRecieverTabState((state) => ({
             ...state,
-            amountInToken: event.target.value,
-            // amountInUsd: formatUSD(`${tokenPrices ? Number(event.target.value) * tokenPrices.usdPrice : 0}`),
+            amountInToken: inputValue,
+            amountInUsd: `${tokenPrices ? Number(inputValue) * tokenPrices.usdPrice : 0}`,
         }));
     }
 
@@ -47,10 +49,10 @@ export function UserProfileSend() {
                 <h3 className="text-blue100 mt-4 text-xs">Enter amount</h3>
 
                 <div className="border-blue100 mt-0.25 mb-2.5 flex h-25 w-full flex-col items-center justify-center rounded-xl border-2">
-                    <span className="space-x-0.5 text-2xl">
+                    <div className="space-x-0.25 text-2xl">
                         <input
                             type="text"
-                            onChange={handleAmountChange}
+                            onChange={handleAmountInTokenChange}
                             value={recieverTabState.amountInToken}
                             placeholder="0.00"
                             className="max-w-[7.5rem] focus:outline-none"
@@ -59,8 +61,8 @@ export function UserProfileSend() {
                                 color: recieverTabState.amountInToken ? "black" : "gray",
                             }}
                         />
-                        {recieverTabState.token}
-                    </span>
+                        <span> {recieverTabState.token}</span>
+                    </div>
                     <span className="text-base text-gray-500">{formatUSD(recieverTabState.amountInUsd || "0")}</span>
                 </div>
 
