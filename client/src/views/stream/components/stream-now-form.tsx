@@ -1,4 +1,4 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useWallets } from "@privy-io/react-auth";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { network } from "@/lib/constants";
-import { createCreatorToken } from "@/lib/flaunch";
+import { createCreatorToken, ethRequiredToGetAllocation } from "@/lib/flaunch";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
  
@@ -18,7 +18,6 @@ export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const user = useAuthenticationStore((state) => state.user);
     const { wallets } = useWallets();
-    const { user: privyUser } = usePrivy();
     const [isCreatingToken, setIsCreatingToken] = useState<boolean>(false);
 
     const { isPending, mutate } = useServer<tCreateStreamFormRequest, tCreateStreamFormResponse>(
@@ -41,16 +40,21 @@ export function StreamNowForm() {
         try {
             if (!formState.creatorToken && formState.creatorTokenEnabled) {
                 const wallet = wallets[0];
-                console.log({type: wallet.type, wType: wallet.walletClientType})
                 await wallet.switchChain(network.id);
                 const provider = await wallet.getEthereumProvider();
                 if (!provider) throw new Error("No provider found");
 
                 const toastId = toast.loading("Creating creator token...");
                 setIsCreatingToken(true);
+                const tokens = BigInt("0");
+                const ethAmount = BigInt("0");
 
+                const ethRequiredData1 = await ethRequiredToGetAllocation({ tokenPercent: "0" })
+                console.log(ethRequiredData1)
+                const ethRequiredData2 = await ethRequiredToGetAllocation({ tokenPercent: "0.1" })
+                console.log(ethRequiredData2)
                 try {
-                    const tokenAddress = await createCreatorToken({ name: formState.username, provider, type: wallet.walletClientType, privyUser });
+                    const tokenAddress = await createCreatorToken({ name: formState.username, provider, ethAmount, tokens });
                     toast.success("Creator token created!", { id: toastId });
                     setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 } catch (error) {

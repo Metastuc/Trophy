@@ -1,18 +1,25 @@
-import { ModularSmartAccount, NexusClient } from "@biconomy/abstractjs";
-import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
-import { EIP1193Provider, User } from "@privy-io/react-auth";
-import { Address, Chain, Client, encodeAbiParameters, parseEther, parseUnits, Transport, zeroHash } from "viem";
+import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
+import { EIP1193Provider } from "@privy-io/react-auth";
+import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
 
-import { FLAUNCH_ZAP_ABI } from "./abi";
+// import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA } from "./constants";
 import { getSmartAccount } from "./smart-account";
 import { SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
-// import { zeroDevSA } from "./zerodev";
+import { zeroDevSA } from "./zerodev";
 
 let WriteClient: ReadWriteFlaunchSDK | undefined;
-let ReadClient: ReadFlaunchSDK | undefined;
+
+interface createTokenParams {
+    name: string;
+    provider: EIP1193Provider;
+    ethAmount: bigint;
+    tokens: bigint;
+}
+
+const supply = 100_000_000_000;
 
 export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!WriteClient) {
@@ -24,24 +31,29 @@ export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     return WriteClient;
 };
 
-const readClient = () => {
-    if (!ReadClient) {
-        ReadClient = createFlaunch({ publicClient });
-    }
+const readClient = createFlaunch({ publicClient });
 
-    return ReadClient;
-};
+export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercent: string }) => {
+    const AllocationPercent = Number(tokenPercent) / 100;
+    const tokenPercentAllocation = supply * AllocationPercent;
 
-export const createCreatorToken = async ({ name, provider, type, privyUser }: { name: string, provider: EIP1193Provider, type: string, privyUser: User | null }) => {
+    const premineAmount = parseEther(tokenPercentAllocation.toString());
+
+    const ethRequiredToBuy = await readClient.ethRequiredToFlaunch({ initialMarketCapUSD: 5000, premineAmount });
+
+    return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
+}
+
+export const createCreatorToken = async ({ name, provider, ethAmount, tokens }: createTokenParams) => {
     try {
+        const zeroDevClient = await zeroDevSA({ provider });
+
         const initialMCapInUSDCWei = parseUnits("5000", 6);
-        const supply = 100_000_000_000;
         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
-        const fairLaunchInBps = BigInt(60 * 100);
+        const fairLaunchInBps = BigInt(40 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
         const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
-        // const allocation = supply * 0.05 * 10 ** 18;
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
@@ -49,15 +61,17 @@ export const createCreatorToken = async ({ name, provider, type, privyUser }: { 
             data: { username: name },
         }).then((response) => response.data);
 
+        const sa_address = zeroDevClient.account.address;
+
         const flaunchParams = {
             _flaunchParams: {
                 name,
                 symbol: name.toUpperCase(),
                 tokenUri,
                 initialTokenFairLaunch,
-                fairLaunchDuration: BigInt(20 * 60),
-                premineAmount: 0n,
-                creator: "" as Address,
+                fairLaunchDuration: BigInt(30 * 60),
+                premineAmount: tokens,
+                creator: sa_address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
                 initialPriceParams,
@@ -83,81 +97,34 @@ export const createCreatorToken = async ({ name, provider, type, privyUser }: { 
             },
         };
 
-        // let sa_address: string;
-        // let creatorToken: string;
+        const uoCallData = encodeFunctionData({
+            abi: FlaunchZapAbi,
+            functionName: "flaunch",
+            args: [
+                flaunchParams._flaunchParams,
+                // "0x",
+                // flaunchParams._whitelistParams,
+                // flaunchParams._airdropParams,
+                // flaunchParams._treasuryManagerParams,
+            ],
+        });
 
-        // if (type === "farcaster") {
-        //     console.log("fc hit!")
-        //     const zeroDevClient = await zeroDevSA({ provider });
-        //     sa_address = zeroDevClient.account.address;
+        const uo = await zeroDevClient.sendUserOperation({
+            callData: await zeroDevClient.account.encodeCalls([
+                {
+                    to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
+                    data: uoCallData,
+                    value: ethAmount,
+                },
+            ]),
+        });
 
-        //     flaunchParams._flaunchParams.creator = sa_address as Address;
+        const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
+            hash: uo,
+        });
 
-        //     const uoCallData = encodeFunctionData({
-        //         abi: FlaunchZapAbi,
-        //         functionName: "flaunch",
-        //         args: [
-        //             flaunchParams._flaunchParams,
-        //             // "0x",
-        //             // flaunchParams._whitelistParams,
-        //             // flaunchParams._airdropParams,
-        //             // flaunchParams._treasuryManagerParams,
-        //         ],
-        //     });
-
-        //     console.log("coded")
-
-        //     const uo = await zeroDevClient.sendUserOperation({
-        //         callData: await zeroDevClient.account.encodeCalls([
-        //             {
-        //                 to: "0x312706b6599bb406cb21a91c3314ec7883b014a1",
-        //                 data: uoCallData,
-        //             },
-        //         ]),
-        //     });
-        //     console.log("done!")
-
-        //     const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
-        //         hash: uo
-        //     });
-
-        //     console.log({ uo: uoReceipt?.logs, tx: uo });
-        //     creatorToken = ""
-        // } else {
-        
-        let smartWalletClient: NexusClient<Transport, Chain | undefined, ModularSmartAccount | undefined, Client | undefined, undefined>;
-        if (type === "farcaster") {
-            console.log("fc")
-            console.log({ fid: privyUser?.farcaster?.fid });
-            const fid = BigInt(privyUser!.farcaster!.fid as number);
-            smartWalletClient = await getSmartAccount(provider, fid);
-        } else {
-            smartWalletClient = await getSmartAccount(provider);
-        }
-            const sa_address = smartWalletClient.account.address;
-
-            flaunchParams._flaunchParams.creator = sa_address as Address;
-
-            const tx = {
-                abi: FLAUNCH_ZAP_ABI,
-                functionName: "flaunch",
-                args: [
-                    flaunchParams._flaunchParams,
-                    "0x",
-                    flaunchParams._whitelistParams,
-                    flaunchParams._airdropParams,
-                    flaunchParams._treasuryManagerParams,
-                ],
-                to: ENV_SCHEMA.FLAUNCH_CA,
-            };
-    
-            const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
-    
-            const receipt = await smartWalletClient.waitForTransactionReceipt({ hash });
-            console.log({logs: receipt.logs, tx: receipt.transactionHash})
-        const creatorToken = receipt.logs[6].address;
-
-        // }
+        console.log({ uo: uoReceipt?.logs, tx: uo });
+        const creatorToken = "";
 
         await makeRequest({
             method: "POST",
@@ -166,9 +133,9 @@ export const createCreatorToken = async ({ name, provider, type, privyUser }: { 
         });
 
         await makeRequest({
-            method: 'POST',
+            method: "POST",
             url: "/set-date",
-            data: { username: name }
+            data: { username: name },
         });
 
         return { creatorToken, sa_address };
@@ -210,18 +177,16 @@ export const buyCreatorToken = async (
 };
 
 export const getCreatorTokenPrice = async (coinAddress: Address) => {
-    const flaunch = readClient();
 
-    return await flaunch.coinPriceInUSD({ coinAddress });
+    return await readClient.coinPriceInUSD({ coinAddress });
 };
 
 export const getSwapQuote = async (ethToCreatorToken: boolean, amount: string, coinAddress: Address) => {
-    const flaunch = readClient();
     if (ethToCreatorToken) {
-        return await flaunch.getBuyQuoteExactInput(coinAddress, parseEther(amount));
+        return await readClient.getBuyQuoteExactInput(coinAddress, parseEther(amount));
     }
 
-    return await flaunch.getSellQuoteExactInput(coinAddress, parseEther(amount));
+    return await readClient.getSellQuoteExactInput(coinAddress, parseEther(amount));
 };
 
 export type PermitDetails = {
@@ -290,18 +255,17 @@ type claimType = "claim";
 
 export const claimCreatorFees = async (provider: EIP1193Provider) => {
     try {
-        const smartWalletClient = await getSmartAccount(provider);
+        const smartWalletClient = await zeroDevSA({provider});
 
         const tx = {
             abi: RevenueManagerAbi,
             functionName: "claim" as claimType,
-            args: undefined,
+            // args: undefined,
             to: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
         };
 
-        const hash = await smartWalletClient.sendTransaction({ calls: [tx] });
+        return await smartWalletClient.sendTransaction({ calls: [tx] });
 
-        return await smartWalletClient.waitForTransactionReceipt({ hash });
     } catch (error: unknown) {
         console.error(error);
         throw new Error((error as Error).message);
