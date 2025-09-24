@@ -23,6 +23,7 @@ export const ONBOARD_USER_RESPONSE_SCHEMA = z.object({
 
 export const WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA = z.array(
     z.object({
+        address: z.string().refine((value) => isAddress(value), { message: "Invalid address" }),
         balance: z.string(),
         icon: z.string(),
         name: z.string(),
