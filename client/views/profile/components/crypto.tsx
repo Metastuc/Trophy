@@ -24,27 +24,6 @@ export function Crypto() {
     if (error) return <div>{error.message}</div>;
     if (isPending || !data) return <Loading />;
 
-    // return Object.values(TOKEN_CONFIG).map(function (value, index) {
-    //     return (
-    //         <article key={index} className="flex">
-    //             <aside className="relative size-11">
-    //                 <img src={value.icon} className="size-full" alt={`${value.symbol}-logo`} />
-    //                 <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-4" alt="base-logo" />
-    //             </aside>
-
-    //             <aside className="ml-3 flex flex-col justify-center">
-    //                 <span>{value.name}</span>
-    //                 <span className="text-blue100 text-xs uppercase">{value.symbol}</span>
-    //             </aside>
-
-    //             <aside className="ml-auto flex flex-col items-end justify-center gap-2">
-    //                 <span>{formatUSD("0")}</span>
-    //                 <span className="text-xs">0.00%</span>
-    //             </aside>
-    //         </article>
-    //     );
-    // });
-
     return data.map((value, index) => (
         <article key={index} className="flex">
             <aside className="relative size-11">
