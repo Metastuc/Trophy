@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { network } from "@/lib/constants";
-import { createCreatorToken } from "@/lib/flaunch";
+import { createCreatorToken, ethRequiredToGetAllocation } from "@/lib/flaunch";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
  
@@ -48,8 +48,8 @@ export function StreamNowForm() {
                 setIsCreatingToken(true);
 
                 try {
-                    // const { tokens, ethAmount } = ethRequiredToGetAllocation({ tokenPercent: "0.01" });
-                    const tokenAddress = await createCreatorToken({ address: formState.walletAddress as `0x${string}`, name: formState.username, provider, ethAmount: 0n, tokens: 0n });
+                    const { tokens, ethAmount } = await ethRequiredToGetAllocation({ tokenPercent: "0.001" });
+                    const tokenAddress = await createCreatorToken({ address: formState.walletAddress as `0x${string}`, name: formState.username, provider, ethAmount, tokens });
                     toast.success("Creator token created!", { id: toastId });
                     setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
                 // } catch (error) {

