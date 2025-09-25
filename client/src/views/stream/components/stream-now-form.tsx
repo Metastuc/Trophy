@@ -3,6 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { formatEther } from "viem";
 
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
@@ -49,11 +50,9 @@ export function StreamNowForm() {
                 // const tokens = BigInt("0");
                 // const ethAmount = BigInt("0");
 
-                const ethRequiredData1 = await ethRequiredToGetAllocation({ tokenPercent: "0" })
-                console.log({ethRequiredData1})
-                const { tokens, ethAmount } = await ethRequiredToGetAllocation({ tokenPercent: "0.1" })
+                const { tokens, ethAmount } = await ethRequiredToGetAllocation({ tokenPercent: "4" })
 
-                console.log({ tokens, ethAmount })
+                console.log({ tokens, ethAmount: formatEther(ethAmount) })
                 try {
                     const tokenAddress = await createCreatorToken({ address: formState.walletAddress as `0x${string}`, name: formState.username, provider, ethAmount, tokens });
                     toast.success("Creator token created!", { id: toastId });
