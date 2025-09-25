@@ -43,6 +43,7 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     const ethRequiredToBuy = await readClient.ethRequiredToFlaunch({
         initialMarketCapUSD: 5000,
         premineAmount,
+        slippagePercent: 1
     });
 
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
