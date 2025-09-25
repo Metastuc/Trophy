@@ -20,7 +20,7 @@ interface createTokenParams {
     tokens: bigint;
 };
 
-const supply = 100_000_000_000;
+const supply = 100_000_000_000 * 10^18;
 
 export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!WriteClient) {
@@ -58,7 +58,9 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
 
         const fairLaunchInBps = BigInt(45 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
-        const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
+        // const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
+        const initialTokenFairLaunch = BigInt(supply) * fairLaunchInBps;
+        console.log({initialTokenFairLaunch})
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
