@@ -271,7 +271,7 @@ export const sellCreatorToken = async (
             amountIn: amountInUnits,
             permitSingle,
             signature: signature as Address,
-        });
+        }, "V1_1");
 
         // return await checkTx(hash);
     } else {
@@ -279,7 +279,7 @@ export const sellCreatorToken = async (
             coinAddress: "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
             amountIn: amountInUnits,
             slippagePercent: 4,
-        });
+        }, "V1_1");
 
         // return await checkTx(hash);
     }
