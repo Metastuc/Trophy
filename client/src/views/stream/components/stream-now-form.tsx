@@ -3,7 +3,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { formatEther } from "viem";
 
 import { STREAM_NOW } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
 import { useServer } from "@/hooks/server";
 import { network } from "@/lib/constants";
-import { createCreatorToken, ethRequiredToGetAllocation } from "@/lib/flaunch";
+import { claimToken } from "@/lib/flaunch";
 import { cn } from "@/lib/utils";
 import { useAuthenticationStore } from "@/store/authentication";
  
@@ -50,13 +49,16 @@ export function StreamNowForm() {
                 // const tokens = BigInt("0");
                 // const ethAmount = BigInt("0");
 
-                const { tokens, ethAmount } = await ethRequiredToGetAllocation({ tokenPercent: "4" })
+                // const { tokens, ethAmount } = await ethRequiredToGetAllocation({ tokenPercent: "4" })
 
-                console.log({ tokens, ethAmount: formatEther(ethAmount) })
+                // console.log({ tokens, ethAmount: formatEther(ethAmount) })
                 try {
-                    const tokenAddress = await createCreatorToken({ address: formState.walletAddress as `0x${string}`, name: formState.username, provider, ethAmount, tokens });
+                    // const tokenAddress = await createCreatorToken({ address: formState.walletAddress as `0x${string}`, name: formState.username, provider, ethAmount, tokens });
+                    const creatorToken = await claimToken({ provider, coinAddress: "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4", address: "0xe60af63C0D8566f927982db7773b2479E2b94a54" })
                     toast.success("Creator token created!", { id: toastId });
-                    setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
+                    // setFormState((state) => ({ ...state, creatorToken: tokenAddress.creatorToken }));
+                    setFormState((state) => ({ ...state, creatorToken }));
+                // } catch (error) {
                 } catch (error) {
                     toast.error("Failed to create token: " + ((error as Error).message || "Unknown error"), {
                         id: toastId,

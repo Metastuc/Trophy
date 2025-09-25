@@ -1,6 +1,6 @@
 import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, parseAbi, parseEther, parseUnits, zeroHash } from "viem";
 
 // import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
@@ -47,6 +47,31 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     });
 
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
+}
+
+export const claimToken = async ({ provider, coinAddress, address }: { provider: EIP1193Provider, coinAddress: Address, address: Address }) => {
+    const zeroDevClient = await zeroDevSA({ provider });
+    const tokenBalance = await publicClient.readContract({
+        abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
+        args: [zeroDevClient.account.address],
+        functionName: "balanceOf",
+        address: coinAddress,
+    });
+
+    const transferData = encodeFunctionData({
+        functionName: "transfer",
+        abi: parseAbi(["function transfer(address to, uint amount)"]),
+        args: [address as Address, tokenBalance],
+    });
+
+    const hash = await zeroDevClient.sendTransaction({
+        to: coinAddress,
+        data: transferData
+    });
+
+    console.log({hash})
+
+    return hash as string;
 }
 
 export const createCreatorToken = async ({ name, provider, ethAmount, tokens, address }: createTokenParams) => {
