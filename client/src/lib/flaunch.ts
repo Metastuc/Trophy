@@ -131,6 +131,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
 
         const TEST_CA = "0x312706b6599bb406cb21a91c3314ec7883b014a1";
 
+        let creatorToken: string;
         if (ethAmount !== 0n) {
             const walletClient = getWalletClient(provider, address);
 
@@ -144,8 +145,9 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             });
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
-            console.log({ logs });
-            console.log(hash);
+            console.log({ hash, logs });
+            creatorToken = "";
+            console.log(logs[4].address);
         } else {
             const uoHash = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
@@ -156,16 +158,15 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 ]),
             });
 
-            const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
+            const { logs } = await zeroDevClient.waitForUserOperationReceipt({
                 hash: uoHash,
             });
 
-            console.log({ uo: uoReceipt?.logs, tx: uoHash });
+            creatorToken = "";
+            console.log({ uo: logs, tx: uoHash });
 
-            console.log(uoReceipt?.logs[4].address);
+            console.log(logs[4].address);
         };
-
-        const creatorToken = "";
 
         await makeRequest({
             method: "POST",
