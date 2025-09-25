@@ -38,9 +38,13 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     const AllocationPercent = Number(tokenPercent) / 100;
     const tokenPercentAllocation = supply * AllocationPercent;
 
-    const premineAmount = parseEther(tokenPercentAllocation.toString());
+    // const premineAmount = parseEther(tokenPercentAllocation.toString());
+    const premineAmount = BigInt(tokenPercentAllocation);
 
-    const ethRequiredToBuy = await readClient.ethRequiredToFlaunch({ initialMarketCapUSD: 5000, premineAmount });
+    const ethRequiredToBuy = await readClient.ethRequiredToFlaunch({
+        initialMarketCapUSD: 5000,
+        premineAmount,
+    });
 
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
 }
@@ -52,7 +56,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
         const initialMCapInUSDCWei = parseUnits("5000", 6);
         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
-        const fairLaunchInBps = BigInt(40 * 100);
+        const fairLaunchInBps = BigInt(45 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
         const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
 
