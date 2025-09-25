@@ -147,7 +147,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             console.log({ logs });
             console.log(hash);
         } else {
-            const uo = await zeroDevClient.sendUserOperation({
+            const uoHash = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
                     {
                         to: TEST_CA,
@@ -157,13 +157,13 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             });
 
             const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
-                hash: uo,
+                hash: uoHash,
             });
 
-            console.log({ uo: uoReceipt?.logs, tx: uo });
+            console.log({ uo: uoReceipt?.logs, tx: uoHash });
 
             console.log(uoReceipt?.logs[4].address);
-        }
+        };
 
         const creatorToken = "";
 
