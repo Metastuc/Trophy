@@ -5,20 +5,11 @@ import { Address, encodeAbiParameters, encodeFunctionData, parseAbi, parseEther,
 // import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA, network } from "./constants";
-import { getSmartAccount } from "./smart-account";
-import { SignTypedData } from "./types";
+import { claimTokenParams, createTokenParams, SignTypedData } from "./types";
 import { getWalletClient, publicClient } from "./viem";
 import { zeroDevSA } from "./zerodev";
 
 let WriteClient: ReadWriteFlaunchSDK | undefined;
-
-interface createTokenParams {
-    address: Address;
-    ethAmount: bigint;
-    name: string;
-    provider: EIP1193Provider;
-    tokens: bigint;
-};
 
 const supply = 100_000_000_000;
 
@@ -43,13 +34,13 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     const ethRequiredToBuy = await readClient.ethRequiredToFlaunch({
         initialMarketCapUSD: 5000,
         premineAmount,
-        slippagePercent: 1
+        slippagePercent: 1,
     });
 
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
-}
+};
 
-export const claimToken = async ({ provider, coinAddress, address }: { provider: EIP1193Provider, coinAddress: Address, address: Address }) => {
+export const claimToken = async ({ provider, coinAddress, address }: claimTokenParams) => {
     const zeroDevClient = await zeroDevSA({ provider });
     const tokenBalance = await publicClient.readContract({
         abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
@@ -66,13 +57,11 @@ export const claimToken = async ({ provider, coinAddress, address }: { provider:
 
     const hash = await zeroDevClient.sendTransaction({
         to: coinAddress,
-        data: transferData
+        data: transferData,
     });
 
-    console.log({hash})
-
     return hash as string;
-}
+};
 
 export const createCreatorToken = async ({ name, provider, ethAmount, tokens, address }: createTokenParams) => {
     try {
@@ -81,11 +70,9 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
         const initialMCapInUSDCWei = parseUnits("5000", 6);
         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
-        // const fairLaunchInBps = BigInt(45 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
-        // const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
+
         const initialTokenFairLaunch = (parseEther(supply.toString()) * 45n) / 100n;
-        console.log({initialTokenFairLaunch})
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
             method: "POST",
@@ -110,7 +97,8 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 feeCalculatorParams: "0x" as Address,
             },
             _treasuryManagerParams: {
-                manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+                // manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
+                manager: "0x0a4D1F57bEd18EC12DF5EF6eA77EB879eaf54B2f" as Address,
                 permissions: "0x0000000000000000000000000000000000000000" as Address,
                 initializeData: "0x" as Address,
                 depositData: "0x" as Address,
@@ -135,9 +123,9 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             args: [
                 flaunchParams._flaunchParams,
                 // "0x",
-                // flaunchParams._whitelistParams,
-                // flaunchParams._airdropParams,
-                // flaunchParams._treasuryManagerParams,
+                flaunchParams._whitelistParams,
+                flaunchParams._airdropParams,
+                flaunchParams._treasuryManagerParams,
             ],
         });
 
@@ -145,14 +133,6 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
 
         if (ethAmount !== 0n) {
             const walletClient = getWalletClient(provider, address);
-            console.log("addy:", address);
-
-            // const gas = await publicClient.estimateGas({
-            //     to: TEST_CA,
-            //     account: address,
-            //     data,
-            //     value: ethAmount,
-            // });
 
             const hash = await walletClient.sendTransaction({
                 to: TEST_CA,
@@ -160,14 +140,14 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 value: ethAmount,
                 account: address,
                 chain: network,
-                gas: 5000000n
+                gas: 5000000n,
             });
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
             console.log({ logs });
             console.log(hash);
         } else {
-                const uo = await zeroDevClient.sendUserOperation({
+            const uo = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
                     {
                         to: TEST_CA,
@@ -175,12 +155,14 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                     },
                 ]),
             });
-    
+
             const uoReceipt = await zeroDevClient.waitForUserOperationReceipt({
                 hash: uo,
             });
-    
+
             console.log({ uo: uoReceipt?.logs, tx: uo });
+
+            console.log(uoReceipt?.logs[4].address);
         }
 
         const creatorToken = "";
@@ -236,7 +218,6 @@ export const buyCreatorToken = async (
 };
 
 export const getCreatorTokenPrice = async (coinAddress: Address) => {
-
     return await readClient.coinPriceInUSD({ coinAddress });
 };
 
@@ -302,7 +283,7 @@ export const sellCreatorToken = async (
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {
     const flaunch = flaunchClient(provider);
-    const smartWalletClient = await getSmartAccount(provider);
+    const smartWalletClient = await zeroDevSA({ provider });
 
     return await flaunch.revenueManagerBalance({
         recipient: smartWalletClient.account.address,
@@ -314,17 +295,15 @@ type claimType = "claim";
 
 export const claimCreatorFees = async (provider: EIP1193Provider) => {
     try {
-        const smartWalletClient = await zeroDevSA({provider});
+        const smartWalletClient = await zeroDevSA({ provider });
 
         const tx = {
             abi: RevenueManagerAbi,
             functionName: "claim" as claimType,
-            // args: undefined,
             to: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
         };
 
         return await smartWalletClient.sendTransaction({ calls: [tx] });
-
     } catch (error: unknown) {
         console.error(error);
         throw new Error((error as Error).message);

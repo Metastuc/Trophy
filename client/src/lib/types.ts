@@ -28,3 +28,17 @@ export type SignTypedData = (
 ) => Promise<{
     signature: string;
 }>;
+
+export interface createTokenParams {
+    address: Address;
+    ethAmount: bigint;
+    name: string;
+    provider: EIP1193Provider;
+    tokens: bigint;
+}
+
+export interface claimTokenParams {
+    provider: EIP1193Provider;
+    coinAddress: Address;
+    address: Address;
+};
