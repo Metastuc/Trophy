@@ -77,7 +77,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(30 * 60),
                 premineAmount: tokens,
-                creator: address, // set to sa later
+                creator: sa_address as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
                 initialPriceParams,
@@ -134,7 +134,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 value: ethAmount,
                 account: address,
                 chain: network,
-                gas: 500000n
+                gas: 5000000n
             });
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
