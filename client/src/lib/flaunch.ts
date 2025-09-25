@@ -20,7 +20,7 @@ interface createTokenParams {
     tokens: bigint;
 };
 
-const supply = 100_000_000_000 * 10^18;
+const supply = parseEther("100000000000");
 
 export const flaunchClient = (provider: EIP1193Provider, address?: Address) => {
     if (!WriteClient) {
@@ -36,17 +36,16 @@ const readClient = createFlaunch({ publicClient });
 
 export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercent: string }) => {
     const AllocationPercent = Number(tokenPercent) / 100;
-    const tokenPercentAllocation = supply * AllocationPercent;
+    const tokenPercentAllocation = supply * BigInt(AllocationPercent);
 
     // const premineAmount = parseEther(tokenPercentAllocation.toString());
-    const premineAmount = BigInt(tokenPercentAllocation);
 
     const ethRequiredToBuy = await readClient.ethRequiredToFlaunch({
         initialMarketCapUSD: 5000,
-        premineAmount,
+        premineAmount: tokenPercentAllocation,
     });
 
-    return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
+    return { tokens: tokenPercentAllocation, ethAmount: ethRequiredToBuy };
 }
 
 export const createCreatorToken = async ({ name, provider, ethAmount, tokens, address }: createTokenParams) => {
@@ -59,7 +58,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
         const fairLaunchInBps = BigInt(45 * 100);
         const creatorFeeAllocationInBps = 70 * 100;
         // const initialTokenFairLaunch = (BigInt(supply) * fairLaunchInBps) / 10_000n;
-        const initialTokenFairLaunch = BigInt(supply) * fairLaunchInBps;
+        const initialTokenFairLaunch = supply * fairLaunchInBps;
         console.log({initialTokenFairLaunch})
 
         const { tokenUri } = await makeRequest<{ tokenUri: string }>({
