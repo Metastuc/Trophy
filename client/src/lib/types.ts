@@ -1,3 +1,6 @@
+import { EIP1193Provider } from "@privy-io/react-auth";
+import { Address } from "viem";
+
 type MessageProp = {
     name: string;
     type: string;
@@ -35,7 +38,7 @@ export interface createTokenParams {
     name: string;
     provider: EIP1193Provider;
     tokens: bigint;
-}
+};
 
 export interface claimTokenParams {
     provider: EIP1193Provider;
