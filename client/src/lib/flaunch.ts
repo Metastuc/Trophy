@@ -77,7 +77,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 initialTokenFairLaunch,
                 fairLaunchDuration: BigInt(30 * 60),
                 premineAmount: tokens,
-                creator: sa_address as Address,
+                creator: address, // set to sa later
                 creatorFeeAllocation: creatorFeeAllocationInBps,
                 flaunchAt: 0n,
                 initialPriceParams,
