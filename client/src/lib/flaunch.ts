@@ -146,7 +146,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
             console.log({ hash, logs });
-            creatorToken = "";
+            creatorToken = "whzzz";
             console.log(logs[4].address);
         } else {
             const uoHash = await zeroDevClient.sendUserOperation({
@@ -162,7 +162,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 hash: uoHash,
             });
 
-            creatorToken = "";
+            creatorToken = "whzzz";
             console.log({ uo: logs, tx: uoHash });
 
             console.log(logs[4].address);
