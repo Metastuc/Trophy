@@ -1,26 +1,35 @@
 import { getAccessToken } from "@privy-io/react-auth";
 import { useEffect } from "react";
+import { useIsMounted } from "usehooks-ts";
 
 import { useAuthenticationStore } from "@/hooks/authentication";
 
 export function useRunningInBrowser() {
     const setToken = useAuthenticationStore((state) => state.setToken);
+    const isMounted = useIsMounted();
 
     useEffect(
         function () {
-            async function handleFocus() {
+            async function refreshToken() {
                 try {
                     const token = await getAccessToken();
-                    setToken(token as string);
+                    if (isMounted() && token) {
+                        setToken(token);
+                    }
                 } catch (error) {
                     console.warn("Session expired:", error);
+                    if (isMounted()) {
+                        setToken(null);
+                    }
                 }
             }
 
-            window.addEventListener("focus", handleFocus);
-            return () => window.removeEventListener("focus", handleFocus);
+            refreshToken();
+
+            window.addEventListener("focus", refreshToken);
+            return () => window.removeEventListener("focus", refreshToken);
         },
-        [setToken],
+        [setToken, isMounted],
     );
 
     // this is a hack to make the app work on faracster android mini app
