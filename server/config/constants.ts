@@ -39,6 +39,11 @@ export const SERVER_CONSTANTS = {
     MAX_STREAM_GUESTS: 4,
 
     REDIS_KEYS: {
+        NOTIFICATIONS: {
+            KEY: (userId: string) => `user:notifications:${userId}`,
+            TTL: toTime({ unit: "seconds", value: 60 }),
+        },
+
         USER_PROFILE: {
             KEY: ({ id, isUser }: { id: string; isUser: boolean }) =>
                 isUser ? `user:public:${id}` : `user:private:${id}`,

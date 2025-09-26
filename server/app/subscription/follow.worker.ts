@@ -17,26 +17,30 @@ export const followQueue = new Queue("follows", {
 new Worker(
     "follows",
     async function (job) {
-        const { follow, whoWantsToFollow, whoIsToBeFollowed } = job.data;
+        const { follower, following } = job.data;
+
+        const follow = await prisma.follow.create({
+            data: { followerId: follower.id, followingId: following.id },
+        });
 
         await Promise.all([
             prisma.stats.upsert({
-                where: { userId: whoWantsToFollow?.id },
-                create: { userId: whoWantsToFollow?.id, followingCount: 1 },
+                where: { userId: follower?.id },
+                create: { userId: follower?.id, followingCount: 1 },
                 update: { followingCount: { increment: 1 } },
             }),
 
             prisma.stats.upsert({
-                where: { userId: whoIsToBeFollowed?.id },
-                create: { userId: whoIsToBeFollowed?.id, followerCount: 1 },
+                where: { userId: following?.id },
+                create: { userId: following?.id, followerCount: 1 },
                 update: { followerCount: { increment: 1 } },
             }),
 
             prisma.notification.create({
                 data: {
-                    userId: whoIsToBeFollowed?.id,
+                    userId: following?.id,
                     type: "FOLLOW",
-                    message: `${whoWantsToFollow?.username} started following you.`,
+                    message: `${follower?.username} started following you.`,
                     follow: { connect: { id: follow.id } },
                 },
             }),

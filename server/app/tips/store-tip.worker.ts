@@ -104,13 +104,15 @@ new Worker(
                 amountUsd,
                 user: { connect: { walletAddress: recipient } },
                 ...(sender ? { tipper: { connect: { walletAddress: sender } } } : { tipperWallet: sender }),
-                notification: {
-                    create: {
-                        user: { connect: { walletAddress: recipient } },
-                        type: "TIP",
-                        message: `You received ${amountUsd?.toFixed(2)} USD in ${token}!`,
-                    },
-                },
+            },
+        });
+
+        await prisma.notification.create({
+            data: {
+                user: { connect: { walletAddress: recipient } },
+                type: "TIP",
+                message: `You received ${amountUsd?.toFixed(2)} USD in ${token}!`,
+                tip: { connect: { id: tip.id } },
             },
         });
 

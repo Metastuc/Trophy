@@ -31,16 +31,12 @@ export async function followUser(request: Request, response: Response, next: Nex
             throw new HttpError({ message: `You are already following ${userId}`, code: 400 });
         }
 
-        const follow = await prisma.follow.create({
-            data: {
-                followerId: whoWantsToFollow?.id,
-                followingId: whoIsToBeFollowed?.id,
-            },
-        });
-
         await followQueue.add(
             "follow-user",
-            { follow, whoWantsToFollow, whoIsToBeFollowed },
+            {
+                follower: { id: whoWantsToFollow.id, username: whoWantsToFollow.username },
+                following: { id: whoIsToBeFollowed.id, username: whoIsToBeFollowed.username },
+            },
             {
                 attempts: 5,
                 backoff: { type: "exponential", delay: 1000 },
