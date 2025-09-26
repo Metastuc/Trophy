@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCheck } from "lucide-react";
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { getUserNotifications } from "@/api/get-user";
@@ -28,6 +28,8 @@ function RouteComponent() {
         queryKey: ["notifications"],
         queryFn: async () => await getUserNotifications({ username }),
         enabled: !!isAuthenticated,
+        // refetchOnWindowFocus: false,
+        // refetchOnMount: false,
     });
 
     let content: ReactNode;
@@ -38,13 +40,16 @@ function RouteComponent() {
         content = <div>{error.message}</div>;
     } else if (isSuccess && data.length > 0) {
         content = (
-            <ul className="divide-y divide-gray-200">
+            <ul className="space-y-5 divide-y divide-gray-200">
                 {data.map((value, index) => (
-                    <li key={index}>
-                        <h5>{value.label}</h5>
-                        {value.items.map((item) => (
-                            <RenderNotification key={item.id} {...item} />
-                        ))}
+                    <li key={index} className="space-y-2 pb-5">
+                        <h5 className="text-xs text-gray-600">{value.label}</h5>
+
+                        <ul className="space-y-4">
+                            {value.items.map((item) => (
+                                <RenderNotification key={item.id} {...item} />
+                            ))}
+                        </ul>
                     </li>
                 ))}
             </ul>
@@ -54,8 +59,8 @@ function RouteComponent() {
     }
 
     return (
-        <section>
-            <header className="relative flex items-center justify-between">
+        <Fragment>
+            <header className="sticky top-0 z-10 flex items-center justify-between bg-white/50 backdrop-blur-[.125rem]">
                 <figure
                     className="absolute h-[4.5rem] w-full"
                     style={{
@@ -85,6 +90,6 @@ function RouteComponent() {
             </header>
 
             <PageContentLayout>{content}</PageContentLayout>
-        </section>
+        </Fragment>
     );
 }
