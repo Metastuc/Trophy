@@ -24,3 +24,10 @@ export async function getUserWalletTokenBalances(data: {
         url: API_ENDPOINTS.USER.GET_WALLET_TOKEN_BALANCES(data.walletAddress),
     }).then((response) => response.data.data);
 }
+
+export async function getUserNotifications(data: { username: string }): Promise<UserNotificationsData> {
+    return await makeRequest<UserNotificationsResponse>({
+        method: "GET",
+        url: API_ENDPOINTS.USER.NOTIFICATIONS(data.username),
+    }).then((response) => response.data.data);
+}

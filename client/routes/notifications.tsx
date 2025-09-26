@@ -1,7 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCheck } from "lucide-react";
+import { ReactNode } from "react";
 import { useShallow } from "zustand/shallow";
 
+import { getUserNotifications } from "@/api/get-user";
+import { PageContentLayout } from "@/components/layout/page-content";
+import { Loading } from "@/components/ui/loading";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { cn } from "@/lib/utils";
 
@@ -10,11 +15,7 @@ export const Route = createFileRoute("/notifications")({
 });
 
 function RouteComponent() {
-    const {
-        isAuthenticated: _,
-        profileImage,
-        username,
-    } = useAuthenticationStore(
+    const { isAuthenticated, profileImage, username } = useAuthenticationStore(
         useShallow((state) => ({
             isAuthenticated: state.isAuthenticated,
             profileImage: state.user?.backendUserData.user.profilePicture as string,
@@ -22,14 +23,32 @@ function RouteComponent() {
         })),
     );
 
-    // const { data, error, isPending } = useQuery({
-    //     queryKey: ["notifications"],
-    //     queryFn: async () => {},
-    //     enabled: !!isAuthenticated,
-    // });
+    const { data, error, isPending, isSuccess, isError } = useQuery({
+        queryKey: ["notifications"],
+        queryFn: async () => await getUserNotifications({ username }),
+        enabled: !!isAuthenticated,
+    });
 
-    // if (error) return <div>{error.message}</div>;
+    let content: ReactNode;
 
+    if (isPending) {
+        content = <Loading />;
+    } else if (isError) {
+        content = <div className="p-4 text-red-500">⚠️ {error.message}</div>;
+    } else if (isSuccess && data.length > 0) {
+        content = (
+            <ul className="divide-y divide-gray-200">
+                {/* {data.notifications.map((n: any) => (
+                    <li key={n.id} className="p-4">
+                        <p className="text-sm text-gray-900">{n.title}</p>
+                        <p className="text-xs text-gray-500">{n.body}</p>
+                    </li>
+                ))} */}
+            </ul>
+        );
+    } else {
+        content = <div className="p-4 text-sm text-gray-500">No notifications found.</div>;
+    }
     return (
         <section>
             <header className="relative flex items-center justify-between">
@@ -43,7 +62,7 @@ function RouteComponent() {
                 />
 
                 <div className="z-10 flex h-[4.5rem] w-full items-center justify-between px-6">
-                    <aside className="flex items-center gap-0.5">
+                    <aside className="flex items-center gap-3">
                         <i className="size-8 rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399]">
                             <img
                                 className={cn("user-pfp", "rounded-full")}
@@ -52,7 +71,7 @@ function RouteComponent() {
                             />
                         </i>
 
-                        <h2 className="">Notifications</h2>
+                        <h2 className="text-white">Notifications</h2>
                     </aside>
 
                     <i className="border-blue100 text-blue100 size-6 rounded-full border p-1">
@@ -61,8 +80,7 @@ function RouteComponent() {
                 </div>
             </header>
 
-            <main></main>
-            <footer></footer>
+            <PageContentLayout>{content}</PageContentLayout>
         </section>
     );
 }
