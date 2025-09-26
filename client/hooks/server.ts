@@ -13,10 +13,7 @@ import { DataResponse, HttpMethod, makeRequest } from "#~/utils/axios.ts";
  * @returns React Query mutation hook.
  */
 export function useServer<TRequest extends Record<string, unknown>, TResponse>(
-    endpoint: {
-        URL: string;
-        METHOD: HttpMethod;
-    },
+    endpoint: { URL: string; METHOD: HttpMethod },
     options?: UseMutationOptions<DataResponse<TResponse>, Error, TRequest>,
     transformRequestData?: (variables: TRequest) => Record<string, unknown> | FormData | undefined,
 ) {
