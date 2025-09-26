@@ -1,8 +1,8 @@
-import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
+import { createFlaunch, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { Address, encodeAbiParameters, encodeFunctionData, parseAbi, parseEther, parseUnits, zeroHash } from "viem";
 
-// import { FLAUNCH_ZAP_ABI } from "./abi";
+import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA, network } from "./constants";
 import { claimTokenParams, createTokenParams, SignTypedData } from "./types";
@@ -42,6 +42,7 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
 
 export const claimToken = async ({ provider, coinAddress, address }: claimTokenParams) => {
     const zeroDevClient = await zeroDevSA({ provider });
+
     const tokenBalance = await publicClient.readContract({
         abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
         args: [zeroDevClient.account.address],
@@ -97,8 +98,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 feeCalculatorParams: "0x" as Address,
             },
             _treasuryManagerParams: {
-                // manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
-                manager: "0x0a4D1F57bEd18EC12DF5EF6eA77EB879eaf54B2f" as Address,
+                manager: ENV_SCHEMA.REVENUE_MANAGER_ADDRESS,
                 permissions: "0x0000000000000000000000000000000000000000" as Address,
                 initializeData: "0x" as Address,
                 depositData: "0x" as Address,
@@ -118,25 +118,24 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
         };
 
         const data = encodeFunctionData({
-            abi: FlaunchZapAbi,
+            abi: FLAUNCH_ZAP_ABI,
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                // "0x",
+                "0x",
                 flaunchParams._whitelistParams,
                 flaunchParams._airdropParams,
                 flaunchParams._treasuryManagerParams,
             ],
         });
 
-        const TEST_CA = "0x312706b6599bb406cb21a91c3314ec7883b014a1";
-
         let creatorToken: string;
+
         if (ethAmount !== 0n) {
             const walletClient = getWalletClient(provider, address);
 
             const hash = await walletClient.sendTransaction({
-                to: TEST_CA,
+                to: ENV_SCHEMA.FLAUNCH_CA,
                 data,
                 value: ethAmount,
                 account: address,
@@ -145,14 +144,13 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             });
 
             const { logs } = await publicClient.getTransactionReceipt({ hash });
-            console.log({ hash, logs });
-            creatorToken = "whzzz";
-            console.log(logs[4].address);
+
+            creatorToken = logs[4].address;
         } else {
             const uoHash = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
                     {
-                        to: TEST_CA,
+                        to: ENV_SCHEMA.FLAUNCH_CA,
                         data,
                     },
                 ]),
@@ -162,10 +160,7 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
                 hash: uoHash,
             });
 
-            creatorToken = "whzzz";
-            console.log({ uo: logs, tx: uoHash });
-
-            console.log(logs[4].address);
+            creatorToken = logs[4].address;
         };
 
         await makeRequest({
@@ -250,49 +245,36 @@ export const sellCreatorToken = async (
     signTypedData: SignTypedData,
     address: Address,
 ) => {
-    console.log(coinAddress)
     const flaunch = flaunchClient(provider, address);
     const amountInUnits = parseEther(amount.replace(/,/g, ""));
-    const { allowance } = await flaunch.getPermit2AllowanceAndNonce("0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4");
+    const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
-    let hash: `0x${string}`;
+    let hash: Address;
+
     if (allowance < amountInUnits) {
-        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(
-            "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
-        );
+        const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
 
         typedData.message.details.amount = typedData.message.details.amount.toString();
         typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
 
         const { signature } = await signTypedData(typedData, { address });
         hash = await flaunch.sellCoin({
-            coinAddress: "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
+            coinAddress,
             slippagePercent: 4,
             amountIn: amountInUnits,
             permitSingle,
             signature: signature as Address,
         }, "V1_1");
 
-        // return await checkTx(hash);
     } else {
         hash = await flaunch.sellCoin({
-            coinAddress: "0xE363229bA7C83eCC630926AC76667a4Ad6C0E4D4",
+            coinAddress,
             amountIn: amountInUnits,
             slippagePercent: 4,
         }, "V1_1");
-
-        // return await checkTx(hash);
     }
-    const tx = await checkTx(hash);
-    const walletClient = getWalletClient(provider, address);
-    await walletClient.sendTransaction({
-        account: address,
-        chain: network,
-        to: "0xe60af63C0D8566f927982db7773b2479E2b94a54" as Address,
-        value: parseEther("0.1"),
-    });
 
-    return tx;
+    return await checkTx(hash);
 };
 
 export const fetchFeeBalance = async (provider: EIP1193Provider) => {
