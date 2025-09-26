@@ -41,6 +41,7 @@ export async function notifications(request: Request, response: Response, next: 
                 id: true,
                 type: true,
                 createdAt: true,
+                read: true,
                 follow: {
                     select: {
                         follower: {
