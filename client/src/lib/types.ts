@@ -41,7 +41,8 @@ export interface createTokenParams {
 };
 
 export interface claimTokenParams {
-    provider: EIP1193Provider;
-    coinAddress: Address;
     address: Address;
+    coinAddress: Address;
+    provider: EIP1193Provider;
+    username: string;
 };
