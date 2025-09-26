@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsc -b && vite build",
         "db-pull": "bunx --bun dotenv -e .env.local -- bunx --bun prisma db pull",
-        "dev": "bunx vite",
+        "dev": "bunx --bun vite",
         "lint": "bunx --bun tsc -b && bunx --bun prettier --write . && bunx --bun eslint --fix .",
         "preview": "vite preview",
         "prod": "prisma db push && pnpm exec tsx server/index.ts",
@@ -17,7 +17,7 @@
         "@aws-sdk/client-s3": "^3.896.0",
         "@biconomy/abstractjs": "^1.1.8",
         "@farcaster/miniapp-sdk": "^0.1.10",
-        "@flaunch/sdk": "^0.9.0",
+        "@flaunch/sdk": "^0.8.2",
         "@huddle01/react": "^2.6.4",
         "@huddle01/server-sdk": "^2.6.2",
         "@prisma/client": "^6.16.2",

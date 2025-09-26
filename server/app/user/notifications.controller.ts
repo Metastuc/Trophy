@@ -1,4 +1,13 @@
-import { format, isToday, isYesterday, parseISO, subDays } from "date-fns";
+import {
+    differenceInCalendarWeeks,
+    format,
+    isThisWeek,
+    isToday,
+    isYesterday,
+    parseISO,
+    startOfWeek,
+    subDays,
+} from "date-fns";
 import { NextFunction, Request, Response } from "express";
 
 import { USER_NOTIFICATIONS_RESPONSE_SCHEMA } from "#~/schema/user/index.ts";
@@ -19,6 +28,7 @@ export async function notifications(request: Request, response: Response, next: 
                 data: JSON.parse(cached),
                 message: "Notifications fetched from cache",
             });
+            return;
         }
 
         const notifications = await prisma.notification.findMany({
@@ -50,19 +60,26 @@ export async function notifications(request: Request, response: Response, next: 
 
         const grouped = notifications.reduce(
             function (all, { createdAt, ...rest }) {
-                const parsedDate = parseISO(createdAt.toISOString());
-                const key = format(parsedDate, "yyyy-MM-dd");
-
                 let label: string;
+
+                const parsedDate = parseISO(createdAt.toISOString());
+                const key = format(startOfWeek(parsedDate), "yyyy-MM-dd");
+
                 if (isToday(parsedDate)) label = "Today";
                 else if (isYesterday(parsedDate)) label = "Yesterday";
-                else label = format(parsedDate, "MMMM d, yyyy");
+                else if (isThisWeek(parsedDate)) label = "This Week";
+                else {
+                    const weeksDifference = differenceInCalendarWeeks(new Date(), parsedDate);
+                    if (weeksDifference === 1) label = "Last week";
+                    else if (weeksDifference < 4) label = `${weeksDifference} weeks ago`;
+                    else label = format(parsedDate, "MMMM d, yyyy");
+                }
 
                 if (!all[key]) all[key] = { date: key, label, items: [] };
                 all[key].items.push(rest);
                 return all;
             },
-            {} as Record<string, { date: string; label: string; items: unknown[] }>,
+            {} as Record<string, { date: string; label: string; items: Array<unknown> }>,
         );
 
         const timeline = Object.values(grouped);

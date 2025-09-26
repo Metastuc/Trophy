@@ -9,6 +9,7 @@ import { PageContentLayout } from "@/components/layout/page-content";
 import { Loading } from "@/components/ui/loading";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { cn } from "@/lib/utils";
+import { RenderNotification } from "@/views/notifications";
 
 export const Route = createFileRoute("/notifications")({
     component: RouteComponent,
@@ -34,21 +35,24 @@ function RouteComponent() {
     if (isPending) {
         content = <Loading />;
     } else if (isError) {
-        content = <div className="p-4 text-red-500">⚠️ {error.message}</div>;
+        content = <div>{error.message}</div>;
     } else if (isSuccess && data.length > 0) {
         content = (
             <ul className="divide-y divide-gray-200">
-                {/* {data.notifications.map((n: any) => (
-                    <li key={n.id} className="p-4">
-                        <p className="text-sm text-gray-900">{n.title}</p>
-                        <p className="text-xs text-gray-500">{n.body}</p>
+                {data.map((value, index) => (
+                    <li key={index}>
+                        <h5>{value.label}</h5>
+                        {value.items.map((item) => (
+                            <RenderNotification key={item.id} {...item} />
+                        ))}
                     </li>
-                ))} */}
+                ))}
             </ul>
         );
     } else {
         content = <div className="p-4 text-sm text-gray-500">No notifications found.</div>;
     }
+
     return (
         <section>
             <header className="relative flex items-center justify-between">
