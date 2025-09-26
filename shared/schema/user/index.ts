@@ -52,7 +52,6 @@ export const USER_NOTIFICATIONS_RESPONSE_SCHEMA = z.array(
                     .object({
                         tipper: z.object({
                             username: z.string(),
-                            profileImage: z.string().nullable(),
                         }),
                         amount: z.number(),
                         token: z.string(),
