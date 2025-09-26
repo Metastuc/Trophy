@@ -57,7 +57,7 @@ export async function notifications(request: Request, response: Response, next: 
                 },
                 tip: {
                     select: {
-                        tipper: { select: { username: true, profileImage: true } },
+                        tipper: { select: { username: true } },
                         amount: true,
                         token: true,
                     },
