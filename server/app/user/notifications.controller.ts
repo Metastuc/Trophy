@@ -14,6 +14,7 @@ import { USER_NOTIFICATIONS_RESPONSE_SCHEMA } from "#~/schema/user/index.ts";
 import { SERVER_CONSTANTS } from "#config/constants.ts";
 import { prisma } from "#config/prisma.ts";
 import { redis } from "#config/redis.ts";
+import { HttpError } from "#middleware/error.ts";
 
 export async function notifications(request: Request, response: Response, next: NextFunction) {
     const { userId } = request.params;
@@ -31,9 +32,15 @@ export async function notifications(request: Request, response: Response, next: 
             return;
         }
 
+        const user = await prisma.user.findUnique({
+            where: { username: userId },
+            select: { id: true, lastReadAt: true },
+        });
+        if (!user) throw new HttpError({ code: 404, message: "User not found" });
+
         const notifications = await prisma.notification.findMany({
             where: {
-                user: { username: userId },
+                userId: user?.id,
                 createdAt: { gte: cutoff },
             },
             orderBy: { createdAt: "desc" },
@@ -41,7 +48,6 @@ export async function notifications(request: Request, response: Response, next: 
                 id: true,
                 type: true,
                 createdAt: true,
-                read: true,
                 follow: {
                     select: {
                         follower: {
@@ -59,29 +65,34 @@ export async function notifications(request: Request, response: Response, next: 
             },
         });
 
-        const grouped = notifications.reduce(
-            function (all, { createdAt, ...rest }) {
-                let label: string;
+        const grouped = notifications
+            .map((notification) => ({
+                ...notification,
+                read: user.lastReadAt ? notification.createdAt <= user.lastReadAt : false,
+            }))
+            .reduce(
+                function (all, { createdAt, ...rest }) {
+                    let label: string;
 
-                const parsedDate = parseISO(createdAt.toISOString());
-                const key = format(startOfWeek(parsedDate), "yyyy-MM-dd");
+                    const parsedDate = parseISO(createdAt.toISOString());
+                    const key = format(startOfWeek(parsedDate), "yyyy-MM-dd");
 
-                if (isToday(parsedDate)) label = "Today";
-                else if (isYesterday(parsedDate)) label = "Yesterday";
-                else if (isThisWeek(parsedDate)) label = "This Week";
-                else {
-                    const weeksDifference = differenceInCalendarWeeks(new Date(), parsedDate);
-                    if (weeksDifference === 1) label = "Last week";
-                    else if (weeksDifference < 4) label = `${weeksDifference} weeks ago`;
-                    else label = format(parsedDate, "MMMM d, yyyy");
-                }
+                    if (isToday(parsedDate)) label = "Today";
+                    else if (isYesterday(parsedDate)) label = "Yesterday";
+                    else if (isThisWeek(parsedDate)) label = "This Week";
+                    else {
+                        const weeksDifference = differenceInCalendarWeeks(new Date(), parsedDate);
+                        if (weeksDifference === 1) label = "Last week";
+                        else if (weeksDifference < 4) label = `${weeksDifference} weeks ago`;
+                        else label = format(parsedDate, "MMMM d, yyyy");
+                    }
 
-                if (!all[key]) all[key] = { date: key, label, items: [] };
-                all[key].items.push(rest);
-                return all;
-            },
-            {} as Record<string, { date: string; label: string; items: Array<unknown> }>,
-        );
+                    if (!all[key]) all[key] = { date: key, label, items: [] };
+                    all[key].items.push(rest);
+                    return all;
+                },
+                {} as Record<string, { date: string; label: string; items: Array<unknown> }>,
+            );
 
         const timeline = Object.values(grouped);
         const responsePayload = USER_NOTIFICATIONS_RESPONSE_SCHEMA.parse(timeline);
