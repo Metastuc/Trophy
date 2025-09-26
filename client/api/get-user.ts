@@ -31,3 +31,10 @@ export async function getUserNotifications(data: { username: string }): Promise<
         url: API_ENDPOINTS.USER.NOTIFICATIONS(data.username),
     }).then((response) => response.data.data);
 }
+
+export async function markNotificationsAsRead(data: { username: string }): Promise<ApiResponse<undefined>> {
+    return await makeRequest<ApiResponse<undefined>>({
+        method: "PATCH",
+        url: API_ENDPOINTS.USER.MARK_NOTIFICATIONS_AS_READ(data.username),
+    }).then((response) => response.data);
+}

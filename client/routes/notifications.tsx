@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCheck } from "lucide-react";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { getUserNotifications } from "@/api/get-user";
 import { PageContentLayout } from "@/components/layout/page-content";
 import { Loading } from "@/components/ui/loading";
 import { useAuthenticationStore } from "@/hooks/authentication";
+import { useServer } from "@/hooks/server";
+import { API_ENDPOINTS, queryClient } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { RenderNotification } from "@/views/notifications";
 
@@ -28,9 +29,29 @@ function RouteComponent() {
         queryKey: ["notifications"],
         queryFn: async () => await getUserNotifications({ username }),
         enabled: !!isAuthenticated,
-        // refetchOnWindowFocus: false,
-        // refetchOnMount: false,
     });
+
+    const { mutate } = useServer<{ username: string }, undefined>(
+        {
+            METHOD: "PATCH",
+            URL: API_ENDPOINTS.USER.MARK_NOTIFICATIONS_AS_READ(username),
+        },
+        {
+            onSuccess() {
+                queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            },
+        },
+    );
+
+    useEffect(
+        function () {
+            if (isAuthenticated && data && username) {
+                const hasUnread = data.some((group) => group.items.some((notification) => !notification.read));
+                if (hasUnread) mutate({ username });
+            }
+        },
+        [isAuthenticated, data, mutate, username],
+    );
 
     let content: ReactNode;
 
@@ -82,10 +103,6 @@ function RouteComponent() {
 
                         <h2 className="text-white">Notifications</h2>
                     </aside>
-
-                    <i className="border-blue100 text-blue100 size-6 rounded-full border p-1">
-                        <CheckCheck />
-                    </i>
                 </div>
             </header>
 
