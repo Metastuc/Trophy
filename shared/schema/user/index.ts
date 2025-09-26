@@ -39,6 +39,7 @@ export const USER_NOTIFICATIONS_RESPONSE_SCHEMA = z.array(
             z.object({
                 id: z.string(),
                 type: z.enum(["FOLLOW", "TIP", "PURCHASE"]),
+                read: z.boolean(),
                 follow: z
                     .object({
                         follower: z.object({
