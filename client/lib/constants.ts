@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
         GET_WALLET_TOKEN_BALANCES: (userId: string) => `/user/${userId}/wallet-token-balances`,
         ME: "/user/me",
         NOTIFICATIONS: (userId: string) => `/user/${userId}/notifications`,
+        MARK_NOTIFICATIONS_AS_READ: (userId: string) => `/user/${userId}/notifications/read`,
         SAVE_TOKEN: (userId: string) => `/user/${userId}/save-creator-token`,
         UPDATE_USER: (userId: string) => `/user/${userId}/update`,
     },
