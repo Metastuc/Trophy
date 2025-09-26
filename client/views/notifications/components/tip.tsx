@@ -13,9 +13,9 @@ export function TipNotification({ read, tip }: TipNotificationProps) {
                 <CircleDollarSign />
             </i>
 
-            <aside className="flex items-center justify-center gap-2">
+            <aside className="flex items-center justify-center gap-2.5">
                 <div className="relative">
-                    <img src={tokenMeta.icon} className="size-9" alt={`${tokenMeta.symbol}-logo`} />
+                    <img src={tokenMeta.icon} className="size-10" alt={`${tokenMeta.symbol}-logo`} />
                     <img src="/base.svg" className="absolute -right-0.5 -bottom-0.5 size-4" alt="base-logo" />
                 </div>
 
