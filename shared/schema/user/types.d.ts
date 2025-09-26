@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
     AUTHENTICATE_USER_RESPONSE_SCHEMA,
     ONBOARD_USER_RESPONSE_SCHEMA,
+    USER_NOTIFICATIONS_RESPONSE_SCHEMA,
     UserProfile,
     WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA,
 } from ".";
@@ -32,6 +33,9 @@ declare global {
 
     type UserWalletTokenBalancesData = z.infer<typeof WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA>;
     type UserWalletTokenBalancesResponse = ApiResponse<UserWalletTokenBalancesData>;
+
+    type UserNotificationsData = z.infer<typeof USER_NOTIFICATIONS_RESPONSE_SCHEMA>;
+    type UserNotificationsResponse = ApiResponse<UserNotificationsData>;
 }
 
 export {};

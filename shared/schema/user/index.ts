@@ -31,6 +31,37 @@ export const WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA = z.array(
     }),
 );
 
+export const USER_NOTIFICATIONS_RESPONSE_SCHEMA = z.array(
+    z.object({
+        date: z.string(),
+        label: z.string(),
+        items: z.array(
+            z.object({
+                id: z.string(),
+                type: z.enum(["FOLLOW", "TIP", "PURCHASE"]),
+                follow: z
+                    .object({
+                        follower: z.object({
+                            username: z.string(),
+                            profileImage: z.string().nullable(),
+                        }),
+                    })
+                    .nullable(),
+                tip: z
+                    .object({
+                        tipper: z.object({
+                            username: z.string(),
+                            profileImage: z.string().nullable(),
+                        }),
+                        amount: z.number(),
+                        token: z.string(),
+                    })
+                    .nullable(),
+            }),
+        ),
+    }),
+);
+
 export type UserProfile = Prisma.UserGetPayload<{
     include: {
         creatorToken: { select: { address: true } };
