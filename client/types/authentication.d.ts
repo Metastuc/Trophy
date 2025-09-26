@@ -13,7 +13,7 @@ declare global {
 
         logout: () => void;
         setIsLoading: (isLoading: boolean) => void;
-        setToken: (token: string) => void;
+        setToken: (token: string | null) => void;
         setUser: (user: AuthenticatedUser | null) => void;
     };
 }
