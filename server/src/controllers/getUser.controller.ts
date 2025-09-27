@@ -34,7 +34,7 @@ export const getUser = async (req: Request, res: Response) => {
     }
 
     const user = await prisma.user.findUnique({
-      where: { username }
+      where: { username },
     });
 
     if (!user) {
@@ -52,10 +52,7 @@ export const getUser = async (req: Request, res: Response) => {
 
     const holdings: IHoldings[] = [];
     for (const holding of user.holdings) {
-      const { mcap, tokenSymbol, price, tokenImage } = await getTokenDetails(
-        holding as Address,
-        true
-      );
+      const { mcap, tokenSymbol, price, tokenImage } = await getTokenDetails(holding as Address, true);
       holdings.push({
         mcap,
         price,
@@ -76,6 +73,6 @@ export const getUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error in getUser:", error);
-    res.status(500).json({ error: "error fetching user data" });
+    res.status(500).json({ message: "error fetching user data" });
   }
 };

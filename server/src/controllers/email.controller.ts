@@ -10,7 +10,8 @@ export const validationLink = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "sent!" });
   } catch (error) {
-    res.status(500).json({ message: "error " });
+    console.error(error)
+    res.status(500).json({ message: "error sending verification link email" });
   }
 };
 
@@ -20,7 +21,7 @@ export const validateEmail = async (req: Request, res: Response) => {
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-      res.status(404).json({ error: "email does not exist" });
+      res.status(404).json({ message: "email does not exist" });
       return;
     }
 
@@ -33,6 +34,7 @@ export const validateEmail = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "verified!" });
   } catch (error) {
-    res.status(500).json({ message: "error " })
+    console.error(error)
+    res.status(500).json({ message: "error verifying email" });
   }
 };

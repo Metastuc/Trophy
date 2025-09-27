@@ -26,7 +26,7 @@ export const createStream = async (req: Request, res: Response) => {
     const { title, date, username, xLive, ytLive } = req.body;
 
     if (!username) {
-      res.status(400).json({ error: "Username is required!" });
+      res.status(400).json({ message: "Username is required!" });
       return;
     }
 
@@ -131,10 +131,7 @@ export const createStream = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({
-      error: "Internal server error",
-      message: error.message
-    });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -144,10 +141,10 @@ const startLivestream = async (roomId: string, token: string, rtmpUrls: string[]
       roomId,
       token,
       rtmpUrls,
-      recordLivestream: true
+      recordLivestream: true,
     });
 
-    console.log({msg})
+    console.log({ msg });
   } catch (error: any) {
     console.error(error);
     throw new Error(error.message);
@@ -159,7 +156,7 @@ export const stopStream = async (req: Request, res: Response) => {
     const { roomId, username, viewers } = req.body;
 
     if (!roomId || !username) {
-      res.status(400).json({ error: "room id and username is required!" });
+      res.status(400).json({ message: "room id and username is required!" });
       return;
     }
 
@@ -177,7 +174,7 @@ export const stopStream = async (req: Request, res: Response) => {
     }
 
     if (liveStream.status !== "Live") {
-      console.log(liveStream.status)
+      console.log(liveStream.status);
       res.status(400).json({ message: "Stream is not live!" });
       return;
     }
@@ -188,17 +185,17 @@ export const stopStream = async (req: Request, res: Response) => {
         where: { username },
         data: {
           epicStreams: Viewers,
-          role: "viewer"
+          role: "viewer",
         },
       });
     }
 
     await prisma.user.update({
-        where: { username },
-        data: {
-          role: "viewer",
-        },
-      });
+      where: { username },
+      data: {
+        role: "viewer",
+      },
+    });
 
     await prisma.stream.update({
       where: { roomId },
@@ -212,6 +209,6 @@ export const stopStream = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Live stream ended" });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ error: "Error ending stream" });
+    res.status(500).json({ message: "Error ending stream" });
   }
 };

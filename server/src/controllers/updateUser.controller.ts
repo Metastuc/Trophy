@@ -42,7 +42,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     const user = await prisma.user.update({
       where: { privyId },
-      data: updateFields
+      data: updateFields,
     });
     if (!user) {
       res.status(404).json({ message: "user not found" });
@@ -52,9 +52,9 @@ export const updateProfile = async (req: Request, res: Response) => {
     const streams = await prisma.stream.findMany({
       where: {
         streamer: user.username,
-        status: "Scheduled"
+        status: "Scheduled",
       },
-      orderBy: { id: "desc" }
+      orderBy: { id: "desc" },
     });
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
@@ -63,11 +63,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     res.status(200).json({ message: "profile update success", user, streams });
   } catch (error) {
     console.error(error);
-
-    res.status(500).json({
-      error: (error as Error).message,
-      message: "Failed to update profile data",
-    });
+    res.status(500).json({ message: "Failed to update profile" });
   }
 };
 
@@ -83,16 +79,16 @@ export const feesUpdate = async (req: Request, res: Response) => {
     await prisma.user.update({
       where: { username },
       data: {
-        totalFees: user.totalFees + Number(fees)
-      }
-    })
+        totalFees: user.totalFees + Number(fees),
+      },
+    });
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(user));
 
     res.status(200).json({ message: "fees updated :)" });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -102,19 +98,19 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
     const roomId = req.body.roomId;
 
     if (!thumbnailBuffer || !roomId) {
-      res.status(400).json({ error: "Thumbnail URL or room ID is missing" });
+      res.status(400).json({ message: "Thumbnail URL or room ID is missing" });
       return;
     }
 
     const stream = await prisma.stream.findUnique({ where: { roomId } });
 
     if (!stream) {
-      res.status(404).json({ error: "Stream not found" });
+      res.status(404).json({ message: "Stream not found" });
       return;
     }
 
     if (stream.status === "Ended" || stream.status === "Scheduled") {
-      res.status(400).json({ error: "Cannot update thumbnail for ended or scheduled streams" });
+      res.status(400).json({ message: "Cannot update thumbnail for ended or scheduled streams" });
       return;
     }
 
@@ -127,14 +123,14 @@ export const saveStreamThumbnail = async (req: Request, res: Response) => {
     await prisma.stream.update({
       where: { roomId },
       data: {
-        thumbnail: thumbnailUrl
-      }
+        thumbnail: thumbnailUrl,
+      },
     });
 
     res.status(200).json({ message: "Thumbnail saved successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -159,16 +155,16 @@ export const updatePfp = async (req: Request, res: Response) => {
     const uUser = await prisma.user.update({
       where: { privyId },
       data: {
-        userPfp: updatedImage
-      }
-    })
+        userPfp: updatedImage,
+      },
+    });
 
     await RedisClient.set(`user:${user.username}`, JSON.stringify(uUser));
 
     res.status(200).json({ user: uUser });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: (error as Error).message });
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
@@ -177,13 +173,13 @@ export const creatorTokenCreated = async (req: Request, res: Response) => {
     const { username, creatorToken, sa_address } = req.body;
 
     if (!username || !creatorToken) {
-      res.status(400).json({ error: "username or creator token address cannot be empty" });
+      res.status(400).json({ message: "username or creator token address cannot be empty" });
       return;
     }
 
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
-      res.status(404).json({ error: "User doesn't exist" });
+      res.status(404).json({ message: "User doesn't exist" });
       return;
     }
 
@@ -191,8 +187,8 @@ export const creatorTokenCreated = async (req: Request, res: Response) => {
       where: { username },
       data: {
         creatorToken,
-        sa_address
-      }
+        sa_address,
+      },
     });
 
     await RedisClient.set(`user:${username}`, JSON.stringify(uUser));
@@ -200,6 +196,6 @@ export const creatorTokenCreated = async (req: Request, res: Response) => {
     res.status(200).json({ message: "creator token saved" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
