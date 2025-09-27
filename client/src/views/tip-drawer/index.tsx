@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StreamerLivePFP } from "@/components/ui/streamer-live-pfp";
+import { makeRequest } from "@/lib/axios";
 import { APPLICATION_CONSTANTS, network } from "@/lib/constants";
 import { TOKEN_ADDRESSES } from "@/lib/contracts";
 import { tipETH, tipUser } from "@/lib/tip";
@@ -168,7 +169,13 @@ function TipDrawerInner() {
                     senderAddress: privyWalletState.address as Address,
                     wallet: privyWalletState.walletType as string,
                 });
-            }
+            };
+
+            await makeRequest({
+                method: 'POST',
+                url: "/track-tip",
+                data: { token: initialValues.token.toLowerCase(), amount: Number(initialValues.amountInToken) }
+            });
 
             toast.success("Tip sent successfully!", {
                 duration: 5000,
