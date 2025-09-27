@@ -20,11 +20,11 @@ declare global {
     }
 
     interface CreateStreamFormState {
+        creatorToken?: Address;
+        creatorTokenEnabled?: boolean;
         date: string;
         username: string;
         walletAddress?: Address;
-        creatorToken?: Address;
-        creatorTokenEnabled?: boolean;
     }
 
     interface DateTimePickerState {
@@ -35,7 +35,13 @@ declare global {
 
     interface UseStreamForm {
         formState: CreateStreamFormState;
-        handleCreatorTokenCreation: () => Promise<Address | undefined>;
+        handleCreatorTokenCreation: ({
+            ethereumAmountRequired,
+            tokensCreatorWillReceieve,
+        }: {
+            ethereumAmountRequired: bigint;
+            tokensCreatorWillReceieve: bigint;
+        }) => Promise<Address | undefined>;
         isAuthenticated: boolean;
         isCreatingToken: boolean;
         setFormState: React.Dispatch<React.SetStateAction<CreateStreamFormState>>;
@@ -50,6 +56,8 @@ declare global {
             approxmateAmountInToken: string;
             token: string;
             tokenAddress: Address;
+            ethereumAmountRequired: bigint;
+            tokensCreatorWillReceieve: bigint;
         };
     }
 
