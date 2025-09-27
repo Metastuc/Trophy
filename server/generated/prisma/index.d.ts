@@ -39,6 +39,11 @@ export type TipTxs = $Result.DefaultSelection<Prisma.$TipTxsPayload>
  */
 export type cVolume = $Result.DefaultSelection<Prisma.$cVolumePayload>
 /**
+ * Model TokenClaimModel
+ * 
+ */
+export type TokenClaimModel = $Result.DefaultSelection<Prisma.$TokenClaimModelPayload>
+/**
  * Model User
  * 
  */
@@ -199,6 +204,16 @@ export class PrismaClient<
     * ```
     */
   get cVolume(): Prisma.cVolumeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tokenClaimModel`: Exposes CRUD operations for the **TokenClaimModel** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TokenClaimModels
+    * const tokenClaimModels = await prisma.tokenClaimModel.findMany()
+    * ```
+    */
+  get tokenClaimModel(): Prisma.TokenClaimModelDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -653,6 +668,7 @@ export namespace Prisma {
     Notification: 'Notification',
     TipTxs: 'TipTxs',
     cVolume: 'cVolume',
+    TokenClaimModel: 'TokenClaimModel',
     User: 'User'
   };
 
@@ -672,7 +688,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "stream" | "notification" | "tipTxs" | "cVolume" | "user"
+      modelProps: "stream" | "notification" | "tipTxs" | "cVolume" | "tokenClaimModel" | "user"
       txIsolationLevel: never
     }
     model: {
@@ -972,6 +988,80 @@ export namespace Prisma {
           }
         }
       }
+      TokenClaimModel: {
+        payload: Prisma.$TokenClaimModelPayload<ExtArgs>
+        fields: Prisma.TokenClaimModelFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TokenClaimModelFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TokenClaimModelFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>
+          }
+          findFirst: {
+            args: Prisma.TokenClaimModelFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TokenClaimModelFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>
+          }
+          findMany: {
+            args: Prisma.TokenClaimModelFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>[]
+          }
+          create: {
+            args: Prisma.TokenClaimModelCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>
+          }
+          createMany: {
+            args: Prisma.TokenClaimModelCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.TokenClaimModelDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>
+          }
+          update: {
+            args: Prisma.TokenClaimModelUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>
+          }
+          deleteMany: {
+            args: Prisma.TokenClaimModelDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TokenClaimModelUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TokenClaimModelUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenClaimModelPayload>
+          }
+          aggregate: {
+            args: Prisma.TokenClaimModelAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTokenClaimModel>
+          }
+          groupBy: {
+            args: Prisma.TokenClaimModelGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TokenClaimModelGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.TokenClaimModelFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.TokenClaimModelAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.TokenClaimModelCountArgs<ExtArgs>
+            result: $Utils.Optional<TokenClaimModelCountAggregateOutputType> | number
+          }
+        }
+      }
       User: {
         payload: Prisma.$UserPayload<ExtArgs>
         fields: Prisma.UserFieldRefs
@@ -1129,6 +1219,7 @@ export namespace Prisma {
     notification?: NotificationOmit
     tipTxs?: TipTxsOmit
     cVolume?: cVolumeOmit
+    tokenClaimModel?: TokenClaimModelOmit
     user?: UserOmit
   }
 
@@ -5312,6 +5403,1002 @@ export namespace Prisma {
 
 
   /**
+   * Model TokenClaimModel
+   */
+
+  export type AggregateTokenClaimModel = {
+    _count: TokenClaimModelCountAggregateOutputType | null
+    _avg: TokenClaimModelAvgAggregateOutputType | null
+    _sum: TokenClaimModelSumAggregateOutputType | null
+    _min: TokenClaimModelMinAggregateOutputType | null
+    _max: TokenClaimModelMaxAggregateOutputType | null
+  }
+
+  export type TokenClaimModelAvgAggregateOutputType = {
+    lockedToken: number | null
+    totalClaimed: number | null
+    tokenLeft: number | null
+  }
+
+  export type TokenClaimModelSumAggregateOutputType = {
+    lockedToken: number | null
+    totalClaimed: number | null
+    tokenLeft: number | null
+  }
+
+  export type TokenClaimModelMinAggregateOutputType = {
+    id: string | null
+    username: string | null
+    lockedToken: number | null
+    totalClaimed: number | null
+    tokenLeft: number | null
+    lastClaimed: Date | null
+    claimDate: Date | null
+  }
+
+  export type TokenClaimModelMaxAggregateOutputType = {
+    id: string | null
+    username: string | null
+    lockedToken: number | null
+    totalClaimed: number | null
+    tokenLeft: number | null
+    lastClaimed: Date | null
+    claimDate: Date | null
+  }
+
+  export type TokenClaimModelCountAggregateOutputType = {
+    id: number
+    username: number
+    lockedToken: number
+    totalClaimed: number
+    tokenLeft: number
+    lastClaimed: number
+    claimDate: number
+    _all: number
+  }
+
+
+  export type TokenClaimModelAvgAggregateInputType = {
+    lockedToken?: true
+    totalClaimed?: true
+    tokenLeft?: true
+  }
+
+  export type TokenClaimModelSumAggregateInputType = {
+    lockedToken?: true
+    totalClaimed?: true
+    tokenLeft?: true
+  }
+
+  export type TokenClaimModelMinAggregateInputType = {
+    id?: true
+    username?: true
+    lockedToken?: true
+    totalClaimed?: true
+    tokenLeft?: true
+    lastClaimed?: true
+    claimDate?: true
+  }
+
+  export type TokenClaimModelMaxAggregateInputType = {
+    id?: true
+    username?: true
+    lockedToken?: true
+    totalClaimed?: true
+    tokenLeft?: true
+    lastClaimed?: true
+    claimDate?: true
+  }
+
+  export type TokenClaimModelCountAggregateInputType = {
+    id?: true
+    username?: true
+    lockedToken?: true
+    totalClaimed?: true
+    tokenLeft?: true
+    lastClaimed?: true
+    claimDate?: true
+    _all?: true
+  }
+
+  export type TokenClaimModelAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenClaimModel to aggregate.
+     */
+    where?: TokenClaimModelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenClaimModels to fetch.
+     */
+    orderBy?: TokenClaimModelOrderByWithRelationInput | TokenClaimModelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TokenClaimModelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenClaimModels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenClaimModels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TokenClaimModels
+    **/
+    _count?: true | TokenClaimModelCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TokenClaimModelAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TokenClaimModelSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TokenClaimModelMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TokenClaimModelMaxAggregateInputType
+  }
+
+  export type GetTokenClaimModelAggregateType<T extends TokenClaimModelAggregateArgs> = {
+        [P in keyof T & keyof AggregateTokenClaimModel]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTokenClaimModel[P]>
+      : GetScalarType<T[P], AggregateTokenClaimModel[P]>
+  }
+
+
+
+
+  export type TokenClaimModelGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TokenClaimModelWhereInput
+    orderBy?: TokenClaimModelOrderByWithAggregationInput | TokenClaimModelOrderByWithAggregationInput[]
+    by: TokenClaimModelScalarFieldEnum[] | TokenClaimModelScalarFieldEnum
+    having?: TokenClaimModelScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TokenClaimModelCountAggregateInputType | true
+    _avg?: TokenClaimModelAvgAggregateInputType
+    _sum?: TokenClaimModelSumAggregateInputType
+    _min?: TokenClaimModelMinAggregateInputType
+    _max?: TokenClaimModelMaxAggregateInputType
+  }
+
+  export type TokenClaimModelGroupByOutputType = {
+    id: string
+    username: string
+    lockedToken: number
+    totalClaimed: number
+    tokenLeft: number
+    lastClaimed: Date
+    claimDate: Date
+    _count: TokenClaimModelCountAggregateOutputType | null
+    _avg: TokenClaimModelAvgAggregateOutputType | null
+    _sum: TokenClaimModelSumAggregateOutputType | null
+    _min: TokenClaimModelMinAggregateOutputType | null
+    _max: TokenClaimModelMaxAggregateOutputType | null
+  }
+
+  type GetTokenClaimModelGroupByPayload<T extends TokenClaimModelGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TokenClaimModelGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TokenClaimModelGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TokenClaimModelGroupByOutputType[P]>
+            : GetScalarType<T[P], TokenClaimModelGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TokenClaimModelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    lockedToken?: boolean
+    totalClaimed?: boolean
+    tokenLeft?: boolean
+    lastClaimed?: boolean
+    claimDate?: boolean
+  }, ExtArgs["result"]["tokenClaimModel"]>
+
+
+
+  export type TokenClaimModelSelectScalar = {
+    id?: boolean
+    username?: boolean
+    lockedToken?: boolean
+    totalClaimed?: boolean
+    tokenLeft?: boolean
+    lastClaimed?: boolean
+    claimDate?: boolean
+  }
+
+  export type TokenClaimModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "lockedToken" | "totalClaimed" | "tokenLeft" | "lastClaimed" | "claimDate", ExtArgs["result"]["tokenClaimModel"]>
+
+  export type $TokenClaimModelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TokenClaimModel"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      username: string
+      lockedToken: number
+      totalClaimed: number
+      tokenLeft: number
+      lastClaimed: Date
+      claimDate: Date
+    }, ExtArgs["result"]["tokenClaimModel"]>
+    composites: {}
+  }
+
+  type TokenClaimModelGetPayload<S extends boolean | null | undefined | TokenClaimModelDefaultArgs> = $Result.GetResult<Prisma.$TokenClaimModelPayload, S>
+
+  type TokenClaimModelCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TokenClaimModelFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TokenClaimModelCountAggregateInputType | true
+    }
+
+  export interface TokenClaimModelDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TokenClaimModel'], meta: { name: 'TokenClaimModel' } }
+    /**
+     * Find zero or one TokenClaimModel that matches the filter.
+     * @param {TokenClaimModelFindUniqueArgs} args - Arguments to find a TokenClaimModel
+     * @example
+     * // Get one TokenClaimModel
+     * const tokenClaimModel = await prisma.tokenClaimModel.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TokenClaimModelFindUniqueArgs>(args: SelectSubset<T, TokenClaimModelFindUniqueArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TokenClaimModel that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TokenClaimModelFindUniqueOrThrowArgs} args - Arguments to find a TokenClaimModel
+     * @example
+     * // Get one TokenClaimModel
+     * const tokenClaimModel = await prisma.tokenClaimModel.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TokenClaimModelFindUniqueOrThrowArgs>(args: SelectSubset<T, TokenClaimModelFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TokenClaimModel that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelFindFirstArgs} args - Arguments to find a TokenClaimModel
+     * @example
+     * // Get one TokenClaimModel
+     * const tokenClaimModel = await prisma.tokenClaimModel.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TokenClaimModelFindFirstArgs>(args?: SelectSubset<T, TokenClaimModelFindFirstArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TokenClaimModel that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelFindFirstOrThrowArgs} args - Arguments to find a TokenClaimModel
+     * @example
+     * // Get one TokenClaimModel
+     * const tokenClaimModel = await prisma.tokenClaimModel.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TokenClaimModelFindFirstOrThrowArgs>(args?: SelectSubset<T, TokenClaimModelFindFirstOrThrowArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TokenClaimModels that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TokenClaimModels
+     * const tokenClaimModels = await prisma.tokenClaimModel.findMany()
+     * 
+     * // Get first 10 TokenClaimModels
+     * const tokenClaimModels = await prisma.tokenClaimModel.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tokenClaimModelWithIdOnly = await prisma.tokenClaimModel.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TokenClaimModelFindManyArgs>(args?: SelectSubset<T, TokenClaimModelFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TokenClaimModel.
+     * @param {TokenClaimModelCreateArgs} args - Arguments to create a TokenClaimModel.
+     * @example
+     * // Create one TokenClaimModel
+     * const TokenClaimModel = await prisma.tokenClaimModel.create({
+     *   data: {
+     *     // ... data to create a TokenClaimModel
+     *   }
+     * })
+     * 
+     */
+    create<T extends TokenClaimModelCreateArgs>(args: SelectSubset<T, TokenClaimModelCreateArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TokenClaimModels.
+     * @param {TokenClaimModelCreateManyArgs} args - Arguments to create many TokenClaimModels.
+     * @example
+     * // Create many TokenClaimModels
+     * const tokenClaimModel = await prisma.tokenClaimModel.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TokenClaimModelCreateManyArgs>(args?: SelectSubset<T, TokenClaimModelCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a TokenClaimModel.
+     * @param {TokenClaimModelDeleteArgs} args - Arguments to delete one TokenClaimModel.
+     * @example
+     * // Delete one TokenClaimModel
+     * const TokenClaimModel = await prisma.tokenClaimModel.delete({
+     *   where: {
+     *     // ... filter to delete one TokenClaimModel
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TokenClaimModelDeleteArgs>(args: SelectSubset<T, TokenClaimModelDeleteArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TokenClaimModel.
+     * @param {TokenClaimModelUpdateArgs} args - Arguments to update one TokenClaimModel.
+     * @example
+     * // Update one TokenClaimModel
+     * const tokenClaimModel = await prisma.tokenClaimModel.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TokenClaimModelUpdateArgs>(args: SelectSubset<T, TokenClaimModelUpdateArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TokenClaimModels.
+     * @param {TokenClaimModelDeleteManyArgs} args - Arguments to filter TokenClaimModels to delete.
+     * @example
+     * // Delete a few TokenClaimModels
+     * const { count } = await prisma.tokenClaimModel.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TokenClaimModelDeleteManyArgs>(args?: SelectSubset<T, TokenClaimModelDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TokenClaimModels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TokenClaimModels
+     * const tokenClaimModel = await prisma.tokenClaimModel.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TokenClaimModelUpdateManyArgs>(args: SelectSubset<T, TokenClaimModelUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TokenClaimModel.
+     * @param {TokenClaimModelUpsertArgs} args - Arguments to update or create a TokenClaimModel.
+     * @example
+     * // Update or create a TokenClaimModel
+     * const tokenClaimModel = await prisma.tokenClaimModel.upsert({
+     *   create: {
+     *     // ... data to create a TokenClaimModel
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TokenClaimModel we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TokenClaimModelUpsertArgs>(args: SelectSubset<T, TokenClaimModelUpsertArgs<ExtArgs>>): Prisma__TokenClaimModelClient<$Result.GetResult<Prisma.$TokenClaimModelPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TokenClaimModels that matches the filter.
+     * @param {TokenClaimModelFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const tokenClaimModel = await prisma.tokenClaimModel.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: TokenClaimModelFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a TokenClaimModel.
+     * @param {TokenClaimModelAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const tokenClaimModel = await prisma.tokenClaimModel.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: TokenClaimModelAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of TokenClaimModels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelCountArgs} args - Arguments to filter TokenClaimModels to count.
+     * @example
+     * // Count the number of TokenClaimModels
+     * const count = await prisma.tokenClaimModel.count({
+     *   where: {
+     *     // ... the filter for the TokenClaimModels we want to count
+     *   }
+     * })
+    **/
+    count<T extends TokenClaimModelCountArgs>(
+      args?: Subset<T, TokenClaimModelCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TokenClaimModelCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TokenClaimModel.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TokenClaimModelAggregateArgs>(args: Subset<T, TokenClaimModelAggregateArgs>): Prisma.PrismaPromise<GetTokenClaimModelAggregateType<T>>
+
+    /**
+     * Group by TokenClaimModel.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenClaimModelGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TokenClaimModelGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TokenClaimModelGroupByArgs['orderBy'] }
+        : { orderBy?: TokenClaimModelGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TokenClaimModelGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTokenClaimModelGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TokenClaimModel model
+   */
+  readonly fields: TokenClaimModelFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TokenClaimModel.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TokenClaimModelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TokenClaimModel model
+   */
+  interface TokenClaimModelFieldRefs {
+    readonly id: FieldRef<"TokenClaimModel", 'String'>
+    readonly username: FieldRef<"TokenClaimModel", 'String'>
+    readonly lockedToken: FieldRef<"TokenClaimModel", 'Int'>
+    readonly totalClaimed: FieldRef<"TokenClaimModel", 'Int'>
+    readonly tokenLeft: FieldRef<"TokenClaimModel", 'Int'>
+    readonly lastClaimed: FieldRef<"TokenClaimModel", 'DateTime'>
+    readonly claimDate: FieldRef<"TokenClaimModel", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TokenClaimModel findUnique
+   */
+  export type TokenClaimModelFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenClaimModel to fetch.
+     */
+    where: TokenClaimModelWhereUniqueInput
+  }
+
+  /**
+   * TokenClaimModel findUniqueOrThrow
+   */
+  export type TokenClaimModelFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenClaimModel to fetch.
+     */
+    where: TokenClaimModelWhereUniqueInput
+  }
+
+  /**
+   * TokenClaimModel findFirst
+   */
+  export type TokenClaimModelFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenClaimModel to fetch.
+     */
+    where?: TokenClaimModelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenClaimModels to fetch.
+     */
+    orderBy?: TokenClaimModelOrderByWithRelationInput | TokenClaimModelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenClaimModels.
+     */
+    cursor?: TokenClaimModelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenClaimModels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenClaimModels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenClaimModels.
+     */
+    distinct?: TokenClaimModelScalarFieldEnum | TokenClaimModelScalarFieldEnum[]
+  }
+
+  /**
+   * TokenClaimModel findFirstOrThrow
+   */
+  export type TokenClaimModelFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenClaimModel to fetch.
+     */
+    where?: TokenClaimModelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenClaimModels to fetch.
+     */
+    orderBy?: TokenClaimModelOrderByWithRelationInput | TokenClaimModelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenClaimModels.
+     */
+    cursor?: TokenClaimModelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenClaimModels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenClaimModels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenClaimModels.
+     */
+    distinct?: TokenClaimModelScalarFieldEnum | TokenClaimModelScalarFieldEnum[]
+  }
+
+  /**
+   * TokenClaimModel findMany
+   */
+  export type TokenClaimModelFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenClaimModels to fetch.
+     */
+    where?: TokenClaimModelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenClaimModels to fetch.
+     */
+    orderBy?: TokenClaimModelOrderByWithRelationInput | TokenClaimModelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TokenClaimModels.
+     */
+    cursor?: TokenClaimModelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenClaimModels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenClaimModels.
+     */
+    skip?: number
+    distinct?: TokenClaimModelScalarFieldEnum | TokenClaimModelScalarFieldEnum[]
+  }
+
+  /**
+   * TokenClaimModel create
+   */
+  export type TokenClaimModelCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TokenClaimModel.
+     */
+    data: XOR<TokenClaimModelCreateInput, TokenClaimModelUncheckedCreateInput>
+  }
+
+  /**
+   * TokenClaimModel createMany
+   */
+  export type TokenClaimModelCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TokenClaimModels.
+     */
+    data: TokenClaimModelCreateManyInput | TokenClaimModelCreateManyInput[]
+  }
+
+  /**
+   * TokenClaimModel update
+   */
+  export type TokenClaimModelUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TokenClaimModel.
+     */
+    data: XOR<TokenClaimModelUpdateInput, TokenClaimModelUncheckedUpdateInput>
+    /**
+     * Choose, which TokenClaimModel to update.
+     */
+    where: TokenClaimModelWhereUniqueInput
+  }
+
+  /**
+   * TokenClaimModel updateMany
+   */
+  export type TokenClaimModelUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TokenClaimModels.
+     */
+    data: XOR<TokenClaimModelUpdateManyMutationInput, TokenClaimModelUncheckedUpdateManyInput>
+    /**
+     * Filter which TokenClaimModels to update
+     */
+    where?: TokenClaimModelWhereInput
+    /**
+     * Limit how many TokenClaimModels to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenClaimModel upsert
+   */
+  export type TokenClaimModelUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TokenClaimModel to update in case it exists.
+     */
+    where: TokenClaimModelWhereUniqueInput
+    /**
+     * In case the TokenClaimModel found by the `where` argument doesn't exist, create a new TokenClaimModel with this data.
+     */
+    create: XOR<TokenClaimModelCreateInput, TokenClaimModelUncheckedCreateInput>
+    /**
+     * In case the TokenClaimModel was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TokenClaimModelUpdateInput, TokenClaimModelUncheckedUpdateInput>
+  }
+
+  /**
+   * TokenClaimModel delete
+   */
+  export type TokenClaimModelDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+    /**
+     * Filter which TokenClaimModel to delete.
+     */
+    where: TokenClaimModelWhereUniqueInput
+  }
+
+  /**
+   * TokenClaimModel deleteMany
+   */
+  export type TokenClaimModelDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenClaimModels to delete
+     */
+    where?: TokenClaimModelWhereInput
+    /**
+     * Limit how many TokenClaimModels to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenClaimModel findRaw
+   */
+  export type TokenClaimModelFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * TokenClaimModel aggregateRaw
+   */
+  export type TokenClaimModelAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * TokenClaimModel without action
+   */
+  export type TokenClaimModelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenClaimModel
+     */
+    select?: TokenClaimModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenClaimModel
+     */
+    omit?: TokenClaimModelOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model User
    */
 
@@ -6522,6 +7609,19 @@ export namespace Prisma {
   export type CVolumeScalarFieldEnum = (typeof CVolumeScalarFieldEnum)[keyof typeof CVolumeScalarFieldEnum]
 
 
+  export const TokenClaimModelScalarFieldEnum: {
+    id: 'id',
+    username: 'username',
+    lockedToken: 'lockedToken',
+    totalClaimed: 'totalClaimed',
+    tokenLeft: 'tokenLeft',
+    lastClaimed: 'lastClaimed',
+    claimDate: 'claimDate'
+  };
+
+  export type TokenClaimModelScalarFieldEnum = (typeof TokenClaimModelScalarFieldEnum)[keyof typeof TokenClaimModelScalarFieldEnum]
+
+
   export const UserScalarFieldEnum: {
     id: 'id',
     privyId: 'privyId',
@@ -6932,6 +8032,70 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"cVolume"> | string
     volume?: IntWithAggregatesFilter<"cVolume"> | number
     username?: StringWithAggregatesFilter<"cVolume"> | string
+  }
+
+  export type TokenClaimModelWhereInput = {
+    AND?: TokenClaimModelWhereInput | TokenClaimModelWhereInput[]
+    OR?: TokenClaimModelWhereInput[]
+    NOT?: TokenClaimModelWhereInput | TokenClaimModelWhereInput[]
+    id?: StringFilter<"TokenClaimModel"> | string
+    username?: StringFilter<"TokenClaimModel"> | string
+    lockedToken?: IntFilter<"TokenClaimModel"> | number
+    totalClaimed?: IntFilter<"TokenClaimModel"> | number
+    tokenLeft?: IntFilter<"TokenClaimModel"> | number
+    lastClaimed?: DateTimeFilter<"TokenClaimModel"> | Date | string
+    claimDate?: DateTimeFilter<"TokenClaimModel"> | Date | string
+  }
+
+  export type TokenClaimModelOrderByWithRelationInput = {
+    id?: SortOrder
+    username?: SortOrder
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
+    lastClaimed?: SortOrder
+    claimDate?: SortOrder
+  }
+
+  export type TokenClaimModelWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    username?: string
+    AND?: TokenClaimModelWhereInput | TokenClaimModelWhereInput[]
+    OR?: TokenClaimModelWhereInput[]
+    NOT?: TokenClaimModelWhereInput | TokenClaimModelWhereInput[]
+    lockedToken?: IntFilter<"TokenClaimModel"> | number
+    totalClaimed?: IntFilter<"TokenClaimModel"> | number
+    tokenLeft?: IntFilter<"TokenClaimModel"> | number
+    lastClaimed?: DateTimeFilter<"TokenClaimModel"> | Date | string
+    claimDate?: DateTimeFilter<"TokenClaimModel"> | Date | string
+  }, "id" | "username">
+
+  export type TokenClaimModelOrderByWithAggregationInput = {
+    id?: SortOrder
+    username?: SortOrder
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
+    lastClaimed?: SortOrder
+    claimDate?: SortOrder
+    _count?: TokenClaimModelCountOrderByAggregateInput
+    _avg?: TokenClaimModelAvgOrderByAggregateInput
+    _max?: TokenClaimModelMaxOrderByAggregateInput
+    _min?: TokenClaimModelMinOrderByAggregateInput
+    _sum?: TokenClaimModelSumOrderByAggregateInput
+  }
+
+  export type TokenClaimModelScalarWhereWithAggregatesInput = {
+    AND?: TokenClaimModelScalarWhereWithAggregatesInput | TokenClaimModelScalarWhereWithAggregatesInput[]
+    OR?: TokenClaimModelScalarWhereWithAggregatesInput[]
+    NOT?: TokenClaimModelScalarWhereWithAggregatesInput | TokenClaimModelScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TokenClaimModel"> | string
+    username?: StringWithAggregatesFilter<"TokenClaimModel"> | string
+    lockedToken?: IntWithAggregatesFilter<"TokenClaimModel"> | number
+    totalClaimed?: IntWithAggregatesFilter<"TokenClaimModel"> | number
+    tokenLeft?: IntWithAggregatesFilter<"TokenClaimModel"> | number
+    lastClaimed?: DateTimeWithAggregatesFilter<"TokenClaimModel"> | Date | string
+    claimDate?: DateTimeWithAggregatesFilter<"TokenClaimModel"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -7356,6 +8520,72 @@ export namespace Prisma {
   export type cVolumeUncheckedUpdateManyInput = {
     volume?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TokenClaimModelCreateInput = {
+    id?: string
+    username: string
+    lockedToken: number
+    totalClaimed?: number
+    tokenLeft: number
+    lastClaimed?: Date | string
+    claimDate: Date | string
+  }
+
+  export type TokenClaimModelUncheckedCreateInput = {
+    id?: string
+    username: string
+    lockedToken: number
+    totalClaimed?: number
+    tokenLeft: number
+    lastClaimed?: Date | string
+    claimDate: Date | string
+  }
+
+  export type TokenClaimModelUpdateInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    lockedToken?: IntFieldUpdateOperationsInput | number
+    totalClaimed?: IntFieldUpdateOperationsInput | number
+    tokenLeft?: IntFieldUpdateOperationsInput | number
+    lastClaimed?: DateTimeFieldUpdateOperationsInput | Date | string
+    claimDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenClaimModelUncheckedUpdateInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    lockedToken?: IntFieldUpdateOperationsInput | number
+    totalClaimed?: IntFieldUpdateOperationsInput | number
+    tokenLeft?: IntFieldUpdateOperationsInput | number
+    lastClaimed?: DateTimeFieldUpdateOperationsInput | Date | string
+    claimDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenClaimModelCreateManyInput = {
+    id?: string
+    username: string
+    lockedToken: number
+    totalClaimed?: number
+    tokenLeft: number
+    lastClaimed?: Date | string
+    claimDate: Date | string
+  }
+
+  export type TokenClaimModelUpdateManyMutationInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    lockedToken?: IntFieldUpdateOperationsInput | number
+    totalClaimed?: IntFieldUpdateOperationsInput | number
+    tokenLeft?: IntFieldUpdateOperationsInput | number
+    lastClaimed?: DateTimeFieldUpdateOperationsInput | Date | string
+    claimDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenClaimModelUncheckedUpdateManyInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    lockedToken?: IntFieldUpdateOperationsInput | number
+    totalClaimed?: IntFieldUpdateOperationsInput | number
+    tokenLeft?: IntFieldUpdateOperationsInput | number
+    lastClaimed?: DateTimeFieldUpdateOperationsInput | Date | string
+    claimDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateInput = {
@@ -7897,6 +9127,48 @@ export namespace Prisma {
 
   export type cVolumeSumOrderByAggregateInput = {
     volume?: SortOrder
+  }
+
+  export type TokenClaimModelCountOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
+    lastClaimed?: SortOrder
+    claimDate?: SortOrder
+  }
+
+  export type TokenClaimModelAvgOrderByAggregateInput = {
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
+  }
+
+  export type TokenClaimModelMaxOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
+    lastClaimed?: SortOrder
+    claimDate?: SortOrder
+  }
+
+  export type TokenClaimModelMinOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
+    lastClaimed?: SortOrder
+    claimDate?: SortOrder
+  }
+
+  export type TokenClaimModelSumOrderByAggregateInput = {
+    lockedToken?: SortOrder
+    totalClaimed?: SortOrder
+    tokenLeft?: SortOrder
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
