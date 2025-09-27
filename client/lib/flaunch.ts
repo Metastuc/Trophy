@@ -1,115 +1,115 @@
-import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK } from "@flaunch/sdk";
-import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
+// import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK } from "@flaunch/sdk";
+// import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
 
-import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
-import { makeRequest } from "#~/utils/axios.ts";
+// import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
+// import { makeRequest } from "#~/utils/axios.ts";
 
-import { API_ENDPOINTS } from "./constants";
-import { initSmartAccount } from "./smart-account";
-import { getWalletClient, publicClient } from "./viem";
+// import { API_ENDPOINTS } from "./constants";
+// import { initSmartAccount } from "./smart-account";
+// import { getWalletClient, publicClient } from "./viem";
 
-let flaunchClient = null as ReadWriteFlaunchSDK | null;
-let previousAddress = null as Address | null;
+// let flaunchClient = null as ReadWriteFlaunchSDK | null;
+// let previousAddress = null as Address | null;
 
-function getFlaunchClient({ address, provider }: GetWalletClient): ReadWriteFlaunchSDK | null {
-    if (!address || !provider) return null;
+// function getFlaunchClient({ address, provider }: GetWalletClient): ReadWriteFlaunchSDK | null {
+//     if (!address || !provider) return null;
 
-    if (!flaunchClient && previousAddress?.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
-        flaunchClient = createFlaunch({
-            publicClient,
-            walletClient: getWalletClient({ address, provider }),
-        }) as ReadWriteFlaunchSDK;
-        previousAddress = address;
-    }
+//     if (!flaunchClient && previousAddress?.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
+//         flaunchClient = createFlaunch({
+//             publicClient,
+//             walletClient: getWalletClient({ address, provider }),
+//         }) as ReadWriteFlaunchSDK;
+//         previousAddress = address;
+//     }
 
-    return flaunchClient;
-}
+//     return flaunchClient;
+// }
 
-async function verifyTransaction(hash: Address): Promise<Address> {
-    const reciept = await flaunchClient?.drift.waitForTransaction({ hash });
-    if (reciept?.status !== "success") throw new Error("Transaction failed");
-    return hash;
-}
+// async function verifyTransaction(hash: Address): Promise<Address> {
+//     const reciept = await flaunchClient?.drift.waitForTransaction({ hash });
+//     if (reciept?.status !== "success") throw new Error("Transaction failed");
+//     return hash;
+// }
 
-export async function createCreatorToken({ provider, tokenName }: CreateCreatorToken): Promise<CreatorTokenCreated> {
-    try {
-        const smartWalletClient = await initSmartAccount(provider);
+// export async function createCreatorToken({ provider, tokenName }: CreateCreatorToken): Promise<CreatorTokenCreated> {
+//     try {
+//         const smartWalletClient = await initSmartAccount(provider);
 
-        const initialMCapInUSDCWei = parseUnits("2000", 6);
-        const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
+//         const initialMCapInUSDCWei = parseUnits("2000", 6);
+//         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
 
-        const fairLaunchInBps = BigInt(40 * 100);
-        const creatorFeeAllocationInBps = 70 * 100;
+//         const fairLaunchInBps = BigInt(40 * 100);
+//         const creatorFeeAllocationInBps = 70 * 100;
 
-        const params = {
-            _flaunchParams: {
-                name: tokenName,
-                symbol: tokenName.toUpperCase(),
-                tokenUri: "ipfs://bafkreiaaojq4u2nopmwilfia7b3rxts2itb7xlgf3qa4z4spqxntfp4gfe",
-                initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
-                fairLaunchDuration: BigInt(30 * 60),
-                premineAmount: 0n,
-                creator: smartWalletClient.account.address,
-                creatorFeeAllocation: creatorFeeAllocationInBps,
-                flaunchAt: 0n,
-                initialPriceParams,
-                feeCalculatorParams: "0x" as Address,
-            },
-            _treasuryManagerParams: {
-                manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
-                initializeData: "0x" as Address,
-                depositData: "0x" as Address,
-            },
-            _whitelistParams: {
-                merkleRoot: zeroHash,
-                merkleIPFSHash: "",
-                maxTokens: 0n,
-            },
-            _airdropParams: {
-                airdropIndex: 0n,
-                airdropAmount: 0n,
-                airdropEndTime: 0n,
-                merkleRoot: zeroHash,
-                merkleIPFSHash: "",
-            },
-        };
+//         const params = {
+//             _flaunchParams: {
+//                 name: tokenName,
+//                 symbol: tokenName.toUpperCase(),
+//                 tokenUri: "ipfs://bafkreiaaojq4u2nopmwilfia7b3rxts2itb7xlgf3qa4z4spqxntfp4gfe",
+//                 initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
+//                 fairLaunchDuration: BigInt(30 * 60),
+//                 premineAmount: 0n,
+//                 creator: smartWalletClient.account.address,
+//                 creatorFeeAllocation: creatorFeeAllocationInBps,
+//                 flaunchAt: 0n,
+//                 initialPriceParams,
+//                 feeCalculatorParams: "0x" as Address,
+//             },
+//             _treasuryManagerParams: {
+//                 manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
+//                 initializeData: "0x" as Address,
+//                 depositData: "0x" as Address,
+//             },
+//             _whitelistParams: {
+//                 merkleRoot: zeroHash,
+//                 merkleIPFSHash: "",
+//                 maxTokens: 0n,
+//             },
+//             _airdropParams: {
+//                 airdropIndex: 0n,
+//                 airdropAmount: 0n,
+//                 airdropEndTime: 0n,
+//                 merkleRoot: zeroHash,
+//                 merkleIPFSHash: "",
+//             },
+//         };
 
-        const { request, result } = await publicClient.simulateContract({
-            address: CONTRACT_ADDRESSES.FLAUNCH,
-            abi: FlaunchZapAbi,
-            functionName: "flaunch",
-            args: [params._flaunchParams],
-            account: smartWalletClient.account,
-        });
+//         const { request, result } = await publicClient.simulateContract({
+//             address: CONTRACT_ADDRESSES.FLAUNCH,
+//             abi: FlaunchZapAbi,
+//             functionName: "flaunch",
+//             args: [params._flaunchParams],
+//             account: smartWalletClient.account,
+//         });
 
-        await smartWalletClient.writeContract(request);
-        await makeRequest({
-            method: "PATCH",
-            url: API_ENDPOINTS.USER.SAVE_TOKEN(tokenName),
-            data: { creatorToken: result[0], smartAccount: smartWalletClient.account.address, tokenName },
-        });
-        return { creatorToken: result[0], smartAccount: smartWalletClient.account.address };
-    } catch (error) {
-        throw new Error("Failed to create token: " + ((error as Error).message || "Unknown error"));
-    }
-}
+//         await smartWalletClient.writeContract(request);
+//         await makeRequest({
+//             method: "PATCH",
+//             url: API_ENDPOINTS.USER.SAVE_TOKEN(tokenName),
+//             data: { creatorToken: result[0], smartAccount: smartWalletClient.account.address, tokenName },
+//         });
+//         return { creatorToken: result[0], smartAccount: smartWalletClient.account.address };
+//     } catch (error) {
+//         throw new Error("Failed to create token: " + ((error as Error).message || "Unknown error"));
+//     }
+// }
 
-export async function buyCreatorToken({
-    amount,
-    buyerAddress,
-    provider,
-    tokenAddress,
-}: BuyCreatorToken): Promise<Address> {
-    const flaunch = getFlaunchClient({ address: buyerAddress, provider });
-    const hash = await flaunch?.buyCoin(
-        {
-            coinAddress: tokenAddress,
-            slippagePercent: 4,
-            swapType: "EXACT_IN",
-            amountIn: parseEther(amount),
-        },
-        "V1_1",
-    );
+// export async function buyCreatorToken({
+//     amount,
+//     buyerAddress,
+//     provider,
+//     tokenAddress,
+// }: BuyCreatorToken): Promise<Address> {
+//     const flaunch = getFlaunchClient({ address: buyerAddress, provider });
+//     const hash = await flaunch?.buyCoin(
+//         {
+//             coinAddress: tokenAddress,
+//             slippagePercent: 4,
+//             swapType: "EXACT_IN",
+//             amountIn: parseEther(amount),
+//         },
+//         "V1_1",
+//     );
 
-    return verifyTransaction(hash as Address);
-}
+//     return verifyTransaction(hash as Address);
+// }
