@@ -1,34 +1,23 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader, Projector } from "lucide-react";
-import { FormEvent, Fragment, useState } from "react";
+import { FormEvent, Fragment } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
-import { TOKENS } from "@/components/ui/tokens";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-import { useStreamForm } from "../hooks";
 import { CreateStreamDrawer } from "./drawer";
+import { useStreamForm } from "./hooks";
 
 export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
-    const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
-    const [createStreamDrawerState, setCreateStreamDrawerState] = useState<CreateStreamDrawerState>(() => ({
-        // isDrawerOpen: false,
-        isDrawerOpen: true,
-        pendingData: null,
-        form: {
-            allocationInPercentage: "",
-            approximateAmountInUSD: "",
-            approxmateAmountInToken: "",
-            token: TOKENS[0].value,
-            tokenAddress: TOKENS[0].address,
-        },
-    }));
+    const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
+    const { drawerState, formState, handleDrawerSubmit, isCreating, setDrawerState, setFormState } = useStreamForm();
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, CreatedStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -55,7 +44,7 @@ export function StreamNowForm() {
         ) as CreateStreamFormRequest;
 
         if (formState.creatorTokenEnabled && !formState.creatorToken) {
-            setCreateStreamDrawerState((state) => ({
+            setDrawerState((state) => ({
                 ...state,
                 isDrawerOpen: true,
                 pendingData: data,
@@ -66,20 +55,27 @@ export function StreamNowForm() {
         mutate(data);
     }
 
-    async function handleDrawerSubmit() {
-        try {
-            await handleCreatorTokenCreation();
+    // async function handleDrawerSubmit() {
+    //     try {
+    //         if (!createStreamDrawerState.form.allocationInPercentage) {
+    //             throw new Error("Allocation percentage is required");
+    //         }
 
-            if (!createStreamDrawerState.pendingData) {
-                throw new Error("No pending stream data");
-            }
+    //         if (!createStreamDrawerState.pendingData) {
+    //             throw new Error("No pending stream data");
+    //         }
 
-            setCreateStreamDrawerState((state) => ({ ...state, isDrawerOpen: false }));
-            mutate(createStreamDrawerState.pendingData);
-        } catch (error) {
-            toast.error("Failed to create creator token: " + (error as Error).message);
-        }
-    }
+    //         await handleCreatorTokenCreation({
+    //             ethereumAmountRequired: createStreamDrawerState.form.ethereumAmountRequired,
+    //             tokensCreatorWillReceieve: createStreamDrawerState.form.tokensCreatorWillReceieve,
+    //         });
+
+    //         // setCreateStreamDrawerState((state) => ({ ...state, isDrawerOpen: false }));
+    //         // mutate(createStreamDrawerState.pendingData);
+    //     } catch (error) {
+    //         toast.error("Failed to create creator token: " + (error as Error).message);
+    //     }
+    // }
 
     return (
         <section className="space-y-5">
@@ -124,9 +120,9 @@ export function StreamNowForm() {
                     type="submit"
                     className={cn(
                         "bg-blue100 transition-all duration-150 ease-in-out",
-                        isPending || isCreatingToken ? "opacity-50" : "opacity-100",
+                        isPending || isCreating ? "opacity-50" : "opacity-100",
                     )}
-                    disabled={isPending || isCreatingToken}
+                    disabled={isPending || isCreating}
                 >
                     {isPending ? (
                         <Fragment>
@@ -145,16 +141,12 @@ export function StreamNowForm() {
             </form>
 
             <CreateStreamDrawer
-                isOpen={createStreamDrawerState.isDrawerOpen}
-                onClose={() =>
-                    setCreateStreamDrawerState((state) => ({ ...state, isDrawerOpen: false, pendingData: null }))
-                }
+                isOpen={drawerState.isDrawerOpen}
+                onClose={() => setDrawerState((state) => ({ ...state, isDrawerOpen: false, pendingData: null }))}
                 onSubmit={handleDrawerSubmit}
-                isSubmitting={isCreatingToken}
-                formState={createStreamDrawerState.form}
-                setFormState={(form) =>
-                    setCreateStreamDrawerState((state) => ({ ...state, form: { ...state.form, ...form } }))
-                }
+                isSubmitting={isCreating}
+                formState={drawerState.form}
+                setFormState={(form) => setDrawerState((state) => ({ ...state, form: { ...state.form, ...form } }))}
             />
         </section>
     );

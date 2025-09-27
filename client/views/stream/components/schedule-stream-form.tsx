@@ -6,15 +6,18 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-import { useStreamForm } from "../hooks";
 import { DateTimePicker } from "./date-time-picker";
+import { CreateStreamDrawer } from "./drawer";
+import { useStreamForm } from "./hooks";
 
 export function ScheduleStreamForm() {
-    const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
+    const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
+    const { drawerState, formState, handleDrawerSubmit, isCreating, setDrawerState, setFormState } = useStreamForm();
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, ScheduledStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -48,7 +51,7 @@ export function ScheduleStreamForm() {
         const formData = new FormData(event.target as HTMLFormElement);
         const data = Object.fromEntries(formData.entries()) as CreateStreamFormRequest;
 
-        await handleCreatorTokenCreation();
+        // await handleCreatorTokenCreation();
         mutate(data);
     }
 
@@ -101,9 +104,9 @@ export function ScheduleStreamForm() {
                     type="submit"
                     className={cn(
                         "bg-blue100 transition-all duration-150 ease-in-out",
-                        isPending || isCreatingToken ? "opacity-50" : "opacity-100",
+                        isPending || isCreating ? "opacity-50" : "opacity-100",
                     )}
-                    disabled={isPending || isCreatingToken}
+                    disabled={isPending || isCreating}
                 >
                     {isPending ? (
                         <Fragment>
@@ -118,6 +121,15 @@ export function ScheduleStreamForm() {
                     )}
                 </Button>
             </form>
+
+            <CreateStreamDrawer
+                isOpen={drawerState.isDrawerOpen}
+                onClose={() => setDrawerState((state) => ({ ...state, isDrawerOpen: false, pendingData: null }))}
+                onSubmit={handleDrawerSubmit}
+                isSubmitting={isCreating}
+                formState={drawerState.form}
+                setFormState={(form) => setDrawerState((state) => ({ ...state, form: { ...state.form, ...form } }))}
+            />
         </section>
     );
 }
