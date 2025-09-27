@@ -40,20 +40,19 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
 };
 
-export const claimToken = async ({ provider, coinAddress, address }: claimTokenParams) => {
+export const claimToken = async ({ provider, coinAddress, address, username }: claimTokenParams) => {
     const zeroDevClient = await zeroDevSA({ provider });
 
-    const tokenBalance = await publicClient.readContract({
-        abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
-        args: [zeroDevClient.account.address],
-        functionName: "balanceOf",
-        address: coinAddress,
-    });
+    const { amountOfTokens } = await makeRequest<{ amountOfTokens: number }>({
+        method: "GET",
+        url: `/get-token-allocation-percent`,
+        data: { username },
+    }).then((response) => response.data);
 
     const transferData = encodeFunctionData({
         functionName: "transfer",
         abi: parseAbi(["function transfer(address to, uint amount)"]),
-        args: [address as Address, tokenBalance],
+        args: [address as Address, BigInt(amountOfTokens)],
     });
 
     const hash = await zeroDevClient.sendTransaction({
@@ -146,6 +145,12 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             const { logs } = await publicClient.getTransactionReceipt({ hash });
 
             creatorToken = logs[4].address;
+
+            await makeRequest({
+                method: "POST",
+                url: "/set-date",
+                data: { username: name, tokenGotten: tokens },
+            });
         } else {
             const uoHash = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
@@ -161,18 +166,12 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             });
 
             creatorToken = logs[4].address;
-        };
+        }
 
         await makeRequest({
             method: "POST",
             url: `/save-creator-token`,
             data: { creatorToken, sa_address, username: name },
-        });
-
-        await makeRequest({
-            method: "POST",
-            url: "/set-date",
-            data: { username: name },
         });
 
         return { creatorToken, sa_address };
@@ -258,20 +257,25 @@ export const sellCreatorToken = async (
         typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
 
         const { signature } = await signTypedData(typedData, { address });
-        hash = await flaunch.sellCoin({
-            coinAddress,
-            slippagePercent: 4,
-            amountIn: amountInUnits,
-            permitSingle,
-            signature: signature as Address,
-        }, "V1_1");
-
+        hash = await flaunch.sellCoin(
+            {
+                coinAddress,
+                slippagePercent: 4,
+                amountIn: amountInUnits,
+                permitSingle,
+                signature: signature as Address,
+            },
+            "V1_1",
+        );
     } else {
-        hash = await flaunch.sellCoin({
-            coinAddress,
-            amountIn: amountInUnits,
-            slippagePercent: 4,
-        }, "V1_1");
+        hash = await flaunch.sellCoin(
+            {
+                coinAddress,
+                amountIn: amountInUnits,
+                slippagePercent: 4,
+            },
+            "V1_1",
+        );
     }
 
     return await checkTx(hash);
