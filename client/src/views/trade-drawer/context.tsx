@@ -67,10 +67,12 @@
 
 import { EIP1193Provider, useSignTypedData, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { type Address } from "viem";
 
+import { Button } from "@/components/ui/button";
 import { makeRequest } from "@/lib/axios";
-import { network } from "@/lib/constants";
+import { APPLICATION_CONSTANTS, network } from "@/lib/constants";
 import { buyCreatorToken, sellCreatorToken } from "@/lib/flaunch";
 
 import { TradeDrawerContext } from "./hooks";
@@ -111,9 +113,11 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 await wallets[0].switchChain(network.id);
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
+                let hash: `0x${string}`;
+
                 if (drawerData.from.type === "native") {
                     // ETH → StreamerToken
-                    await buyCreatorToken(
+                    hash = await buyCreatorToken(
                         streamer?.tokenAddress as Address,
                         drawerData.from.amount,
                         provider,
@@ -125,9 +129,9 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                         url: "/send-buy-notis",
                         data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address }
                     });
-                } else if (drawerData.from.type === "streamer") {
+                } else {
                     // StreamerToken → ETH
-                    await sellCreatorToken(
+                    hash = await sellCreatorToken(
                         streamer?.tokenAddress as Address,
                         drawerData.from.amount,
                         provider,
@@ -135,6 +139,27 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                         wallets[0].address as Address,
                     );
                 }
+
+                await makeRequest({
+                    method: "POST",
+                    url: "/save-volume",
+                    data: { amount: drawerData.from.type === "native" ? Number(drawerData.from.amount) : Number(drawerData.to.amount) }
+                });
+
+                toast.success("Token swapped successfully!", {
+                    duration: 5000,
+                    description: (
+                        <Button className="text-blue-500 underline" variant="link">
+                            <a
+                                href={`${APPLICATION_CONSTANTS.TX_SCAN_URL(hash as string)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View on BaseScan
+                            </a>
+                        </Button>
+                    ),
+                });
             } catch (error) {
                 console.error("Swap failed:", error);
             }
