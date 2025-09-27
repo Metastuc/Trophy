@@ -6,7 +6,7 @@ import { useShallow } from "zustand/shallow";
 
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { CLIENT_CONSTANTS } from "@/lib/constants";
-import { createCreatorToken } from "@/lib/flaunch";
+// import { createCreatorToken } from "@/lib/flaunch";
 
 export function useStreamForm(): UseStreamForm {
     const { wallets } = useWallets();
@@ -47,11 +47,10 @@ export function useStreamForm(): UseStreamForm {
             setIsCreatingToken(true);
 
             try {
-                const { creatorToken } = await createCreatorToken({ provider, tokenName: formState.username });
-                toast.success("Creator token created!", { id: toastId });
-                setFormState((state) => ({ ...state, creatorToken }));
-
-                return creatorToken;
+                // const { creatorToken } = await createCreatorToken({ provider, tokenName: formState.username });
+                // toast.success("Creator token created!", { id: toastId });
+                // setFormState((state) => ({ ...state, creatorToken }));
+                // return creatorToken;
             } catch (error) {
                 toast.error("Failed to create token: " + (error as Error).message, {
                     id: toastId,

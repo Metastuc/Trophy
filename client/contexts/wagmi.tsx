@@ -1,7 +1,7 @@
-import { createConfig } from "@privy-io/wagmi";
+import { createConfig, WagmiProvider } from "@privy-io/wagmi";
 import { ReactNode } from "react";
 import { Chain } from "viem";
-import { http, WagmiProvider } from "wagmi";
+import { http } from "wagmi";
 
 import { CLIENT_CONSTANTS } from "@/lib/constants";
 
