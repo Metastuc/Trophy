@@ -40,6 +40,27 @@ declare global {
         isCreatingToken: boolean;
         setFormState: React.Dispatch<React.SetStateAction<CreateStreamFormState>>;
     }
+
+    interface CreateStreamDrawerState {
+        isDrawerOpen: boolean;
+        pendingData: CreateStreamFormRequest | null;
+        form: {
+            allocationInPercentage: string;
+            approximateAmountInUSD: string;
+            approxmateAmountInToken: string;
+            token: string;
+            tokenAddress: Address;
+        };
+    }
+
+    interface CreateStreamDrawerProps {
+        isOpen: boolean;
+        isSubmitting: boolean;
+        onClose: () => void;
+        onSubmit: () => void;
+        formState: CreateStreamDrawerState["form"];
+        setFormState: (form: Partial<CreateStreamDrawerState["form"]>) => void;
+    }
 }
 
 export {};

@@ -1,20 +1,34 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader, Projector } from "lucide-react";
-import { FormEvent, Fragment } from "react";
+import { FormEvent, Fragment, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TextInput } from "@/components/ui/text-field";
+import { TOKENS } from "@/components/ui/tokens";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 import { useStreamForm } from "../hooks";
+import { CreateStreamDrawer } from "./drawer";
 
 export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const { formState, handleCreatorTokenCreation, isAuthenticated, isCreatingToken, setFormState } = useStreamForm();
+    const [createStreamDrawerState, setCreateStreamDrawerState] = useState<CreateStreamDrawerState>(() => ({
+        // isDrawerOpen: false,
+        isDrawerOpen: true,
+        pendingData: null,
+        form: {
+            allocationInPercentage: "",
+            approximateAmountInUSD: "",
+            approxmateAmountInToken: "",
+            token: TOKENS[0].value,
+            tokenAddress: TOKENS[0].address,
+        },
+    }));
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, CreatedStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -36,11 +50,35 @@ export function StreamNowForm() {
             return;
         }
 
-        const formData = new FormData(event.target as HTMLFormElement);
-        const data = Object.fromEntries(formData.entries()) as CreateStreamFormRequest;
+        const data = Object.fromEntries(
+            new FormData(event.target as HTMLFormElement).entries(),
+        ) as CreateStreamFormRequest;
 
-        await handleCreatorTokenCreation();
+        if (formState.creatorTokenEnabled && !formState.creatorToken) {
+            setCreateStreamDrawerState((state) => ({
+                ...state,
+                isDrawerOpen: true,
+                pendingData: data,
+            }));
+            return;
+        }
+
         mutate(data);
+    }
+
+    async function handleDrawerSubmit() {
+        try {
+            await handleCreatorTokenCreation();
+
+            if (!createStreamDrawerState.pendingData) {
+                throw new Error("No pending stream data");
+            }
+
+            setCreateStreamDrawerState((state) => ({ ...state, isDrawerOpen: false }));
+            mutate(createStreamDrawerState.pendingData);
+        } catch (error) {
+            toast.error("Failed to create creator token: " + (error as Error).message);
+        }
     }
 
     return (
@@ -105,6 +143,19 @@ export function StreamNowForm() {
                     )}
                 </Button>
             </form>
+
+            <CreateStreamDrawer
+                isOpen={createStreamDrawerState.isDrawerOpen}
+                onClose={() =>
+                    setCreateStreamDrawerState((state) => ({ ...state, isDrawerOpen: false, pendingData: null }))
+                }
+                onSubmit={handleDrawerSubmit}
+                isSubmitting={isCreatingToken}
+                formState={createStreamDrawerState.form}
+                setFormState={(form) =>
+                    setCreateStreamDrawerState((state) => ({ ...state, form: { ...state.form, ...form } }))
+                }
+            />
         </section>
     );
 }
