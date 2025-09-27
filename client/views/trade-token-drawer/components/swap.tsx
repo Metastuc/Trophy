@@ -38,7 +38,7 @@ export function Swap() {
                         value={drawerData.sellToken}
                         onValueChange={(value) => setDrawerData((state) => ({ ...state, sellToken: value }))}
                     >
-                        <SelectTrigger className="border-blue100 w-25 rounded-xl p-2">
+                        <SelectTrigger className="border-blue100 w-25 rounded-lg p-2">
                             <SelectValue>
                                 {TOKENS.find((token) => token.value === drawerData.sellToken)?.title}
                             </SelectValue>
