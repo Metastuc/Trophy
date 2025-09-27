@@ -42,7 +42,7 @@ router
   .post("/update-pfp", authenticate, uploadImg.single("pfp"), updatePfp)
   .post("/save-thumbnail", authenticate, uploadImg.single("thumbnail"), saveStreamThumbnail)
   .post("/send-buy-notis", buyNotis)
-  .post("/claim-allocation", authenticate, claimToken)
+  .get("/get-token-allocation-percent", authenticate, claimToken)
 
   .get("/fetch-streams", fetchStreams)
   .post("/create-token-uri", authenticate, createTokenUri)
