@@ -1,15 +1,13 @@
-// import { createFlaunch, FlaunchZapAbi, ReadWriteFlaunchSDK } from "@flaunch/sdk";
-// import { Address, encodeAbiParameters, parseEther, parseUnits, zeroHash } from "viem";
+import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
+import { parseEther } from "viem";
 
-// import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
-// import { makeRequest } from "#~/utils/axios.ts";
+import { CLIENT_CONSTANTS } from "./constants";
+import { publicClient } from "./viem";
 
-// import { API_ENDPOINTS } from "./constants";
-// import { initSmartAccount } from "./smart-account";
-// import { getWalletClient, publicClient } from "./viem";
+// let flaunchClient: ReadWriteFlaunchSDK | null = null;
+// let previousAddress: Address | null = null;
 
-// let flaunchClient = null as ReadWriteFlaunchSDK | null;
-// let previousAddress = null as Address | null;
+const flaunchReadOnlyClient = createFlaunch({ publicClient }) as ReadFlaunchSDK;
 
 // function getFlaunchClient({ address, provider }: GetWalletClient): ReadWriteFlaunchSDK | null {
 //     if (!address || !provider) return null;
@@ -24,6 +22,19 @@
 
 //     return flaunchClient;
 // }
+
+export async function getEthereumRequiredForCreatorTokenAllocation(percentage: string) {
+    const premineAmount = parseEther(`${CLIENT_CONSTANTS.CREATOR_TOKEN_SUPPLY * (Number(percentage) / 100)}`);
+
+    return {
+        tokensCreatorWillReceieve: premineAmount,
+        ethereumAmountRequired: await flaunchReadOnlyClient.ethRequiredToFlaunch({
+            initialMarketCapUSD: 5000,
+            premineAmount,
+            slippagePercent: 1,
+        }),
+    };
+}
 
 // async function verifyTransaction(hash: Address): Promise<Address> {
 //     const reciept = await flaunchClient?.drift.waitForTransaction({ hash });

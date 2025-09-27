@@ -8,6 +8,7 @@ export const queryClient = new QueryClient();
 
 export const CLIENT_ENV = z
     .object({
+        VITE_ALCHEMY_RPC: z.string(),
         VITE_BUNDLER_URL: z.string(),
         VITE_ENVIRONMENT: z.enum(["development", "production", "staging"]),
         VITE_HUDDLE_PROJECT_ID: z.string(),
@@ -64,6 +65,7 @@ export const API_ENDPOINTS = {
 };
 
 export const CLIENT_CONSTANTS = {
+    CREATOR_TOKEN_SUPPLY: 100_000_000_000,
     CURRENT_NETWORK: CLIENT_ENV.VITE_ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
