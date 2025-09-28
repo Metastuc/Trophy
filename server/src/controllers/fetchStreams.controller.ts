@@ -14,7 +14,7 @@ export const fetchStreams = async (req: Request, res: Response) => {
         // },
       },
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
     });
 
