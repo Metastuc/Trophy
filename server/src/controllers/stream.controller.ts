@@ -200,12 +200,14 @@ export const stopStream = async (req: Request, res: Response) => {
         },
       });
 
-    await prisma.stream.update({
+    const userr = await prisma.stream.update({
       where: { roomId },
       data: {
         status: "Ended",
       },
     });
+
+    console.log({ userr });
 
     await recorder.stop({ roomId });
 
