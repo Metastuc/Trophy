@@ -18,7 +18,7 @@
         "@delvtech/drift": "^1.0.1",
         "@delvtech/drift-viem": "^1.0.1",
         "@farcaster/miniapp-sdk": "^0.1.10",
-        "@flaunch/sdk": "^0.8.2",
+        "@flaunch/sdk": "^0.9.0",
         "@huddle01/react": "^2.6.0",
         "@livepeer/react": "^4.3.6",
         "@privy-io/react-auth": "^3.0.1",
