@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Stream {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  roomId       String  @unique
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  roomId       String   @unique
+  createdAt    DateTime @default(now()) @map("created_at")
   title        String
   date         String?
   creatorToken String?
-  viewers      Int     @default(0)
+  viewers      Int      @default(0)
   pfp          String
   thumbnail    String?
   status       Status
@@ -34,10 +35,9 @@ enum Status {
 }
 
 model Notification {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  username String  @unique
-  read     Boolean @default(false)
-
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  username      String   @unique
+  read          Boolean  @default(false)
   followContent String   @default("")
   followNots    String[]
   recentFollows Int      @default(0)

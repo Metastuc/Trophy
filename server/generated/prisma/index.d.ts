@@ -1300,6 +1300,7 @@ export namespace Prisma {
   export type StreamMinAggregateOutputType = {
     id: string | null
     roomId: string | null
+    createdAt: Date | null
     title: string | null
     date: string | null
     creatorToken: string | null
@@ -1313,6 +1314,7 @@ export namespace Prisma {
   export type StreamMaxAggregateOutputType = {
     id: string | null
     roomId: string | null
+    createdAt: Date | null
     title: string | null
     date: string | null
     creatorToken: string | null
@@ -1326,6 +1328,7 @@ export namespace Prisma {
   export type StreamCountAggregateOutputType = {
     id: number
     roomId: number
+    createdAt: number
     title: number
     date: number
     creatorToken: number
@@ -1349,6 +1352,7 @@ export namespace Prisma {
   export type StreamMinAggregateInputType = {
     id?: true
     roomId?: true
+    createdAt?: true
     title?: true
     date?: true
     creatorToken?: true
@@ -1362,6 +1366,7 @@ export namespace Prisma {
   export type StreamMaxAggregateInputType = {
     id?: true
     roomId?: true
+    createdAt?: true
     title?: true
     date?: true
     creatorToken?: true
@@ -1375,6 +1380,7 @@ export namespace Prisma {
   export type StreamCountAggregateInputType = {
     id?: true
     roomId?: true
+    createdAt?: true
     title?: true
     date?: true
     creatorToken?: true
@@ -1475,6 +1481,7 @@ export namespace Prisma {
   export type StreamGroupByOutputType = {
     id: string
     roomId: string
+    createdAt: Date
     title: string
     date: string | null
     creatorToken: string | null
@@ -1507,6 +1514,7 @@ export namespace Prisma {
   export type StreamSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     roomId?: boolean
+    createdAt?: boolean
     title?: boolean
     date?: boolean
     creatorToken?: boolean
@@ -1522,6 +1530,7 @@ export namespace Prisma {
   export type StreamSelectScalar = {
     id?: boolean
     roomId?: boolean
+    createdAt?: boolean
     title?: boolean
     date?: boolean
     creatorToken?: boolean
@@ -1532,7 +1541,7 @@ export namespace Prisma {
     streamer?: boolean
   }
 
-  export type StreamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roomId" | "title" | "date" | "creatorToken" | "viewers" | "pfp" | "thumbnail" | "status" | "streamer", ExtArgs["result"]["stream"]>
+  export type StreamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roomId" | "createdAt" | "title" | "date" | "creatorToken" | "viewers" | "pfp" | "thumbnail" | "status" | "streamer", ExtArgs["result"]["stream"]>
 
   export type $StreamPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Stream"
@@ -1540,6 +1549,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       roomId: string
+      createdAt: Date
       title: string
       date: string | null
       creatorToken: string | null
@@ -1942,6 +1952,7 @@ export namespace Prisma {
   interface StreamFieldRefs {
     readonly id: FieldRef<"Stream", 'String'>
     readonly roomId: FieldRef<"Stream", 'String'>
+    readonly createdAt: FieldRef<"Stream", 'DateTime'>
     readonly title: FieldRef<"Stream", 'String'>
     readonly date: FieldRef<"Stream", 'String'>
     readonly creatorToken: FieldRef<"Stream", 'String'>
@@ -6471,6 +6482,7 @@ export namespace Prisma {
   export const StreamScalarFieldEnum: {
     id: 'id',
     roomId: 'roomId',
+    createdAt: 'createdAt',
     title: 'title',
     date: 'date',
     creatorToken: 'creatorToken',
@@ -6586,6 +6598,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -6617,20 +6643,6 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -6671,6 +6683,7 @@ export namespace Prisma {
     NOT?: StreamWhereInput | StreamWhereInput[]
     id?: StringFilter<"Stream"> | string
     roomId?: StringFilter<"Stream"> | string
+    createdAt?: DateTimeFilter<"Stream"> | Date | string
     title?: StringFilter<"Stream"> | string
     date?: StringNullableFilter<"Stream"> | string | null
     creatorToken?: StringNullableFilter<"Stream"> | string | null
@@ -6684,6 +6697,7 @@ export namespace Prisma {
   export type StreamOrderByWithRelationInput = {
     id?: SortOrder
     roomId?: SortOrder
+    createdAt?: SortOrder
     title?: SortOrder
     date?: SortOrder
     creatorToken?: SortOrder
@@ -6700,6 +6714,7 @@ export namespace Prisma {
     AND?: StreamWhereInput | StreamWhereInput[]
     OR?: StreamWhereInput[]
     NOT?: StreamWhereInput | StreamWhereInput[]
+    createdAt?: DateTimeFilter<"Stream"> | Date | string
     title?: StringFilter<"Stream"> | string
     date?: StringNullableFilter<"Stream"> | string | null
     creatorToken?: StringNullableFilter<"Stream"> | string | null
@@ -6713,6 +6728,7 @@ export namespace Prisma {
   export type StreamOrderByWithAggregationInput = {
     id?: SortOrder
     roomId?: SortOrder
+    createdAt?: SortOrder
     title?: SortOrder
     date?: SortOrder
     creatorToken?: SortOrder
@@ -6734,6 +6750,7 @@ export namespace Prisma {
     NOT?: StreamScalarWhereWithAggregatesInput | StreamScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Stream"> | string
     roomId?: StringWithAggregatesFilter<"Stream"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Stream"> | Date | string
     title?: StringWithAggregatesFilter<"Stream"> | string
     date?: StringNullableWithAggregatesFilter<"Stream"> | string | null
     creatorToken?: StringNullableWithAggregatesFilter<"Stream"> | string | null
@@ -7076,6 +7093,7 @@ export namespace Prisma {
   export type StreamCreateInput = {
     id?: string
     roomId: string
+    createdAt?: Date | string
     title: string
     date?: string | null
     creatorToken?: string | null
@@ -7089,6 +7107,7 @@ export namespace Prisma {
   export type StreamUncheckedCreateInput = {
     id?: string
     roomId: string
+    createdAt?: Date | string
     title: string
     date?: string | null
     creatorToken?: string | null
@@ -7101,6 +7120,7 @@ export namespace Prisma {
 
   export type StreamUpdateInput = {
     roomId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
     date?: NullableStringFieldUpdateOperationsInput | string | null
     creatorToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7113,6 +7133,7 @@ export namespace Prisma {
 
   export type StreamUncheckedUpdateInput = {
     roomId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
     date?: NullableStringFieldUpdateOperationsInput | string | null
     creatorToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7126,6 +7147,7 @@ export namespace Prisma {
   export type StreamCreateManyInput = {
     id?: string
     roomId: string
+    createdAt?: Date | string
     title: string
     date?: string | null
     creatorToken?: string | null
@@ -7138,6 +7160,7 @@ export namespace Prisma {
 
   export type StreamUpdateManyMutationInput = {
     roomId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
     date?: NullableStringFieldUpdateOperationsInput | string | null
     creatorToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7150,6 +7173,7 @@ export namespace Prisma {
 
   export type StreamUncheckedUpdateManyInput = {
     roomId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
     date?: NullableStringFieldUpdateOperationsInput | string | null
     creatorToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7544,6 +7568,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -7581,6 +7616,7 @@ export namespace Prisma {
   export type StreamCountOrderByAggregateInput = {
     id?: SortOrder
     roomId?: SortOrder
+    createdAt?: SortOrder
     title?: SortOrder
     date?: SortOrder
     creatorToken?: SortOrder
@@ -7598,6 +7634,7 @@ export namespace Prisma {
   export type StreamMaxOrderByAggregateInput = {
     id?: SortOrder
     roomId?: SortOrder
+    createdAt?: SortOrder
     title?: SortOrder
     date?: SortOrder
     creatorToken?: SortOrder
@@ -7611,6 +7648,7 @@ export namespace Prisma {
   export type StreamMinOrderByAggregateInput = {
     id?: SortOrder
     roomId?: SortOrder
+    createdAt?: SortOrder
     title?: SortOrder
     date?: SortOrder
     creatorToken?: SortOrder
@@ -7641,6 +7679,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7699,17 +7751,6 @@ export namespace Prisma {
     hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
     hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
     isEmpty?: boolean
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type TipEntryCompositeListFilter = {
@@ -7774,20 +7815,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -8030,6 +8057,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
     unset?: boolean
@@ -8072,10 +8103,6 @@ export namespace Prisma {
   export type NotificationUpdatefollowNotsInput = {
     set?: string[]
     push?: string | string[]
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type TipEntryListUpdateEnvelopeInput = {
@@ -8148,6 +8175,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -8196,6 +8234,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8270,17 +8322,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
   export type TipEntryWhereInput = {
     AND?: TipEntryWhereInput | TipEntryWhereInput[]
     OR?: TipEntryWhereInput[]
@@ -8296,20 +8337,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {

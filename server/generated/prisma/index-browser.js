@@ -116,6 +116,7 @@ Prisma.NullTypes = {
 exports.Prisma.StreamScalarFieldEnum = {
   id: 'id',
   roomId: 'roomId',
+  createdAt: 'createdAt',
   title: 'title',
   date: 'date',
   creatorToken: 'creatorToken',
