@@ -19,12 +19,12 @@ export const trackTipTxs = async (req: Request, res: Response) => {
     const { token, amount }: { token: string, amount: number } = req.body;
     
     if (isNaN(amount)) {
-      res.status(400).json({ error: "send amount as a number" });
+      res.status(400).json({ message: "send amount as a number" });
       return;
     }
 
     if (!TOKENS.includes(token.toUpperCase())) {
-      res.status(400).json({ error: 'send token string as either "USDC", "DEGEN", "ETH", "ZORA", "BNKR" or "FLAY" in lower or uppercase' });
+      res.status(400).json({ message: 'send token string as either "USDC", "DEGEN", "ETH", "ZORA", "BNKR" or "FLAY" in lower or uppercase' });
       return;
     }
 
@@ -54,7 +54,8 @@ export const trackTipTxs = async (req: Request, res: Response) => {
 
     res.status(200).send("updated");
   } catch (error) {
-    res.status(500).json({ error: "error updating tip tx" })
+    console.error(error)
+    res.status(500).json({ message: "error updating tip tx" })
   }
 }
 
@@ -65,7 +66,8 @@ export const getTrophyTxs = async (req: Request, res: Response) => {
 
     res.status(200).json({ tipTxs, creatorTokenTxs });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(error)
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -74,7 +76,7 @@ export const saveCreatorTokenVolume = async (req: Request, res: Response) => {
     const { amount }: { amount: number } = req.body;
 
     if (isNaN(amount)) {
-      res.status(400).json({ error: "amount must be sent as int" });
+      res.status(400).json({ message: "amount must be sent as int" });
       return
     }
 
@@ -101,6 +103,7 @@ export const saveCreatorTokenVolume = async (req: Request, res: Response) => {
 
     res.status(201).send("updated");
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" })
+    console.error(error)
+    res.status(500).json({ message: "Internal Server Error" })
   }
 }

@@ -1,6 +1,4 @@
 import type { Request, Response } from "express";
-import { Stream } from "../models/streamSchema";
-import { User } from "../models/userSchema";
 import { RedisClient, prisma } from "../config/db";
 
 export const getStream = async (req: Request, res: Response) => {
@@ -29,6 +27,11 @@ export const getStream = async (req: Request, res: Response) => {
       return;
     }
 
+    if (stream.status === "Ended") {
+      res.status(400).json({ message: "Stream has ended!" });
+      return;
+    }
+
     const user = await prisma.user.findUnique({ where: { username: stream.streamer } });
     if (!user) {
       res.status(400).json({ message: "Invalid streamer" });
@@ -44,6 +47,7 @@ export const getStream = async (req: Request, res: Response) => {
       pfp: user.userPfp,
     });
   } catch (error: any) {
-    res.status(500).json({ error: error.message, message: "error fetching stream details" });
+    console.error(error)
+    res.status(500).json({ message: "error fetching stream details" });
   }
 };

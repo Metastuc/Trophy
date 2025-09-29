@@ -31,9 +31,9 @@ export const leaderboard = async (req: Request, res: Response) => {
     const creators = await prisma.user.findMany({
       where: {
         creatorToken: {
-          not: null
-        }
-      }
+          not: null,
+        },
+      },
     });
 
     const leaderboard: ILeaderboard[] = [];
@@ -70,7 +70,8 @@ export const leaderboard = async (req: Request, res: Response) => {
 
           const currentTokenPrice = creator.tokenPrice;
           const newTokenPrice = Number(price);
-          const tokenPercentage = (((newTokenPrice - currentTokenPrice) / currentTokenPrice) * 100).toFixed(2).replace(/\.0$/, "") + "%";
+          const tokenPercentage =
+            (((newTokenPrice - currentTokenPrice) / currentTokenPrice) * 100).toFixed(2).replace(/\.0$/, "") + "%";
 
           if (currentTokenPrice <= newTokenPrice) {
             leaderboard.push({
@@ -82,7 +83,7 @@ export const leaderboard = async (req: Request, res: Response) => {
               username: creator.username,
               topHolders,
               pfp: creator.userPfp,
-              tokenPercentage
+              tokenPercentage,
             });
           } else {
             arrow = "down";
@@ -96,15 +97,15 @@ export const leaderboard = async (req: Request, res: Response) => {
               username: creator.username,
               topHolders,
               pfp: creator.userPfp,
-              tokenPercentage
+              tokenPercentage,
             });
           }
 
           await prisma.user.update({
             where: { username: creator.username },
             data: {
-              tokenPrice: newTokenPrice
-            }
+              tokenPrice: newTokenPrice,
+            },
           });
         }
 
@@ -117,6 +118,6 @@ export const leaderboard = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "error getting leaderboard info" });
+    res.status(500).json({ message: "error getting leaderboard info" });
   }
 };

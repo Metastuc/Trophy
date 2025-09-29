@@ -155,6 +155,16 @@ exports.Prisma.CVolumeScalarFieldEnum = {
   username: 'username'
 };
 
+exports.Prisma.TokenClaimModelScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  lockedToken: 'lockedToken',
+  totalClaimed: 'totalClaimed',
+  tokenLeft: 'tokenLeft',
+  lastClaimed: 'lastClaimed',
+  claimDate: 'claimDate'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   privyId: 'privyId',
@@ -206,6 +216,7 @@ exports.Prisma.ModelName = {
   Notification: 'Notification',
   TipTxs: 'TipTxs',
   cVolume: 'cVolume',
+  TokenClaimModel: 'TokenClaimModel',
   User: 'User'
 };
 

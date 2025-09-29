@@ -14,14 +14,14 @@ import { type Address, custom, parseUnits } from "viem";
 import { MORPH_ABI, QUOTE_ABI } from "./abi";
 import { network } from "./constants";
 import { BASE_V2_QUOTER, BASE_V3_ROUTER, BASE_WETH, MORPHO_RE7_POOL, TOKEN_ADDRESSES } from "./contracts";
+import { TokenType } from "./types";
 import { publicClient } from "./viem";
 
-type tokenType = "USDC" | "ZORA" | "DEGEN" | "BNKR" | "FLAY";
 
 const chainId = network.id as unknown as number;
 
 export const performTokentoETHSwap = async (
-    token: tokenType,
+    token: TokenType,
     walletType: string,
     address: Address,
     signer: EIP1193Provider,
@@ -174,7 +174,7 @@ const getIxs = async (tokenAddress: Address, nexusAccount: MultichainSmartAccoun
 };
 
 // use formatEther(), to get the exact eth amount from the bigint
-export const getTokenToEthQuote = async (token: tokenType, amount: string) => {
+export const getTokenToEthQuote = async (token: TokenType, amount: string) => {
     try {
         const decimals = token === "USDC" ? 6 : 18;
         const tokenInUnits = parseUnits(amount, decimals);

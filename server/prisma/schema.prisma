@@ -75,6 +75,16 @@ model cVolume {
   username String @unique @default("trophy")
 }
 
+model TokenClaimModel {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  username     String   @unique
+  lockedToken  Int
+  totalClaimed Int      @default(0)
+  tokenLeft    Int
+  lastClaimed  DateTime @default(now())
+  claimDate    DateTime
+}
+
 model User {
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
   privyId       String       @unique

@@ -1,11 +1,29 @@
 import { createFlaunch, ReadWriteFlaunchSDK, RevenueManagerAbi } from "@flaunch/sdk";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { Address, encodeAbiParameters, encodeFunctionData, parseAbi, parseEther, parseUnits, zeroHash } from "viem";
+import {
+    Address,
+    encodeAbiParameters,
+    encodeFunctionData,
+    maxUint256,
+    parseAbi,
+    parseEther,
+    parseUnits,
+    zeroAddress,
+    zeroHash,
+} from "viem";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
 import { makeRequest } from "./axios";
 import { ENV_SCHEMA, network } from "./constants";
-import { claimTokenParams, createTokenParams, SignTypedData } from "./types";
+import { TOKEN_ADDRESSES } from "./contracts";
+import {
+    claimTokenParams,
+    createTokenParams,
+    IintermediatePoolKey,
+    PermitSingle,
+    TokenSwapParams,
+    TokenType,
+} from "./types";
 import { getWalletClient, publicClient } from "./viem";
 import { zeroDevSA } from "./zerodev";
 
@@ -40,20 +58,19 @@ export const ethRequiredToGetAllocation = async ({ tokenPercent }: { tokenPercen
     return { tokens: premineAmount, ethAmount: ethRequiredToBuy };
 };
 
-export const claimToken = async ({ provider, coinAddress, address }: claimTokenParams) => {
+export const claimToken = async ({ provider, coinAddress, address, username }: claimTokenParams) => {
     const zeroDevClient = await zeroDevSA({ provider });
 
-    const tokenBalance = await publicClient.readContract({
-        abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
-        args: [zeroDevClient.account.address],
-        functionName: "balanceOf",
-        address: coinAddress,
-    });
+    const { amountOfTokens } = await makeRequest<{ amountOfTokens: number }>({
+        method: "GET",
+        url: `/get-token-allocation-percent`,
+        data: { username },
+    }).then((response) => response.data);
 
     const transferData = encodeFunctionData({
         functionName: "transfer",
         abi: parseAbi(["function transfer(address to, uint amount)"]),
-        args: [address as Address, tokenBalance],
+        args: [address as Address, BigInt(amountOfTokens)],
     });
 
     const hash = await zeroDevClient.sendTransaction({
@@ -146,6 +163,12 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             const { logs } = await publicClient.getTransactionReceipt({ hash });
 
             creatorToken = logs[4].address;
+
+            await makeRequest({
+                method: "POST",
+                url: "/set-date",
+                data: { username: name, tokenGotten: tokens },
+            });
         } else {
             const uoHash = await zeroDevClient.sendUserOperation({
                 callData: await zeroDevClient.account.encodeCalls([
@@ -161,18 +184,12 @@ export const createCreatorToken = async ({ name, provider, ethAmount, tokens, ad
             });
 
             creatorToken = logs[4].address;
-        };
+        }
 
         await makeRequest({
             method: "POST",
             url: `/save-creator-token`,
             data: { creatorToken, sa_address, username: name },
-        });
-
-        await makeRequest({
-            method: "POST",
-            url: "/set-date",
-            data: { username: name },
         });
 
         return { creatorToken, sa_address };
@@ -192,20 +209,59 @@ const checkTx = async (hash: Address, flaunch = WriteClient) => {
     return hash;
 };
 
-export const buyCreatorToken = async (
-    coinAddress: Address,
-    amount: string,
-    provider: EIP1193Provider,
-    address: Address,
-) => {
-    console.log({ coinAddress, amount, address });
+export const buyCreatorToken = async ({
+    coinAddress, amount, provider, signTypedData, address, token,
+}: TokenSwapParams) => {
+
     const flaunch = flaunchClient(provider, address);
+
+    const amountInUnits = parseUnits(amount, token === "USDC" ? 6 : 18);
+
+    let signature: Address | undefined = undefined;
+    let permitSingle: PermitSingle | undefined = undefined;
+    let intermediatePoolKey: IintermediatePoolKey = undefined;
+
+    if (token !== "ETH") {
+        const tokenAddress = TOKEN_ADDRESSES[token] as Address;
+
+        const tokenAllowance = await flaunch.getERC20AllowanceToPermit2(tokenAddress);
+        if (tokenAllowance < amountInUnits) {
+            await flaunch.setERC20AllowanceToPermit2(tokenAddress, maxUint256);
+        }
+
+        const { allowance: tokenPermitAllowance } = await flaunch.getPermit2AllowanceAndNonce(tokenAddress);
+
+        if (tokenPermitAllowance < amountInUnits) {
+            const { typedData, permitSingle: typedPermit } = await flaunch.getPermit2TypedData(tokenAddress);
+
+            typedData.message.details.amount = typedData.message.details.amount.toString();
+            typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
+
+            const { signature: typedSignature } = await signTypedData(typedData, { address });
+
+            signature = typedSignature as Address;
+            permitSingle = typedPermit;
+        }
+
+        intermediatePoolKey = {
+            currency0: zeroAddress,
+            currency1: TOKEN_ADDRESSES[token] as Address,
+            fee: 500,
+            tickSpacing: 10,
+            hooks: zeroAddress,
+            hookData: "0x",
+        };
+    }
+
     const hash = await flaunch.buyCoin(
         {
             coinAddress,
             slippagePercent: 4,
             swapType: "EXACT_IN",
-            amountIn: parseEther(amount),
+            amountIn: amountInUnits,
+            intermediatePoolKey,
+            signature,
+            permitSingle,
         },
         "V1_1",
     );
@@ -217,39 +273,62 @@ export const getCreatorTokenPrice = async (coinAddress: Address) => {
     return await readClient.coinPriceInUSD({ coinAddress });
 };
 
-export const getSwapQuote = async (ethToCreatorToken: boolean, amount: string, coinAddress: Address) => {
-    if (ethToCreatorToken) {
-        return await readClient.getBuyQuoteExactInput(coinAddress, parseEther(amount));
+export const getSwapQuote = async ({
+    amount,
+    coinAddress,
+    supportedTokenToCreatorToken,
+    token,
+}: {
+    amount: string;
+    coinAddress: Address;
+    supportedTokenToCreatorToken: boolean;
+    token: TokenType;
+}) => {
+    let intermediatePoolKey: IintermediatePoolKey = undefined;
+
+    if (token.toUpperCase() !== "ETH") {
+        intermediatePoolKey = {
+            currency0: zeroAddress,
+            currency1: TOKEN_ADDRESSES[token] as Address,
+            fee: 500,
+            tickSpacing: 10,
+            hooks: zeroAddress,
+            hookData: "0x",
+        };
     }
 
-    return await readClient.getSellQuoteExactInput(coinAddress, parseEther(amount));
+    if (supportedTokenToCreatorToken) {
+        return await readClient.getBuyQuoteExactInput({
+            coinAddress,
+            intermediatePoolKey,
+            amountIn: parseEther(amount),
+        });
+    }
+
+    return await readClient.getSellQuoteExactInput({ coinAddress, intermediatePoolKey, amountIn: parseEther(amount) });
 };
 
-export type PermitDetails = {
-    token: Address;
-    amount: bigint;
-    expiration: number;
-    nonce: number;
-};
-
-export type PermitSingle = {
-    details: PermitDetails;
-    spender: Address;
-    sigDeadline: bigint;
-};
-
-export const sellCreatorToken = async (
-    coinAddress: Address,
-    amount: string,
-    provider: EIP1193Provider,
-    signTypedData: SignTypedData,
-    address: Address,
-) => {
+export const sellCreatorToken = async ({
+    coinAddress, amount, provider, signTypedData, address, token,
+}: TokenSwapParams) => {
     const flaunch = flaunchClient(provider, address);
+
+    let intermediatePoolKey: IintermediatePoolKey = undefined;
     const amountInUnits = parseEther(amount.replace(/,/g, ""));
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
     let hash: Address;
+
+    if (token.toUpperCase() !== "ETH") {
+        intermediatePoolKey = {
+            currency0: zeroAddress,
+            currency1: TOKEN_ADDRESSES[token] as Address,
+            fee: 500,
+            tickSpacing: 10,
+            hooks: zeroAddress,
+            hookData: "0x",
+        };
+    };
 
     if (allowance < amountInUnits) {
         const { typedData, permitSingle } = await flaunch.getPermit2TypedData(coinAddress);
@@ -258,20 +337,27 @@ export const sellCreatorToken = async (
         typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
 
         const { signature } = await signTypedData(typedData, { address });
-        hash = await flaunch.sellCoin({
-            coinAddress,
-            slippagePercent: 4,
-            amountIn: amountInUnits,
-            permitSingle,
-            signature: signature as Address,
-        }, "V1_1");
-
+        hash = await flaunch.sellCoin(
+            {
+                coinAddress,
+                slippagePercent: 4,
+                amountIn: amountInUnits,
+                permitSingle,
+                signature: signature as Address,
+                intermediatePoolKey,
+            },
+            "V1_1",
+        );
     } else {
-        hash = await flaunch.sellCoin({
-            coinAddress,
-            amountIn: amountInUnits,
-            slippagePercent: 4,
-        }, "V1_1");
+        hash = await flaunch.sellCoin(
+            {
+                coinAddress,
+                amountIn: amountInUnits,
+                slippagePercent: 4,
+                intermediatePoolKey,
+            },
+            "V1_1",
+        );
     }
 
     return await checkTx(hash);
