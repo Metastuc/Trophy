@@ -185,15 +185,15 @@ export function Swap() {
             },
         }));
 
-        const ethToToken = drawerData.from.type === "native";
+        const supportedTokenToCreatorToken = drawerData.from.type === "native";
 
-        const quote = await getSwapQuote(ethToToken, drawerData.from.amount, streamer?.tokenAddress as Address);
+        const quote = await getSwapQuote({ token: "ETH", supportedTokenToCreatorToken, amount: drawerData.from.amount, coinAddress: streamer?.tokenAddress as Address });
 
         setDrawerData((state) => ({
             ...state,
             to: {
                 ...state.to,
-                amount: toLocaleString(quote, ethToToken),
+                amount: toLocaleString(quote, supportedTokenToCreatorToken),
             },
         }));
     }

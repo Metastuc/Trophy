@@ -114,15 +114,18 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
                 let hash: `0x${string}`;
+                const token = "ETH";
 
                 if (drawerData.from.type === "native") {
                     // ETH → StreamerToken
-                    hash = await buyCreatorToken(
-                        streamer?.tokenAddress as Address,
-                        drawerData.from.amount,
+                    hash = await buyCreatorToken({
+                        coinAddress: streamer?.tokenAddress as Address,
+                        amount: drawerData.from.amount,
                         provider,
-                        wallets[0].address as Address,
-                    );
+                        signTypedData,
+                        token,
+                        address: wallets[0].address as Address,
+                    });
 
                     await makeRequest({
                         method: 'POST',
@@ -131,13 +134,14 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                     });
                 } else {
                     // StreamerToken → ETH
-                    hash = await sellCreatorToken(
-                        streamer?.tokenAddress as Address,
-                        drawerData.from.amount,
+                    hash = await sellCreatorToken({
+                        coinAddress: streamer?.tokenAddress as Address,
+                        amount: drawerData.from.amount,
                         provider,
                         signTypedData,
-                        wallets[0].address as Address,
-                    );
+                        token,
+                        address: wallets[0].address as Address,
+                    });
                 }
 
                 await makeRequest({
