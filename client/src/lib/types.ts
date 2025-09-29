@@ -46,3 +46,36 @@ export interface claimTokenParams {
     provider: EIP1193Provider;
     username: string;
 };
+
+export type TokenType = "USDC" | "ZORA" | "DEGEN" | "BNKR" | "FLAY" | "ETH";
+
+type PermitDetails = {
+    token: Address;
+    amount: bigint;
+    expiration: number;
+    nonce: number;
+};
+
+export type PermitSingle = {
+    details: PermitDetails;
+    spender: Address;
+    sigDeadline: bigint;
+};
+
+export interface TokenSwapParams {
+    coinAddress: Address;
+    amount: string;
+    provider: EIP1193Provider;
+    signTypedData: SignTypedData;
+    address: Address;
+    token: TokenType;
+};
+
+export type IintermediatePoolKey = {
+    currency0: Address,
+    currency1: Address,
+    fee: number,
+    tickSpacing: number,
+    hooks: Address,
+    hookData: Address,
+} | undefined;
