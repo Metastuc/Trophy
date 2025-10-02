@@ -1,31 +1,43 @@
-import {
-    createBicoPaymasterClient,
-    createSmartAccountClient,
-    DEFAULT_MEE_VERSION,
-    getMEEVersion,
-    toNexusAccount,
-} from "@biconomy/abstractjs";
 import { EIP1193Provider } from "@privy-io/react-auth";
-import { custom } from "viem";
+import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
+import { createKernelAccount, createKernelAccountClient, createZeroDevPaymasterClient } from "@zerodev/sdk";
+import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants";
+import { Signer } from "@zerodev/sdk/types";
+import { http } from "viem";
 
 import { CLIENT_CONSTANTS, CLIENT_ENV } from "./constants";
+import { publicClient } from "./viem";
 
 export async function initSmartAccount(provider: EIP1193Provider) {
     try {
-        return createSmartAccountClient({
-            account: await toNexusAccount({
-                signer: provider,
-                chainConfiguration: {
-                    chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
-                    transport: custom(provider),
-                    version: getMEEVersion(DEFAULT_MEE_VERSION),
+        const entryPoint = getEntryPoint("0.7");
+
+        return createKernelAccountClient({
+            account: await createKernelAccount(publicClient, {
+                entryPoint,
+                plugins: {
+                    sudo: await signerToEcdsaValidator(publicClient, {
+                        entryPoint,
+                        kernelVersion: KERNEL_V3_1,
+                        signer: provider as Signer,
+                    }),
                 },
+                kernelVersion: KERNEL_V3_1,
             }),
+            bundlerTransport: http(CLIENT_ENV.VITE_ZERODEV_RPC),
+
             chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
-            paymaster: createBicoPaymasterClient({
-                paymasterUrl: CLIENT_ENV.VITE_PAYMASTER_URL,
-            }),
-            bundlerUrl: CLIENT_ENV.VITE_BUNDLER_URL,
+
+            client: publicClient,
+
+            paymaster: {
+                getPaymasterData(parameters) {
+                    return createZeroDevPaymasterClient({
+                        transport: http(CLIENT_ENV.VITE_ZERODEV_RPC),
+                        chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
+                    }).sponsorUserOperation({ userOperation: parameters });
+                },
+            },
         });
     } catch (error) {
         throw new Error("Failed to initialize smart account: " + (error as Error).message);

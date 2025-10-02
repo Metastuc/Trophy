@@ -10,6 +10,7 @@ export const CLIENT_ENV = z
     .object({
         VITE_ALCHEMY_RPC: z.string(),
         VITE_BUNDLER_URL: z.string(),
+        VITE_DEFAULT_IMAGE: z.url(),
         VITE_ENVIRONMENT: z.enum(["development", "production", "staging"]),
         VITE_HUDDLE_PROJECT_ID: z.string(),
         VITE_HUDDLE_PROJECT_KEY: z.string(),
@@ -17,6 +18,7 @@ export const CLIENT_ENV = z
         VITE_PRIVY_APP_ID: z.string(),
         VITE_PRIVY_CLIENT_ID: z.string(),
         VITE_SERVER_URL: z.string(),
+        VITE_ZERODEV_RPC: z.string(),
     })
     .parse(import.meta.env);
 
@@ -36,7 +38,6 @@ export const API_ENDPOINTS = {
         ME: "/user/me",
         NOTIFICATIONS: (userId: string) => `/user/${userId}/notifications`,
         MARK_NOTIFICATIONS_AS_READ: (userId: string) => `/user/${userId}/notifications/read`,
-        SAVE_TOKEN: (userId: string) => `/user/${userId}/save-creator-token`,
         UPDATE_USER: (userId: string) => `/user/${userId}/update`,
     },
 
@@ -57,6 +58,13 @@ export const API_ENDPOINTS = {
 
     TIPS: {
         STORE_TIP: "/tips/store",
+    },
+
+    TOKEN: {
+        CLAIM_TOKENS: (userId: string) => `/token/${userId}/claim-tokens`,
+        CREATE_TOKEN_URI: (userId: string) => `/token/${userId}/create-token-uri`,
+        SAVE_TOKEN: (userId: string) => `/token/${userId}/save-creator-token`,
+        SCHEDULE_TOKEN_CLAIMS: (userId: string) => `/token/${userId}/schedule-token-claims`,
     },
 
     UTIL: {
