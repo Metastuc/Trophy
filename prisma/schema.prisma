@@ -90,7 +90,7 @@ model CreatorToken {
     symbol       String @unique
     name         String @unique
     smartAccount String @unique
-    image        String
+    image        String?
 
     // Creator (one-to-one with User)
     creator   User?  @relation(fields: [creatorId], references: [id])
