@@ -21,7 +21,10 @@ export const SERVER_ENV = z
         ENVIRONMENT: z.enum(["development", "production", "staging"]),
         HUDDLE_API_KEY: z.string(),
         HUDDLE_PROJECT_ID: z.string(),
+        JPG_DEFAULT_IMAGE: z.url(),
         MORALIS_API_KEY: z.string(),
+        PINATA_GATEWAY: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
+        PINATA_JWT: z.string(),
         PORT: z.coerce.number().int().positive(),
         PRIVY_APP_ID: z.string(),
         PRIVY_APP_SECRET: z.string(),
@@ -30,6 +33,7 @@ export const SERVER_ENV = z
         REDIS_PORT: z.coerce.number().int().positive(),
         REDIS_URI: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
         REDIS_USERNAME: z.string(),
+        VITE_DEFAULT_IMAGE: z.url(),
     })
     .parse(process.env);
 
