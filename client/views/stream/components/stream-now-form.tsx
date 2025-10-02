@@ -55,28 +55,6 @@ export function StreamNowForm() {
         mutate(data);
     }
 
-    // async function handleDrawerSubmit() {
-    //     try {
-    //         if (!createStreamDrawerState.form.allocationInPercentage) {
-    //             throw new Error("Allocation percentage is required");
-    //         }
-
-    //         if (!createStreamDrawerState.pendingData) {
-    //             throw new Error("No pending stream data");
-    //         }
-
-    //         await handleCreatorTokenCreation({
-    //             ethereumAmountRequired: createStreamDrawerState.form.ethereumAmountRequired,
-    //             tokensCreatorWillReceieve: createStreamDrawerState.form.tokensCreatorWillReceieve,
-    //         });
-
-    //         // setCreateStreamDrawerState((state) => ({ ...state, isDrawerOpen: false }));
-    //         // mutate(createStreamDrawerState.pendingData);
-    //     } catch (error) {
-    //         toast.error("Failed to create creator token: " + (error as Error).message);
-    //     }
-    // }
-
     return (
         <section className="space-y-5">
             <h5 className="text-center">Start a livestream now</h5>

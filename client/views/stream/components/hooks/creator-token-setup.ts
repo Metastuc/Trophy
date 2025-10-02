@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useShallow } from "zustand/shallow";
 
 import { TOKENS } from "@/components/ui/tokens";
+import { useAuthenticationStore } from "@/hooks/authentication";
+import { CLIENT_ENV } from "@/lib/constants";
 
 import { useCreatorTokenCreation } from "./creator-token-creation";
 import { useStreamFormState } from "./form-state";
@@ -10,6 +13,11 @@ import { useUserDefault } from "./user-defaults";
 export function useCreatorTokenSetup({ formState, setFormState }: ReturnType<typeof useStreamFormState>) {
     useUserDefault(setFormState);
     const { createCreatorToken, isCreating } = useCreatorTokenCreation({ formState, setFormState });
+    const { tokenImage } = useAuthenticationStore(
+        useShallow((state) => ({
+            tokenImage: state.user?.backendUserData.user.profilePicture,
+        })),
+    );
 
     const [drawerState, setDrawerState] = useState<CreateStreamDrawerState>(() => ({
         form: {
@@ -26,7 +34,12 @@ export function useCreatorTokenSetup({ formState, setFormState }: ReturnType<typ
     }));
 
     async function handleDrawerSubmit() {
-        if (!drawerState.form.allocationInPercentage) {
+        if (tokenImage?.trim().toLowerCase() === CLIENT_ENV.VITE_DEFAULT_IMAGE.trim().toLowerCase()) {
+            toast.error("Please set a profile picture before creating a creator token");
+            return;
+        }
+
+        if (!drawerState.form.allocationInPercentage || drawerState.form.allocationInPercentage === "0") {
             toast.error("Allocation percentage is required");
             return;
         }
