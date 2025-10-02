@@ -1,7 +1,7 @@
 generator client {
     provider = "prisma-client"
     output   = "../server/generated/prisma"
-    runtime = "bun"
+    runtime  = "bun"
 }
 
 datasource db {
@@ -10,12 +10,13 @@ datasource db {
 }
 
 model User {
-    id            String @id @default(auto()) @map("_id") @db.ObjectId
-    privyId       String @unique
-    username      String @unique
-    email         String @unique
-    profileImage  String @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
-    walletAddress String @unique
+    id            String  @id @default(auto()) @map("_id") @db.ObjectId
+    privyId       String  @unique
+    username      String  @unique
+    email         String  @unique
+    profileImage  String  @default("https://trophy-stream.s3.eu-north-1.amazonaws.com/default-pfp.svg")
+    walletAddress String  @unique
+    emailVerified Boolean @default(false)
 
     bio          String        @default("")
     creatorToken CreatorToken?
@@ -36,16 +37,18 @@ model User {
     tipsReceived Tip[] @relation("ReceivedTips")
     tipsSent     Tip[] @relation("SentTips")
 
-    // tokens held
-    holdings Holding[] @relation("UserHoldings")
+    // tokens
+    holdings       Holding[]       @relation("UserHoldings")
+    ClaimsHistory  ClaimsHistory[] @relation("UserClaimsHistory")
+    ClaimsSchedule ClaimsSchedule?
 
     // all time stats
-    stats     Stats?
+    stats Stats?
 
     // timestamps
     lastReadAt DateTime? @default(now())
-    createdAt DateTime? @default(now())
-    updatedAt DateTime? @updatedAt
+    createdAt  DateTime? @default(now())
+    updatedAt  DateTime? @updatedAt
 
     @@index([privyId, username, email, walletAddress])
     @@map("users")
@@ -65,10 +68,11 @@ model Stream {
     streamer   User   @relation("UserStreams", fields: [streamerId], references: [id])
     streamerId String @db.ObjectId
 
-    createdAt      DateTime?     @default(now())
-    updatedAt      DateTime?     @updatedAt
     CreatorToken   CreatorToken? @relation("TokenStreams", fields: [creatorTokenId], references: [id])
     creatorTokenId String?       @db.ObjectId
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
 
     @@index([status, scheduledAt, title])
     @@map("streams")
@@ -86,6 +90,7 @@ model CreatorToken {
     symbol       String @unique
     name         String @unique
     smartAccount String @unique
+    image        String
 
     // Creator (one-to-one with User)
     creator   User?  @relation(fields: [creatorId], references: [id])
@@ -123,9 +128,9 @@ model Holding {
 }
 
 model Notification {
-    id     String  @id @default(auto()) @map("_id") @db.ObjectId
-    user   User    @relation(fields: [userId], references: [id]) // recipient
-    userId String  @db.ObjectId
+    id     String @id @default(auto()) @map("_id") @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id]) // recipient
+    userId String @db.ObjectId
 
     type      NotificationType
     message   String
@@ -203,17 +208,57 @@ model Stats {
     userId String @unique @db.ObjectId
 
     // metrics
-    followerCount  Int   @default(0)
-    followingCount Int   @default(0)
-    totalStreams   Int   @default(0)
-    epicStreams    Int   @default(0)
-    totalFees      Float @default(0)
-    tipCount       Int   @default(0)
-    holdingCount   Int   @default(0)
-    tokenPrice     Float @default(0)
+    followerCount  Int       @default(0)
+    followingCount Int       @default(0)
+    totalStreams   Int       @default(0)
+    epicStreams    Int       @default(0)
+    totalFees      Float     @default(0)
+    tipCount       Int       @default(0)
+    holdingCount   Int       @default(0)
+    tokenPrice     Float     @default(0)
+    claimDate      DateTime?
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
 
     @@map("stats")
+}
+
+model ClaimsHistory {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    // creator
+    user   User   @relation("UserClaimsHistory", fields: [userId], references: [id])
+    userId String @unique @db.ObjectId
+
+    // claim details
+    amount       Float
+    token        String?
+    tokenAddress String?
+    txHash       String?  @unique
+    claimedAt    DateTime @default(now())
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@index([userId, claimedAt])
+    @@map("claims_history")
+}
+
+model ClaimsSchedule {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String @unique @db.ObjectId
+
+    lockedToken  Int
+    totalClaimed Int      @default(0)
+    tokenLeft    Int
+    lastClaimed  DateTime @default(now())
+    claimDate    DateTime
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("claims_schedule")
 }
