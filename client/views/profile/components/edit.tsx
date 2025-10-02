@@ -45,7 +45,8 @@ export function EditProfile() {
                 formData.append("bio", variables.bio as string);
                 formData.append("email", variables.email as string);
                 formData.append("profilePicture", variables.profilePicture);
-                formData.append("username", variables.username as string);
+                formData.append("xUrl", variables.xUrl as string);
+                formData.append("ytUrl", variables.YTUrl as string);
 
                 return formData;
             }
