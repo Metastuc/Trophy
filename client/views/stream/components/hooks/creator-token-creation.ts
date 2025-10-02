@@ -1,11 +1,14 @@
 import { useWallets } from "@privy-io/react-auth";
 import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
+import { Address } from "viem";
 
 import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { flaunchCreatorToken } from "@/lib/flaunch";
 
 export function useCreatorTokenCreation({
     formState,
+    setFormState,
 }: {
     formState: CreateStreamFormState;
     setFormState: Dispatch<SetStateAction<CreateStreamFormState>>;
@@ -29,7 +32,16 @@ export function useCreatorTokenCreation({
             setIsCreating(true);
 
             try {
-                console.log({ ethereumAmountRequired, tokensCreatorWillReceieve });
+                const { creatorToken } = await flaunchCreatorToken({
+                    creatorAddress: formState.walletAddress as Address,
+                    ethereumAmountRequiredToFlaunch: ethereumAmountRequired,
+                    provider,
+                    tokenName: formState.username,
+                    tokensCreatorWillOwn: tokensCreatorWillReceieve,
+                });
+
+                toast.success("Your creator token has been created", { id: toastId });
+                setFormState((state) => ({ ...state, creatorToken }));
             } catch (error) {
                 toast.error("Failed to create token: " + (error as Error).message, {
                     id: toastId,

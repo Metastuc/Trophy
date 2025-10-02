@@ -58,12 +58,19 @@ export async function flaunchCreatorToken({
         const creatorFeeAllocationInBasisPoints = 70 * 100;
         const initialTokenFairLaunch = (parseEther(CLIENT_CONSTANTS.CREATOR_TOKEN_SUPPLY.toString()) * 45n) / 100n;
 
-        const { tokenUri } = await makeRequest<{ tokenUri: string }>({
-            method: "PATCH",
+        const { tokenUri } = await makeRequest<CreateTokenUriResponse>({
+            method: "POST",
             url: API_ENDPOINTS.TOKEN.CREATE_TOKEN_URI(tokenName),
-        }).then((response) => response.data);
+        }).then((response) => response.data.data);
 
         const flaunchParams = {
+            _airdropParams: {
+                airdropAmount: 0n,
+                airdropEndTime: 0n,
+                airdropIndex: 0n,
+                merkleIPFSHash: "",
+                merkleRoot: zeroHash,
+            },
             _flaunchParams: {
                 creator: smartAccountAddress as Address,
                 creatorFeeAllocation: creatorFeeAllocationInBasisPoints,
@@ -88,13 +95,6 @@ export async function flaunchCreatorToken({
                 merkleIPFSHash: "",
                 merkleRoot: zeroHash,
             },
-            _airdropParams: {
-                airdropAmount: 0n,
-                airdropEndTime: 0n,
-                airdropIndex: 0n,
-                merkleIPFSHash: "",
-                merkleRoot: zeroHash,
-            },
         };
 
         let creatorToken: Address | undefined = undefined;
@@ -104,9 +104,9 @@ export async function flaunchCreatorToken({
             args: [
                 flaunchParams._flaunchParams,
                 "0x",
-                flaunchParams._treasuryManagerParams,
                 flaunchParams._whitelistParams,
                 flaunchParams._airdropParams,
+                flaunchParams._treasuryManagerParams,
             ],
         });
 
@@ -150,6 +150,8 @@ export async function flaunchCreatorToken({
             url: API_ENDPOINTS.TOKEN.SAVE_TOKEN(tokenName),
             data: { creatorToken, smartAccount: smartWalletClient.account.address, tokenName },
         });
+
+        return { creatorToken };
     } catch (error) {
         throw new Error("Failed to create token: " + ((error as Error).message || "Unknown error"));
     }

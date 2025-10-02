@@ -19,7 +19,7 @@ export async function createTokenUri(request: Request, response: Response, next:
             symbol: user.username.toUpperCase(),
         });
 
-        response.customResponse<{ tokenUri: string }>({
+        response.customResponse<CreateTokenUriData>({
             code: 200,
             data: {
                 tokenUri: `ipfs://${tokenCID}`,

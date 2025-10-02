@@ -39,7 +39,10 @@ export function useCreatorTokenSetup({ formState, setFormState }: ReturnType<typ
             return;
         }
 
-        if (!drawerState.form.allocationInPercentage || drawerState.form.allocationInPercentage === "0") {
+        if (
+            drawerState.form.allocationInPercentage.trim() === "" ||
+            isNaN(Number(drawerState.form.allocationInPercentage))
+        ) {
             toast.error("Allocation percentage is required");
             return;
         }
