@@ -12,7 +12,7 @@ declare global {
     interface TipERC extends TipETH {
         token: TokenAddresses;
         senderAddress: Address;
-        wallet: string;
+        // wallet: string;
     }
 
     type TipToken = Omit<TipERC, "token"> & {

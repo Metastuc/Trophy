@@ -75,7 +75,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                         recipientAddress: streamer?.walletAddress as Address,
                         senderAddress: userWalletState.address as Address,
                         token: tipDrawerState.token,
-                        wallet: userWalletState.walletType as string,
+                        // wallet: userWalletState.walletType as string,
                     });
                 }
 
@@ -128,7 +128,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             tipDrawerState.tokenAddress,
             userWalletState.address,
             userWalletState.provider,
-            userWalletState.walletType,
+            // userWalletState.walletType,
             wallets,
         ],
     );

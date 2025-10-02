@@ -11,9 +11,12 @@ declare global {
         provider: EIP1193Provider;
     }
 
-    interface CreateCreatorToken {
-        provider: EIP1193Provider;
+    interface FlaunchCreatorToken {
         tokenName: string;
+        creatorAddress: Address;
+        provider: EIP1193Provider;
+        ethereumAmountRequiredToFlaunch: bigint;
+        tokensCreatorWillOwn: bigint;
     }
 
     interface CreatorTokenCreated {
