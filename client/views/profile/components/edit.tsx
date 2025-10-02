@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { ProfileForm } from "@/components/layout/profile-form";
 import { useServer } from "@/hooks/server";
-import { API_ENDPOINTS } from "@/lib/constants";
+import { API_ENDPOINTS, queryClient } from "@/lib/constants";
 
 import { useUserProfileContext } from "../hooks";
 import { useUserProfileDrawerStore } from "../store";
@@ -30,10 +30,8 @@ export function EditProfile() {
 
         {
             async onSuccess() {
-                toast.success("Profile updated successfully!", {
-                    duration: 3000,
-                });
-
+                toast.success("Profile updated successfully!", { duration: 3000 });
+                queryClient.invalidateQueries({ queryKey: ["get-my-profile"] });
                 closeDrawer();
             },
         },
