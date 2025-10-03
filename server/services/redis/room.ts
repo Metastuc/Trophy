@@ -49,6 +49,10 @@ export async function getRoom(roomId: string): Promise<RedisRoom> {
     return { host: roomData.host, status: roomData.status, createdAt: roomData.createdAt, participants, invitedGuests };
 }
 
-export async function endRoomInRedis({ walletAddress }: RoomInRedisParams) {
-    await redis.del(`liveroom:${walletAddress}`);
+export async function endRoomInRedis({ walletAddress, roomId }: RoomInRedisParams) {
+    const roomKey = SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId);
+    const participantsKey = `${roomKey}:participants`;
+    const messagesKey = `${roomKey}:messages`;
+
+    await Promise.all([redis.del(`liveroom:${walletAddress}`), redis.del(participantsKey), redis.del(messagesKey)]);
 }
