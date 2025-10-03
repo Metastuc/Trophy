@@ -18,7 +18,7 @@ export function FeedStreamMain() {
             <div
                 className="size-full rounded-none"
                 style={{
-                    backgroundImage: `url(${thumbnail ? thumbnail : "https://trophytv.co/splash.jpg"})`,
+                    backgroundImage: `url(${thumbnail ? thumbnail : "/splash.jpg"})`,
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                     backgroundPosition: "center center",
