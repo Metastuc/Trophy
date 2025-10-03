@@ -26,7 +26,7 @@ function RouteComponent() {
     );
 
     const { data, error, isPending, isSuccess, isError } = useQuery({
-        queryKey: ["notifications"],
+        queryKey: ["user", "notifications", username],
         queryFn: async () => await getUserNotifications({ username }),
         enabled: !!isAuthenticated,
     });
@@ -56,7 +56,11 @@ function RouteComponent() {
     let content: ReactNode;
 
     if (isPending) {
-        content = <Loading />;
+        content = (
+            <div className="flex h-[75vh] items-center justify-center">
+                <Loading />
+            </div>
+        );
     } else if (isError) {
         content = <div>{error.message}</div>;
     } else if (isSuccess && data.length > 0) {

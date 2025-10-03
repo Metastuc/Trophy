@@ -22,7 +22,7 @@ function RouteComponent() {
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
 
     const { data, error, isPending } = useQuery({
-        queryKey: ["get-my-profile"],
+        queryKey: ["user", "get-my-profile"],
         queryFn: async () => await getMyProfile(),
         enabled: !!isAuthenticated,
     });
