@@ -1,16 +1,19 @@
-import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
+import { useLocalAudio, useLocalScreenShare, useLocalVideo, useRoom } from "@huddle01/react";
+import { useNavigate } from "@tanstack/react-router";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Users, Video, VideoOff } from "lucide-react";
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { LiveSignal } from "@/components/ui/live-signal";
+import { useAuthenticationStore } from "@/hooks/authentication";
+import { useServer } from "@/hooks/server";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { toTime } from "#~/utils/time.ts";
 
 import { useLiveStreamContext, useLiveStreamPermissions } from "../hooks";
 
 export function LiveStreamControls() {
-    // const { viewerCount } = useStreamingUIContext();
     const [isControlsVisible, setIsControlsVisible] = useState(true);
     const hideTimeout = useRef<NodeJS.Timeout | null>(null);
     const streamControlsRef = useRef<HTMLDivElement>(null);
@@ -70,34 +73,29 @@ export function LiveStreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
-    const { isHuddleConnected, isInvitationDrawerOpen, openInvitationDrawer, closeInvitationDrawer } =
-        useLiveStreamContext();
+    const navigate = useNavigate();
+    const username = useAuthenticationStore((state) => state.user?.backendUserData.user.username as string);
 
-    // const navigate = useNavigate();
-
-    // const { closeRoom } = useRoom();
+    const { closeRoom } = useRoom();
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
-    // const { peerId: localPeerId, metadata, updateMetadata } = useLocalPeer();
     const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
-    // const { startScreenShare, stopScreenShare } = useLiveStreamScreenSharing();
 
-    // const { screenSharing } = useStreamingUIScreenShare();
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useLiveStreamPermissions();
-    // const { setUserHasToggled, setIsCoHostDrawerOpen, roomId, username, viewerCount } = useStreamingUIContext();
+    const { isHuddleConnected, isInvitationDrawerOpen, openInvitationDrawer, closeInvitationDrawer, roomId } =
+        useLiveStreamContext();
 
-    // const { mutate } = useServer(
-    //     { METHOD: "POST", URL: "/stop-stream" },
+    const { mutate } = useServer<{ username: string }, ApiResponse<undefined>>(
+        { METHOD: "PATCH", URL: API_ENDPOINTS.STREAMS.END_STREAM(roomId) },
 
-    //     {
-    //         onSuccess(response) {
-    //             toast.success(response.data.message);
-    //         },
-    //     },
-    // );
+        {
+            onSuccess(response) {
+                toast.success(response.data.message);
+            },
+        },
+    );
 
     async function handleToggleVideo() {
-        // setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
         try {
             if (isVideoOn) {
                 await disableVideo();
@@ -112,7 +110,6 @@ function RenderControlsBasedOnRole() {
     }
 
     async function handleToggleAudio() {
-        // setUserHasToggled((previous) => ({ ...previous, audio: !previous.audio }));
         try {
             if (isAudioOn) {
                 await disableAudio();
@@ -146,27 +143,15 @@ function RenderControlsBasedOnRole() {
 
     async function handleEndStream() {
         try {
-            // closeRoom();
-            // navigate({ to: "/" });
-            // mutate({ roomId, username, viewers: viewerCount });
+            closeRoom();
+            navigate({ to: "/" });
+            mutate({ username });
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to end stream.";
             toast.error(message);
             console.error("Error ending the stream:", error);
         }
     }
-
-    // useEffect(
-    //     function () {
-    //         if (!shareStream && metadata?.isPeerSharingTheirScreen) {
-    //             updateMetadata({
-    //                 ...metadata,
-    //                 isPeerSharingTheirScreen: false,
-    //             }).catch(console.error);
-    //         }
-    //     },
-    //     [shareStream, metadata, updateMetadata],
-    // );
 
     if (!isHuddleConnected) {
         return null;
