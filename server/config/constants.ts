@@ -29,6 +29,7 @@ export const SERVER_ENV = z
         AWS_S3_BUCKET: z.string(),
         AWS_SECRET_ACCESS_KEY: z.string(),
         CLIENT_URL: z.url(),
+        COOLIFY_REDIS: z.url(),
         EMAIL_HOST: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
         EMAIL_PASSWORD: z.string(),
         EMAIL_PORT: z.coerce.number().int().positive(),
