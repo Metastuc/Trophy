@@ -48,6 +48,7 @@ export const SERVER_ENV = z
         REDIS_PORT: z.coerce.number().int().positive(),
         REDIS_URI: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
         REDIS_USERNAME: z.string(),
+        UPSTASH_REDIS: z.url(),
         VITE_DEFAULT_IMAGE: z.url(),
     })
     .parse(process.env);
@@ -58,6 +59,18 @@ export const SERVER_CONSTANTS = {
     MAX_STREAM_GUESTS: 4,
 
     REDIS_KEYS: {
+        FEED: {
+            PUBLIC: {
+                key: "feed:public",
+                ttl: toTime({ unit: "minutes", value: 1 }),
+            },
+
+            PRIVATE: {
+                key: "feed:private",
+                ttl: toTime({ unit: "minutes", value: 1 }),
+            },
+        },
+
         NOTIFICATIONS: {
             KEY: (userId: string) => `user:notifications:${userId}`,
             TTL: toTime({ unit: "seconds", value: 60 }),

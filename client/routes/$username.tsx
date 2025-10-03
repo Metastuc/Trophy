@@ -26,7 +26,7 @@ function RouteComponent() {
     const { username } = Route.useParams();
 
     const { data, error, isPending } = useQuery({
-        queryKey: ["get-user-profile"],
+        queryKey: [username, "get-user-profile"],
         queryFn: async () => await getUserProfile({ username }),
         refetchOnWindowFocus: false,
         staleTime: toTime({ unit: "minutes", value: 5, output: "milliseconds" }),

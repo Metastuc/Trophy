@@ -26,7 +26,7 @@ function RouteComponent() {
     );
 
     const { data, error, isPending, isSuccess, isError } = useQuery({
-        queryKey: ["notifications"],
+        queryKey: ["user", "notifications", username],
         queryFn: async () => await getUserNotifications({ username }),
         enabled: !!isAuthenticated,
     });
@@ -55,11 +55,16 @@ function RouteComponent() {
 
     let content: ReactNode;
 
-    if (isPending) {
-        content = <Loading />;
-    } else if (isError) {
-        content = <div>{error.message}</div>;
-    } else if (isSuccess && data.length > 0) {
+    if (!isAuthenticated)
+        content = <div className="p-4 text-sm text-gray-500">You must be logged in to view notifications.</div>;
+    else if (isPending)
+        content = (
+            <div className="flex h-[75vh] items-center justify-center">
+                <Loading />
+            </div>
+        );
+    else if (isError) content = <div>{error.message}</div>;
+    else if (isSuccess && data.length > 0) {
         content = (
             <ul className="space-y-5 divide-y divide-gray-200">
                 {data.map((value, index) => (
@@ -75,9 +80,7 @@ function RouteComponent() {
                 ))}
             </ul>
         );
-    } else {
-        content = <div className="p-4 text-sm text-gray-500">No notifications found.</div>;
-    }
+    } else content = <div className="p-4 text-sm text-gray-500">No notifications found.</div>;
 
     return (
         <Fragment>
@@ -93,13 +96,15 @@ function RouteComponent() {
 
                 <div className="z-10 flex h-[4.5rem] w-full items-center justify-between px-6">
                     <aside className="flex items-center gap-3">
-                        <i className="size-8 rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399]">
-                            <img
-                                className={cn("user-pfp", "rounded-full")}
-                                src={profileImage}
-                                alt={`${username}-pfp`}
-                            />
-                        </i>
+                        {isAuthenticated ? (
+                            <i className="size-8 rounded-full bg-gradient-to-b from-[#6055FF] to-[#3A3399]">
+                                <img
+                                    className={cn("user-pfp", "rounded-full")}
+                                    src={profileImage}
+                                    alt={`${username}-pfp`}
+                                />
+                            </i>
+                        ) : null}
 
                         <h2 className="text-white">Notifications</h2>
                     </aside>

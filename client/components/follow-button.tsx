@@ -18,7 +18,7 @@ export function FollowUserButton({ username, styles }: { username: string; style
     );
 
     const { data: isFollowingStatus, isPending: isFollowingStatusPending } = useQuery({
-        queryKey: ["follow-status", username],
+        queryKey: ["user", "follow-status", username],
         queryFn: async () => getFollowStatus(username),
         refetchOnWindowFocus: false,
         enabled: isAuthenticated && !!username,

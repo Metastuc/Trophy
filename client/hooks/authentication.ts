@@ -16,7 +16,7 @@ export const useAuthenticationStore: UseBoundStore<StoreApi<AuthenticationState>
 
         logout() {
             set({ isAuthenticated: false, isLoading: false, token: null, user: null });
-            queryClient.removeQueries({ queryKey: ["get-my-profile"] });
+            queryClient.removeQueries({ queryKey: ["user"] });
         },
 
         setIsLoading(isLoading) {

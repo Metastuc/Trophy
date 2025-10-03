@@ -19,7 +19,7 @@ export function Crypto() {
     );
 
     const { data, error, isPending } = useQuery({
-        queryKey: ["user-wallet-token-balances"],
+        queryKey: ["user", "user-wallet-token-balances", walletAddress],
         queryFn: async () => await getUserWalletTokenBalances({ walletAddress }),
         enabled: !!isAuthenticated,
     });
