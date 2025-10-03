@@ -14,9 +14,9 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "paths": {
-            "@/*": ["/client/*"],
-            "#/*": ["/server/*"],
-            "#~/*": ["/shared/*"]
+            "@/*": ["./client/*"],
+            "#/*": ["./server/*"],
+            "#~/*": ["./shared/*"]
         },
         /* Linting */
         "strict": true,
