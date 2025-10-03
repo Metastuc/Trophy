@@ -58,6 +58,18 @@ export const SERVER_CONSTANTS = {
     MAX_STREAM_GUESTS: 4,
 
     REDIS_KEYS: {
+        FEED: {
+            PUBLIC: {
+                key: "feed:public",
+                ttl: toTime({ unit: "minutes", value: 1 }),
+            },
+
+            PRIVATE: {
+                key: "feed:private",
+                ttl: toTime({ unit: "minutes", value: 1 }),
+            },
+        },
+
         NOTIFICATIONS: {
             KEY: (userId: string) => `user:notifications:${userId}`,
             TTL: toTime({ unit: "seconds", value: 60 }),
