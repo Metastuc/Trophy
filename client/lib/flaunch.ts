@@ -4,7 +4,6 @@ import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnit
 import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
 import { makeRequest } from "#~/utils/axios.ts";
 
-import { FLAUNCH_ZAP_ABI } from "./abi";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "./constants";
 import { initSmartAccount } from "./smart-account";
 import { getWalletClient, publicClient } from "./viem";
@@ -64,49 +63,137 @@ export async function flaunchCreatorToken({
         }).then((response) => response.data.data);
 
         const flaunchParams = {
-            _airdropParams: {
-                airdropAmount: 0n,
-                airdropEndTime: 0n,
-                airdropIndex: 0n,
-                merkleIPFSHash: "",
-                merkleRoot: zeroHash,
-            },
             _flaunchParams: {
-                creator: smartAccountAddress as Address,
-                creatorFeeAllocation: creatorFeeAllocationInBasisPoints,
-                fairLaunchDuration: BigInt(30 * 60),
-                feeCalculatorParams: "0x" as Address,
-                flaunchAt: 0n,
-                initialPriceParams,
-                initialTokenFairLaunch,
                 name: tokenName,
-                premineAmount: tokensCreatorWillOwn,
                 symbol: tokenName.toUpperCase(),
                 tokenUri,
+                initialTokenFairLaunch,
+                fairLaunchDuration: BigInt(30 * 60),
+                premineAmount: tokensCreatorWillOwn,
+                creator: smartAccountAddress as Address,
+                creatorFeeAllocation: creatorFeeAllocationInBasisPoints,
+                flaunchAt: 0n,
+                initialPriceParams,
+                feeCalculatorParams: "0x" as Address,
             },
             _treasuryManagerParams: {
-                depositData: "0x" as Address,
-                initializeData: "0x" as Address,
                 manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
                 permissions: "0x0000000000000000000000000000000000000000" as Address,
+                initializeData: "0x" as Address,
+                depositData: "0x" as Address,
             },
             _whitelistParams: {
-                maxTokens: 0n,
-                merkleIPFSHash: "",
                 merkleRoot: zeroHash,
+                merkleIPFSHash: "",
+                maxTokens: 0n,
+            },
+            _airdropParams: {
+                airdropIndex: 0n,
+                airdropAmount: 0n,
+                airdropEndTime: 0n,
+                merkleRoot: zeroHash,
+                merkleIPFSHash: "",
             },
         };
 
         let creatorToken: Address | undefined = undefined;
         const contractData = encodeFunctionData({
-            abi: FLAUNCH_ZAP_ABI,
+            abi: [
+                {
+                    type: "function",
+                    name: "flaunch",
+                    inputs: [
+                        {
+                            name: "_flaunchParams",
+                            type: "tuple",
+                            internalType: "struct PositionManager.FlaunchParams",
+                            components: [
+                                {
+                                    name: "name",
+                                    type: "string",
+                                    internalType: "string",
+                                },
+                                {
+                                    name: "symbol",
+                                    type: "string",
+                                    internalType: "string",
+                                },
+                                {
+                                    name: "tokenUri",
+                                    type: "string",
+                                    internalType: "string",
+                                },
+                                {
+                                    name: "initialTokenFairLaunch",
+                                    type: "uint256",
+                                    internalType: "uint256",
+                                },
+                                {
+                                    name: "fairLaunchDuration",
+                                    type: "uint256",
+                                    internalType: "uint256",
+                                },
+                                {
+                                    name: "premineAmount",
+                                    type: "uint256",
+                                    internalType: "uint256",
+                                },
+                                {
+                                    name: "creator",
+                                    type: "address",
+                                    internalType: "address",
+                                },
+                                {
+                                    name: "creatorFeeAllocation",
+                                    type: "uint24",
+                                    internalType: "uint24",
+                                },
+                                {
+                                    name: "flaunchAt",
+                                    type: "uint256",
+                                    internalType: "uint256",
+                                },
+                                {
+                                    name: "initialPriceParams",
+                                    type: "bytes",
+                                    internalType: "bytes",
+                                },
+                                {
+                                    name: "feeCalculatorParams",
+                                    type: "bytes",
+                                    internalType: "bytes",
+                                },
+                            ],
+                        },
+                    ],
+                    outputs: [
+                        {
+                            name: "memecoin_",
+                            type: "address",
+                            internalType: "address",
+                        },
+                        {
+                            name: "ethSpent_",
+                            type: "uint256",
+                            internalType: "uint256",
+                        },
+                        {
+                            name: "deployedManager_",
+                            type: "address",
+                            internalType: "address",
+                        },
+                    ],
+                    stateMutability: "payable",
+                },
+            ],
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                "0x",
-                flaunchParams._whitelistParams,
-                flaunchParams._airdropParams,
-                flaunchParams._treasuryManagerParams,
+                // "0x",
+                // "0x",
+                // flaunchParams._whitelistParams,
+                // flaunchParams._airdropParams,
+                // flaunchParams._treasuryManagerParams,
             ],
         });
 

@@ -92,6 +92,11 @@ export const FLAUNCH_ZAP_ABI = [
                 ],
             },
             {
+                name: "_trustedFeeSigner",
+                type: "address",
+                internalType: "address",
+            },
+            {
                 name: "_premineSwapHookData",
                 type: "bytes",
                 internalType: "bytes",
