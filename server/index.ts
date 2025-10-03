@@ -23,7 +23,7 @@ app.get("/health", (_: Request, response: Response) => {
     response.status(200).json({ status: "ok" });
 });
 
-app.use(cors({ origin: SERVER_ENV.CLIENT_URL }));
+app.use(cors({ origin: SERVER_ENV.ALLOWED_ORIGINS }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(loggingMiddleware);

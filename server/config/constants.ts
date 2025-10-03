@@ -9,6 +9,21 @@ dotenv.config({ path: ".env.local", quiet: true });
 
 export const SERVER_ENV = z
     .object({
+        ALLOWED_ORIGINS: z
+            .string()
+            .transform((value) => value.split(",").map((origin) => origin.trim()))
+            .refine(
+                (urls) =>
+                    urls.every((url) => {
+                        try {
+                            new URL(url);
+                            return true;
+                        } catch {
+                            return false;
+                        }
+                    }),
+                { message: "One or more ALLOWED_ORIGINS are invalid URLs" },
+            ),
         AWS_ACCESS_KEY_ID: z.string(),
         AWS_REGION: z.string(),
         AWS_S3_BUCKET: z.string(),
