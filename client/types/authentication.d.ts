@@ -12,10 +12,10 @@ declare global {
         user: AuthenticatedUser | null;
 
         logout: () => void;
+        refreshAuthenticatedUser: (privyUser: PrivyUser) => Promise<void>;
         setIsLoading: (isLoading: boolean) => void;
         setToken: (token: string | null) => void;
         setUser: (user: AuthenticatedUser | null) => void;
     };
 }
-
 export {};

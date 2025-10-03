@@ -90,7 +90,7 @@ export function Swap() {
                         <i className="size-5 overflow-hidden rounded-full">
                             <img src={streamer?.profilePicture} />
                         </i>
-                        <span className="pt-0.5 text-xs">
+                        <span className="pt-0.5 text-xs uppercase">
                             {truncateText({ text: streamer?.username as string, maxLength: 8 })}
                         </span>
                     </div>

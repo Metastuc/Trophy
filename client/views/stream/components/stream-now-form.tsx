@@ -17,7 +17,6 @@ import { useStreamForm } from "./hooks";
 export function StreamNowForm() {
     const navigate = useNavigate({ from: "/stream" });
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
-    const { drawerState, formState, handleDrawerSubmit, isCreating, setDrawerState, setFormState } = useStreamForm();
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, CreatedStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -30,6 +29,9 @@ export function StreamNowForm() {
             },
         },
     );
+
+    const { drawerState, formState, handleDrawerSubmit, isCreating, setDrawerState, setFormState } =
+        useStreamForm(mutate);
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();

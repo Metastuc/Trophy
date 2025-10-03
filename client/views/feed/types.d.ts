@@ -1,6 +1,6 @@
 type FeedContent = "trending" | "following" | "all";
 
-type FeedStream = PublicFeedResponse["data"][number];
+type FeedStream = PublicFeedData["items"][number];
 
 interface FeedDropdown {
     content: FeedContent;

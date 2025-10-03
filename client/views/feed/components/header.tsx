@@ -17,7 +17,11 @@ export function FeedStreamHeader() {
                 className="flex items-center justify-center gap-1"
             >
                 <i className="size-9">
-                    <StreamerPFP imageSrc={streamer.profileImage} imageAlt={`${streamer.username}-pfp`} isLive />
+                    <StreamerPFP
+                        imageSrc={streamer.profileImage as string}
+                        imageAlt={`${streamer.username}-pfp`}
+                        isLive
+                    />
                 </i>
 
                 <span className="text-sm">@{streamer.username}</span>
@@ -26,7 +30,7 @@ export function FeedStreamHeader() {
             {streamer.creatorToken ? (
                 <TradeDrawer
                     streamer={{
-                        profilePicture: streamer.profileImage,
+                        profilePicture: streamer.profileImage as string,
                         tokenAddress: streamer.creatorToken.address as Address,
                         username: streamer.username,
                     }}

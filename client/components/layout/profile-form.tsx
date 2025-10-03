@@ -48,7 +48,7 @@ export function ProfileForm<T extends Array<ProfileFormFields>>({
                     <FormLabel htmlFor="bio">Edit your Bio</FormLabel>
 
                     <TextInput
-                        className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-sm font-normal text-[#000000B2] lowercase"
+                        className="border-blue100/40 h-15 w-full resize-none rounded-xs border p-2.5 text-sm font-normal text-[#000000B2]"
                         name="bio"
                         placeholder="enter bio (say something about yourself, this is optional)"
                         type="textarea"

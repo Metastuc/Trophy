@@ -17,7 +17,6 @@ import { useStreamForm } from "./hooks";
 
 export function ScheduleStreamForm() {
     const isAuthenticated = useAuthenticationStore((state) => state.isAuthenticated);
-    const { drawerState, formState, handleDrawerSubmit, isCreating, setDrawerState, setFormState } = useStreamForm();
 
     const { isPending, mutate } = useServer<CreateStreamFormRequest, ScheduledStreamResponse>(
         { METHOD: "POST", URL: API_ENDPOINTS.STREAMS.CREATE_STREAM },
@@ -28,6 +27,9 @@ export function ScheduleStreamForm() {
             },
         },
     );
+
+    const { drawerState, formState, handleDrawerSubmit, isCreating, setDrawerState, setFormState } =
+        useStreamForm(mutate);
 
     const handleDateChange = useCallback(
         function (date: Date | undefined) {
@@ -48,10 +50,19 @@ export function ScheduleStreamForm() {
             return;
         }
 
-        const formData = new FormData(event.target as HTMLFormElement);
-        const data = Object.fromEntries(formData.entries()) as CreateStreamFormRequest;
+        const data = Object.fromEntries(
+            new FormData(event.target as HTMLFormElement).entries(),
+        ) as CreateStreamFormRequest;
 
-        // await handleCreatorTokenCreation();
+        if (formState.creatorTokenEnabled && !formState.creatorToken) {
+            setDrawerState((state) => ({
+                ...state,
+                isDrawerOpen: true,
+                pendingData: data,
+            }));
+            return;
+        }
+
         mutate(data);
     }
 

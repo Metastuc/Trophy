@@ -29,7 +29,7 @@ export const API_ENDPOINTS = {
     },
 
     FEED: {
-        GET_FEED: "/streams/feed",
+        GET_FEED: ({ page, limit }: { page: number; limit: number }) => `/streams/feed?page=${page}&limit=${limit}`,
     },
 
     USER: {
