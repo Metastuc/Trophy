@@ -10,7 +10,13 @@ import { useCreatorTokenCreation } from "./creator-token-creation";
 import { useStreamFormState } from "./form-state";
 import { useUserDefault } from "./user-defaults";
 
-export function useCreatorTokenSetup({ formState, setFormState }: ReturnType<typeof useStreamFormState>) {
+export function useCreatorTokenSetup({
+    formState,
+    setFormState,
+    mutate,
+}: ReturnType<typeof useStreamFormState> & {
+    mutate: (data: CreateStreamFormRequest) => void;
+}) {
     useUserDefault(setFormState);
     const { createCreatorToken, isCreating } = useCreatorTokenCreation({ formState, setFormState });
     const { tokenImage } = useAuthenticationStore(
@@ -55,6 +61,11 @@ export function useCreatorTokenSetup({ formState, setFormState }: ReturnType<typ
         await createCreatorToken({
             ethereumAmountRequired: drawerState.form.ethereumAmountRequired,
             tokensCreatorWillReceieve: drawerState.form.tokensCreatorWillReceieve,
+        });
+
+        mutate({
+            ...drawerState.pendingData,
+            creatorToken: formState.creatorToken,
         });
     }
 

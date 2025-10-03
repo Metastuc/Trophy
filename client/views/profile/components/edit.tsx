@@ -1,8 +1,10 @@
+import { usePrivy,User as PrivyUser } from "@privy-io/react-auth";
 import { useMemo } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { ProfileForm } from "@/components/layout/profile-form";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS, queryClient } from "@/lib/constants";
 
@@ -11,8 +13,11 @@ import { useUserProfileDrawerStore } from "../store";
 import { EditProfileSchema } from "../utils";
 
 export function EditProfile() {
+    const { user } = usePrivy();
     const { profileData } = useUserProfileContext();
+    
     const closeDrawer = useUserProfileDrawerStore((state) => state.closeDrawer);
+    const refreshAuthenticatedUser = useAuthenticationStore((state) => state.refreshAuthenticatedUser);
 
     const formInitialValues = useMemo(
         () => ({
@@ -32,6 +37,7 @@ export function EditProfile() {
             async onSuccess() {
                 toast.success("Profile updated successfully!", { duration: 3000 });
                 queryClient.invalidateQueries({ queryKey: ["get-my-profile"] });
+                await refreshAuthenticatedUser(user as PrivyUser);
                 closeDrawer();
             },
         },
