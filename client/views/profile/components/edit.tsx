@@ -15,7 +15,7 @@ import { EditProfileSchema } from "../utils";
 export function EditProfile() {
     const { user } = usePrivy();
     const { profileData } = useUserProfileContext();
-    
+
     const closeDrawer = useUserProfileDrawerStore((state) => state.closeDrawer);
     const refreshAuthenticatedUser = useAuthenticationStore((state) => state.refreshAuthenticatedUser);
 

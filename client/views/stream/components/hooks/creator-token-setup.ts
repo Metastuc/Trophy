@@ -1,3 +1,4 @@
+import { usePrivy,User as PrivyUser } from "@privy-io/react-auth";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
@@ -18,10 +19,13 @@ export function useCreatorTokenSetup({
     mutate: (data: CreateStreamFormRequest) => void;
 }) {
     useUserDefault(setFormState);
+    const { user } = usePrivy();
+
     const { createCreatorToken, isCreating } = useCreatorTokenCreation({ formState, setFormState });
-    const { tokenImage } = useAuthenticationStore(
+    const { refreshAuthenticatedUser, tokenImage } = useAuthenticationStore(
         useShallow((state) => ({
             tokenImage: state.user?.backendUserData.user.profilePicture,
+            refreshAuthenticatedUser: state.refreshAuthenticatedUser,
         })),
     );
 
@@ -62,6 +66,9 @@ export function useCreatorTokenSetup({
             ethereumAmountRequired: drawerState.form.ethereumAmountRequired,
             tokensCreatorWillReceieve: drawerState.form.tokensCreatorWillReceieve,
         });
+
+        await refreshAuthenticatedUser(user as PrivyUser);
+        setDrawerState((state) => ({ ...state, isDrawerOpen: false }));
 
         mutate({
             ...drawerState.pendingData,
