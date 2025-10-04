@@ -1,34 +1,4 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import sharp from "sharp";
-import { v4 as uuid } from "uuid";
-
-import { SERVER_ENV } from "#config/constants.ts";
-import { getS3Client } from "#config/s3.ts";
-
-export async function saveProfileImage({ file, name }: { file: Buffer; name: string }) {
-    const image = sharp(file);
-    const key = `profile-pics/${uuid()}-${name}`;
-
-    let quality = 80;
-    let compressedBuffer = await image.jpeg({ quality }).toBuffer();
-
-    while (compressedBuffer.length > 1024 * 1024 && quality > 10) {
-        quality -= 10;
-        compressedBuffer = await image.jpeg({ quality }).toBuffer();
-    }
-
-    await getS3Client().send(
-        new PutObjectCommand({
-            ACL: "public-read",
-            Body: compressedBuffer,
-            Bucket: SERVER_ENV.AWS_S3_BUCKET,
-            ContentType: "image/jpeg",
-            Key: key,
-        }),
-    );
-
-    return `https://${SERVER_ENV.AWS_S3_BUCKET}.s3.${SERVER_ENV.AWS_REGION}.amazonaws.com/${key}`;
-}
+import { saveToS3 } from "#services/s3/save.ts";
 
 export function validateUsername({ username, fc }: { username: string; fc: boolean }): string {
     if (!username) throw { status: 422, message: "username is required" };
@@ -51,7 +21,7 @@ export async function getUserProfilePicture({
     fileBuffer?: Buffer;
     fileName?: string;
 }): Promise<string | undefined> {
-    if (fileBuffer && fileName) return await saveProfileImage({ file: fileBuffer, name: fileName });
+    if (fileBuffer && fileName) return await saveToS3({ file: fileBuffer, fileName, folder: "profile-images" });
     if (profilePicture && profilePicture !== "default-pfp.svg") return profilePicture;
     return undefined;
 }

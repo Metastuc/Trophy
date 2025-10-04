@@ -2,8 +2,6 @@ import { QueryClient } from "@tanstack/react-query";
 import { base, baseSepolia } from "viem/chains";
 import { z } from "zod";
 
-import { toTime } from "#~/utils/time.ts";
-
 export const queryClient = new QueryClient();
 
 export const CLIENT_ENV = z
@@ -47,7 +45,7 @@ export const API_ENDPOINTS = {
         JOIN_STREAM: (streamId: string) => `/streams/${streamId}/join`,
         LEADERBOARD: "/streams/leaderboard",
         LEAVE_STREAM: "/streams/leave",
-        THUMBNAIL: "/streams/thumbnail",
+        THUMBNAIL: (streamId: string) => `/streams/${streamId}/thumbnail`,
     },
 
     SUBSCRIPTION: {
@@ -80,13 +78,6 @@ export const CLIENT_CONSTANTS = {
     MAX_TIP_AMOUNT_USD: 10000,
     TOTAL_CO_HOSTS_ALLOWED: 4,
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
-
-    QUERY_KEYS: {
-        PRICE: {
-            KEY: "moralis-token-price",
-            TTL: toTime({ unit: "hours", value: 1, output: "milliseconds" }),
-        },
-    },
 
     TX_SCAN_URL: (hash: string) =>
         CLIENT_ENV.VITE_ENVIRONMENT === "production"

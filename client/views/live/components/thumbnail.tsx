@@ -31,7 +31,11 @@ export function LiveStreamThumbnail() {
                         formData.append("thumbnail", blob, `thumbnail-${roomId}.jpg`);
                         formData.append("roomId", roomId);
 
-                        await makeRequest({ method: "POST", url: API_ENDPOINTS.STREAMS.THUMBNAIL, data: formData });
+                        await makeRequest({
+                            method: "POST",
+                            url: API_ENDPOINTS.STREAMS.THUMBNAIL(roomId),
+                            data: formData,
+                        });
                     });
                 },
                 toTime({ unit: "seconds", value: 60, output: "milliseconds" }),
