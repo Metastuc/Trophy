@@ -12,13 +12,9 @@ export function roomHandler({ io, socket }: Handler) {
             const roomData = await getRoom(roomId);
             const existing = roomData.participants.find((participant) => participant.id === identifier);
 
-            if (identifier === roomData.host) {
-                role = "host";
-            } else if (roomData.invitedGuests.includes(identifier)) {
-                role = "guest";
-            } else {
-                role = "listener";
-            }
+            if (identifier === roomData.host) role = "host";
+            else if (roomData.invitedGuests.includes(identifier)) role = "guest";
+            else role = "listener";
 
             if (existing && (existing.role === "host" || existing.role === "guest") && existing.peerId) {
                 io.to(existing.peerId).emit("force.disconnect");
