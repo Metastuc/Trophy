@@ -54,8 +54,6 @@ export const SERVER_ENV = z
     .parse(process.env);
 
 export const SERVER_CONSTANTS = {
-    FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
-
     MAX_STREAM_GUESTS: 4,
 
     REDIS_KEYS: {
