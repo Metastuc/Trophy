@@ -4,14 +4,14 @@ import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Users, Video, 
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { toTime } from "#~/utils/time.ts";
 import { LiveSignal } from "@/components/ui/live-signal";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { useServer } from "@/hooks/server";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { toTime } from "#~/utils/time.ts";
 
-import { useLiveStreamContext, useLiveStreamPermissions } from "../hooks";
+import { useLiveStreamContext, useLiveStreamPermissions, useLiveStreamScreenSharing } from "../hooks";
 
 export function LiveStreamControls() {
     const [isControlsVisible, setIsControlsVisible] = useState(true);
@@ -79,9 +79,10 @@ function RenderControlsBasedOnRole() {
     const { closeRoom } = useRoom();
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
-    const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
+    const { shareStream } = useLocalScreenShare();
 
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useLiveStreamPermissions();
+    const { startScreenShare, stopScreenShare } = useLiveStreamScreenSharing();
     const { isHuddleConnected, isInvitationDrawerOpen, openInvitationDrawer, closeInvitationDrawer, roomId } =
         useLiveStreamContext();
 
