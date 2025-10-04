@@ -49,7 +49,6 @@ export const SERVER_ENV = z
         REDIS_PORT: z.coerce.number().int().positive(),
         REDIS_URI: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
         REDIS_USERNAME: z.string(),
-        UPSTASH_REDIS: z.url(),
         VITE_DEFAULT_IMAGE: z.url(),
     })
     .parse(process.env);
