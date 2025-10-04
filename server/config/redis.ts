@@ -6,7 +6,8 @@ import { SERVER_ENV } from "./constants";
 
 let redis: Redis;
 
-if (SERVER_ENV.ENVIRONMENT !== "development") redis = new Redis(SERVER_ENV.COOLIFY_REDIS);
+if (SERVER_ENV.ENVIRONMENT !== "development")
+    redis = new Redis(SERVER_ENV.COOLIFY_REDIS, { maxRetriesPerRequest: null });
 else
     redis = new Redis({
         host: SERVER_ENV.REDIS_URI,
