@@ -25,3 +25,5 @@ dist-ssr
 digest.txt
 /server/generated
 .tanstack/*
+
+.env
