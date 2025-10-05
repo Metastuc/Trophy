@@ -7,7 +7,7 @@ declare global {
     type TokenAddresses = keyof typeof CONTRACT_ADDRESSES;
 
     interface GetWalletClient {
-        address: Address;
+        address?: Address;
         provider: EIP1193Provider;
     }
 
@@ -30,6 +30,84 @@ declare global {
         provider: EIP1193Provider;
         tokenAddress: Address;
     }
+
+    type MessageProp = {
+        name: string;
+        type: string;
+    };
+
+    type MessageTypes = {
+        [additionalProperties: string]: MessageProp[];
+    };
+
+    type TypedDataParams<T extends MessageTypes> = {
+        types: T;
+        primaryType: keyof T;
+        domain: {
+            name?: string;
+            version?: string;
+            chainId?: number;
+            verifyingContract?: string;
+            salt?: ArrayBuffer;
+        };
+        message: Record<string, unknown>;
+    };
+
+    type SignTypedDataParams = TypedDataParams<MessageTypes>;
+
+    export type SignTypedData = (
+        input: SignTypedDataParams,
+        options: { address: string },
+    ) => Promise<{
+        signature: string;
+    }>;
+
+    interface claimTokenParams {
+        address: Address;
+        coinAddress: Address;
+        provider: EIP1193Provider;
+        username: string;
+    }
+
+    type TokenType = "USDC" | "ZORA" | "DEGEN" | "BNKR" | "FLAY" | "ETH";
+
+    type PermitDetails = {
+        token: Address;
+        amount: bigint;
+        expiration: number;
+        nonce: number;
+    };
+
+    interface PermitSingle {
+        details: PermitDetails;
+        spender: Address;
+        sigDeadline: bigint;
+    };
+
+    interface TokenSwapParams {
+        coinAddress: Address;
+        amount: string;
+        provider: EIP1193Provider;
+        signTypedData: SignTypedData;
+        address: Address;
+        token: TokenType;
+    }
+
+    interface CreatorSwapQuoteParams {
+        amount: string;
+        coinAddress: Address;
+        supportedTokenToCreatorToken: boolean;
+        token: TokenType;
+    }
+
+    type IintermediatePoolKey = {
+        currency0: Address;
+        currency1: Address;
+        fee: number;
+        tickSpacing: number;
+        hooks: Address;
+        hookData: Address;
+    } | undefined;
 }
 
 export {};
