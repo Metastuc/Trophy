@@ -6,6 +6,7 @@ import { useHuddleJoinRoom } from "./hooks/huddle";
 import { useHuddleHostPublish } from "./hooks/publish";
 import { useRoomScreenShareSync } from "./hooks/screen-sharing";
 import { useRoomParticipants } from "./hooks/streamers";
+import { useRoomViewers } from "./hooks/viewers";
 
 type LiveStreamContextProviderProps = JoinStreamData &
     PropsWithChildren<{
@@ -26,6 +27,8 @@ export function LiveStreamContextProvider({
     token,
 }: LiveStreamContextProviderProps) {
     const huddle = useHuddleJoinRoom({ roomId, token, username: roomUsername, serverRole });
+
+    useRoomViewers({ isConnected: huddle.isHuddleConnected, roomId, username: roomUsername });
     useHuddleHostPublish(huddle.role);
 
     const roomParticipants = useRoomParticipants(roomId);

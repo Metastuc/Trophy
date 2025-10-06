@@ -90,6 +90,14 @@ export const SERVER_CONSTANTS = {
             TTL: toTime({ unit: "days", value: 7 }),
         },
 
+        VIEWERS: {
+            KEY: {
+                ALL: (roomId: string) => `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:all`,
+                LIVE: (roomId: string) => `${SERVER_CONSTANTS.REDIS_KEYS.ROOM.KEY(roomId)}:live`,
+            },
+            TTL: toTime({ unit: "seconds", value: 30 }),
+        },
+
         WALLET_BALANCES: {
             KEY: (id: string) => `user:wallet:balances:${id}`,
             TTL: toTime({ unit: "minutes", value: 1 }),

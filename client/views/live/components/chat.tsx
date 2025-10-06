@@ -1,5 +1,5 @@
 import { CircleDollarSign, MessageCircle, Send } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
@@ -24,24 +24,49 @@ export function LiveStreamChats() {
     );
 
     const socket = useSocket();
-    const [text, setText] = useState<string>("");
-    const [chatContents, setChatContents] = useState<Array<LiveStreamChatMessagesState>>([]);
+    const messagesEndRef = useRef<HTMLElement>(null);
+    const mainContainerRef = useRef<HTMLElement>(null);
+
+    const [liveStreamChatRoomState, setLiveStreamChatRoomState] = useState<LiveStreamChatRoomState>(() => ({
+        chatContents: [],
+        mainContainerHeight: 0,
+        text: "",
+    }));
 
     function sendMessage() {
-        if (!text.trim()) return;
+        if (!liveStreamChatRoomState.text.trim()) return;
 
         const payload: LiveStreamChatMessagesState = {
-            message: text,
+            message: liveStreamChatRoomState.text,
             type: "chat",
-            user: {
-                profileImage,
-                username,
-            },
+            user: { profileImage, username },
         };
 
         socket.emit("chat.send.text", { roomId, payload });
-        setText("");
+        setLiveStreamChatRoomState((state) => ({ ...state, text: "" }));
     }
+
+    useEffect(
+        function () {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        },
+        [liveStreamChatRoomState.chatContents],
+    );
+
+    useEffect(function () {
+        if (!mainContainerRef.current) return;
+        const observer = new ResizeObserver(function ([entry]) {
+            setLiveStreamChatRoomState((state) => ({
+                ...state,
+                mainContainerHeight: entry.contentRect.height,
+            }));
+        });
+        observer.observe(mainContainerRef.current);
+
+        return function () {
+            observer.disconnect();
+        };
+    }, []);
 
     useEffect(
         function () {
@@ -49,17 +74,26 @@ export function LiveStreamChats() {
 
             function handleChatHistory(data: { roomId: string; messages: Array<LiveStreamChatMessagesState> }) {
                 if (data.roomId !== roomId) return;
-                setChatContents(data.messages);
+                setLiveStreamChatRoomState((state) => ({
+                    ...state,
+                    chatContents: data.messages,
+                }));
             }
 
             function handleChatReceiveText(data: { roomId: string; payload: LiveStreamChatMessagesState }) {
                 if (data.roomId !== roomId) return;
-                setChatContents((state) => [...state, data.payload]);
+                setLiveStreamChatRoomState((state) => ({
+                    ...state,
+                    chatContents: [...state.chatContents, data.payload],
+                }));
             }
 
             function handleChatReceiveTip(data: { roomId: string; payload: LiveStreamChatMessagesState }) {
                 if (data.roomId !== roomId) return;
-                setChatContents((state) => [...state, data.payload]);
+                setLiveStreamChatRoomState((state) => ({
+                    ...state,
+                    chatContents: [...state.chatContents, data.payload],
+                }));
             }
 
             socket.on("chat.history", handleChatHistory);
@@ -113,12 +147,18 @@ export function LiveStreamChats() {
                 ) : null}
             </header>
 
-            <main className="relative flex-1 space-y-3.5 overflow-y-scroll">
-                {chatContents.map((value, index) => (
-                    <ChatBubble key={index} {...value} />
-                ))}
+            <main className="relative flex-1 overflow-hidden scroll-smooth" ref={mainContainerRef}>
+                <div
+                    className="space-y-3 overflow-auto"
+                    style={{ maxHeight: liveStreamChatRoomState.mainContainerHeight }}
+                >
+                    {liveStreamChatRoomState.chatContents.map((value, index) => (
+                        <ChatBubble key={index} {...value} />
+                    ))}
 
-                {/* <span className="absolute top-0 flex h-4 w-full bg-gradient-to-t from-transparent to-white" /> */}
+                    {/* <span className="absolute -top-1.25 flex h-5 w-full bg-gradient-to-t from-transparent to-white" /> */}
+                    <span ref={messagesEndRef} />
+                </div>
             </main>
 
             <footer className="flex items-center justify-center">
@@ -128,8 +168,10 @@ export function LiveStreamChats() {
                             type="text"
                             className="flex-1 bg-transparent p-2 text-sm text-white outline-none"
                             placeholder="Send a message"
-                            value={text}
-                            onChange={(event) => setText(event.target.value)}
+                            value={liveStreamChatRoomState.text}
+                            onChange={(event) =>
+                                setLiveStreamChatRoomState((state) => ({ ...state, text: event.target.value }))
+                            }
                             onKeyDown={(event) => {
                                 if (event.key === "Enter") sendMessage();
                             }}
