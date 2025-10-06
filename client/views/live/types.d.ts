@@ -110,6 +110,12 @@ declare global {
         isTabVisible: boolean;
         viewersCount: number;
     }
+
+    interface LiveStreamChatRoomState {
+        chatContents: Array<LiveStreamChatMessagesState>;
+        mainContainerHeight: number;
+        text: string;
+    }
 }
 
 export {};
