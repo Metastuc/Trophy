@@ -1,43 +1,40 @@
-import { createFlaunch, ReadFlaunchSDK } from "@flaunch/sdk";
-import { Address, encodeAbiParameters, encodeFunctionData, parseEther, parseUnits, zeroHash } from "viem";
+import { createFlaunch, ReadFlaunchSDK, ReadWriteFlaunchSDK } from "@flaunch/sdk";
+import {
+    Address,
+    encodeAbiParameters,
+    encodeFunctionData,
+    maxUint256,
+    parseEther,
+    parseUnits,
+    zeroAddress,
+    zeroHash,
+} from "viem";
 
 import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
 import { makeRequest } from "#~/utils/axios.ts";
 
+import { FLAUNCH_ZAP_ABI } from "./abi";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "./constants";
 import { initSmartAccount } from "./smart-account";
 import { getWalletClient, publicClient } from "./viem";
 
-// let flaunchClient: ReadWriteFlaunchSDK | null = null;
-// let previousAddress: Address | null = null;
+let flaunchClient: ReadWriteFlaunchSDK | null = null;
+let previousAddress: Address | null = null;
 
 const flaunchReadOnlyClient = createFlaunch({ publicClient }) as ReadFlaunchSDK;
 
-// function getFlaunchClient({ address, provider }: GetWalletClient): ReadWriteFlaunchSDK | null {
-//     if (!address || !provider) return null;
+function getFlaunchClient({ address, provider }: GetWalletClient): ReadWriteFlaunchSDK | null {
+    // if (!address || !provider) return null;
 
-//     if (!flaunchClient && previousAddress?.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
-//         flaunchClient = createFlaunch({
-//             publicClient,
-//             walletClient: getWalletClient({ address, provider }),
-//         }) as ReadWriteFlaunchSDK;
-//         previousAddress = address;
-//     }
+    if (!flaunchClient && previousAddress?.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
+        flaunchClient = createFlaunch({
+            publicClient,
+            walletClient: getWalletClient({ address, provider }),
+        }) as ReadWriteFlaunchSDK;
+        previousAddress = address;
+    }
 
-//     return flaunchClient;
-// }
-
-export async function getEthereumRequiredForCreatorTokenAllocation(percentage: string) {
-    const premineAmount = parseEther(`${CLIENT_CONSTANTS.CREATOR_TOKEN_SUPPLY * (Number(percentage) / 100)}`);
-
-    return {
-        tokensCreatorWillReceieve: premineAmount,
-        ethereumAmountRequired: await flaunchReadOnlyClient.ethRequiredToFlaunch({
-            initialMarketCapUSD: 5000,
-            premineAmount,
-            slippagePercent: 1,
-        }),
-    };
+    return flaunchClient;
 }
 
 export async function flaunchCreatorToken({
@@ -76,12 +73,8 @@ export async function flaunchCreatorToken({
                 initialPriceParams,
                 feeCalculatorParams: "0x" as Address,
             },
-            _treasuryManagerParams: {
-                manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
-                permissions: "0x0000000000000000000000000000000000000000" as Address,
-                initializeData: "0x" as Address,
-                depositData: "0x" as Address,
-            },
+            _trustedFeeSigner: zeroAddress,
+            _premineSwapHookData: "0x",
             _whitelistParams: {
                 merkleRoot: zeroHash,
                 merkleIPFSHash: "",
@@ -94,106 +87,25 @@ export async function flaunchCreatorToken({
                 merkleRoot: zeroHash,
                 merkleIPFSHash: "",
             },
+            _treasuryManagerParams: {
+                manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
+                permissions: "0x0000000000000000000000000000000000000000" as Address,
+                initializeData: "0x" as Address,
+                depositData: "0x" as Address,
+            },
         };
 
         let creatorToken: Address | undefined = undefined;
         const contractData = encodeFunctionData({
-            abi: [
-                {
-                    type: "function",
-                    name: "flaunch",
-                    inputs: [
-                        {
-                            name: "_flaunchParams",
-                            type: "tuple",
-                            internalType: "struct PositionManager.FlaunchParams",
-                            components: [
-                                {
-                                    name: "name",
-                                    type: "string",
-                                    internalType: "string",
-                                },
-                                {
-                                    name: "symbol",
-                                    type: "string",
-                                    internalType: "string",
-                                },
-                                {
-                                    name: "tokenUri",
-                                    type: "string",
-                                    internalType: "string",
-                                },
-                                {
-                                    name: "initialTokenFairLaunch",
-                                    type: "uint256",
-                                    internalType: "uint256",
-                                },
-                                {
-                                    name: "fairLaunchDuration",
-                                    type: "uint256",
-                                    internalType: "uint256",
-                                },
-                                {
-                                    name: "premineAmount",
-                                    type: "uint256",
-                                    internalType: "uint256",
-                                },
-                                {
-                                    name: "creator",
-                                    type: "address",
-                                    internalType: "address",
-                                },
-                                {
-                                    name: "creatorFeeAllocation",
-                                    type: "uint24",
-                                    internalType: "uint24",
-                                },
-                                {
-                                    name: "flaunchAt",
-                                    type: "uint256",
-                                    internalType: "uint256",
-                                },
-                                {
-                                    name: "initialPriceParams",
-                                    type: "bytes",
-                                    internalType: "bytes",
-                                },
-                                {
-                                    name: "feeCalculatorParams",
-                                    type: "bytes",
-                                    internalType: "bytes",
-                                },
-                            ],
-                        },
-                    ],
-                    outputs: [
-                        {
-                            name: "memecoin_",
-                            type: "address",
-                            internalType: "address",
-                        },
-                        {
-                            name: "ethSpent_",
-                            type: "uint256",
-                            internalType: "uint256",
-                        },
-                        {
-                            name: "deployedManager_",
-                            type: "address",
-                            internalType: "address",
-                        },
-                    ],
-                    stateMutability: "payable",
-                },
-            ],
+            abi: FLAUNCH_ZAP_ABI,
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                // "0x",
-                // "0x",
-                // flaunchParams._whitelistParams,
-                // flaunchParams._airdropParams,
-                // flaunchParams._treasuryManagerParams,
+                flaunchParams._trustedFeeSigner,
+                flaunchParams._premineSwapHookData,
+                flaunchParams._whitelistParams,
+                flaunchParams._airdropParams,
+                flaunchParams._treasuryManagerParams,
             ],
         });
 
@@ -244,86 +156,170 @@ export async function flaunchCreatorToken({
     }
 }
 
-// async function verifyTransaction(hash: Address): Promise<Address> {
-//     const reciept = await flaunchClient?.drift.waitForTransaction({ hash });
-//     if (reciept?.status !== "success") throw new Error("Transaction failed");
-//     return hash;
-// }
+export async function buyCreatorToken({
+    address,
+    amount,
+    coinAddress,
+    provider,
+    signTypedData,
+    token,
+}: TokenSwapParams) {
+    let signature: Address | undefined = undefined;
+    let permitSingle: PermitSingle | undefined = undefined;
 
-// export async function createCreatorToken({ provider, tokenName }: CreateCreatorToken): Promise<CreatorTokenCreated> {
-//     try {
-//         const smartWalletClient = await initSmartAccount(provider);
-//         const initialMCapInUSDCWei = parseUnits("2000", 6);
-//         const initialPriceParams = encodeAbiParameters([{ type: "uint256" }], [initialMCapInUSDCWei]);
-//         const fairLaunchInBps = BigInt(40 * 100);
-//         const creatorFeeAllocationInBps = 70 * 100;
-//         const params = {
-//             _flaunchParams: {
-//                 name: tokenName,
-//                 symbol: tokenName.toUpperCase(),
-//                 tokenUri: "ipfs://bafkreiaaojq4u2nopmwilfia7b3rxts2itb7xlgf3qa4z4spqxntfp4gfe",
-//                 initialTokenFairLaunch: (100_000_000_000n * fairLaunchInBps) / 10_000n,
-//                 fairLaunchDuration: BigInt(30 * 60),
-//                 premineAmount: 0n,
-//                 creator: smartWalletClient.account.address,
-//                 creatorFeeAllocation: creatorFeeAllocationInBps,
-//                 flaunchAt: 0n,
-//                 initialPriceParams,
-//                 feeCalculatorParams: "0x" as Address,
-//             },
-//             _treasuryManagerParams: {
-//                 manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
-//                 initializeData: "0x" as Address,
-//                 depositData: "0x" as Address,
-//             },
-//             _whitelistParams: {
-//                 merkleRoot: zeroHash,
-//                 merkleIPFSHash: "",
-//                 maxTokens: 0n,
-//             },
-//             _airdropParams: {
-//                 airdropIndex: 0n,
-//                 airdropAmount: 0n,
-//                 airdropEndTime: 0n,
-//                 merkleRoot: zeroHash,
-//                 merkleIPFSHash: "",
-//             },
-//         };
-//         const { request, result } = await publicClient.simulateContract({
-//             address: CONTRACT_ADDRESSES.FLAUNCH,
-//             abi: FlaunchZapAbi,
-//             functionName: "flaunch",
-//             args: [params._flaunchParams],
-//             account: smartWalletClient.account,
-//         });
-//         await smartWalletClient.writeContract(request);
-//         await makeRequest({
-//             method: "PATCH",
-//             url: API_ENDPOINTS.USER.SAVE_TOKEN(tokenName),
-//             data: { creatorToken: result[0], smartAccount: smartWalletClient.account.address, tokenName },
-//         });
-//         return { creatorToken: result[0], smartAccount: smartWalletClient.account.address };
-//     } catch (error) {
-//         throw new Error("Failed to create token: " + ((error as Error).message || "Unknown error"));
-//     }
-// }
+    const flaunch = getFlaunchClient({ address, provider }) as ReadWriteFlaunchSDK;
+    const amountInUnits = parseUnits(amount, token === "USDC" ? 6 : 18);
 
-// export async function buyCreatorToken({
-//     amount,
-//     buyerAddress,
-//     provider,
-//     tokenAddress,
-// }: BuyCreatorToken): Promise<Address> {
-//     const flaunch = getFlaunchClient({ address: buyerAddress, provider });
-//     const hash = await flaunch?.buyCoin(
-//         {
-//             coinAddress: tokenAddress,
-//             slippagePercent: 4,
-//             swapType: "EXACT_IN",
-//             amountIn: parseEther(amount),
-//         },
-//         "V1_1",
-//     );
+    if (token !== "ETH") {
+        const tokenAddress = CONTRACT_ADDRESSES[token];
+        const tokenAllowance = (await flaunch.getERC20AllowanceToPermit2(tokenAddress)) as bigint;
+        const { allowance: permitAllowance } = await flaunch.getPermit2AllowanceAndNonce(tokenAddress);
 
-//     return verifyTransaction(hash as Address);
-// }
+        if (tokenAllowance < amountInUnits) {
+            await flaunch.setERC20AllowanceToPermit2(tokenAddress, maxUint256);
+        }
+
+        if (permitAllowance < amountInUnits) {
+            const { permitSingle: typedPermit, typedData } = await flaunch.getPermit2TypedData(tokenAddress);
+            signature = (await signTypedData(typedData, { address })).signature as Address;
+            permitSingle = typedPermit;
+        }
+    }
+
+    return await verifyTransaction(
+        (await flaunch?.buyCoin(
+            {
+                coinAddress,
+                slippagePercent: 4,
+                swapType: "EXACT_IN",
+                amountIn: amountInUnits,
+                intermediatePoolKey: {
+                    currency0: zeroAddress,
+                    currency1: CONTRACT_ADDRESSES[token],
+                    fee: 500,
+                    tickSpacing: 10,
+                    hooks: zeroAddress,
+                    hookData: "0x",
+                },
+                signature,
+                permitSingle,
+            },
+            "V1_1",
+        )) as Address,
+    );
+}
+
+export async function sellCreatorToken({
+    address,
+    amount,
+    coinAddress,
+    provider,
+    signTypedData,
+    token,
+}: TokenSwapParams) {
+    let poolkey: PoolKey | undefined = undefined;
+
+    const flaunch = getFlaunchClient({ address, provider }) as ReadWriteFlaunchSDK;
+    const amountInUnits = parseEther(amount.replace(/,/g, ""));
+    const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
+
+    if (token !== "ETH")
+        poolkey = {
+            currency0: zeroAddress,
+            currency1: CONTRACT_ADDRESSES[token],
+            fee: 500,
+            tickSpacing: 10,
+            hooks: zeroAddress,
+            hookData: "0x",
+        };
+
+    if (allowance < amountInUnits) {
+        const { permitSingle, typedData } = await flaunch.getPermit2TypedData(coinAddress);
+        const { signature } = await signTypedData(typedData, { address });
+
+        return await verifyTransaction(
+            await flaunch.sellCoin(
+                {
+                    amountIn: amountInUnits,
+                    coinAddress,
+                    intermediatePoolKey: poolkey,
+                    permitSingle,
+                    signature: signature as Address,
+                    slippagePercent: 4,
+                },
+                "V1_1",
+            ),
+        );
+    } else
+        return await verifyTransaction(
+            await flaunch.sellCoin(
+                {
+                    amountIn: amountInUnits,
+                    coinAddress,
+                    intermediatePoolKey: poolkey,
+                    slippagePercent: 4,
+                },
+                "V1_1",
+            ),
+        );
+}
+
+async function verifyTransaction(hash: Address): Promise<Address> {
+    const reciept = await flaunchClient?.drift.waitForTransaction({ hash });
+    if (reciept?.status !== "success") throw new Error("Transaction failed");
+    return hash;
+}
+
+export async function getCreatorTokenPrice(coinAddress: Address) {
+    return await flaunchReadOnlyClient.coinPriceInUSD({ coinAddress });
+}
+
+export async function getEthereumRequiredForCreatorTokenAllocation(percentage: string) {
+    const premineAmount = parseEther(`${CLIENT_CONSTANTS.CREATOR_TOKEN_SUPPLY * (Number(percentage) / 100)}`);
+
+    return {
+        tokensCreatorWillReceieve: premineAmount,
+        ethereumAmountRequired: await flaunchReadOnlyClient.ethRequiredToFlaunch({
+            initialMarketCapUSD: 5000,
+            premineAmount,
+            slippagePercent: 1,
+        }),
+    };
+}
+
+export async function getTokenSwapQuote({
+    amount,
+    coinAddress,
+    isToCreatorToken,
+    token,
+}: {
+    amount: string;
+    coinAddress: Address;
+    isToCreatorToken: boolean;
+    token: TokenSymbols;
+}) {
+    let poolkey: PoolKey | undefined = undefined;
+
+    if (token !== "ETH")
+        poolkey = {
+            currency0: zeroAddress,
+            currency1: CONTRACT_ADDRESSES[token],
+            fee: 500,
+            tickSpacing: 10,
+            hooks: zeroAddress,
+            hookData: "0x",
+        };
+
+    if (isToCreatorToken)
+        return await flaunchReadOnlyClient.getBuyQuoteExactInput({
+            amountIn: parseEther(amount),
+            coinAddress,
+            intermediatePoolKey: poolkey,
+        });
+
+    return await flaunchReadOnlyClient.getSellQuoteExactInput({
+        amountIn: parseEther(amount),
+        coinAddress,
+        intermediatePoolKey: poolkey,
+    });
+}

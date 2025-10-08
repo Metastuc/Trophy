@@ -1,6 +1,7 @@
 import { useLocation } from "@tanstack/react-router";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { formatEther } from "viem";
 
 export function cn(...inputs: ClassValue[]): string {
     return twMerge(clsx(inputs));
@@ -17,6 +18,10 @@ export function useShouldShowExitButton(routes: string[]): boolean {
 
 export function resetScroll(): void {
     window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+export function delay<T>({ promise, ms }: { promise: Promise<T>; ms: number }): Promise<T> {
+    return new Promise((resolve) => setTimeout(() => resolve(promise), ms));
 }
 
 export function truncateText({ text, maxLength = 280 }: { text: string; maxLength?: number }): string {
@@ -44,6 +49,22 @@ export function formatToken(amount: string): string {
     return `${(parseFloat(amount.toString()) * 1).toFixed(2)}`;
 }
 
-export function delay<T>({ promise, ms }: { promise: Promise<T>; ms: number }): Promise<T> {
-    return new Promise((resolve) => setTimeout(() => resolve(promise), ms));
+export function formatEtherToToken({
+    number,
+    toCreatorToken = true,
+}: {
+    number: bigint;
+    toCreatorToken?: boolean;
+}): string {
+    const format = formatEther(number);
+    if (!toCreatorToken) return format;
+    return Number(format).toLocaleString();
+}
+
+export function getTokenPriceInUSD({ price, quantity }: { quantity: string; price: string }): number {
+    try {
+        return parseFloat(price) * parseFloat(quantity);
+    } catch (error) {
+        throw new Error((error as Error).message);
+    }
 }
