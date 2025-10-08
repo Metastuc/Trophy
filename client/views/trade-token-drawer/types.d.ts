@@ -1,7 +1,22 @@
 import { Address } from "viem";
 
 declare global {
-    interface TradeDrawerContextValues extends TradeDrawerProps {
+    type TokenIdentifier = "ETH" | Address;
+
+    interface TradeSide {
+        token: TokenIdentifier;
+        type: "native" | "streamer"; // "native" = ETH, "streamer" = streamer token
+        amount: string;
+        balance: string;
+        usdPrice: string;
+    }
+
+    interface TradeDrawerDataState {
+        from: TradeSide;
+        to: TradeSide;
+    }
+
+    interface TradeDrawerContextValues extends Partial<TradeDrawer> {
         drawerData: TradeDrawerDataState;
         isDrawerOpen: boolean;
     }
@@ -11,22 +26,19 @@ declare global {
         handleSwap: () => void;
         openDrawer: () => void;
         setDrawerData: React.Dispatch<React.SetStateAction<TradeDrawerDataState>>;
+        swapSides: () => void;
     }
 
     type TradeDrawerContextValue = TradeDrawerContextValues & TradeDrawerContextActions;
 
-    interface TradeDrawerProps {
-        streamer?: { tokenAddress: Address; username: string; profilePicture: string };
-        trigger?: React.ReactNode;
+    interface TradeDrawer {
+        streamer?: TradeDrawerStreamer;
     }
 
-    interface TradeDrawerDataState {
-        buyAmount: string;
-        buyBalance: string;
-        buyToken: Address;
-        sellAmount: string;
-        sellBalance: string;
-        sellToken: string;
+    interface TradeDrawerStreamer {
+        tokenAddress: Address;
+        username: string;
+        profilePicture: string;
     }
 }
 

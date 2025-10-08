@@ -1,25 +1,37 @@
-import { useWallets } from "@privy-io/react-auth";
+import { EIP1193Provider, useSignTypedData, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { Address } from "viem";
+import { type Address } from "viem";
 
+import { Button } from "@/components/ui/button";
 import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { buyCreatorToken, sellCreatorToken } from "@/lib/flaunch";
+import { makeRequest } from "#~/utils/axios.ts";
 
 import { TradeDrawerContext } from "./hooks";
 
-type TradeDrawerContextProviderProps = PropsWithChildren<TradeDrawerProps>;
+type TradeDrawerContextProviderProps = PropsWithChildren<TradeDrawer>;
 
 export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerContextProviderProps) {
     const { wallets } = useWallets();
+    const { signTypedData } = useSignTypedData();
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [drawerData, setDrawerData] = useState<TradeDrawerDataState>(() => ({
-        buyAmount: "",
-        buyBalance: "",
-        buyToken: streamer?.tokenAddress as Address,
-        sellAmount: "",
-        sellBalance: "",
-        sellToken: "ETH",
+        from: {
+            type: "native",
+            token: "ETH",
+            amount: "",
+            balance: "0",
+            usdPrice: "",
+        },
+        to: {
+            type: "streamer",
+            token: streamer?.tokenAddress as Address,
+            amount: "",
+            balance: "0",
+            usdPrice: "",
+        },
     }));
 
     const handleSwap = useCallback(
@@ -30,30 +42,91 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 }
 
                 await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
-                // const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
+                const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
-                // await buyCreatorToken(
-                //     streamer?.tokenAddress as Address,
-                //     drawerData.buyAmount,
-                //     provider,
-                //     wallets[0].address as Address,
-                // );
+                let hash: `0x${string}`;
+                const token = "ETH";
+
+                if (drawerData.from.type === "native") {
+                    hash = await buyCreatorToken({
+                        coinAddress: streamer?.tokenAddress as Address,
+                        amount: drawerData.from.amount,
+                        provider,
+                        signTypedData,
+                        token,
+                        address: wallets[0].address as Address,
+                    });
+
+                    await makeRequest({
+                        method: "POST",
+                        url: "/send-buy-notis",
+                        data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address },
+                    });
+                } else {
+                    hash = await sellCreatorToken({
+                        coinAddress: streamer?.tokenAddress as Address,
+                        amount: drawerData.from.amount,
+                        provider,
+                        signTypedData,
+                        token,
+                        address: wallets[0].address as Address,
+                    });
+                }
+
+                await makeRequest({
+                    method: "POST",
+                    url: "/save-volume",
+                    data: {
+                        amount:
+                            drawerData.from.type === "native"
+                                ? Number(drawerData.from.amount)
+                                : Number(drawerData.to.amount),
+                    },
+                });
+
+                toast.success("Token swapped successfully!", {
+                    duration: 5000,
+                    description: (
+                        <Button className="text-blue-500 underline" variant="link">
+                            <a
+                                href={`${CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View on BaseScan
+                            </a>
+                        </Button>
+                    ),
+                });
             } catch (error) {
-                toast.error(error instanceof Error ? error.message : "Swap failed");
+                console.error("Swap failed:", error);
             }
         },
-        [wallets],
+        [
+            wallets,
+            drawerData.from.type,
+            drawerData.from.amount,
+            drawerData.to.amount,
+            streamer?.tokenAddress,
+            streamer?.username,
+            signTypedData,
+        ],
     );
 
     const value = useMemo(
         () => ({
-            drawerData,
-            isDrawerOpen,
-            streamer,
             closeDrawer: () => setIsDrawerOpen(false),
+            drawerData,
             handleSwap,
+            isDrawerOpen,
             openDrawer: () => setIsDrawerOpen(true),
             setDrawerData,
+            swapSides: () =>
+                setDrawerData((prev) => ({
+                    from: prev.to,
+                    to: prev.from,
+                })),
+            streamer,
         }),
         [isDrawerOpen, streamer, drawerData, handleSwap],
     );
