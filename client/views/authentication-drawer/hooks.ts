@@ -49,7 +49,7 @@ export function usePrivyLoginTrigger() {
                 login({ loginMethods: ["farcaster"] });
             }
         },
-         
+
         [screen],
     );
 }
