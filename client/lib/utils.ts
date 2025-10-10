@@ -46,7 +46,7 @@ export function formatUSD(amount: string): string {
 }
 
 export function formatToken(amount: string): string {
-    return `${(parseFloat(amount.toString()) * 1).toFixed(2)}`;
+    return (Math.floor(parseFloat(amount) * 100) / 100).toFixed(2);
 }
 
 export function formatEtherToToken({
@@ -61,10 +61,6 @@ export function formatEtherToToken({
     return Number(format).toLocaleString();
 }
 
-export function getTokenPriceInUSD({ price, quantity }: { quantity: string; price: string }): number {
-    try {
-        return parseFloat(price) * parseFloat(quantity);
-    } catch (error) {
-        throw new Error((error as Error).message);
-    }
+export function getPriceInQuantity({ price, quantity }: { price: string; quantity: string }): number {
+    return parseFloat(price) * parseFloat(quantity);
 }

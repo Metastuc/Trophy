@@ -296,14 +296,14 @@ export async function getTokenSwapQuote({
     amount: string;
     coinAddress: Address;
     isToCreatorToken: boolean;
-    token: TokenSymbols;
+    token: TokenIdentifier;
 }) {
     let poolkey: PoolKey | undefined = undefined;
 
     if (token !== "ETH")
         poolkey = {
             currency0: zeroAddress,
-            currency1: CONTRACT_ADDRESSES[token],
+            currency1: token,
             fee: 500,
             tickSpacing: 10,
             hooks: zeroAddress,
