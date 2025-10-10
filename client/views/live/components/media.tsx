@@ -51,7 +51,7 @@ export const LiveStreamMedia = memo(function ({
                 };
             }
         },
-         
+
         [videoStream],
     );
 
@@ -73,7 +73,7 @@ export const LiveStreamMedia = memo(function ({
                 };
             }
         },
-         
+
         [audioStream],
     );
 

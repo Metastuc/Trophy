@@ -1,92 +1,129 @@
 import { useWallets } from "@privy-io/react-auth";
 import { ChangeEvent, useEffect } from "react";
+import { useDebounceCallback, useIsMounted } from "usehooks-ts";
 import { Address } from "viem";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
-import { getCreatorTokenPrice } from "@/lib/flaunch";
-import { formatUSD, getTokenPriceInUSD, tokenInputField } from "@/lib/utils";
+import { getCreatorTokenPrice, getTokenSwapQuote } from "@/lib/flaunch";
+import { formatEtherToToken, formatToken, formatUSD, getPriceInQuantity, tokenInputField } from "@/lib/utils";
 import { getWalletBalance } from "@/lib/viem";
 import { SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
+import { log } from "#~/utils/logger.ts";
+import { toTime } from "#~/utils/time.ts";
 
 import { useTradeDrawerContext } from "../hooks";
 
 export function Swap() {
-    const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
     const { wallets } = useWallets();
     const { data } = useTokenPrice(SUPPORTED_TOKENS.ETH as Address);
+    const isMounted = useIsMounted();
 
-    useEffect(
-        function () {
-            (async function () {
-                const { etherBalance, tokenBalance } = await getWalletBalance({
-                    tokenAddress: streamer?.tokenAddress as Address,
-                    userAddress: wallets[0].address as Address,
-                });
-                const tokenPrice = await getCreatorTokenPrice(streamer?.tokenAddress as Address);
+    const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
 
-                if (drawerData.from.type !== "native")
-                    setDrawerData((state) => ({
-                        from: {
-                            ...state.from,
-                            balance: tokenBalance,
-                            usdPrice: tokenPrice,
-                        },
-                        to: {
-                            ...state.to,
-                            balance: etherBalance,
-                            usdPrice: data?.usdPrice.toString() || "0",
-                        },
-                    }));
-                else
-                    setDrawerData((state) => ({
-                        from: {
-                            ...state.from,
-                            balance: etherBalance,
-                            usdPrice: data?.usdPrice.toString() || "0",
-                        },
-                        to: {
-                            ...state.to,
-                            balance: tokenBalance,
-                            usdPrice: tokenPrice,
-                        },
-                    }));
-            })();
+    const debouncedSwapQuote = useDebounceCallback(
+        async function (inputAmount: string) {
+            if (!streamer?.tokenAddress) return;
+            if (!inputAmount || Number.isNaN(+inputAmount) || +inputAmount === 0) {
+                setDrawerData((state) => ({ ...state, to: { ...state.to, amount: "0" } }));
+                return;
+            }
+
+            const supportedTokenToCreatorToken = drawerData.from.type === "native";
+            const quote = await getTokenSwapQuote({
+                amount: inputAmount,
+                coinAddress: streamer?.tokenAddress as Address,
+                isToCreatorToken: supportedTokenToCreatorToken,
+                token: drawerData.from.token,
+            });
+
+            setDrawerData((state) => ({
+                ...state,
+                to: {
+                    ...state.to,
+                    amount: formatEtherToToken({ number: quote, toCreatorToken: supportedTokenToCreatorToken }),
+                },
+            }));
         },
-        [data, drawerData.from.type, setDrawerData, streamer, wallets],
+        toTime({ unit: "seconds", value: 0.75, output: "milliseconds" }),
     );
 
     async function handleFromAmountChange(event: ChangeEvent<HTMLInputElement>) {
         setDrawerData((state) => ({
             ...state,
-            from: {
-                ...state.from,
-                amount: tokenInputField(event.target.value),
-            },
+            from: { ...state.from, amount: tokenInputField(event.target.value) },
         }));
 
-        // const supportedTokenToCreatorToken = drawerData.from.type === "native";
-
-        // const quote = await getTokenSwapQuote({
-        //     token: drawerData.from.token,
-        //     supportedTokenToCreatorToken,
-        //     amount: drawerData.from.amount,
-        //     coinAddress: streamer?.tokenAddress as Address,
-        // });
-
-        // setDrawerData((state) => ({
-        //     ...state,
-        //     to: {
-        //         ...state.to,
-        //         amount: toLocaleString(quote, supportedTokenToCreatorToken),
-        //     },
-        // }));
+        debouncedSwapQuote(event.target.value);
     }
 
     function handleSwapSides() {
         setDrawerData((state) => ({ ...state, from: state.to, to: state.from }));
     }
+
+    useEffect(
+        function () {
+            let hasFetchedBalance = false;
+
+            (async function () {
+                if (!wallets?.[0]?.address || !streamer?.tokenAddress) return;
+
+                const [{ etherBalance, tokenBalance }, tokenPrice] = await Promise.all([
+                    getWalletBalance({
+                        tokenAddress: streamer.tokenAddress as Address,
+                        userAddress: wallets[0].address as Address,
+                    }),
+                    getCreatorTokenPrice(streamer.tokenAddress as Address),
+                ]);
+
+                if (hasFetchedBalance || !isMounted()) return;
+
+                setDrawerData(function (state) {
+                    const isETH = state.from.type === "native";
+
+                    return {
+                        from: {
+                            ...state.from,
+                            balance: isETH ? etherBalance : tokenBalance,
+                            usdPrice: isETH ? (data?.usdPrice.toString() ?? "0") : tokenPrice,
+                        },
+                        to: {
+                            ...state.to,
+                            balance: isETH ? tokenBalance : etherBalance,
+                            usdPrice: isETH ? tokenPrice : (data?.usdPrice.toString() ?? "0"),
+                        },
+                    };
+                });
+
+                return function () {
+                    hasFetchedBalance = true;
+                };
+            })();
+        },
+        [streamer?.tokenAddress, wallets?.[0]?.address],
+    );
+
+    useEffect(() => {
+        log({
+            data: drawerData,
+            module: "DRAWER",
+            msg: "STATE UPDATE",
+            tag: "SWAP",
+        });
+    }, [drawerData]);
+
+    useEffect(
+        function () {
+            if (!data?.usdPrice) return;
+            setDrawerData((state) => ({
+                ...state,
+                from: { ...state.from, usdPrice: data?.usdPrice?.toString() ?? "0" },
+                to: { ...state.to, usdPrice: data?.usdPrice?.toString() ?? "0" },
+            }));
+        },
+        [data?.usdPrice],
+    );
 
     return (
         <section className="mx-auto max-w-md p-4">
@@ -102,8 +139,8 @@ export function Swap() {
 
                     <span className="text-xs text-black/60">
                         {formatUSD(
-                            getTokenPriceInUSD({
-                                price: drawerData.from.usdPrice || "0",
+                            getPriceInQuantity({
+                                price: data?.usdPrice?.toString() || "0",
                                 quantity: drawerData.from.amount || "0",
                             }).toString(),
                         )}
@@ -149,7 +186,9 @@ export function Swap() {
                         </div>
                     )}
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.from.balance || "0"}</span>
+                    <span className="text-xs text-black/60">
+                        Balance: {formatToken(drawerData.from.balance) || "0"}
+                    </span>
                 </aside>
             </article>
 
@@ -180,8 +219,14 @@ export function Swap() {
                         className="outline-none"
                         value={drawerData.to.amount}
                     />
-                    {/* <span className="text-xs text-black/60">{formatUSD(drawerData.to.amount || "0")}</span> */}
-                    <span className="text-xs text-black/60">{formatUSD("0")}</span>
+                    <span className="text-xs text-black/60">
+                        {formatUSD(
+                            getPriceInQuantity({
+                                price: data?.usdPrice?.toString() || "0",
+                                quantity: drawerData.to.amount || "0",
+                            }).toString(),
+                        )}
+                    </span>
                 </aside>
 
                 <aside className="flex flex-col items-center gap-2">
@@ -223,7 +268,7 @@ export function Swap() {
                         </div>
                     )}
 
-                    <span className="text-xs text-black/60">Balance: {drawerData.to.balance}</span>
+                    <span className="text-xs text-black/60">Balance: {formatToken(drawerData.to.balance || "0")}</span>
                 </aside>
             </article>
         </section>
