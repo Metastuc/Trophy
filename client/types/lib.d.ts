@@ -34,7 +34,7 @@ declare global {
         ) => Promise<{
             signature: string;
         }>;
-        token: TokenSymbols;
+        token: TokenIdentifier;
     }
 
     interface PoolKey {

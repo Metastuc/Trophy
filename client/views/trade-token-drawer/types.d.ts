@@ -5,7 +5,7 @@ declare global {
 
     interface TradeSide {
         token: TokenIdentifier;
-        type: "native" | "streamer"; // "native" = ETH, "streamer" = streamer token
+        type: "native" | "erc20";
         amount: string;
         balance: string;
         usdPrice: string;

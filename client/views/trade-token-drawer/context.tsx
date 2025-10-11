@@ -26,7 +26,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
             usdPrice: "",
         },
         to: {
-            type: "streamer",
+            type: "erc20",
             token: streamer?.tokenAddress as Address,
             amount: "",
             balance: "0",
@@ -53,7 +53,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                         amount: drawerData.from.amount,
                         provider,
                         signTypedData,
-                        token,
+                        token: drawerData.from.token,
                         address: wallets[0].address as Address,
                     });
 
