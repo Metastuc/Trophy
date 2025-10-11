@@ -10,7 +10,6 @@ import { getCreatorTokenPrice, getTokenSwapQuote } from "@/lib/flaunch";
 import { formatEtherToToken, formatToken, formatUSD, getPriceInQuantity, tokenInputField } from "@/lib/utils";
 import { getWalletBalance } from "@/lib/viem";
 import { SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
-import { log } from "#~/utils/logger.ts";
 import { toTime } from "#~/utils/time.ts";
 
 import { useTradeDrawerContext } from "../hooks";
@@ -104,15 +103,6 @@ export function Swap() {
         [streamer?.tokenAddress, wallets?.[0]?.address],
     );
 
-    useEffect(() => {
-        log({
-            data: drawerData,
-            module: "DRAWER",
-            msg: "STATE UPDATE",
-            tag: "SWAP",
-        });
-    }, [drawerData]);
-
     useEffect(
         function () {
             if (!data?.usdPrice) return;
@@ -156,10 +146,7 @@ export function Swap() {
                             onValueChange={(value) =>
                                 setDrawerData((state) => ({
                                     ...state,
-                                    from: {
-                                        ...state.from,
-                                        token: value as TokenIdentifier,
-                                    },
+                                    from: { ...state.from, token: value as TokenIdentifier },
                                 }))
                             }
                         >
@@ -238,10 +225,7 @@ export function Swap() {
                             onValueChange={(value) =>
                                 setDrawerData((state) => ({
                                     ...state,
-                                    to: {
-                                        ...state.to,
-                                        token: value as TokenIdentifier,
-                                    },
+                                    to: { ...state.to, token: value as TokenIdentifier },
                                 }))
                             }
                         >
