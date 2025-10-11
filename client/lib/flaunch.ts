@@ -3,6 +3,7 @@ import {
     Address,
     encodeAbiParameters,
     encodeFunctionData,
+    isAddress,
     maxUint256,
     parseEther,
     parseUnits,
@@ -168,19 +169,21 @@ export async function buyCreatorToken({
     let permitSingle: PermitSingle | undefined = undefined;
 
     const flaunch = getFlaunchClient({ address, provider }) as ReadWriteFlaunchSDK;
-    const amountInUnits = parseUnits(amount, token === "USDC" ? 6 : 18);
+    const isUSDC = isAddress(token) && CONTRACT_ADDRESSES.USDC.toLowerCase() === token.toLowerCase();
+
+    if (!amount || Number(amount) <= 0) throw new Error("Invalid swap amount");
+    const amountInUnits = parseUnits(amount, isUSDC ? 6 : 18);
 
     if (token !== "ETH") {
-        const tokenAddress = CONTRACT_ADDRESSES[token];
-        const tokenAllowance = (await flaunch.getERC20AllowanceToPermit2(tokenAddress)) as bigint;
-        const { allowance: permitAllowance } = await flaunch.getPermit2AllowanceAndNonce(tokenAddress);
+        const tokenAllowance = (await flaunch.getERC20AllowanceToPermit2(token)) as bigint;
+        const { allowance: permitAllowance } = await flaunch.getPermit2AllowanceAndNonce(token);
 
         if (tokenAllowance < amountInUnits) {
-            await flaunch.setERC20AllowanceToPermit2(tokenAddress, maxUint256);
+            await flaunch.setERC20AllowanceToPermit2(token, maxUint256);
         }
 
         if (permitAllowance < amountInUnits) {
-            const { permitSingle: typedPermit, typedData } = await flaunch.getPermit2TypedData(tokenAddress);
+            const { permitSingle: typedPermit, typedData } = await flaunch.getPermit2TypedData(token);
             signature = (await signTypedData(typedData, { address })).signature as Address;
             permitSingle = typedPermit;
         }
@@ -195,7 +198,7 @@ export async function buyCreatorToken({
                 amountIn: amountInUnits,
                 intermediatePoolKey: {
                     currency0: zeroAddress,
-                    currency1: CONTRACT_ADDRESSES[token],
+                    currency1: token,
                     fee: 500,
                     tickSpacing: 10,
                     hooks: zeroAddress,
