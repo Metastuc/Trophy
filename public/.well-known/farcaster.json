@@ -21,5 +21,23 @@
         "ogDescription": "Stream on your terms with trophy",
         "ogImageUrl": "https://trophytv.co/splash.jpg",
         "tagline": "Livestream Like A Boss"
+    },
+    "miniapp": {
+        "version": "1",
+        "name": "Trophy",
+        "homeUrl": "https://trophytv.co",
+        "iconUrl": "https://trophytv.co/appLogo.jpg",
+        "splashImageUrl": "https://trophytv.co/splash.jpg",
+        "splashBackgroundColor": "#000000",
+        "subtitle": "Livestream Like A Boss",
+        "description": "Creator first livestream app on base. Go live, own your stream and earn.",
+        "primaryCategory": "social",
+        "tags": ["content", "stream", "baseapp", "base", "livestream"],
+        "heroImageUrl": "https://trophytv.co/appLogo.jpg",
+        "tagline": "Go live instantly",
+        "ogTitle": "Trophy",
+        "ogDescription": "Stream on your terms with trophy",
+        "ogImageUrl": "Livestream Like A Boss",
+        "noindex": true
     }
 }
