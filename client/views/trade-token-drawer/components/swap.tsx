@@ -64,10 +64,10 @@ export function Swap() {
     useEffect(
         function () {
             let hasFetchedBalance = false;
+            if (!wallets?.[0]?.address || !streamer?.tokenAddress || !drawerData.from.token) return;
 
             (async function () {
-                if (!wallets?.[0]?.address || !streamer?.tokenAddress) return;
-
+                const isETH = drawerData.from.type === "native";
                 const [{ etherBalance, tokenBalance }, tokenPrice] = await Promise.all([
                     getWalletBalance({
                         tokenAddress: streamer.tokenAddress as Address,
@@ -79,8 +79,6 @@ export function Swap() {
                 if (hasFetchedBalance || !isMounted()) return;
 
                 setDrawerData(function (state) {
-                    const isETH = state.from.type === "native";
-
                     return {
                         from: {
                             ...state.from,
@@ -108,8 +106,13 @@ export function Swap() {
             if (!data?.usdPrice) return;
             setDrawerData((state) => ({
                 ...state,
-                from: { ...state.from, usdPrice: data?.usdPrice?.toString() ?? "0" },
-                to: { ...state.to, usdPrice: data?.usdPrice?.toString() ?? "0" },
+                // from: { ...state.from, usdPrice: data?.usdPrice?.toString() ?? "0" },
+                // to: { ...state.to, usdPrice: data?.usdPrice?.toString() ?? "0" },
+                from:
+                    state.from.type === "native"
+                        ? { ...state.from, usdPrice: data.usdPrice.toString() ?? "0" }
+                        : state.from,
+                to: state.to.type === "native" ? { ...state.to, usdPrice: data.usdPrice.toString() ?? "0" } : state.to,
             }));
         },
         [data?.usdPrice],
