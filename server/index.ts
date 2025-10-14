@@ -49,6 +49,7 @@ switch (SERVER_ENV.ENVIRONMENT) {
     case "staging":
         console.log("Running in production/staging mode");
 
+        app.use("/.well-known", express.static(path.join(dirname, "..", "dist", ".well-known")));
         app.use(express.static(path.join(dirname, "..", "dist")));
         app.get("/{*splat}", function (_request: Request, response: Response) {
             response.sendFile(path.join(dirname, "..", "dist", "index.html"));
