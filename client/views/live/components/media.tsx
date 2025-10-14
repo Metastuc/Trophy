@@ -50,7 +50,7 @@ export const LiveStreamMedia = memo(function ({
                     console.error("Error occurred while playing video stream.");
                 };
             }
-        },        
+        },
         [videoStream],
     );
 
