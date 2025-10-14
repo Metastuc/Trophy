@@ -4,7 +4,6 @@ import { parseEther, parseUnits } from "viem";
 import { client } from "#config/viem.ts";
 import { tipsQueue } from "#services/worker/tip.ts";
 
-
 export async function tipTransaction(request: Request, response: Response, next: NextFunction) {
     let amountRaw;
 

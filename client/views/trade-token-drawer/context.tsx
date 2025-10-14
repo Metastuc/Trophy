@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { type Address } from "viem";
 
 import { Button } from "@/components/ui/button";
-import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { buyCreatorToken, sellCreatorToken } from "@/lib/flaunch";
 import { makeRequest } from "#~/utils/axios.ts";
 
@@ -59,7 +59,8 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
 
                     await makeRequest({
                         method: "POST",
-                        url: "/send-buy-notis",
+                        // url: "/send-buy-notis",
+                        url: API_ENDPOINTS.TRANSACTIONS.STORE_TOKEN_PURCHASE,
                         data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address },
                     });
                 } else {

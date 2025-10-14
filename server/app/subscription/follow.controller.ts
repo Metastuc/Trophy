@@ -4,7 +4,6 @@ import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 import { followQueue } from "#services/worker/follow.ts";
 
-
 export async function followUser(request: Request, response: Response, next: NextFunction) {
     const privyId = request.privyUser?.userId;
     const { userId } = request.params;
