@@ -48,7 +48,7 @@ export function usePrivyLoginTrigger() {
                 closeDrawer();
                 login({ loginMethods: ["farcaster"] });
             }
-        },        
+        },
         [screen],
     );
 }
