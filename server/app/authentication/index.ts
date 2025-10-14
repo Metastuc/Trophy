@@ -3,8 +3,8 @@ import { Router } from "express";
 import { upload } from "#middleware/multer.ts";
 import { privyAuth } from "#middleware/privy-auth.ts";
 
-import { onBoard } from "./onboard.controller";
-import { user } from "./user.controller";
+import { onBoard } from "./onboard";
+import { user } from "./user";
 
 export const authentication = Router();
 

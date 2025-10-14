@@ -3,12 +3,12 @@ import { Router } from "express";
 import { upload } from "#middleware/multer.ts";
 import { privyAuth } from "#middleware/privy-auth.ts";
 
-import { createStream } from "./create.controller";
-import { endStream } from "./end.controller";
-import { publicFeedContent } from "./feed.controller";
-import { joinStream } from "./join.controller";
-import { userLeaderboard } from "./leaderboard.controller";
-import { updateThumbnail } from "./thumbnail.controller";
+import { createStream } from "./create";
+import { endStream } from "./end";
+import { publicFeedContent } from "./feed";
+import { joinStream } from "./join";
+import { userLeaderboard } from "./leaderboard";
+import { updateThumbnail } from "./thumbnail";
 
 export const streams = Router();
 

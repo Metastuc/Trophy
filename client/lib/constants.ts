@@ -54,8 +54,9 @@ export const API_ENDPOINTS = {
         UNFOLLOW_USER: (userId: string) => `/follow/${userId}/unsubscribe`,
     },
 
-    TIPS: {
-        STORE_TIP: "/tips/store",
+    TRANSACTIONS: {
+        STORE_TIP: "/transactions/tip",
+        STORE_TOKEN_PURCHASE: "/transactions/token/purchase",
     },
 
     TOKEN: {

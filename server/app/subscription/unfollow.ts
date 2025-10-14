@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
-
-import { unFollowQueue } from "./unfollow.worker";
+import { unFollowQueue } from "#services/worker/unfollow.ts";
 
 export async function unfollowUser(request: Request, response: Response, next: NextFunction) {
     const privyId = request.privyUser?.userId;

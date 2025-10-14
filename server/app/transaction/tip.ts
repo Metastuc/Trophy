@@ -2,10 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { parseEther, parseUnits } from "viem";
 
 import { client } from "#config/viem.ts";
+import { tipsQueue } from "#services/worker/tip.ts";
 
-import { tipsQueue } from "./store-tip.worker";
-
-export async function storeTip(request: Request, response: Response, next: NextFunction) {
+export async function tipTransaction(request: Request, response: Response, next: NextFunction) {
     let amountRaw;
 
     const privyId = request.privyUser?.userId;

@@ -17,7 +17,7 @@ export function useHuddleHostPublish(role: JoinStreamData["role"]) {
             ]).catch(function (error) {
                 toast.error((error as Error).message);
             });
-        },         
+        },
         [role, state],
     );
 }

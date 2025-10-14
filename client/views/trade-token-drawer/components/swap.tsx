@@ -19,7 +19,7 @@ export function Swap() {
     const { data } = useTokenPrice(SUPPORTED_TOKENS.ETH as Address);
     const isMounted = useIsMounted();
 
-    const { streamer, drawerData, setDrawerData } = useTradeDrawerContext();
+    const { streamer, drawerData, setDrawerData, swapSides } = useTradeDrawerContext();
 
     const debouncedSwapQuote = useDebounceCallback(
         async function (inputAmount: string) {
@@ -55,10 +55,6 @@ export function Swap() {
         }));
 
         debouncedSwapQuote(event.target.value);
-    }
-
-    function handleSwapSides() {
-        setDrawerData((state) => ({ ...state, from: state.to, to: state.from }));
     }
 
     useEffect(
@@ -183,10 +179,7 @@ export function Swap() {
             </article>
 
             <div className="relative flex h-6 items-center justify-center">
-                <i
-                    className="bg-blue100 absolute h-10 w-14 cursor-pointer rounded-lg px-4 py-2"
-                    onClick={handleSwapSides}
-                >
+                <i className="bg-blue100 absolute h-10 w-14 cursor-pointer rounded-lg px-4 py-2" onClick={swapSides}>
                     <svg width={18} height={16} viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M7 4L4 1 1 4M4 15V1M11 12l3 3 3-3M14 1v14"

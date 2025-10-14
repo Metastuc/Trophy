@@ -4,8 +4,9 @@ import { toast } from "sonner";
 import { type Address } from "viem";
 
 import { Button } from "@/components/ui/button";
-import { CLIENT_CONSTANTS } from "@/lib/constants";
-import { buyCreatorToken, sellCreatorToken } from "@/lib/flaunch";
+import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
+import { buyCreatorToken, getTokenSwapQuote, sellCreatorToken } from "@/lib/flaunch";
+import { formatEtherToToken } from "@/lib/utils";
 import { makeRequest } from "#~/utils/axios.ts";
 
 import { TradeDrawerContext } from "./hooks";
@@ -59,7 +60,8 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
 
                     await makeRequest({
                         method: "POST",
-                        url: "/send-buy-notis",
+                        // url: "/send-buy-notis",
+                        url: API_ENDPOINTS.TRANSACTIONS.STORE_TOKEN_PURCHASE,
                         data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address },
                     });
                 } else {
@@ -121,11 +123,37 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
             isDrawerOpen,
             openDrawer: () => setIsDrawerOpen(true),
             setDrawerData,
-            swapSides: () =>
-                setDrawerData((prev) => ({
-                    from: prev.to,
-                    to: prev.from,
-                })),
+            // swapSides: () =>
+            //     setDrawerData((prev) => ({
+            //         from: prev.to,
+            //         to: prev.from,
+            //     })),
+            swapSides() {
+                setDrawerData(function (state) {
+                    const swapped = { from: state.to, to: state.from };
+
+                    if (swapped.from.amount && Number(swapped.from.amount) > 0)
+                        getTokenSwapQuote({
+                            amount: swapped.from.amount,
+                            coinAddress: streamer?.tokenAddress as Address,
+                            isToCreatorToken: swapped.from.type === "native",
+                            token: swapped.from.token,
+                        }).then(function (quote) {
+                            setDrawerData(() => ({
+                                ...swapped,
+                                to: {
+                                    ...swapped.to,
+                                    amount: formatEtherToToken({
+                                        number: quote,
+                                        toCreatorToken: swapped.from.type === "native",
+                                    }),
+                                },
+                            }));
+                        });
+
+                    return swapped;
+                });
+            },
             streamer,
         }),
         [isDrawerOpen, streamer, drawerData, handleSwap],
