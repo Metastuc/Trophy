@@ -3,11 +3,11 @@ import { Router } from "express";
 import { upload } from "#middleware/multer.ts";
 import { privyAuth } from "#middleware/privy-auth.ts";
 
-import { notifications } from "./notifications.controller";
-import { markNotificationsAsRead } from "./notifications-read.controller";
-import { profile } from "./profile.controller";
-import { getWalletTokenBalances } from "./token-balances.controller";
-import { updateUserProfile } from "./update.controller";
+import { notifications } from "./notifications";
+import { markNotificationsAsRead } from "./notifications-read";
+import { profile } from "./profile";
+import { getWalletTokenBalances } from "./token-balances";
+import { updateUserProfile } from "./update";
 
 export const user = Router();
 
