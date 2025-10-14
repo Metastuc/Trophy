@@ -13,27 +13,23 @@ import { Swap } from "./components/swap";
 import { TradeDrawerContextProvider } from "./context";
 import { useTradeDrawerContext } from "./hooks";
 
-export function TradeDrawer(props: TradeDrawerProps) {
+export function TradeDrawer(props: TradeDrawer) {
     return (
         <TradeDrawerContextProvider {...props}>
-            <TradeDrawerInner trigger={props.trigger} />
+            <TradeDrawerInner />
         </TradeDrawerContextProvider>
     );
 }
 
-function TradeDrawerInner({ trigger }: TradeDrawerProps) {
-    const { closeDrawer, isDrawerOpen, openDrawer, handleSwap } = useTradeDrawerContext();
+function TradeDrawerInner() {
+    const { closeDrawer, isDrawerOpen, openDrawer, handleSwap, drawerData } = useTradeDrawerContext();
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>
             <DrawerTrigger asChild>
-                {trigger ? (
-                    trigger
-                ) : (
-                    <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
-                        <span className="text-green200 capitalize">trade</span>
-                    </Button>
-                )}
+                <Button variant="default" className="bg-green100 h-6 w-15 rounded-xs">
+                    <span className="text-green200 capitalize">trade</span>
+                </Button>
             </DrawerTrigger>
 
             <DrawerContent>
@@ -88,7 +84,9 @@ function TradeDrawerInner({ trigger }: TradeDrawerProps) {
 
                 <DrawerFooter>
                     <Button className="bg-blue100 mx-auto h-13.5 w-3/4 rounded-lg" onClick={handleSwap}>
-                        <span className="text-xl font-normal">swap</span>
+                        <span className="text-xl font-normal">
+                            {drawerData.from.type === "native" ? "Buy" : "Sell"}
+                        </span>
                     </Button>
                 </DrawerFooter>
             </DrawerContent>

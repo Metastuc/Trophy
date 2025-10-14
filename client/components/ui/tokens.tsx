@@ -16,7 +16,9 @@ export const TOKENS = Object.values(TOKEN_CONFIG).map((token) => ({
     title: (
         <div className="flex items-center justify-center gap-1">
             <img src={token.icon} className="size-5" alt={`${token.symbol}-logo`} />
-            <span className="pt-0.5 text-base text-white">{token.symbol}</span>
+            <span className="pt-0.5 text-xs font-normal text-white" style={{ filter: "invert(1)" }}>
+                {token.symbol}
+            </span>
         </div>
     ),
 

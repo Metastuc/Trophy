@@ -1,10 +1,11 @@
-import { EIP1193Provider } from "@privy-io/react-auth";
+import { EIP1193Provider, SignMessageModalUIOptions, SignTypedDataParams } from "@privy-io/react-auth";
 import { Address } from "viem";
 
-import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
+import { CONTRACT_ADDRESSES, SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
 
 declare global {
     type TokenAddresses = keyof typeof CONTRACT_ADDRESSES;
+    type TokenSymbols = keyof typeof SUPPORTED_TOKENS;
 
     interface GetWalletClient {
         address: Address;
@@ -19,16 +20,41 @@ declare global {
         tokensCreatorWillOwn: bigint;
     }
 
-    interface CreatorTokenCreated {
-        creatorToken: Address;
-        smartAccount: Address;
+    interface TokenSwapParams {
+        address: Address;
+        amount: string;
+        coinAddress: Address;
+        provider: EIP1193Provider;
+        signTypedData: (
+            input: SignTypedDataParams,
+            options?: {
+                uiOptions?: SignMessageModalUIOptions;
+                address?: string;
+            },
+        ) => Promise<{
+            signature: string;
+        }>;
+        token: TokenIdentifier;
     }
 
-    interface BuyCreatorToken {
-        amount: string;
-        buyerAddress: Address;
-        provider: EIP1193Provider;
-        tokenAddress: Address;
+    interface PoolKey {
+        currency0: Address;
+        currency1: Address;
+        fee: number;
+        hookData: Address;
+        hooks: Address;
+        tickSpacing: number;
+    }
+
+    interface PermitSingle {
+        details: {
+            token: string;
+            amount: number | BigNumber;
+            expiration: number | BigNumber;
+            nonce: number | BigNumber;
+        };
+        spender: string;
+        sigDeadline: number | BigNumber;
     }
 }
 
