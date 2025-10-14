@@ -18,7 +18,7 @@ export function useHuddleHostPublish(role: JoinStreamData["role"]) {
                 toast.error((error as Error).message);
             });
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
         [role, state],
     );
 }
