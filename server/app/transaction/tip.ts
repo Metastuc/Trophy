@@ -10,27 +10,27 @@ export async function tipTransaction(request: Request, response: Response, next:
     const privyId = request.privyUser?.userId;
     const { txHash, sender, recipient, token, tokenAddress, amountInToken, amountInUsd, chainId } = request.body;
 
-    if (token === "ETH") {
-        amountRaw = parseEther(amountInToken.toString());
-    } else {
-        const decimals = await client.readContract({
-            address: tokenAddress,
-            abi: [
-                {
-                    name: "decimals",
-                    type: "function",
-                    stateMutability: "view",
-                    inputs: [],
-                    outputs: [{ type: "uint8" }],
-                },
-            ],
-            functionName: "decimals",
-        });
-
-        amountRaw = parseUnits(amountInToken.toString(), decimals);
-    }
-
     try {
+        if (token === "ETH") {
+            amountRaw = parseEther(amountInToken.toString());
+        } else {
+            const decimals = await client.readContract({
+                address: tokenAddress,
+                abi: [
+                    {
+                        name: "decimals",
+                        type: "function",
+                        stateMutability: "view",
+                        inputs: [],
+                        outputs: [{ type: "uint8" }],
+                    },
+                ],
+                functionName: "decimals",
+            });
+
+            amountRaw = parseUnits(amountInToken.toString(), decimals);
+        }
+
         await tipsQueue.add("verify_tip", {
             amountInToken,
             amountRaw: amountRaw.toString(),

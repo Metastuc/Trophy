@@ -46,7 +46,7 @@ new Worker(
             }),
         ]);
     },
-    { connection: redis },
+    { connection: redis, concurrency: 5 },
 )
     .on("completed", (job) => {
         log.info({ module: "follows-worker", msg: `🎉 Job ${job.id} completed` });
