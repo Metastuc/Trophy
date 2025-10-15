@@ -20,23 +20,6 @@ declare global {
         tokensCreatorWillOwn: bigint;
     }
 
-    interface TokenSwapParams {
-        address: Address;
-        amount: string;
-        coinAddress: Address;
-        provider: EIP1193Provider;
-        signTypedData: (
-            input: SignTypedDataParams,
-            options?: {
-                uiOptions?: SignMessageModalUIOptions;
-                address?: string;
-            },
-        ) => Promise<{
-            signature: string;
-        }>;
-        token: TokenIdentifier;
-    }
-
     interface PoolKey {
         currency0: Address;
         currency1: Address;
@@ -56,37 +39,6 @@ declare global {
         spender: string;
         sigDeadline: number | BigNumber;
     }
-
-    type MessageProp = {
-        name: string;
-        type: string;
-    };
-
-    type MessageTypes = {
-        [additionalProperties: string]: MessageProp[];
-    };
-
-    type TypedDataParams<T extends MessageTypes> = {
-        types: T;
-        primaryType: keyof T;
-        domain: {
-            name?: string;
-            version?: string;
-            chainId?: number;
-            verifyingContract?: string;
-            salt?: ArrayBuffer;
-        };
-        message: Record<string, unknown>;
-    };
-
-    type SignTypedDataParams = TypedDataParams<MessageTypes>;
-
-    export type SignTypedData = (
-        input: SignTypedDataParams,
-        options: { address: string },
-    ) => Promise<{
-        signature: string;
-    }>;
 
     interface claimTokenParams {
         address: Address;
@@ -114,7 +66,15 @@ declare global {
         coinAddress: Address;
         amount: string;
         provider: EIP1193Provider;
-        signTypedData: SignTypedData;
+        signTypedData: (
+            input: SignTypedDataParams,
+            options?: {
+                uiOptions?: SignMessageModalUIOptions;
+                address?: string;
+            },
+        ) => Promise<{
+            signature: string;
+        }>;
         address: Address;
         token: TokenType;
     }

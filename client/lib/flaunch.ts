@@ -6,7 +6,6 @@ import { CONTRACT_ADDRESSES } from "#~/store/supported-tokens.ts";
 import { makeRequest } from "#~/utils/axios.ts";
 
 import { FLAUNCH_ZAP_ABI } from "./abi";
-import { FLAUNCH_ZAP_ABI } from "./abi";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "./constants";
 import { initSmartAccount } from "./smart-account";
 import { getWalletClient, publicClient } from "./viem";
@@ -76,8 +75,6 @@ export async function flaunchCreatorToken({
             },
             _trustedFeeSigner: zeroAddress,
             _premineSwapHookData: "0x",
-            _trustedFeeSigner: zeroAddress,
-            _premineSwapHookData: "0x",
             _whitelistParams: {
                 merkleRoot: zeroHash,
                 merkleIPFSHash: "",
@@ -96,17 +93,10 @@ export async function flaunchCreatorToken({
                 initializeData: "0x" as Address,
                 depositData: "0x" as Address,
             },
-            _treasuryManagerParams: {
-                manager: CONTRACT_ADDRESSES.REVENUE_MANAGER,
-                permissions: "0x0000000000000000000000000000000000000000" as Address,
-                initializeData: "0x" as Address,
-                depositData: "0x" as Address,
-            },
         };
 
         let creatorToken: Address | undefined = undefined;
         const contractData = encodeFunctionData({
-            abi: FLAUNCH_ZAP_ABI,
             abi: FLAUNCH_ZAP_ABI,
             functionName: "flaunch",
             args: [
