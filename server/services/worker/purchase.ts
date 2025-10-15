@@ -3,9 +3,11 @@ import { Address } from "viem";
 
 import { log } from "#~/utils/logger.ts";
 import { toTime } from "#~/utils/time.ts";
+import { truncateWalletAddress } from "#~/utils/truncate.ts";
 import { verifyTransactionOnChain } from "#app/transaction/utils.ts";
 import { prisma } from "#config/prisma.ts";
 import { redis } from "#config/redis.ts";
+import { sendTokenPurchasedEmail } from "#services/email/purchase.ts";
 import { logger } from "#utils/logger.ts";
 
 export const purchaseQueue = new Queue("purchases", {
@@ -51,6 +53,10 @@ new Worker(
             where: { walletAddress: buyer },
         });
 
+        const buyerDisplayName = buyerUser
+            ? (buyerUser.username ?? truncateWalletAddress(buyerUser.walletAddress as Address))
+            : truncateWalletAddress(buyer);
+
         if (buyerUser) {
             await prisma.holding.upsert({
                 where: {
@@ -73,7 +79,7 @@ new Worker(
                 { buyer: buyerUser.walletAddress, creator: creatorUser.username },
                 "Purchase recorded in holdings",
             );
-        } else logger.warn({ buyer }, "Anonymous buyer detected, skipping holdings update");
+        } else logger.warn({ buyerDisplayName }, "Anonymous buyer detected, skipping holdings update");
 
         const purchase = await prisma.purchase.create({
             data: {
@@ -89,7 +95,7 @@ new Worker(
             data: {
                 user: { connect: { id: creatorUser.id } },
                 type: "PURCHASE",
-                message: `${buyerUser ? buyerUser.username : "Anonymous"} purchased your token for ${amountOutToken} ${creatorUser.creatorToken.symbol}!`,
+                message: `${buyerDisplayName} purchased your token for ${amountOutToken} ${creatorUser.creatorToken.symbol}!`,
                 purchase: { connect: { id: purchase.id } },
             },
         });
@@ -104,6 +110,13 @@ new Worker(
             where: { userId: creatorUser.id },
             update: { holdingCount: uniqueHolders },
             create: { userId: creatorUser.id, holdingCount: uniqueHolders },
+        });
+
+        sendTokenPurchasedEmail({
+            amount: `${amountOutToken} ${creatorUser.creatorToken.symbol}`,
+            buyer: buyerDisplayName,
+            email: creatorUser.email,
+            username: creatorUser.username,
         });
     },
     { connection: redis, concurrency: 5 },
