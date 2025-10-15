@@ -62,7 +62,16 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                         method: "POST",
                         // url: "/send-buy-notis",
                         url: API_ENDPOINTS.TRANSACTIONS.STORE_TOKEN_PURCHASE,
-                        data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address },
+                        // data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address },
+                        data: {
+                            amountIn: drawerData.from.amount,
+                            amountOut: drawerData.to.amount,
+                            buyerAddress: wallets[0].address,
+                            creatorUsername: streamer?.username,
+                            from: drawerData.from.token,
+                            to: drawerData.to.token,
+                            txHash: hash,
+                        },
                     });
                 } else {
                     hash = await sellCreatorToken({
@@ -123,11 +132,6 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
             isDrawerOpen,
             openDrawer: () => setIsDrawerOpen(true),
             setDrawerData,
-            // swapSides: () =>
-            //     setDrawerData((prev) => ({
-            //         from: prev.to,
-            //         to: prev.from,
-            //     })),
             swapSides() {
                 setDrawerData(function (state) {
                     const swapped = { from: state.to, to: state.from };
