@@ -51,7 +51,6 @@ export const LiveStreamMedia = memo(function ({
                 };
             }
         },
-        //eslint-disable-next-line react-hooks/exhaustive-deps
         [videoStream],
     );
 
@@ -73,7 +72,6 @@ export const LiveStreamMedia = memo(function ({
                 };
             }
         },
-        //eslint-disable-next-line react-hooks/exhaustive-deps
         [audioStream],
     );
 

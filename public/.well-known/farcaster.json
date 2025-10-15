@@ -8,18 +8,36 @@
         "allowedAddresses": ["0xaCe3857224705f3b4D0026AF226AAE42Ce94A7A8"]
     },
     "frame": {
+        "name": "Trophytv",
+        "tags": ["content", "stream", "baseapp", "livestream", "base"],
+        "homeUrl": "https://trophytv.co",
+        "iconUrl": "https://trophytv.co/appLogo.jpg",
+        "ogTitle": "Trophy",
+        "tagline": "Livestream Like A Boss",
+        "version": "1",
+        "subtitle": "Livestream Like A Boss",
+        "ogImageUrl": "https://trophytv.co/splash.jpg",
+        "description": "Creator first livestream app on base. Go live, own your stream and earn.",
+        "ogDescription": "Stream on your terms with trophy",
+        "splashImageUrl": "https://trophytv.co/splash.jpg",
+        "primaryCategory": "social",
+        "splashBackgroundColor": "#000000"
+    },
+    "miniapp": {
         "version": "1",
         "name": "Trophy",
-        "iconUrl": "https://trophytv.co/appLogo.jpg",
         "homeUrl": "https://trophytv.co",
+        "iconUrl": "https://trophytv.co/appLogo.jpg",
         "splashImageUrl": "https://trophytv.co/splash.jpg",
+        "splashBackgroundColor": "#000000",
         "subtitle": "Livestream Like A Boss",
         "description": "Creator first livestream app on base. Go live, own your stream and earn.",
         "primaryCategory": "social",
         "tags": ["content", "stream", "baseapp", "base", "livestream"],
+        "heroImageUrl": "https://trophytv.co/appLogo.jpg",
+        "tagline": "Go live instantly",
         "ogTitle": "Trophy",
         "ogDescription": "Stream on your terms with trophy",
-        "ogImageUrl": "https://trophytv.co/splash.jpg",
-        "tagline": "Livestream Like A Boss"
+        "ogImageUrl": "Livestream Like A Boss"
     }
 }

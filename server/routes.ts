@@ -5,8 +5,8 @@ import { getTokenPrice } from "#app/get-token-price.ts";
 import { authentication } from "./app/authentication";
 import { streams } from "./app/streams";
 import { follow } from "./app/subscription";
-import { tips } from "./app/tips";
 import { token } from "./app/token";
+import { transactions } from "./app/transaction";
 import { user } from "./app/user";
 
 export const routes = Router();
@@ -16,6 +16,6 @@ routes
     .use("/authentication", authentication)
     .use("/follow", follow)
     .use("/streams", streams)
-    .use("/tips", tips)
     .use("/token", token)
+    .use("/transactions", transactions)
     .use("/user", user);

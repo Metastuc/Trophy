@@ -133,7 +133,7 @@ new Worker(
 
         logger.info({ txHash, tipId: tip.id }, "Tip stored successfully");
     },
-    { connection: redis },
+    { connection: redis, concurrency: 5 },
 )
     .on("completed", (job) => {
         log.info({ module: "tip-worker", msg: `🎉 Job ${job.id} completed` });

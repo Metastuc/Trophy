@@ -6,14 +6,15 @@ import { logger } from "#utils/logger.ts";
 import { chatHandler } from "./chat";
 import { guestsHandler } from "./guests";
 import { roomHandler } from "./room";
-// import { userHandler } from "./user";
+import { userHandler } from "./user";
 
 export function registerSocketEvents({ io, socket }: Handler) {
     logger.info(`Socket connected: ${socket.id}`);
 
-    roomHandler({ io, socket });
     chatHandler({ io, socket });
     guestsHandler({ io, socket });
+    roomHandler({ io, socket });
+    userHandler({ io, socket });
 
     socket.on("disconnect", function () {
         logger.warn(`Socket disconnected: ${socket.id}`);

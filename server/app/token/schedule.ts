@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 
-export async function createTokenUri(request: Request, response: Response, next: NextFunction) {
+export async function createTokenWithdrawalSchedule(request: Request, response: Response, next: NextFunction) {
     const { userId } = request.params;
     const { allocation } = request.body;
 

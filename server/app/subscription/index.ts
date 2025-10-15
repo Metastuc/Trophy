@@ -2,9 +2,9 @@ import { Router } from "express";
 
 import { privyAuth } from "#middleware/privy-auth.ts";
 
-import { followUser } from "./follow.controller";
-import { followStatus } from "./status.controller";
-import { unfollowUser } from "./unfollow.controller";
+import { followUser } from "./follow";
+import { followStatus } from "./status";
+import { unfollowUser } from "./unfollow";
 
 export const follow = Router();
 

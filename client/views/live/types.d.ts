@@ -104,6 +104,18 @@ declare global {
         someoneIsSharingTheirScreen: boolean;
         whoIsSharingTheirScreen: RedisParticipant["id"] | null;
     }
+
+    interface LiveStreamControlsState {
+        isControlsVisible: boolean;
+        isTabVisible: boolean;
+        viewersCount: number;
+    }
+
+    interface LiveStreamChatRoomState {
+        chatContents: Array<LiveStreamChatMessagesState>;
+        mainContainerHeight: number;
+        text: string;
+    }
 }
 
 export {};

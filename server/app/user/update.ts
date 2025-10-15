@@ -62,12 +62,28 @@ export async function updateUserProfile(request: Request, response: Response, ne
             ytUrl: updatedUser.ytUrl,
         };
 
-        const cacheKey = SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE.KEY({
-            id: updatedUser.privyId,
-            isUser: false,
-        });
+        await Promise.all([
+            redis.set(
+                SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE.KEY({
+                    id: updatedUser.privyId,
+                    isUser: false,
+                }),
+                JSON.stringify(profileData),
+                "EX",
+                SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE.TTL,
+            ),
 
-        await redis.set(cacheKey, JSON.stringify(profileData), "EX", SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE.TTL);
+            redis.set(
+                SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE.KEY({
+                    id: updatedUser.username,
+                    isUser: true,
+                }),
+                JSON.stringify(profileData),
+                "EX",
+                SERVER_CONSTANTS.REDIS_KEYS.USER_PROFILE.TTL,
+            ),
+        ]);
+
         response.customResponse<undefined>({
             code: 200,
             message: "User profile updated successfully",

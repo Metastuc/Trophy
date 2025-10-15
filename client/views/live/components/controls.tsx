@@ -1,25 +1,37 @@
-import { useLocalAudio, useLocalScreenShare, useLocalVideo } from "@huddle01/react";
+import { useLocalAudio, useLocalScreenShare, useLocalVideo, useRoom } from "@huddle01/react";
+import { useNavigate } from "@tanstack/react-router";
 import { Mic, MicOff, MonitorDown, MonitorUp, MonitorX, UserPlus, Users, Video, VideoOff } from "lucide-react";
 import { Fragment, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { LiveSignal } from "@/components/ui/live-signal";
+import { useAuthenticationStore } from "@/hooks/authentication";
+import { useServer } from "@/hooks/server";
+import { useSocket } from "@/hooks/socket";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { toTime } from "#~/utils/time.ts";
 
-import { useLiveStreamContext, useLiveStreamPermissions } from "../hooks";
+import { useLiveStreamContext, useLiveStreamPermissions, useLiveStreamScreenSharing } from "../hooks";
 
 export function LiveStreamControls() {
-    // const { viewerCount } = useStreamingUIContext();
-    const [isControlsVisible, setIsControlsVisible] = useState(true);
     const hideTimeout = useRef<NodeJS.Timeout | null>(null);
     const streamControlsRef = useRef<HTMLDivElement>(null);
+    const socket = useSocket();
+    const { roomId } = useLiveStreamContext();
+
+    const [liveStreamControlsState, setLiveStreamControlsState] = useState<LiveStreamControlsState>(() => ({
+        isControlsVisible: true,
+        isTabVisible: true,
+        viewersCount: 0,
+    }));
 
     function toggleControls() {
-        setIsControlsVisible(true);
+        setLiveStreamControlsState((state) => ({ ...state, isControlsVisible: true }));
+
         if (hideTimeout.current) clearTimeout(hideTimeout.current);
         hideTimeout.current = setTimeout(
-            () => setIsControlsVisible(false),
+            () => setLiveStreamControlsState((state) => ({ ...state, isControlsVisible: false })),
             toTime({ unit: "seconds", value: 5, output: "milliseconds" }),
         );
     }
@@ -41,12 +53,26 @@ export function LiveStreamControls() {
         };
     }, []);
 
+    useEffect(
+        function () {
+            function updateViewersCount({ roomId: redisRoomId, count }: { roomId: string; count: number }) {
+                if (redisRoomId === roomId) setLiveStreamControlsState((state) => ({ ...state, viewersCount: count }));
+            }
+
+            socket.on("viewer.count.update", updateViewersCount);
+            return function () {
+                socket.off("viewer.count.update", updateViewersCount);
+            };
+        },
+        [socket, roomId],
+    );
+
     return (
         <section className="absolute inset-0 z-10" ref={streamControlsRef}>
             <div
                 className={cn(
                     "relative size-full transition-opacity",
-                    isControlsVisible ? "opacity-100" : "opacity-20",
+                    liveStreamControlsState.isControlsVisible ? "opacity-100" : "opacity-20",
                 )}
             >
                 <LiveSignal />
@@ -56,7 +82,9 @@ export function LiveStreamControls() {
                         <i className="size-4">
                             <Users />
                         </i>
-                        <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">{0} watching</span>
+                        <span className="mr-auto ml-1 pt-0.5 text-[.5rem]">
+                            {liveStreamControlsState.viewersCount} watching
+                        </span>
                         {/* <span className="ml-1 pt-0.5 text-[.5rem]">10:12:13</span> */}
                     </aside>
 
@@ -70,34 +98,30 @@ export function LiveStreamControls() {
 }
 
 function RenderControlsBasedOnRole() {
-    const { isHuddleConnected, isInvitationDrawerOpen, openInvitationDrawer, closeInvitationDrawer } =
-        useLiveStreamContext();
+    const navigate = useNavigate();
+    const username = useAuthenticationStore((state) => state.user?.backendUserData.user.username as string);
 
-    // const navigate = useNavigate();
-
-    // const { closeRoom } = useRoom();
+    const { closeRoom } = useRoom();
     const { isAudioOn, enableAudio, disableAudio } = useLocalAudio();
     const { isVideoOn, enableVideo, disableVideo } = useLocalVideo();
-    // const { peerId: localPeerId, metadata, updateMetadata } = useLocalPeer();
-    const { shareStream, startScreenShare, stopScreenShare } = useLocalScreenShare();
-    // const { startScreenShare, stopScreenShare } = useLiveStreamScreenSharing();
+    const { shareStream } = useLocalScreenShare();
 
-    // const { screenSharing } = useStreamingUIScreenShare();
     const { canEndStream, canInvite, canShareScreen, canToggleAudio, canToggleVideo } = useLiveStreamPermissions();
-    // const { setUserHasToggled, setIsCoHostDrawerOpen, roomId, username, viewerCount } = useStreamingUIContext();
+    const { startScreenShare, stopScreenShare } = useLiveStreamScreenSharing();
+    const { isHuddleConnected, isInvitationDrawerOpen, openInvitationDrawer, closeInvitationDrawer, roomId } =
+        useLiveStreamContext();
 
-    // const { mutate } = useServer(
-    //     { METHOD: "POST", URL: "/stop-stream" },
+    const { mutate } = useServer<{ username: string }, ApiResponse<undefined>>(
+        { METHOD: "PATCH", URL: API_ENDPOINTS.STREAMS.END_STREAM(roomId) },
 
-    //     {
-    //         onSuccess(response) {
-    //             toast.success(response.data.message);
-    //         },
-    //     },
-    // );
+        {
+            onSuccess(response) {
+                toast.success(response.data.message);
+            },
+        },
+    );
 
     async function handleToggleVideo() {
-        // setUserHasToggled((previous) => ({ ...previous, video: !previous.video }));
         try {
             if (isVideoOn) {
                 await disableVideo();
@@ -112,7 +136,6 @@ function RenderControlsBasedOnRole() {
     }
 
     async function handleToggleAudio() {
-        // setUserHasToggled((previous) => ({ ...previous, audio: !previous.audio }));
         try {
             if (isAudioOn) {
                 await disableAudio();
@@ -129,9 +152,9 @@ function RenderControlsBasedOnRole() {
     async function handleToggleScreenShare() {
         try {
             if (shareStream) {
-                await stopScreenShare();
+                stopScreenShare();
             } else {
-                await startScreenShare();
+                startScreenShare();
             }
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to share screen.";
@@ -146,27 +169,15 @@ function RenderControlsBasedOnRole() {
 
     async function handleEndStream() {
         try {
-            // closeRoom();
-            // navigate({ to: "/" });
-            // mutate({ roomId, username, viewers: viewerCount });
+            closeRoom();
+            navigate({ to: "/" });
+            mutate({ username });
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to end stream.";
             toast.error(message);
             console.error("Error ending the stream:", error);
         }
     }
-
-    // useEffect(
-    //     function () {
-    //         if (!shareStream && metadata?.isPeerSharingTheirScreen) {
-    //             updateMetadata({
-    //                 ...metadata,
-    //                 isPeerSharingTheirScreen: false,
-    //             }).catch(console.error);
-    //         }
-    //     },
-    //     [shareStream, metadata, updateMetadata],
-    // );
 
     if (!isHuddleConnected) {
         return null;

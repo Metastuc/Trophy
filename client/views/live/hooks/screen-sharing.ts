@@ -60,7 +60,6 @@ export function useRoomScreenShareSync({ roomId, username }: { roomId: string; u
 
     return {
         ...screenSharing,
-        // isLocalSharing: screenSharing.whoIsSharingTheirScreen === username,
         startScreenShare,
         stopScreenShare,
     };

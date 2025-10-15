@@ -1,3 +1,5 @@
+import { addDays, addHours, addMinutes, addSeconds, addYears, differenceInSeconds } from "date-fns";
+
 type TimeUnit = "seconds" | "minutes" | "hours" | "days" | "years";
 type OutputUnit = "seconds" | "milliseconds";
 
@@ -8,27 +10,29 @@ interface ToTime {
 }
 
 export function toTime({ unit, value, output = "seconds" }: ToTime): number {
-    let seconds: number;
+    const now = new Date();
+    let target: Date;
 
     switch (unit) {
         case "seconds":
-            seconds = value;
+            target = addSeconds(now, value);
             break;
         case "minutes":
-            seconds = value * 60;
+            target = addMinutes(now, value);
             break;
         case "hours":
-            seconds = value * 60 * 60;
+            target = addHours(now, value);
             break;
         case "days":
-            seconds = value * 60 * 60 * 24;
+            target = addDays(now, value);
             break;
         case "years":
-            seconds = value * 60 * 60 * 24 * 365;
+            target = addYears(now, value);
             break;
         default:
             throw new Error("invalid unit");
     }
 
+    const seconds = differenceInSeconds(target, now);
     return output === "milliseconds" ? seconds * 1000 : seconds;
 }

@@ -12,13 +12,9 @@ export function roomHandler({ io, socket }: Handler) {
             const roomData = await getRoom(roomId);
             const existing = roomData.participants.find((participant) => participant.id === identifier);
 
-            if (identifier === roomData.host) {
-                role = "host";
-            } else if (roomData.invitedGuests.includes(identifier)) {
-                role = "guest";
-            } else {
-                role = "listener";
-            }
+            if (identifier === roomData.host) role = "host";
+            else if (roomData.invitedGuests.includes(identifier)) role = "guest";
+            else role = "listener";
 
             if (existing && (existing.role === "host" || existing.role === "guest") && existing.peerId) {
                 io.to(existing.peerId).emit("force.disconnect");
@@ -35,12 +31,11 @@ export function roomHandler({ io, socket }: Handler) {
             });
 
             await updateRoomStreamers({ io, roomId });
-            io.to(roomId).emit("room.user.joined", { userId: socket.data.user, roomId });
+            io.to(roomId).emit("room.user.joined", { userId: identifier, roomId });
         },
     );
 
     socket.on("room.leave", async function ({ identifier, roomId }: { identifier: string; roomId: string }) {
-        console.log(`User ${socket.data.user} left room: ${roomId}`);
         socket.leave(roomId);
 
         await addParticipantToRoom({
@@ -55,12 +50,10 @@ export function roomHandler({ io, socket }: Handler) {
     });
 
     socket.on("room.stream.started", function ({ roomId }: { roomId: string }) {
-        console.log(`Stream started in room: ${roomId}`);
         io.to(roomId).emit("room.stream.started", { roomId });
     });
 
     socket.on("room.stream.stopped", function ({ roomId }: { roomId: string }) {
-        console.log(`Stream stopped in room: ${roomId}`);
         io.to(roomId).emit("room.stream.stopped", { roomId });
     });
 
