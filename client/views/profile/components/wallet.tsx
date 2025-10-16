@@ -1,9 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
 import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { Address } from "viem";
+import { useShallow } from "zustand/shallow";
 
+import { getUserWalletTokenBalances } from "@/api/get-user";
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { useTabSwitcher } from "@/hooks/tab-switch";
-import { cn } from "@/lib/utils";
+import { cn, formatUSD } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
 import { Crypto } from "./crypto";
@@ -11,13 +17,39 @@ import { TabHeader } from "./tab";
 
 export function UserWallet() {
     const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
+    const { isAuthenticated, walletAddress } = useAuthenticationStore(
+        useShallow((state) => ({
+            isAuthenticated: state.isAuthenticated,
+            walletAddress: state.user?.wallet?.address as Address,
+        })),
+    );
+
+    const { data, error, isPending } = useQuery({
+        queryKey: ["user", "user-wallet-token-balances", walletAddress],
+        queryFn: async () => await getUserWalletTokenBalances({ walletAddress }),
+        enabled: !!isAuthenticated,
+    });
+
     const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<WalletScreens>("crypto");
+    const [totalBalance, setTotalBalance] = useState("0.00");
+
+    useEffect(() => {
+        if (!data) return;
+
+        let balance = 0;
+
+        for (const tokenData of data) {
+            balance += Number(tokenData.balance);
+        }
+
+        setTotalBalance(formatUSD(balance.toString()));
+    }, [data]);
 
     return (
         <section className="my-4">
             <header className="flex flex-col">
                 <span className="text-blue100 text-xs">Total Money</span>
-                <b className="text-2xl font-medium">${"0.00"}</b>
+                <b className="text-2xl font-medium">${totalBalance}</b>
                 <div className=" flex items-center justify-start gap-1">
                     <i className="size-2 rotate-180 text-[#2DC24E]">
                         <ARROW_DOWN_FILLED />
@@ -88,7 +120,7 @@ export function UserWallet() {
                                 transition={{ duration: 0.15 }}
                                 className="space-y-8 p-4"
                             >
-                                <Crypto />
+                                <Crypto data={data} isPending={isPending} error={error} />
                             </motion.div>
                         ) : null}
 
