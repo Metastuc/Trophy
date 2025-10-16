@@ -1,28 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import { Address } from "viem";
-import { useShallow } from "zustand/shallow";
 
-import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Loading } from "@/components/ui/loading";
-import { useAuthenticationStore } from "@/hooks/authentication";
 import { formatUSD } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
 
-export function Crypto() {
+export function Crypto({ data, isPending, error }: CryptoProps) {
     const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
-    const { isAuthenticated, walletAddress } = useAuthenticationStore(
-        useShallow((state) => ({
-            isAuthenticated: state.isAuthenticated,
-            walletAddress: state.user?.wallet?.address as Address,
-        })),
-    );
-
-    const { data, error, isPending } = useQuery({
-        queryKey: ["user", "user-wallet-token-balances", walletAddress],
-        queryFn: async () => await getUserWalletTokenBalances({ walletAddress }),
-        enabled: !!isAuthenticated,
-    });
 
     if (error) return <div>{error.message}</div>;
     if (isPending || !data) return <Loading />;
