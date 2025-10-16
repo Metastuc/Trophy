@@ -17,6 +17,18 @@ declare global {
 
     type WalletScreens = "crypto" | "trophs";
 
+    interface CryptoProps {
+        data: {
+            address: string;
+            balance: string;
+            icon: string;
+            name: string;
+            symbol: string;
+        }[] | undefined;
+        isPending: boolean;
+        error: Error | null;
+    }
+
     interface UserProfileContextValue {
         isCurrentUser: boolean;
         isPending: boolean;
