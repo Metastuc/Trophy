@@ -4,9 +4,22 @@ import { useIsMounted } from "usehooks-ts";
 
 import { useAuthenticationStore } from "@/hooks/authentication";
 
+import { useCustomScriptLoader } from "./script";
+
 export function useRunningInBrowser() {
     const setToken = useAuthenticationStore((state) => state.setToken);
     const isMounted = useIsMounted();
+    const onScreenConsoleStatus = useCustomScriptLoader({ src: "https://cdn.jsdelivr.net/npm/eruda" });
+
+    useEffect(() => {
+        if (onScreenConsoleStatus === "ready") {
+            // @ts-expect-error window.eruda is not defined in the TypeScript type definitions
+            if (window.eruda) {
+                // @ts-expect-error window.eruda.init is not defined in the TypeScript type definitions
+                window.eruda.init();
+            }
+        }
+    }, [onScreenConsoleStatus]);
 
     useEffect(
         function () {
