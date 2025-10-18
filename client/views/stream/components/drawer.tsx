@@ -2,7 +2,7 @@ import { Loader, X } from "lucide-react";
 import { ChangeEvent, useEffect, useRef } from "react";
 import { formatEther } from "viem";
 
-import { useTokenPrice } from "@/api/get-token-price";
+import { useTokenPrice } from "@/api/get-prices";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,

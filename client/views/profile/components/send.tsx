@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { Address } from "viem";
 
-import { useTokenPrice } from "@/api/get-token-price";
+import { useTokenPrice } from "@/api/get-prices";
 import { Button } from "@/components/ui/button";
 import { formatUSD, tokenInputField } from "@/lib/utils";
 

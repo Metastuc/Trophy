@@ -1,7 +1,7 @@
 import { CircleDollarSign } from "lucide-react";
 import { ChangeEvent } from "react";
 
-import { useTokenPrice } from "@/api/get-token-price";
+import { useTokenPrice } from "@/api/get-prices";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,

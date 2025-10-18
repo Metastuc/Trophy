@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect } from "react";
 import { useDebounceCallback, useIsMounted } from "usehooks-ts";
 import { Address } from "viem";
 
-import { useTokenPrice } from "@/api/get-token-price";
+import { useTokenPrice } from "@/api/get-prices";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
 import { getCreatorTokenPrice, getTokenSwapQuote } from "@/lib/flaunch";
