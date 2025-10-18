@@ -1,13 +1,15 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Address } from "viem";
+import { Address, formatEther } from "viem";
 import { useChainId } from "wagmi";
 
+import { useETHPrice } from "@/api/get-prices";
 import { Button } from "@/components/ui/button";
 import { TOKENS } from "@/components/ui/tokens";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { tipERC20, tipEther } from "@/lib/tip";
+import { publicClient } from "@/lib/viem";
 import { makeRequest } from "#~/utils/axios.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
@@ -19,6 +21,8 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
     const chainId = useChainId();
     const { wallets } = useWallets();
     const { connectWallet } = usePrivy();
+    const address = wallets[0].address as Address;
+    const { data: ethPrice } = useETHPrice(address);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [shouldReopenDrawer, setShouldReopenDrawer] = useState<boolean>(false);
@@ -38,147 +42,163 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
         walletType: undefined,
     }));
 
-    const handleSendTip = useCallback(
-        async function () {
-            if (parseFloat(tipDrawerState.amountInUsd) > CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD) {
-                toast.error(`Maximum tip amount is ${CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD.toLocaleString("en-US")} USD`);
-                return;
-            }
+    useEffect(() => {
+        if (tipDrawerState.token === "ETH") {
+            (async () => {
+                const balanceInWei = await publicClient.getBalance({ address });
+                const ETHbalance = formatEther(balanceInWei);
+                const price = ethPrice ? ethPrice.usd : 0;
 
-            if (!userWalletState.provider || !userWalletState.address) {
-                toast.error("Please connect your wallet");
-                setIsDrawerOpen(false);
-                connectWallet();
-                return;
-            }
+                setTipDrawerState((state) => ({
+                    ...state,
+                    senderAvailableBalanceInToken: ETHbalance,
+                    senderAvailableBalanceInUsd: (Number(ETHbalance) * price).toString()
+                }));
+            })()
+        }
+    }, [address, ethPrice, tipDrawerState.token]);
 
-            if (chainId !== CLIENT_CONSTANTS.CURRENT_NETWORK.id) {
-                toast.error("Please switch to the correct network");
-                await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
-                return;
-            }
+const handleSendTip = useCallback(
+    async function () {
+        if (parseFloat(tipDrawerState.amountInUsd) > CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD) {
+            toast.error(`Maximum tip amount is ${CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD.toLocaleString("en-US")} USD`);
+            return;
+        }
 
-            const promise = (async function () {
-                let hash = undefined as string | undefined;
+        if (!userWalletState.provider || !userWalletState.address) {
+            toast.error("Please connect your wallet");
+            setIsDrawerOpen(false);
+            connectWallet();
+            return;
+        }
 
-                if (tipDrawerState.token === "ETH") {
-                    hash = await tipEther({
-                        amount: tipDrawerState.amountInToken,
-                        provider: userWalletState.provider,
-                        recipientAddress: streamer?.walletAddress as Address,
-                        senderAddress: userWalletState.address as Address,
-                    });
-                } else {
-                    hash = await tipERC20({
-                        amount: tipDrawerState.amountInToken,
-                        provider: userWalletState.provider,
-                        recipientAddress: streamer?.walletAddress as Address,
-                        senderAddress: userWalletState.address as Address,
-                        token: tipDrawerState.token,
-                    });
-                }
+        if (chainId !== CLIENT_CONSTANTS.CURRENT_NETWORK.id) {
+            toast.error("Please switch to the correct network");
+            await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
+            return;
+        }
 
-                return hash;
-            })();
+        const promise = (async function () {
+            let hash = undefined as string | undefined;
 
-            toast.promise(promise, {
-                loading: "Sending tip...",
-                success: function (hash) {
-                    makeRequest<undefined>({
-                        url: API_ENDPOINTS.TRANSACTIONS.STORE_TIP,
-                        method: "POST",
-                        data: {
-                            amountInToken: tipDrawerState.amountInToken,
-                            amountInUsd: parseFloat(tipDrawerState.amountInUsd),
-                            chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id,
-                            recipient: streamer?.walletAddress as Address,
-                            sender: userWalletState.address as Address,
-                            token: tipDrawerState.token,
-                            tokenAddress: tipDrawerState.tokenAddress,
-                            txHash: hash,
-                        },
-                    });
-
-                    return (
-                        <div>
-                            <p>Tip sent successfully!</p>
-                            <Button className="text-blue-500 underline" variant="link">
-                                <a
-                                    href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    View on BaseScan
-                                </a>
-                            </Button>
-                        </div>
-                    );
-                },
-                error: "Failed to send tip.",
-            });
-        },
-        [
-            chainId,
-            connectWallet,
-            streamer?.walletAddress,
-            tipDrawerState.amountInToken,
-            tipDrawerState.amountInUsd,
-            tipDrawerState.token,
-            tipDrawerState.tokenAddress,
-            userWalletState.address,
-            userWalletState.provider,
-            wallets,
-        ],
-    );
-
-    useEffect(
-        function () {
-            if (wallets.length === 0) return;
-
-            (async function () {
-                const wallet = wallets[0];
-
-                setUserWalletState({
-                    address: wallet.address as Address,
-                    provider: await wallet.getEthereumProvider(),
-                    walletType: wallet.walletClientType,
+            if (tipDrawerState.token === "ETH") {
+                hash = await tipEther({
+                    amount: tipDrawerState.amountInToken,
+                    provider: userWalletState.provider,
+                    recipientAddress: streamer?.walletAddress as Address,
+                    senderAddress: userWalletState.address as Address,
                 });
-            })();
-        },
-        [wallets],
-    );
-
-    useEffect(
-        function () {
-            if (wallets.length > 0 && shouldReopenDrawer) {
-                let canceled = false;
-
-                (async () => {
-                    await sleep(2000);
-                    if (!canceled) setIsDrawerOpen(true);
-                    setShouldReopenDrawer(false);
-                })();
-
-                return () => {
-                    canceled = true;
-                };
+            } else {
+                hash = await tipERC20({
+                    amount: tipDrawerState.amountInToken,
+                    provider: userWalletState.provider,
+                    recipientAddress: streamer?.walletAddress as Address,
+                    senderAddress: userWalletState.address as Address,
+                    token: tipDrawerState.token,
+                });
             }
-        },
-        [wallets, shouldReopenDrawer],
-    );
 
-    const value = useMemo(
-        () => ({
-            isDrawerOpen,
-            closeDrawer: () => setIsDrawerOpen(false),
-            openDrawer: () => setIsDrawerOpen(true),
-            streamer,
-            tipDrawerState,
-            setTipDrawerState,
-            handleSendTip,
-        }),
-        [isDrawerOpen, streamer, tipDrawerState, handleSendTip],
-    );
+            return hash;
+        })();
 
-    return <TipDrawerContext.Provider value={value}>{children}</TipDrawerContext.Provider>;
+        toast.promise(promise, {
+            loading: "Sending tip...",
+            success: function (hash) {
+                makeRequest<undefined>({
+                    url: API_ENDPOINTS.TRANSACTIONS.STORE_TIP,
+                    method: "POST",
+                    data: {
+                        amountInToken: tipDrawerState.amountInToken,
+                        amountInUsd: parseFloat(tipDrawerState.amountInUsd),
+                        chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id,
+                        recipient: streamer?.walletAddress as Address,
+                        sender: userWalletState.address as Address,
+                        token: tipDrawerState.token,
+                        tokenAddress: tipDrawerState.tokenAddress,
+                        txHash: hash,
+                    },
+                });
+
+                return (
+                    <div>
+                        <p>Tip sent successfully!</p>
+                        <Button className="text-blue-500 underline" variant="link">
+                            <a
+                                href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as string)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View on BaseScan
+                            </a>
+                        </Button>
+                    </div>
+                );
+            },
+            error: "Failed to send tip.",
+        });
+    },
+    [
+        chainId,
+        connectWallet,
+        streamer?.walletAddress,
+        tipDrawerState.amountInToken,
+        tipDrawerState.amountInUsd,
+        tipDrawerState.token,
+        tipDrawerState.tokenAddress,
+        userWalletState.address,
+        userWalletState.provider,
+        wallets,
+    ],
+);
+
+useEffect(
+    function () {
+        if (wallets.length === 0) return;
+
+        (async function () {
+            const wallet = wallets[0];
+
+            setUserWalletState({
+                address: wallet.address as Address,
+                provider: await wallet.getEthereumProvider(),
+                walletType: wallet.walletClientType,
+            });
+        })();
+    },
+    [wallets],
+);
+
+useEffect(
+    function () {
+        if (wallets.length > 0 && shouldReopenDrawer) {
+            let canceled = false;
+
+            (async () => {
+                await sleep(2000);
+                if (!canceled) setIsDrawerOpen(true);
+                setShouldReopenDrawer(false);
+            })();
+
+            return () => {
+                canceled = true;
+            };
+        }
+    },
+    [wallets, shouldReopenDrawer],
+);
+
+const value = useMemo(
+    () => ({
+        isDrawerOpen,
+        closeDrawer: () => setIsDrawerOpen(false),
+        openDrawer: () => setIsDrawerOpen(true),
+        streamer,
+        tipDrawerState,
+        setTipDrawerState,
+        handleSendTip,
+    }),
+    [isDrawerOpen, streamer, tipDrawerState, handleSendTip],
+);
+
+return <TipDrawerContext.Provider value={value}>{children}</TipDrawerContext.Provider>;
 }
