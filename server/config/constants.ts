@@ -29,6 +29,7 @@ export const SERVER_ENV = z
         AWS_S3_BUCKET: z.string(),
         AWS_SECRET_ACCESS_KEY: z.string(),
         CLIENT_URL: z.url(),
+        COINGECKO_API_KEY: z.string(),
         COOLIFY_REDIS: z.url(),
         EMAIL_HOST: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
         EMAIL_PASSWORD: z.string(),
@@ -52,6 +53,8 @@ export const SERVER_ENV = z
         VITE_DEFAULT_IMAGE: z.url(),
     })
     .parse(process.env);
+
+export const COINGECKO_URL = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=ethereum"; 
 
 export const SERVER_CONSTANTS = {
     MAX_STREAM_GUESTS: 4,
@@ -78,6 +81,11 @@ export const SERVER_CONSTANTS = {
             KEY: ({ id, isUser }: { id: string; isUser: boolean }) =>
                 isUser ? `user:public:${id}` : `user:private:${id}`,
             TTL: toTime({ unit: "hours", value: 6 }),
+        },
+
+        ETH_TOKEN_PRICE: {
+            KEY: (id: string) => `eth:price:${id}`,
+            TTL: toTime({ unit: "minutes", value: 5 })
         },
 
         TOKEN_PRICE: {
