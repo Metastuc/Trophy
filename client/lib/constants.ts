@@ -67,6 +67,7 @@ export const API_ENDPOINTS = {
     },
 
     UTIL: {
+        GET_ETH_PRICE: (address: string) => `/get-eth-price?address=${address}`,
         GET_TOKEN_PRICE: (address: string) => `/get-token-price?address=${address}`,
     },
 };
