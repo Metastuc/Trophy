@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getTokenPrice } from "#app/get-token-price.ts";
+import { getEthPrice, getTokenPrice } from "#app/get-prices.ts";
 
 import { authentication } from "./app/authentication";
 import { streams } from "./app/streams";
@@ -13,6 +13,7 @@ export const routes = Router();
 
 routes
     .get("/get-token-price", getTokenPrice)
+    .get("/get-eth-price", getEthPrice)
     .use("/authentication", authentication)
     .use("/follow", follow)
     .use("/streams", streams)
