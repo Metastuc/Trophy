@@ -18,3 +18,17 @@ export function useTokenPrice(address: Address) {
         staleTime: toTime({ unit: "hours", value: 1, output: "milliseconds" }),
     });
 }
+
+export const useETHPrice = (address: Address) => {
+    return useQuery({
+        queryKey: ["coingecko-eth-price", address],
+        queryFn: async function () {
+            return await makeRequest<ETHPriceResponse>({
+                method: "GET",
+                url: API_ENDPOINTS.UTIL.GET_ETH_PRICE(address),
+            }).then((response) => response.data.data.ethereum);
+        },
+        refetchInterval: false,
+        staleTime: toTime({ unit: "hours", value: 1, output: "milliseconds" }),
+    });
+}
