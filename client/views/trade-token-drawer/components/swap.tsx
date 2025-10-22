@@ -63,12 +63,22 @@ export function Swap() {
             if (!wallets?.[0]?.address || !streamer?.tokenAddress || !drawerData.from.token) return;
 
             (async function () {
-                const isETH = drawerData.from.type === "native";
-                const [{ etherBalance, tokenBalance }, tokenPrice] = await Promise.all([
+                const fromIsETH = drawerData.from.type === "native";
+                const toIsETH = drawerData.to.type === "native";
+
+                const [fromBalance, toBalance, tokenPrice] = await Promise.all([
                     getWalletBalance({
                         tokenAddress: streamer.tokenAddress as Address,
                         userAddress: wallets[0].address as Address,
+                        isNative: fromIsETH,
                     }),
+
+                    getWalletBalance({
+                        tokenAddress: streamer.tokenAddress as Address,
+                        userAddress: wallets[0].address as Address,
+                        isNative: toIsETH,
+                    }),
+
                     getCreatorTokenPrice(streamer.tokenAddress as Address),
                 ]);
 
@@ -78,13 +88,13 @@ export function Swap() {
                     return {
                         from: {
                             ...state.from,
-                            balance: isETH ? etherBalance : tokenBalance,
-                            usdPrice: isETH ? (data?.usdPrice.toString() ?? "0") : tokenPrice,
+                            balance: fromBalance,
+                            usdPrice: fromIsETH ? (data?.usdPrice.toString() ?? "0") : tokenPrice,
                         },
                         to: {
                             ...state.to,
-                            balance: isETH ? tokenBalance : etherBalance,
-                            usdPrice: isETH ? tokenPrice : (data?.usdPrice.toString() ?? "0"),
+                            balance: toBalance,
+                            usdPrice: toIsETH ? tokenPrice : (data?.usdPrice.toString() ?? "0"),
                         },
                     };
                 });
@@ -94,7 +104,16 @@ export function Swap() {
                 };
             })();
         },
-        [streamer?.tokenAddress, wallets?.[0]?.address],
+        [
+            data?.usdPrice,
+            drawerData.from.token,
+            drawerData.from.type,
+            drawerData.to.type,
+            isMounted,
+            setDrawerData,
+            streamer?.tokenAddress,
+            wallets,
+        ],
     );
 
     useEffect(
@@ -109,7 +128,7 @@ export function Swap() {
                 to: state.to.type === "native" ? { ...state.to, usdPrice: data.usdPrice.toString() ?? "0" } : state.to,
             }));
         },
-        [data?.usdPrice],
+        [data?.usdPrice, setDrawerData],
     );
 
     return (
