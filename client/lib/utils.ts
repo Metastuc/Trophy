@@ -57,6 +57,7 @@ export function formatEtherToToken({
     toCreatorToken?: boolean;
 }): string {
     const format = formatEther(number);
+    console.log("formatEtherToToken", { number, format });
     if (!toCreatorToken) return format;
     return Number(format).toLocaleString();
 }
