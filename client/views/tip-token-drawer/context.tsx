@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { TOKENS } from "@/components/ui/tokens";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { tipERC20, tipEther } from "@/lib/tip";
+import { getWalletBalance } from "@/lib/viem";
+import { SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
 import { makeRequest } from "#~/utils/axios.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
@@ -153,6 +155,37 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             })();
         },
         [wallets],
+    );
+
+    useEffect(
+        function () {
+            if (!userWalletState.address || !tipDrawerState.tokenAddress) return;
+
+            let canceled = false;
+
+            (async function () {
+                try {
+                    const balance = await getWalletBalance({
+                        tokenAddress: tipDrawerState.tokenAddress,
+                        userAddress: userWalletState.address as Address,
+                        isNative: tipDrawerState.tokenAddress === SUPPORTED_TOKENS.ETH,
+                    });
+
+                    if (!canceled)
+                        setTipDrawerState((state) => ({
+                            ...state,
+                            senderAvailableBalanceInToken: balance,
+                        }));
+                } catch (error) {
+                    console.error("Failed to fetch wallet balance:", error);
+                }
+            })();
+
+            return function () {
+                canceled = true;
+            };
+        },
+        [tipDrawerState.tokenAddress, userWalletState.address],
     );
 
     useEffect(
