@@ -60,9 +60,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
 
                     await makeRequest({
                         method: "POST",
-                        // url: "/send-buy-notis",
                         url: API_ENDPOINTS.TRANSACTIONS.STORE_TOKEN_PURCHASE,
-                        // data: { username: streamer?.username, amount: drawerData.to.amount, buyer: wallets[0].address },
                         data: {
                             amountIn: drawerData.from.amount,
                             amountOut: drawerData.to.amount,
@@ -114,13 +112,15 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
             }
         },
         [
-            wallets,
-            drawerData.from.type,
             drawerData.from.amount,
+            drawerData.from.token,
+            drawerData.from.type,
             drawerData.to.amount,
+            drawerData.to.token,
+            signTypedData,
             streamer?.tokenAddress,
             streamer?.username,
-            signTypedData,
+            wallets,
         ],
     );
 
