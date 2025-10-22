@@ -1,5 +1,5 @@
 import { CircleDollarSign } from "lucide-react";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useMemo } from "react";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,22 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
         useTipDrawerContext();
 
     const { data: tokenPrices } = useTokenPrice(tipDrawerState.tokenAddress);
+
+    const amountInUsd = useMemo(
+        function () {
+            if (!tokenPrices) return 0;
+            return parseFloat(tipDrawerState.amountInToken || "0") * tokenPrices.usdPrice;
+        },
+        [tipDrawerState.amountInToken, tokenPrices],
+    );
+
+    const senderAvailableBalanceInUsd = useMemo(
+        function () {
+            if (!tokenPrices) return 0;
+            return parseFloat(tipDrawerState.senderAvailableBalanceInToken || "0") * tokenPrices.usdPrice;
+        },
+        [tipDrawerState.senderAvailableBalanceInToken, tokenPrices],
+    );
 
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
         const inputValue = tokenInputField(event.target.value);
@@ -96,9 +112,7 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
                                     <span>{tipDrawerState.token}</span>
                                 </div>
 
-                                <span className="text-base text-[#060606]/50">
-                                    {formatUSD(tipDrawerState.amountInUsd || "0")}
-                                </span>
+                                <span className="text-base text-[#060606]/50">{formatUSD(`${amountInUsd}`)}</span>
                             </aside>
 
                             <aside className="flex flex-col items-center justify-center">
@@ -138,7 +152,7 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
 
                             <div className="bg-blue100/80 border-blue100 flex w-28 flex-col items-center rounded-lg border px-2 pt-3 pb-1">
                                 <span className="text-xl text-white">
-                                    {formatUSD(tipDrawerState.senderAvailableBalanceInUsd || "0")}
+                                    {formatUSD(`${senderAvailableBalanceInUsd}`)}
                                 </span>
                                 <span className="text-sm text-white/70">
                                     {formatToken(tipDrawerState.senderAvailableBalanceInToken || "0")}{" "}

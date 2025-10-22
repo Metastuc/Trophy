@@ -22,9 +22,9 @@ declare global {
 
     interface TipDrawerState {
         amountInToken: string;
-        amountInUsd: string;
+        // amountInUsd: string;
         senderAvailableBalanceInToken: string;
-        senderAvailableBalanceInUsd: string;
+        // senderAvailableBalanceInUsd: string;
         token: string;
         tokenAddress: Address;
     }
