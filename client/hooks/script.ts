@@ -17,10 +17,7 @@ export function useCustomScriptLoader({ attributes, src }: iUseCustomScriptLoade
 
     useEffect(
         function () {
-            if (!src) {
-                setStatus("idle");
-                return;
-            }
+            if (!src) return;
 
             let script: HTMLScriptElement | null = document.querySelector(`script[src="${src}"]`);
 
@@ -57,7 +54,7 @@ export function useCustomScriptLoader({ attributes, src }: iUseCustomScriptLoade
                 /**
                  * update status if the script is already loaded
                  */
-                setStatus((script.getAttribute("data-status") as tScriptStatus) || "loading");
+                queueMicrotask(() => setStatus((script?.getAttribute("data-status") as tScriptStatus) || "loading"));
             }
 
             /**

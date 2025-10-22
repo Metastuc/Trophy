@@ -39,9 +39,11 @@ function RouteComponent() {
 
             if (!tabEl) return;
 
-            setTabIndicator({
-                left: `${tabEl?.offsetLeft}px`,
-                width: `${tabEl?.offsetWidth}px`,
+            requestAnimationFrame(() => {
+                setTabIndicator({
+                    left: `${tabEl.offsetLeft}px`,
+                    width: `${tabEl.offsetWidth}px`,
+                });
             });
         },
         [activeTab],
@@ -49,7 +51,7 @@ function RouteComponent() {
 
     return (
         <PageContentLayout>
-            <header className="[&>*]:font-jomhuria [&>*]:text-center [&>*]:leading-none">
+            <header className="*:font-jomhuria *:text-center *:leading-none">
                 <h1 className="text-[3.25rem]">you're about to go live!</h1>
                 <h3 className="text-base">
                     every streamer on trophy is a creator, you own your{" "}
@@ -57,7 +59,7 @@ function RouteComponent() {
                 </h3>
             </header>
 
-            <figure className="mx-auto mt-10 flex h-[13.75rem] w-[16.5rem] items-center justify-center">
+            <figure className="mx-auto mt-10 flex h-55 w-66 items-center justify-center">
                 <img src="/go-live.svg" alt="go-live" />
             </figure>
 

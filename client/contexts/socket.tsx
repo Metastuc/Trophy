@@ -19,7 +19,10 @@ export function SocketProvider({ children }: PropsWithChildren) {
     useEffect(
         function () {
             const ws = io(CLIENT_ENV.VITE_SERVER_URL, { auth: token ? { profileImage, token, username } : {} });
-            setSocket(ws);
+
+            ws.on("connect", () => {
+                setSocket(ws);
+            });
 
             return function () {
                 ws.disconnect();
