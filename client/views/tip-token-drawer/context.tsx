@@ -37,10 +37,14 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
         walletType: undefined,
     }));
 
+    const selectedToken = useMemo(
+        () => TOKENS.find((token) => token.value === tipDrawerState.token),
+        [tipDrawerState.token],
+    );
+    const { data: tokenPrice } = useTokenPrice(selectedToken?.address as Address);
+
     const handleSendTip = useCallback(
         async function () {
-            const selectedToken = TOKENS.find((token) => token.value === tipDrawerState.token);
-            const { data: tokenPrice } = useTokenPrice(selectedToken?.address as Address);
             const amountInUsd = parseFloat(tipDrawerState.amountInToken) * (tokenPrice?.usdPrice || 0);
 
             if (amountInUsd > CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD) {
@@ -127,6 +131,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             tipDrawerState.amountInToken,
             tipDrawerState.token,
             tipDrawerState.tokenAddress,
+            tokenPrice?.usdPrice,
             userWalletState.address,
             userWalletState.provider,
             wallets,
