@@ -1,5 +1,5 @@
 import { CircleDollarSign } from "lucide-react";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useMemo } from "react";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { TOKENS } from "@/components/ui/tokens";
 import { formatToken, formatUSD, tokenInputField } from "@/lib/utils";
-import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { SUPPORTED_TOKENS, TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
@@ -34,6 +34,27 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
         useTipDrawerContext();
 
     const { data: tokenPrices } = useTokenPrice(tipDrawerState.tokenAddress);
+
+    const amountInUsd = useMemo(
+        function () {
+            if (!tokenPrices) return 0;
+            return parseFloat(tipDrawerState.amountInToken || "0") * tokenPrices.usdPrice;
+        },
+        [tipDrawerState.amountInToken, tokenPrices],
+    );
+
+    const senderAvailableBalanceInUsd = useMemo(
+        function () {
+            if (!tokenPrices) return 0;
+            return parseFloat(tipDrawerState.senderAvailableBalanceInToken || "0") * tokenPrices.usdPrice;
+        },
+        [tipDrawerState.senderAvailableBalanceInToken, tokenPrices],
+    );
+
+    const selectedToken = useMemo(
+        () => TOKEN_CONFIG[tipDrawerState.token as keyof typeof SUPPORTED_TOKENS],
+        [tipDrawerState.token],
+    );
 
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
         const inputValue = tokenInputField(event.target.value);
@@ -93,12 +114,10 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
                                         className="max-w-[7.5rem] outline-none"
                                         placeholder="0.00"
                                     />
-                                    <span>{tipDrawerState.token}</span>
+                                    <span>{selectedToken.symbol}</span>
                                 </div>
 
-                                <span className="text-base text-[#060606]/50">
-                                    {formatUSD(tipDrawerState.amountInUsd || "0")}
-                                </span>
+                                <span className="text-base text-[#060606]/50">{formatUSD(`${amountInUsd}`)}</span>
                             </aside>
 
                             <aside className="flex flex-col items-center justify-center">
@@ -138,11 +157,11 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
 
                             <div className="bg-blue100/80 border-blue100 flex w-28 flex-col items-center rounded-lg border px-2 pt-3 pb-1">
                                 <span className="text-xl text-white">
-                                    {formatUSD(tipDrawerState.senderAvailableBalanceInUsd || "0")}
+                                    {formatUSD(`${senderAvailableBalanceInUsd}`)}
                                 </span>
                                 <span className="text-sm text-white/70">
                                     {formatToken(tipDrawerState.senderAvailableBalanceInToken || "0")}{" "}
-                                    {tipDrawerState.token}
+                                    {selectedToken.symbol}
                                 </span>
                             </div>
                         </aside>

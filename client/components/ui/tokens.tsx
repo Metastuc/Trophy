@@ -1,6 +1,6 @@
 import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
-export const TOKENS = Object.values(TOKEN_CONFIG).map((token) => ({
+export const TOKENS = Object.entries(TOKEN_CONFIG).map(([key, token]) => ({
     address: token.address,
 
     render: (
@@ -16,13 +16,13 @@ export const TOKENS = Object.values(TOKEN_CONFIG).map((token) => ({
     title: (
         <div className="flex items-center justify-center gap-1">
             <img src={token.icon} className="size-5" alt={`${token.symbol}-logo`} />
-            <span className="pt-0.5 text-xs font-normal text-white" style={{ filter: "invert(1)" }}>
+            <span className="pt-0.5 text-xs font-normal text-white" style={{ mixBlendMode: "difference" }}>
                 {token.symbol}
             </span>
         </div>
     ),
 
-    value: token.symbol,
+    value: key,
 }));
 
 // eslint-disable-next-line react-refresh/only-export-components

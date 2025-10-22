@@ -2,6 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
+import babel from "vite-plugin-babel";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,6 +14,11 @@ export default defineConfig({
             target: "react",
         }),
         react(),
+        babel({
+            babelConfig: {
+                plugins: ["babel-plugin-react-compiler"],
+            },
+        }),
         tailwindcss(),
     ],
     resolve: {

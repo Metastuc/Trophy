@@ -26,19 +26,19 @@ export function LiveStreamControls() {
         viewersCount: 0,
     }));
 
-    function toggleControls() {
-        setLiveStreamControlsState((state) => ({ ...state, isControlsVisible: true }));
-
-        if (hideTimeout.current) clearTimeout(hideTimeout.current);
-        hideTimeout.current = setTimeout(
-            () => setLiveStreamControlsState((state) => ({ ...state, isControlsVisible: false })),
-            toTime({ unit: "seconds", value: 5, output: "milliseconds" }),
-        );
-    }
-
     useEffect(function () {
         const el = streamControlsRef.current;
         if (!el) return;
+
+        function toggleControls() {
+            setLiveStreamControlsState((state) => ({ ...state, isControlsVisible: true }));
+
+            if (hideTimeout.current) clearTimeout(hideTimeout.current);
+            hideTimeout.current = setTimeout(
+                () => setLiveStreamControlsState((state) => ({ ...state, isControlsVisible: false })),
+                toTime({ unit: "seconds", value: 5, output: "milliseconds" }),
+            );
+        }
 
         toggleControls();
 
@@ -71,14 +71,14 @@ export function LiveStreamControls() {
         <section className="absolute inset-0 z-10" ref={streamControlsRef}>
             <div
                 className={cn(
-                    "relative size-full transition-opacity",
+                    "relative size-full transition-opacity duration-500 ease-in-out",
                     liveStreamControlsState.isControlsVisible ? "opacity-100" : "opacity-20",
                 )}
             >
                 <LiveSignal />
 
                 <div className="absolute bottom-0 flex w-full items-center justify-between p-1.5">
-                    <aside className="flex max-w-[8rem] min-w-[6.75rem] items-center justify-between rounded bg-white p-1">
+                    <aside className="flex max-w-32 min-w-27 items-center justify-between rounded bg-white p-1">
                         <i className="size-4">
                             <Users />
                         </i>

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Address } from "viem";
 import { useChainId } from "wagmi";
 
+import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
 import { TOKENS } from "@/components/ui/tokens";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
@@ -25,9 +26,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
     const [tipDrawerState, setTipDrawerState] = useState<TipDrawerState>(() => ({
         amountInToken: "",
-        amountInUsd: "",
         senderAvailableBalanceInToken: "",
-        senderAvailableBalanceInUsd: "",
         token: TOKENS[0].value,
         tokenAddress: TOKENS[0].address,
     }));
@@ -38,9 +37,17 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
         walletType: undefined,
     }));
 
+    const selectedToken = useMemo(
+        () => TOKENS.find((token) => token.value === tipDrawerState.token),
+        [tipDrawerState.token],
+    );
+    const { data: tokenPrice } = useTokenPrice(selectedToken?.address as Address);
+
     const handleSendTip = useCallback(
         async function () {
-            if (parseFloat(tipDrawerState.amountInUsd) > CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD) {
+            const amountInUsd = parseFloat(tipDrawerState.amountInToken) * (tokenPrice?.usdPrice || 0);
+
+            if (amountInUsd > CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD) {
                 toast.error(`Maximum tip amount is ${CLIENT_CONSTANTS.MAX_TIP_AMOUNT_USD.toLocaleString("en-US")} USD`);
                 return;
             }
@@ -89,7 +96,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                         method: "POST",
                         data: {
                             amountInToken: tipDrawerState.amountInToken,
-                            amountInUsd: parseFloat(tipDrawerState.amountInUsd),
+                            amountInUsd,
                             chainId: CLIENT_CONSTANTS.CURRENT_NETWORK.id,
                             recipient: streamer?.walletAddress as Address,
                             sender: userWalletState.address as Address,
@@ -122,9 +129,9 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
             connectWallet,
             streamer?.walletAddress,
             tipDrawerState.amountInToken,
-            tipDrawerState.amountInUsd,
             tipDrawerState.token,
             tipDrawerState.tokenAddress,
+            tokenPrice?.usdPrice,
             userWalletState.address,
             userWalletState.provider,
             wallets,
