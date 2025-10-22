@@ -26,9 +26,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
     const [tipDrawerState, setTipDrawerState] = useState<TipDrawerState>(() => ({
         amountInToken: "",
-        // amountInUsd: "",
         senderAvailableBalanceInToken: "",
-        // senderAvailableBalanceInUsd: "",
         token: TOKENS[0].value,
         tokenAddress: TOKENS[0].address,
     }));

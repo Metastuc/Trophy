@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { TOKENS } from "@/components/ui/tokens";
 import { formatToken, formatUSD, tokenInputField } from "@/lib/utils";
-import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { SUPPORTED_TOKENS, TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
@@ -49,6 +49,11 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
             return parseFloat(tipDrawerState.senderAvailableBalanceInToken || "0") * tokenPrices.usdPrice;
         },
         [tipDrawerState.senderAvailableBalanceInToken, tokenPrices],
+    );
+
+    const selectedToken = useMemo(
+        () => TOKEN_CONFIG[tipDrawerState.token as keyof typeof SUPPORTED_TOKENS],
+        [tipDrawerState.token],
     );
 
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
@@ -109,7 +114,7 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
                                         className="max-w-[7.5rem] outline-none"
                                         placeholder="0.00"
                                     />
-                                    <span>{tipDrawerState.token}</span>
+                                    <span>{selectedToken.symbol}</span>
                                 </div>
 
                                 <span className="text-base text-[#060606]/50">{formatUSD(`${amountInUsd}`)}</span>
@@ -156,7 +161,7 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
                                 </span>
                                 <span className="text-sm text-white/70">
                                     {formatToken(tipDrawerState.senderAvailableBalanceInToken || "0")}{" "}
-                                    {tipDrawerState.token}
+                                    {selectedToken.symbol}
                                 </span>
                             </div>
                         </aside>
