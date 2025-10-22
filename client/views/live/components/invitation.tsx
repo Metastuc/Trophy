@@ -26,6 +26,20 @@ export function LiveStreamGuestInvitation() {
     return incomingInvites.map((peerId) => peerId && <RenderPopup key={peerId} peerId={peerId} />);
 }
 
+function UserProfile({ id, profileImage }: { id: string; profileImage: string }) {
+    return (
+        <span className="inline-flex items-center justify-center gap-0.5">
+            <span className="flex size-6 items-center justify-center overflow-hidden rounded-full bg-linear-to-b from-[#FFFFFF] via-[#FFFFFFFD] to-[#3A3399FC]">
+                <i className="flex size-5 items-center justify-center">
+                    <img src={profileImage} alt={`${id}-pfp`} className="rounded-full object-cover" />
+                </i>
+            </span>
+
+            <span>@{id}</span>
+        </span>
+    );
+}
+
 function RenderPopup({ peerId }: { peerId: string }) {
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(true);
 
@@ -45,24 +59,6 @@ function RenderPopup({ peerId }: { peerId: string }) {
         setIsPopupOpen(false);
     }
 
-    function UserProfile() {
-        return (
-            <span className="inline-flex items-center justify-center gap-0.5">
-                <span className="flex size-6 items-center justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#FFFFFF] via-[#FFFFFFFD] to-[#3A3399FC]">
-                    <i className="flex size-5 items-center justify-center">
-                        <img
-                            src={metadata?.profileImage as string}
-                            alt={`${metadata?.id}-pfp`}
-                            className="rounded-full object-cover"
-                        />
-                    </i>
-                </span>
-
-                <span>@{metadata?.id}</span>
-            </span>
-        );
-    }
-
     return (
         <AlertDialog open={isPopupOpen} onOpenChange={setIsPopupOpen}>
             <AlertDialogContent className="bg-blue100 top-[25%] border-none text-white">
@@ -70,7 +66,8 @@ function RenderPopup({ peerId }: { peerId: string }) {
                     <AlertDialogTitle>Co-Stream Invitation!</AlertDialogTitle>
 
                     <AlertDialogDescription className="flex items-center justify-center gap-1 text-white">
-                        <UserProfile /> is inviting you to co-stream
+                        <UserProfile id={metadata.id} profileImage={metadata.profileImage as string} /> is inviting you
+                        to co-stream
                     </AlertDialogDescription>
                 </AlertDialogHeader>
 

@@ -102,8 +102,6 @@ export function Swap() {
             if (!data?.usdPrice) return;
             setDrawerData((state) => ({
                 ...state,
-                // from: { ...state.from, usdPrice: data?.usdPrice?.toString() ?? "0" },
-                // to: { ...state.to, usdPrice: data?.usdPrice?.toString() ?? "0" },
                 from:
                     state.from.type === "native"
                         ? { ...state.from, usdPrice: data.usdPrice.toString() ?? "0" }
