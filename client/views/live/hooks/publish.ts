@@ -18,6 +18,6 @@ export function useHuddleHostPublish(role: JoinStreamData["role"]) {
                 toast.error((error as Error).message);
             });
         },
-        [role, state],
+        [role, state, isVideoOn, isAudioOn, enableVideo, enableAudio],
     );
 }

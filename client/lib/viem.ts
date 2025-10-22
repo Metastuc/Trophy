@@ -1,5 +1,7 @@
 import { Address, createPublicClient, createWalletClient, custom, http, parseAbi, PublicClient } from "viem";
 
+import { log } from "#~/utils/logger.ts";
+
 import { CLIENT_CONSTANTS, CLIENT_ENV } from "./constants";
 import { formatEtherToToken } from "./utils";
 
@@ -16,22 +18,35 @@ export function getWalletClient({ address, provider }: GetWalletClient) {
     });
 }
 
-export async function getWalletBalance({ tokenAddress, userAddress }: { tokenAddress: Address; userAddress: Address }) {
-    return {
-        tokenBalance:
-            formatEtherToToken({
-                number: await publicClient.readContract({
-                    abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
-                    args: [userAddress],
-                    functionName: "balanceOf",
-                    address: tokenAddress,
-                }),
-            }) ?? 0,
+export async function getWalletBalance({
+    isNative = false,
+    tokenAddress,
+    userAddress,
+}: {
+    tokenAddress: Address;
+    userAddress: Address;
+    isNative?: boolean;
+}): Promise<string> {
+    log.info({
+        data: { isNative, tokenAddress, userAddress },
+        module: "VIEM",
+        msg: "wallet balance fetched",
+        tag: "WALLET BALANCE",
+    });
 
-        etherBalance:
-            formatEtherToToken({
-                number: await publicClient.getBalance({ address: userAddress }),
-                toCreatorToken: false,
-            }) ?? 0,
-    };
+    if (isNative) {
+        return formatEtherToToken({
+            number: await publicClient.getBalance({ address: userAddress }),
+            toCreatorToken: false,
+        });
+    }
+
+    return formatEtherToToken({
+        number: await publicClient.readContract({
+            abi: parseAbi(["function balanceOf(address owner) view returns (uint256)"]),
+            args: [userAddress],
+            functionName: "balanceOf",
+            address: tokenAddress,
+        }),
+    });
 }

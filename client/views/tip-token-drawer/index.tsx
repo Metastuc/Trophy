@@ -111,13 +111,13 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
                                             width: `${tipDrawerState.amountInToken.length || 1}ch`,
                                             color: tipDrawerState.amountInToken ? "black" : "gray",
                                         }}
-                                        className="max-w-[7.5rem] outline-none"
+                                        className="max-w-30 outline-none"
                                         placeholder="0.00"
                                     />
                                     <span>{selectedToken.symbol}</span>
                                 </div>
 
-                                <span className="text-base text-[#060606]/50">{formatUSD(`${amountInUsd}`)}</span>
+                                <span className="text-black100/50 text-base">{formatUSD(`${amountInUsd}`)}</span>
                             </aside>
 
                             <aside className="flex flex-col items-center justify-center">

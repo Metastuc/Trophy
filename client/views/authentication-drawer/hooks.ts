@@ -49,6 +49,7 @@ export function usePrivyLoginTrigger() {
                 login({ loginMethods: ["farcaster"] });
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [screen],
     );
 }
