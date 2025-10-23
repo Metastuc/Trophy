@@ -13,8 +13,8 @@ export async function joinStream(request: Request, response: Response, next: Nex
     const { username } = request.body;
 
     try {
-        if (!roomId) throw new HttpError({ message: "roomId is required", code: 403 });
-        if (!username) throw new HttpError({ message: "username is required", code: 422 });
+        if (!roomId) return next(new HttpError({ message: "roomId is required", code: 403 }));
+        if (!username) return next(new HttpError({ message: "username is required", code: 422 }));
 
         const stream = await prisma.stream.findUnique({
             where: { roomId, status: "LIVE" },
@@ -29,7 +29,7 @@ export async function joinStream(request: Request, response: Response, next: Nex
                 },
             },
         });
-        if (!stream) throw new HttpError({ message: "stream not found", code: 404, data: { roomId } });
+        if (!stream) return next(new HttpError({ message: "stream not found", code: 404, data: { roomId } }));
 
         const roomInRedis = await getRoom(roomId);
         let role: Role = "listener";
@@ -40,7 +40,7 @@ export async function joinStream(request: Request, response: Response, next: Nex
             userId = username;
         } else {
             user = await prisma.user.findUnique({ where: { username } });
-            if (!user) throw new HttpError({ message: "user not found", code: 404, data: { username } });
+            if (!user) return next(new HttpError({ message: "user not found", code: 404, data: { username } }));
 
             userId = user.username;
 

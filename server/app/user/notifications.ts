@@ -36,7 +36,7 @@ export async function notifications(request: Request, response: Response, next: 
             where: { username: userId },
             select: { id: true, lastReadAt: true },
         });
-        if (!user) throw new HttpError({ code: 404, message: "User not found" });
+        if (!user) return next(new HttpError({ code: 404, message: "User not found" }));
 
         const notifications = await prisma.notification.findMany({
             where: {

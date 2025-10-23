@@ -9,18 +9,17 @@ export async function endStream(request: Request, response: Response, next: Next
     const { username } = request.body;
 
     try {
-        if (!roomId) throw new HttpError({ message: "roomId is required", code: 403 });
-        if (!username) throw new HttpError({ message: "username is required", code: 422 });
+        if (!roomId) return next(new HttpError({ message: "roomId is required", code: 403 }));
+        if (!username) return next(new HttpError({ message: "username is required", code: 422 }));
 
         const stream = await prisma.stream.findUnique({
             where: { roomId, status: "LIVE" },
             include: { streamer: true },
         });
-        if (!stream) throw new HttpError({ message: "stream not found or not live", code: 404 });
+        if (!stream) return next(new HttpError({ message: "stream not found or not live", code: 404 }));
 
-        if (stream.streamer.username !== username) {
-            throw new HttpError({ message: "Only host can end the stream", code: 403 });
-        }
+        if (stream.streamer.username !== username)
+            return next(new HttpError({ message: "Only host can end the stream", code: 403 }));
 
         await prisma.stream.update({
             where: { id: stream.id },
