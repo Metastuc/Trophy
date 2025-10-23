@@ -9,10 +9,7 @@ export async function user(request: Request, response: Response, next: NextFunct
 
     try {
         const user = await prisma.user.findUnique({ where: { privyId }, include: { creatorToken: true } });
-
-        if (!user) {
-            throw new HttpError({ message: "user not found", code: 404, data: { privyId } });
-        }
+        if (!user) return next(new HttpError({ message: "user not found", code: 404, data: { privyId } }));
 
         response.customResponse<AuthenticateUserData>({
             code: 200,

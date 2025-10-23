@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ONBOARD_USER_RESPONSE_SCHEMA } from "#~/schema/user/index.ts";
 import { prisma } from "#config/prisma.ts";
 import { HttpError } from "#middleware/error.ts";
 import { sendUserRegisteredEmail } from "#services/email/register.ts";
@@ -13,20 +14,14 @@ export async function onBoard(request: Request, response: Response, next: NextFu
 
     try {
         const isUserExisting = await prisma.user.findUnique({ where: { privyId } });
-        if (isUserExisting) {
-            throw new HttpError({ message: "user already exists", code: 400 });
-        }
+        if (isUserExisting) return next(new HttpError({ message: "user already exists", code: 400 }));
 
         const usernameRegex = validateUsername({ fc, username });
         const usernameExists = await prisma.user.findUnique({ where: { username: usernameRegex } });
-        if (usernameExists) {
-            throw new HttpError({ message: "username already exists", code: 400 });
-        }
+        if (usernameExists) return next(new HttpError({ message: "username already exists", code: 400 }));
 
         const emailExists = await prisma.user.findUnique({ where: { email } });
-        if (emailExists) {
-            throw new HttpError({ message: "email already exists", code: 400 });
-        }
+        if (emailExists) return next(new HttpError({ message: "email already exists", code: 400 }));
 
         const userProfilePicture = await getUserProfilePicture({
             profilePicture,
@@ -49,9 +44,9 @@ export async function onBoard(request: Request, response: Response, next: NextFu
         response.customResponse<OnboardUserData>({
             code: 201,
             message: "user created successfully",
-            data: {
+            data: ONBOARD_USER_RESPONSE_SCHEMA.parse({
                 isBasicProfileComplete: Boolean(user.email && user.profileImage && user.username),
-            },
+            }),
         });
     } catch (error) {
         next(error);
