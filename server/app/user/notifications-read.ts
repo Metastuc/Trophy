@@ -11,7 +11,7 @@ export async function markNotificationsAsRead(request: Request, response: Respon
 
     try {
         const user = await prisma.user.findUnique({ where: { username: userId } });
-        if (!user) throw new HttpError({ code: 404, message: "User not found" });
+        if (!user) return next(new HttpError({ code: 404, message: "User not found" }));
 
         await Promise.all([
             prisma.user.update({

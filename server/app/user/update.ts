@@ -29,9 +29,8 @@ export async function updateUserProfile(request: Request, response: Response, ne
             profileUpdateData.profileImage = userProfilePicture;
         }
 
-        if (Object.keys(profileUpdateData).length === 0) {
-            throw new HttpError({ message: "No valid fields provided for update", code: 400 });
-        }
+        if (Object.keys(profileUpdateData).length === 0)
+            return next(new HttpError({ message: "No valid fields provided for update", code: 400 }));
 
         const updatedUser = await prisma.user.update({
             where: { username: userId },

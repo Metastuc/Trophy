@@ -41,6 +41,7 @@ export function errorHandler(error: unknown, request: Request, response: Respons
             message: "Internal server error",
             data: { error: (error as Error).message, info: httpStatus[500] },
         });
+        return;
     }
 
     logger.error(

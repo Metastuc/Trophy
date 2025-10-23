@@ -17,7 +17,7 @@ export async function getWalletTokenBalances(request: Request, response: Respons
 
     try {
         const isWalletValid = await prisma.user.findUnique({ where: { walletAddress: userId } });
-        if (!isWalletValid) throw new HttpError({ message: "user not found", code: 404, data: { userId } });
+        if (!isWalletValid) return next(new HttpError({ message: "user not found", code: 404, data: { userId } }));
 
         const cached = await redis.get(cacheKey);
         if (cached) {

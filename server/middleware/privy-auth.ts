@@ -21,6 +21,6 @@ export async function privyAuth(request: Request, response: Response, next: Next
         request.privyUser = await privy.verifyAuthToken(authorizationHeader.split(" ")[1], SERVER_ENV.PRIVY_KEY);
         next();
     } catch (error) {
-        throw new HttpError({ message: "invalid token", code: 403, data: { error: (error as Error).message } });
+        return next(new HttpError({ message: "invalid token", code: 403, data: { error: (error as Error).message } }));
     }
 }

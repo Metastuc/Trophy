@@ -12,13 +12,11 @@ export async function unfollowUser(request: Request, response: Response, next: N
         const whoWantsToUnfollow = await prisma.user.findUnique({ where: { privyId } });
         const whoIsToBeUnfollowed = await prisma.user.findUnique({ where: { username: userId } });
 
-        if (!whoWantsToUnfollow || !whoIsToBeUnfollowed) {
-            throw new HttpError({ message: "user not found", code: 404, data: { userId } });
-        }
+        if (!whoWantsToUnfollow || !whoIsToBeUnfollowed)
+            return next(new HttpError({ message: "user not found", code: 404, data: { userId } }));
 
-        if (whoWantsToUnfollow?.id === whoIsToBeUnfollowed?.id) {
-            throw new HttpError({ message: "You cannot unfollow yourself", code: 400 });
-        }
+        if (whoWantsToUnfollow?.id === whoIsToBeUnfollowed?.id)
+            return next(new HttpError({ message: "You cannot unfollow yourself", code: 400 }));
 
         const followRecord = await prisma.follow.findUnique({
             where: {
@@ -29,9 +27,7 @@ export async function unfollowUser(request: Request, response: Response, next: N
             },
         });
 
-        if (!followRecord) {
-            throw new HttpError({ message: `You are not following ${userId}`, code: 400 });
-        }
+        if (!followRecord) return next(new HttpError({ message: `You are not following ${userId}`, code: 400 }));
 
         await Promise.all([
             prisma.follow.delete({ where: { id: followRecord.id } }),

@@ -13,12 +13,15 @@ export function sendUserRegisteredEmail({ email, username }: { email: string; us
         to: email,
     };
 
-    transporter.sendMail(mail, function (error, info) {
-        if (error) {
-            logger.error(error);
-            throw new HttpError({ message: "failed to send email", code: 500 });
-        }
+    return new Promise<void>((resolve, reject) => {
+        transporter.sendMail(mail, (error, info) => {
+            if (error) {
+                logger.error(error);
+                return reject(new HttpError({ message: "failed to send email", code: 500, data: error }));
+            }
 
-        logger.info(info, "email sent successfully to user: " + email);
+            logger.info(info, "email sent successfully to user: " + email);
+            resolve();
+        });
     });
 }

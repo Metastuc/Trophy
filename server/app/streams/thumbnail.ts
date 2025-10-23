@@ -12,21 +12,21 @@ export async function updateThumbnail(request: Request, response: Response, next
     const contentType = request.file?.mimetype as (typeof SUPPORTED_FILE_CONTENT_TYPES)[number];
 
     try {
-        if (!thumbnail) throw new HttpError({ message: "Thumbnail is required", code: 422 });
-        if (!roomId) throw new HttpError({ message: "Room ID is required", code: 422 });
-        if (!fileName) throw new HttpError({ message: "Invalid file name", code: 422 });
-        if (!contentType) throw new HttpError({ message: "Invalid content type", code: 422 });
+        if (!thumbnail) return next(new HttpError({ message: "Thumbnail is required", code: 422 }));
+        if (!roomId) return next(new HttpError({ message: "Room ID is required", code: 422 }));
+        if (!fileName) return next(new HttpError({ message: "Invalid file name", code: 422 }));
+        if (!contentType) return next(new HttpError({ message: "Invalid content type", code: 422 }));
 
         const stream = await prisma.stream.findUnique({
             where: { roomId, status: "LIVE" },
             include: { streamer: true },
         });
 
-        if (!stream) throw new HttpError({ message: "Stream not found", code: 404 });
-        if (stream.status !== "LIVE") throw new HttpError({ message: "Stream is not live", code: 403 });
+        if (!stream) return next(new HttpError({ message: "Stream not found", code: 404 }));
+        if (stream.status !== "LIVE") return next(new HttpError({ message: "Stream is not live", code: 403 }));
 
         if (stream.streamer.privyId !== request.privyUser?.userId)
-            throw new HttpError({ message: "Unauthorized to update thumbnail", code: 403 });
+            return next(new HttpError({ message: "Unauthorized to update thumbnail", code: 403 }));
 
         const thumbnailUrl = await saveToS3({
             file: thumbnail,
