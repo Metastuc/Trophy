@@ -64,9 +64,7 @@ export async function profile(request: Request, response: Response, next: NextFu
             });
         }
 
-        if (!user) {
-            throw new HttpError({ message: "user not found", code: 404, data: { username } });
-        }
+        if (!user) return next(new HttpError({ message: "user not found", code: 404, data: { username } }));
 
         const isOwnerRequestingProfile = privyId && privyId === user.privyId;
         const profileData: UserProfileData = {

@@ -7,16 +7,16 @@ export async function saveCreatorToken(request: Request, response: Response, nex
     const { userId } = request.params;
     const { creatorToken, smartAccount, tokenName } = request.body;
 
-    if (!smartAccount) throw new HttpError({ message: "smart account address is missing", code: 422 });
-    if (!tokenName) throw new HttpError({ message: "token name is missing", code: 422 });
-    if (!creatorToken) throw new HttpError({ message: "creator token address is missing", code: 422 });
+    if (!smartAccount) return next(new HttpError({ message: "smart account address is missing", code: 422 }));
+    if (!tokenName) return next(new HttpError({ message: "token name is missing", code: 422 }));
+    if (!creatorToken) return next(new HttpError({ message: "creator token address is missing", code: 422 }));
 
     try {
         const user = await prisma.user.findUnique({ where: { username: userId } });
-        if (!user) throw new HttpError({ message: "user not found", code: 404, data: { userId } });
+        if (!user) return next(new HttpError({ message: "user not found", code: 404, data: { userId } }));
 
         const creatorTokenExists = await prisma.creatorToken.findUnique({ where: { creatorId: user.id } });
-        if (creatorTokenExists) throw new HttpError({ message: "user already has a creator token", code: 403 });
+        if (creatorTokenExists) return next(new HttpError({ message: "user already has a creator token", code: 403 }));
 
         await prisma.creatorToken.create({
             data: {

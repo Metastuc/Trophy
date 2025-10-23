@@ -14,14 +14,10 @@ export async function createStream(request: Request, response: Response, next: N
     const isStreamScheduled = Boolean(date);
 
     try {
-        if (!username) {
-            throw new HttpError({ message: "username is required", code: 400 });
-        }
+        if (!username) return next(new HttpError({ message: "username is required", code: 400 }));
 
         const user = await prisma.user.findUnique({ where: { username } });
-        if (!user) {
-            throw new HttpError({ message: "user not found", code: 404, data: { username } });
-        }
+        if (!user) return next(new HttpError({ message: "user not found", code: 404, data: { username } }));
 
         const roomId = await createHuddleRoom(title);
 

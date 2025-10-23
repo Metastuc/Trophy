@@ -12,13 +12,11 @@ export async function followUser(request: Request, response: Response, next: Nex
         const whoWantsToFollow = await prisma.user.findUnique({ where: { privyId } });
         const whoIsToBeFollowed = await prisma.user.findUnique({ where: { username: userId } });
 
-        if (!whoWantsToFollow || !whoIsToBeFollowed) {
-            throw new HttpError({ message: "user not found", code: 404, data: { userId } });
-        }
+        if (!whoWantsToFollow || !whoIsToBeFollowed)
+            return next(new HttpError({ message: "user not found", code: 404, data: { userId } }));
 
-        if (whoWantsToFollow?.id === whoIsToBeFollowed?.id) {
-            throw new HttpError({ message: "You cannot follow yourself", code: 400 });
-        }
+        if (whoWantsToFollow?.id === whoIsToBeFollowed?.id)
+            return next(new HttpError({ message: "You cannot follow yourself", code: 400 }));
 
         if (
             await prisma.follow.findUnique({
@@ -26,9 +24,8 @@ export async function followUser(request: Request, response: Response, next: Nex
                     followerId_followingId: { followerId: whoWantsToFollow.id, followingId: whoIsToBeFollowed.id },
                 },
             })
-        ) {
-            throw new HttpError({ message: `You are already following ${userId}`, code: 400 });
-        }
+        )
+            return next(new HttpError({ message: `You are already following ${userId}`, code: 400 }));
 
         await followQueue.add(
             "follow-user",

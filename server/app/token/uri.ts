@@ -9,7 +9,7 @@ export async function createTokenUri(request: Request, response: Response, next:
 
     try {
         const user = await prisma.user.findUnique({ where: { username: userId } });
-        if (!user) throw new HttpError({ message: "User not found", code: 404, data: { userId } });
+        if (!user) return next(new HttpError({ message: "User not found", code: 404, data: { userId } }));
 
         const { cid: imageCID } = await getPinataClient().upload.public.url(user.profileImage);
         const { cid: tokenCID } = await getPinataClient().upload.public.json({

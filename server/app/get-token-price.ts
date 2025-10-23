@@ -7,11 +7,9 @@ import { HttpError } from "#middleware/error.ts";
 
 export async function getTokenPrice(request: Request, response: Response, next: NextFunction) {
     const moralis = await MoralisClient();
-    const { address } = request.query;
 
-    if (!address) {
-        throw new HttpError({ message: "token address is missing", code: 422 });
-    }
+    const { address } = request.query;
+    if (!address) return next(new HttpError({ message: "token address is missing", code: 422 }));
 
     const cacheKey = SERVER_CONSTANTS.REDIS_KEYS.TOKEN_PRICE.KEY(address as string);
 
