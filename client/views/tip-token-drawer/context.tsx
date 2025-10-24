@@ -21,7 +21,7 @@ type TipDrawerContextProviderProps = PropsWithChildren<TipDrawerProps>;
 
 export function TipDrawerContextProvider({ children, streamer }: TipDrawerContextProviderProps) {
     const chainId = useChainId();
-    const { wallets } = useWallets();
+    const { wallets,ready } = useWallets();
     const { connectWallet } = usePrivy();
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
@@ -143,7 +143,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
 
     useEffect(
         function () {
-            if (wallets.length === 0) return;
+            if (wallets.length === 0 || !ready) return;
 
             (async function () {
                 const wallet = wallets[0];
@@ -155,7 +155,7 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                 });
             })();
         },
-        [wallets],
+        [wallets, ready],
     );
 
     log.debug({
