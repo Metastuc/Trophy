@@ -21,7 +21,7 @@ type TipDrawerContextProviderProps = PropsWithChildren<TipDrawerProps>;
 
 export function TipDrawerContextProvider({ children, streamer }: TipDrawerContextProviderProps) {
     const chainId = useChainId();
-    const { wallets,ready } = useWallets();
+    const { wallets, ready } = useWallets();
     const { connectWallet } = usePrivy();
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
@@ -159,7 +159,11 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
     );
 
     log.debug({
-        data: { connectedAddress: userWalletState.address, walletType: userWalletState.walletType, tokenAddress: tipDrawerState.tokenAddress },
+        data: {
+            connectedAddress: userWalletState.address,
+            walletType: userWalletState.walletType,
+            tokenAddress: tipDrawerState.tokenAddress,
+        },
         module: "TIP DRAWER",
         msg: "Tip drawer context initialized",
         tag: "TIP DRAWER CONTEXT",
