@@ -1,26 +1,52 @@
+import { useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useState } from "react";
+import { Address } from "viem";
+import { useShallow } from "zustand/shallow";
 
+import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
+import { useAuthenticationStore } from "@/hooks/authentication";
 import { formatUSD } from "@/lib/utils";
 import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 export function Withdraw() {
+    const { isAuthenticated, walletAddress } = useAuthenticationStore(
+        useShallow((state) => ({
+            isAuthenticated: state.isAuthenticated,
+            walletAddress: state.user?.wallet?.address as Address,
+        })),
+    );
+
+    const { data } = useQuery({
+        queryKey: ["user", "user-wallet-token-balances", walletAddress],
+        queryFn: async () => await getUserWalletTokenBalances({ walletAddress }),
+        enabled: !!isAuthenticated,
+    });
+
     const [recieverTabState, setRecieverTabState] = useState(() => ({
-        receiver: "",
         amountInToken: "",
-        amountInUsd: "",
+        receiver: "",
         token: TOKENS[0].value,
-        tokenAddress: TOKENS[0].address,
     }));
 
-    // const { data: tokenPrices } = useTokenPrice(recieverTabState.tokenAddress as Address);
+    const selectedToken = data?.find(
+        (token) =>
+            token.symbol === recieverTabState.token ||
+            token.address === TOKEN_CONFIG[recieverTabState.token as keyof typeof TOKEN_CONFIG].address,
+    );
+
+    const usdPrice =
+        selectedToken && Number(selectedToken.balance) > 0
+            ? Number(selectedToken.usd_value) / Number(selectedToken.balance)
+            : 0;
+
+    const balanceInUsd = Number(recieverTabState.amountInToken || "0") * usdPrice;
 
     function handleAmountChange(event: ChangeEvent<HTMLInputElement>) {
         setRecieverTabState((state) => ({
             ...state,
             amountInToken: event.target.value,
-            // amountInUsd: formatUSD(`${tokenPrices ? Number(event.target.value) * tokenPrices.usdPrice : 0}`),
         }));
     }
 
@@ -54,27 +80,19 @@ export function Withdraw() {
                                         width: `${recieverTabState.amountInToken.length || 1}ch`,
                                         color: recieverTabState.amountInToken ? "black" : "gray",
                                     }}
-                                    className="max-w-[7.5rem] outline-none"
+                                    className="max-w-30 outline-none"
                                     placeholder="0.00"
                                 />
                                 <span>{recieverTabState.token}</span>
                             </div>
 
-                            <span className="text-base text-[#060606]/50">
-                                {formatUSD(recieverTabState.amountInUsd || "0")}
-                            </span>
+                            <span className="text-base text-black/50">{formatUSD(balanceInUsd.toString())}</span>
                         </aside>
 
                         <aside className="flex flex-col items-center justify-center">
                             <Select
                                 value={recieverTabState.token}
-                                onValueChange={(value) =>
-                                    setRecieverTabState((state) => ({
-                                        ...state,
-                                        token: value,
-                                        tokenAddress: TOKEN_CONFIG[value as keyof typeof TOKEN_CONFIG].address,
-                                    }))
-                                }
+                                onValueChange={(value) => setRecieverTabState((state) => ({ ...state, token: value }))}
                             >
                                 <SelectTrigger className="border-blue100 h-10.5! min-w-28 rounded-lg bg-[#1B1B1B] p-0 px-2">
                                     <SelectValue>
@@ -91,7 +109,9 @@ export function Withdraw() {
                                 </SelectContent>
                             </Select>
 
-                            <span className="text-blue100 mt-1 mr-auto text-xs">Balance: 0.00</span>
+                            <span className="text-blue100 mt-1 mr-auto text-xs">
+                                Balance: {selectedToken?.balance ?? "0"}
+                            </span>
                         </aside>
                     </div>
                 </aside>
