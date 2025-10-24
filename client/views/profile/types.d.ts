@@ -42,15 +42,19 @@ declare global {
             view: Exclude<UserProfileDrawerView, null>;
         }) => void;
         setAddViewCurentTab: (tab: AddDrawerTab) => void;
+        setTotalUsdBalance: (balance: string) => void;
     }
 
     interface UserProfileDrawerValues {
         drawerView: UserProfileDrawerView;
+        totalUsdBalance: string;
         addViewCurentTab?: AddDrawerTab;
         payload?: UserProfileDrawerPayload;
     }
 
     interface UserProfileDrawerPayload {
+        balanceInToken: string;
+        balanceInUSD: string;
         token: string;
         tokenAddress: Address;
     }
