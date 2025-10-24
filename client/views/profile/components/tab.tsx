@@ -37,7 +37,7 @@ export function TabHeader<T extends string>({ activeTab, onTabClick, tabs, style
                                     exit={{ opacity: 0, y: 4 }}
                                     transition={{ duration: 0.2 }}
                                     className={cn(
-                                        "bg-blue100 absolute right-0 -bottom-0.25 left-0 h-1 rounded",
+                                        "bg-blue100 absolute right-0 -bottom-px left-0 h-1 rounded",
                                         styles?.indicator,
                                     )}
                                 />

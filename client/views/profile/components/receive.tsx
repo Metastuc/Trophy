@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { toast } from "sonner";
 import { Address } from "viem";
 
@@ -28,7 +29,7 @@ export function UserProfileReceive() {
         <section className="p-4">
             <h3 className="text-blue100 mt-4 text-center text-xs">Copy and deposit to your wallet address below</h3>
 
-            <div className="border-blue100 mt-0.25 mb-2.5 flex h-25 w-full items-center justify-between rounded-xl border-2 px-5">
+            <div className="border-blue100 mt-px mb-2.5 flex h-25 w-full items-center justify-between rounded-xl border-2 px-5">
                 <aside className="flex items-center gap-2">
                     <div>
                         <figure className="relative">
@@ -46,12 +47,13 @@ export function UserProfileReceive() {
                 </aside>
 
                 <aside>
-                    <button
+                    <motion.button
+                        className="rounded-2xl bg-linear-to-b from-[#204CE1] to-[#112A7B] px-5 py-1"
                         onClick={copyAddressToClipboard}
-                        className="rounded-2xl bg-gradient-to-b from-[#204CE1] to-[#112A7B] px-5 py-1"
+                        whileTap={{ scale: 0.987654321 }}
                     >
                         <span className="text-sm text-white">Copy</span>
-                    </button>
+                    </motion.button>
                 </aside>
             </div>
         </section>
