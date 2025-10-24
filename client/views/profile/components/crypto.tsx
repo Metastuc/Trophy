@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
@@ -10,7 +11,12 @@ import { formatUSD } from "@/lib/utils";
 import { useUserProfileDrawerStore } from "../store";
 
 export function Crypto() {
-    const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
+    const { openDrawer, setTotalUsdBalance } = useUserProfileDrawerStore(
+        useShallow((state) => ({
+            openDrawer: state.openDrawer,
+            setTotalUsdBalance: state.setTotalUsdBalance,
+        })),
+    );
     const { isAuthenticated, walletAddress } = useAuthenticationStore(
         useShallow((state) => ({
             isAuthenticated: state.isAuthenticated,
@@ -24,6 +30,16 @@ export function Crypto() {
         enabled: !!isAuthenticated,
     });
 
+    useEffect(
+        function () {
+            if (data)
+                setTotalUsdBalance(
+                    data.reduce((sum, token) => sum + (Number(token.usd_value) || 0), 0)?.toString() ?? "0",
+                );
+        },
+        [data, setTotalUsdBalance],
+    );
+
     if (error) return <div>{error.message}</div>;
     if (isPending || !data) return <Loading />;
 
@@ -35,7 +51,12 @@ export function Crypto() {
                 openDrawer({
                     view: "add",
                     tab: "send",
-                    payload: { token: value.symbol, tokenAddress: value.address as Address },
+                    payload: {
+                        balanceInToken: value.balance,
+                        balanceInUSD: value.usd_value,
+                        token: value.symbol,
+                        tokenAddress: value.address as Address,
+                    },
                 })
             }
         >
@@ -46,11 +67,13 @@ export function Crypto() {
 
             <aside className="ml-3 flex flex-col justify-center">
                 <span>{value.name}</span>
-                <span className="text-blue100 text-xs uppercase">{value.symbol}</span>
+                <span className="text-blue100 text-xs uppercase">
+                    {value.balance} {value.symbol}
+                </span>
             </aside>
 
             <aside className="ml-auto flex flex-col items-end justify-center gap-2">
-                <span>{formatUSD(value.balance)}</span>
+                <span>{formatUSD(value.usd_value)}</span>
             </aside>
         </article>
     ));

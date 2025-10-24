@@ -1,5 +1,6 @@
 import { BadgeDollarSign, BanknoteArrowDown, Receipt } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useShallow } from "zustand/shallow";
 
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
 import { useTabSwitcher } from "@/hooks/tab-switch";
@@ -10,14 +11,19 @@ import { Crypto } from "./crypto";
 import { TabHeader } from "./tab";
 
 export function UserWallet() {
-    const openDrawer = useUserProfileDrawerStore((state) => state.openDrawer);
     const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<WalletScreens>("crypto");
+    const { openDrawer, totalUsdBalance } = useUserProfileDrawerStore(
+        useShallow((state) => ({
+            openDrawer: state.openDrawer,
+            totalUsdBalance: state.totalUsdBalance,
+        })),
+    );
 
     return (
         <section className="my-4">
             <header className="flex flex-col">
                 <span className="text-blue100 text-xs">Total Money</span>
-                <b className="text-2xl font-medium">${"0.00"}</b>
+                <b className="text-2xl font-medium">{totalUsdBalance}</b>
                 <div className=" flex items-center justify-start gap-1">
                     <i className="size-2 rotate-180 text-[#2DC24E]">
                         <ARROW_DOWN_FILLED />
@@ -60,8 +66,6 @@ export function UserWallet() {
             </main>
 
             <footer className="flex w-full flex-col items-center justify-center">
-                {/* <button onClick={() => openDrawer({ view: "add", tab: "send" })}>trigger send asset</button> */}
-
                 <TabHeader
                     tabs={[
                         { id: "crypto", label: "Crypto" },

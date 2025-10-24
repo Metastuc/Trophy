@@ -28,6 +28,7 @@ export const WALLET_TOKEN_BALANCES_RESPONSE_SCHEMA = z.array(
         icon: z.string(),
         name: z.string(),
         symbol: z.string(),
+        usd_value: z.string(),
     }),
 );
 

@@ -1,5 +1,7 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
 
+import { formatUSD } from "@/lib/utils";
+
 export const useUserProfileDrawerStore: UseBoundStore<StoreApi<UserProfileDrawerStore>> =
     create<UserProfileDrawerStore>()((set) => ({
         closeDrawer() {
@@ -18,7 +20,13 @@ export const useUserProfileDrawerStore: UseBoundStore<StoreApi<UserProfileDrawer
             set({ addViewCurentTab: tab });
         },
 
+        setTotalUsdBalance(balance) {
+            set({ totalUsdBalance: formatUSD(balance) });
+        },
+
         drawerView: null,
 
         addViewCurentTab: "receive",
+
+        totalUsdBalance: formatUSD("0"),
     }));

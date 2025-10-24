@@ -48,14 +48,14 @@ export function UserProfileSend() {
             <section className="flex flex-col items-center justify-center">
                 <h3 className="text-blue100 mt-4 text-xs">Enter amount</h3>
 
-                <div className="border-blue100 mt-0.25 mb-2.5 flex h-25 w-full flex-col items-center justify-center rounded-xl border-2">
-                    <div className="space-x-0.25 text-2xl">
+                <div className="border-blue100 mt-px mb-2.5 flex h-25 w-full flex-col items-center justify-center rounded-xl border-2">
+                    <div className="space-x-px text-2xl">
                         <input
                             type="text"
                             onChange={handleAmountInTokenChange}
                             value={recieverTabState.amountInToken}
                             placeholder="0.00"
-                            className="max-w-[7.5rem] focus:outline-none"
+                            className="max-w-30 focus:outline-none"
                             style={{
                                 width: `${recieverTabState.amountInToken.length || 1}ch`,
                                 color: recieverTabState.amountInToken ? "black" : "gray",

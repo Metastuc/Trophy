@@ -29,16 +29,18 @@ export async function getWalletTokenBalances(request: Request, response: Respons
             return;
         }
 
-        const result = await moralis.EvmApi.token
-            .getWalletTokenBalances({
+        const result = await moralis.EvmApi.wallets
+            .getWalletTokenBalancesPrice({
                 address: userId,
                 chain: moralis.EvmUtils.EvmChain.BASE,
             })
-            .then((response) => response.toJSON());
+            .then((response) => response.result.map((token) => token.toJSON()));
 
         const tokenBalances = Object.entries(TOKEN_CONFIG).map(function ([_key, value]) {
             const supportedToken = result.find(
-                (token) => token.token_address.toLowerCase() === value.address.toLowerCase(),
+                (token) =>
+                    token.token_address?.toLowerCase() === value.address.toLowerCase() ||
+                    (token.native_token && value.symbol === token.symbol),
             );
 
             return {
@@ -49,6 +51,7 @@ export async function getWalletTokenBalances(request: Request, response: Respons
                 icon: value.icon,
                 name: value.name,
                 symbol: value.symbol,
+                usd_value: supportedToken ? (supportedToken.usd_value.toFixed(2) ?? "0.00") : "0.00",
             };
         });
 
