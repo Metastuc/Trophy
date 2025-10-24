@@ -12,6 +12,7 @@ import { tipERC20, tipEther } from "@/lib/tip";
 import { getWalletBalance } from "@/lib/viem";
 import { SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
 import { makeRequest } from "#~/utils/axios.ts";
+import { log } from "#~/utils/logger.ts";
 import { sleep } from "#~/utils/sleep.ts";
 
 import { TipDrawerContext } from "./hooks";
@@ -156,6 +157,13 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
         },
         [wallets],
     );
+
+    log.debug({
+        data: { connectedAddress: userWalletState.address, walletType: userWalletState.walletType, tokenAddress: tipDrawerState.tokenAddress },
+        module: "TIP DRAWER",
+        msg: "Tip drawer context initialized",
+        tag: "TIP DRAWER CONTEXT",
+    });
 
     useEffect(
         function () {
