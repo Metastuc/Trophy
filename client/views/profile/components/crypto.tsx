@@ -17,6 +17,7 @@ export function Crypto() {
             setTotalUsdBalance: state.setTotalUsdBalance,
         })),
     );
+
     const { isAuthenticated, walletAddress } = useAuthenticationStore(
         useShallow((state) => ({
             isAuthenticated: state.isAuthenticated,
