@@ -76,6 +76,7 @@ export const CLIENT_CONSTANTS = {
     CURRENT_NETWORK: CLIENT_ENV.VITE_ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
+    IS_ERUDA_ENABLED: false,
     MAX_TIP_AMOUNT_USD: 10000,
     TOTAL_CO_HOSTS_ALLOWED: 4,
     USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
