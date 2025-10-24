@@ -62,8 +62,14 @@ export function UserProfileDrawer() {
 }
 
 function UserProfileDrawerHeader() {
-    const { drawerView, token } = useUserProfileDrawerStore(
-        useShallow((state) => ({ drawerView: state.drawerView, token: state.payload?.token })),
+    const { balanceInToken, balanceInUSD, drawerView, token, totalUsdBalance } = useUserProfileDrawerStore(
+        useShallow((state) => ({
+            balanceInToken: state.payload?.balanceInToken,
+            balanceInUSD: state.payload?.balanceInUSD,
+            drawerView: state.drawerView,
+            token: state.payload?.token,
+            totalUsdBalance: state.totalUsdBalance,
+        })),
     );
 
     switch (drawerView) {
@@ -74,10 +80,14 @@ function UserProfileDrawerHeader() {
 
                     <DrawerDescription asChild>
                         <section className="flex flex-col p-0">
-                            <b className="text-black100 text-left text-2xl font-medium">{formatUSD("0")}</b>
+                            <b className="text-black100 text-left text-2xl font-medium">
+                                {balanceInUSD ? formatUSD(balanceInUSD) : totalUsdBalance}
+                            </b>
 
                             <div className=" flex items-center justify-start gap-1">
-                                <span className="text-xs text-gray-500">0.00 {token}</span>
+                                <span className="text-xs text-gray-500">
+                                    {balanceInToken} {token}
+                                </span>
 
                                 <i className="size-2 rotate-180 text-[#2DC24E]">
                                     <ARROW_DOWN_FILLED />
@@ -101,7 +111,7 @@ function UserProfileDrawerHeader() {
             return (
                 <Fragment>
                     <DrawerTitle className="text-blue100 text-center font-normal">Edit Profile</DrawerTitle>
-                    <DrawerDescription className="max-w-[15.75rem] text-center text-sm font-light text-[#000000B2]">
+                    <DrawerDescription className="max-w-63 text-center text-sm font-light text-[#000000B2]">
                         GM! Kindly input the changes you want to make on your profile below.
                     </DrawerDescription>
                 </Fragment>

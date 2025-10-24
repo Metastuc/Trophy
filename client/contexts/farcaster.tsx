@@ -11,8 +11,6 @@ export function FarcasterMiniAppProvider({ children }: { children: ReactNode }) 
     return children;
 }
 
-
-
 // import sdk from "@farcaster/miniapp-sdk";
 // import { usePrivy } from "@privy-io/react-auth";
 // import { useLoginToMiniApp } from "@privy-io/react-auth/farcaster";

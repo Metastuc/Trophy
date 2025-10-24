@@ -32,7 +32,7 @@ function RouteComponent() {
     if (error) return <div>{error.message}</div>;
 
     return (
-        <PageContentLayout className="space-y-16.5 !px-0">
+        <PageContentLayout className="space-y-16.5 px-0!">
             {data ? (
                 <UserProfileContextProvider profileData={data} isCurrentUser={true} isPending={isPending}>
                     <About />
