@@ -7,6 +7,7 @@ import { toTime } from "#~/utils/time.ts";
 
 export function useTokenPrice(address: Address) {
     return useQuery({
+        enabled: Boolean(address),
         queryKey: ["moralis-token-price", address],
         queryFn: async function () {
             return await makeRequest<TokenPriceResponse>({

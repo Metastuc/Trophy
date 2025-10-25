@@ -5,6 +5,12 @@ declare global {
 
     type ProfileScreens = "wallet" | "streams" | "holdings";
 
+    type RecieverTabState = {
+        amountInToken: string;
+        percentage: string | null;
+        receiver: string;
+    };
+
     type StreamSelection = "scheduled" | "recorded";
 
     type Tab<T extends string> = { id: T; label: string; icon?: React.ReactNode };
@@ -59,10 +65,7 @@ declare global {
         tokenAddress: Address;
     }
 
-    interface UserProfileWithdrawState {
-        amountInToken: string;
-        percentage: string | null;
-        receiver: string;
+    interface UserProfileWithdrawState extends RecieverTabState {
         token: string;
     }
 }

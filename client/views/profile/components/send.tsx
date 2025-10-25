@@ -1,36 +1,54 @@
+import { AnimatePresence, motion } from "motion/react";
 import { ChangeEvent, useState } from "react";
 import { Address } from "viem";
+import { useShallow } from "zustand/shallow";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
-import { formatUSD, tokenInputField } from "@/lib/utils";
+import { cn, formatUSD, tokenInputField } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
 
 export function UserProfileSend() {
-    const payload = useUserProfileDrawerStore((state) => state.payload);
-    const [recieverTabState, setRecieverTabState] = useState(() => ({
+    const { balanceInToken, token, tokenAddress } = useUserProfileDrawerStore(
+        useShallow((state) => ({
+            token: state.payload?.token,
+            balanceInToken: state.payload?.balanceInToken,
+            tokenAddress: state.payload?.tokenAddress as Address,
+        })),
+    );
+
+    const { data: tokenPrices } = useTokenPrice(tokenAddress);
+    const usdPrice = tokenPrices ? Number(tokenPrices.usdPrice) : 0;
+
+    const [recieverTabState, setRecieverTabState] = useState<RecieverTabState>(() => ({
         receiver: "",
         amountInToken: "",
-        amountInUsd: "",
-        token: payload?.token,
-        tokenAddress: payload?.tokenAddress,
+        percentage: null,
     }));
 
-    const { data: tokenPrices } = useTokenPrice(recieverTabState.tokenAddress as Address);
-
+    const amountInUsd = String(Number(recieverTabState.amountInToken) * usdPrice);
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
         const inputValue = tokenInputField(event.target.value);
 
         setRecieverTabState((state) => ({
             ...state,
             amountInToken: inputValue,
-            amountInUsd: `${tokenPrices ? Number(inputValue) * tokenPrices.usdPrice : 0}`,
+            percentage: null,
         }));
     }
 
     function handleTipPercentage(value: string) {
-        console.log(value);
+        if (!tokenPrices) return;
+
+        const percent = Number(value.replace("%", "")) / 100;
+        const balance = Number(balanceInToken) || 0;
+
+        setRecieverTabState((state) => ({
+            ...state,
+            amountInToken: (balance * percent).toFixed(6),
+            percentage: value,
+        }));
     }
 
     return (
@@ -61,20 +79,38 @@ export function UserProfileSend() {
                                 color: recieverTabState.amountInToken ? "black" : "gray",
                             }}
                         />
-                        <span> {recieverTabState.token}</span>
+                        <span> {token}</span>
                     </div>
-                    <span className="text-base text-gray-500">{formatUSD(recieverTabState.amountInUsd || "0")}</span>
+                    <span className="text-base text-gray-500">{formatUSD(amountInUsd)}</span>
                 </div>
 
                 <div className="flex items-center justify-center gap-4">
                     {["10%", "25%", "50%", "100%"].map((value, index) => (
-                        <button
+                        <motion.button
                             key={index}
                             onClick={() => handleTipPercentage(value)}
-                            className="border-blue100 rounded-xs border px-4 py-1 text-sm font-light"
+                            className={cn(
+                                "border-blue100 relative overflow-hidden rounded-xs border px-4 py-1 text-sm font-light transition",
+                                recieverTabState.percentage === value ? "text-white" : "hover:bg-blue100/10 text-black",
+                            )}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ duration: 0.15 }}
                         >
                             {value}
-                        </button>
+
+                            <AnimatePresence>
+                                {recieverTabState.percentage === value ? (
+                                    <motion.span
+                                        layoutId="activePercentageHighlight"
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                        className="bg-blue100 absolute inset-0 -z-10"
+                                    />
+                                ) : null}
+                            </AnimatePresence>
+                        </motion.button>
                     ))}
                 </div>
             </section>
