@@ -49,6 +49,12 @@ export const LiveStreamMedia = memo(function ({
                 videoRef.current.onerror = function () {
                     console.error("Error occurred while playing video stream.");
                 };
+
+                const track = videoStream.getVideoTracks()[0];
+                const settings = track.getSettings();
+                const isPortrait = (settings.height ?? 0) > (settings.width ?? 0);
+
+                console.log({ isPortrait });
             }
         },
         [videoStream, videoStreamState],
@@ -127,7 +133,13 @@ export const LiveStreamMedia = memo(function ({
                 )}
             >
                 {videoStream && videoStreamState === "playable" ? (
-                    <video autoPlay className="aspect-video size-full md:aspect-auto" muted ref={videoRef} />
+                    <video
+                        autoPlay
+                        // className="aspect-video size-full md:aspect-auto"
+                        muted
+                        ref={videoRef}
+                        className={cn("max-h-full max-w-full rounded-lg bg-black object-contain", "h-auto w-auto")}
+                    />
                 ) : metadata ? (
                     <Fragment> {metadata} </Fragment>
                 ) : (
