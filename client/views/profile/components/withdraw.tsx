@@ -141,10 +141,8 @@ export function Withdraw() {
                             key={index}
                             onClick={() => handleTipPercentage(value)}
                             className={cn(
-                                "relative overflow-hidden rounded-xs border px-4 py-1 text-sm font-light",
-                                recieverTabState.percentage === value
-                                    ? "border-blue100 text-white"
-                                    : "border-blue100 hover:bg-blue100/10 text-black",
+                                "border-blue100 relative overflow-hidden rounded-xs border px-4 py-1 text-sm font-light transition",
+                                recieverTabState.percentage === value ? "text-white" : "hover:bg-blue100/10 text-black",
                             )}
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.15 }}
