@@ -58,6 +58,13 @@ declare global {
         token: string;
         tokenAddress: Address;
     }
+
+    interface UserProfileWithdrawState {
+        amountInToken: string;
+        percentage: string | null;
+        receiver: string;
+        token: string;
+    }
 }
 
 export {};
