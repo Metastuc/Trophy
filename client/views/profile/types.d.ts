@@ -13,7 +13,7 @@ declare global {
 
     type StreamSelection = "scheduled" | "recorded";
 
-    type Tab<T extends string> = { id: T; label: string; icon?: React.ReactNode };
+    type Tab<T extends string> = { id: T; label: string; icon?: React.ReactNode; disabled?: boolean };
 
     type UserProfileDrawerStore = UserProfileDrawerValues & UserProfileDrawerActions;
 

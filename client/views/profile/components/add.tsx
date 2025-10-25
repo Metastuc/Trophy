@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Fragment } from "react";
+import { useShallow } from "zustand/shallow";
 
 import { useTabSwitcher } from "@/hooks/tab-switch";
 import { cn } from "@/lib/utils";
@@ -10,14 +11,20 @@ import { UserProfileSend } from "./send";
 import { TabHeader } from "./tab";
 
 export function Add() {
-    const addViewCurentTab = useUserProfileDrawerStore((state) => state.addViewCurentTab);
+    const { addViewCurentTab, payload } = useUserProfileDrawerStore(
+        useShallow((state) => ({
+            addViewCurentTab: state.addViewCurentTab,
+            payload: state.payload,
+        })),
+    );
+
     const { activeTab, handleTabClick, tabIsActive } = useTabSwitcher<AddDrawerTab>(addViewCurentTab as AddDrawerTab);
 
     return (
         <Fragment>
             <TabHeader
                 tabs={[
-                    { id: "send", label: "Send" },
+                    { id: "send", label: "Send", disabled: !payload },
                     { id: "receive", label: "Receive" },
                 ]}
                 activeTab={activeTab}
