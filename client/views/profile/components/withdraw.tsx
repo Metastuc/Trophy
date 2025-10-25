@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "motion/react";
 import { ChangeEvent, useState } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
@@ -7,7 +8,7 @@ import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
 import { useAuthenticationStore } from "@/hooks/authentication";
-import { formatUSD } from "@/lib/utils";
+import { cn, formatUSD } from "@/lib/utils";
 import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 export function Withdraw() {
@@ -24,8 +25,9 @@ export function Withdraw() {
         enabled: !!isAuthenticated,
     });
 
-    const [recieverTabState, setRecieverTabState] = useState(() => ({
+    const [recieverTabState, setRecieverTabState] = useState<UserProfileWithdrawState>(() => ({
         amountInToken: "",
+        percentage: null,
         receiver: "",
         token: TOKENS[0].value,
     }));
@@ -47,11 +49,21 @@ export function Withdraw() {
         setRecieverTabState((state) => ({
             ...state,
             amountInToken: event.target.value,
+            percentage: null,
         }));
     }
 
     function handleTipPercentage(value: string) {
-        console.log(value);
+        if (!selectedToken) return;
+
+        const percent = Number(value.replace("%", "")) / 100;
+        const balance = Number(selectedToken.balance) || 0;
+
+        setRecieverTabState((state) => ({
+            ...state,
+            amountInToken: (balance * percent).toFixed(6),
+            percentage: value,
+        }));
     }
 
     return (
@@ -92,7 +104,14 @@ export function Withdraw() {
                         <aside className="flex flex-col items-center justify-center">
                             <Select
                                 value={recieverTabState.token}
-                                onValueChange={(value) => setRecieverTabState((state) => ({ ...state, token: value }))}
+                                onValueChange={(value) =>
+                                    setRecieverTabState((state) => ({
+                                        ...state,
+                                        amountInToken: "",
+                                        percentage: null,
+                                        token: value,
+                                    }))
+                                }
                             >
                                 <SelectTrigger className="border-blue100 h-10.5! min-w-28 rounded-lg bg-[#1B1B1B] p-0 px-2">
                                     <SelectValue>
@@ -118,13 +137,33 @@ export function Withdraw() {
 
                 <div className="flex items-center justify-center gap-4">
                     {["10%", "25%", "50%", "100%"].map((value, index) => (
-                        <button
+                        <motion.button
                             key={index}
                             onClick={() => handleTipPercentage(value)}
-                            className="border-blue100 rounded-xs border px-4 py-1 text-sm font-light"
+                            className={cn(
+                                "relative overflow-hidden rounded-xs border px-4 py-1 text-sm font-light",
+                                recieverTabState.percentage === value
+                                    ? "border-blue100 text-white"
+                                    : "border-blue100 hover:bg-blue100/10 text-black",
+                            )}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ duration: 0.15 }}
                         >
                             {value}
-                        </button>
+
+                            <AnimatePresence>
+                                {recieverTabState.percentage === value ? (
+                                    <motion.span
+                                        layoutId="activePercentageHighlight"
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                        className="bg-blue100 absolute inset-0 -z-10"
+                                    />
+                                ) : null}
+                            </AnimatePresence>
+                        </motion.button>
                     ))}
                 </div>
             </section>
