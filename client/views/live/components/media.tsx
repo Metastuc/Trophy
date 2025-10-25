@@ -127,7 +127,7 @@ export const LiveStreamMedia = memo(function ({
                 )}
             >
                 {videoStream && videoStreamState === "playable" ? (
-                    <video autoPlay className="object-contain md:object-cover" muted ref={videoRef} />
+                    <video autoPlay className="aspect-video size-full md:aspect-auto" muted ref={videoRef} />
                 ) : metadata ? (
                     <Fragment> {metadata} </Fragment>
                 ) : (
