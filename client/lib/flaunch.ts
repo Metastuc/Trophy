@@ -105,12 +105,7 @@ export async function flaunchCreatorToken({
                 flaunchParams._premineSwapHookData,
                 flaunchParams._whitelistParams,
                 flaunchParams._airdropParams,
-                flaunchParams._treasuryManagerParams,
-                flaunchParams._trustedFeeSigner,
-                flaunchParams._premineSwapHookData,
-                flaunchParams._whitelistParams,
-                flaunchParams._airdropParams,
-                flaunchParams._treasuryManagerParams,
+                flaunchParams._treasuryManagerParams
             ],
         });
 
