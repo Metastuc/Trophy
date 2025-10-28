@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
 
-// import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
 import { flaunchCreatorToken } from "@/lib/flaunch";
 
 export function useCreatorTokenCreation({
@@ -24,7 +24,7 @@ export function useCreatorTokenCreation({
         tokensCreatorWillReceieve: bigint;
     }) {
         if (!formState.creatorToken && formState.creatorTokenEnabled) {
-            await wallets[0].switchChain(8453);
+            await wallets[0].switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
             const provider = await wallets[0].getEthereumProvider();
             if (!provider) throw new Error("No provider found");
 
