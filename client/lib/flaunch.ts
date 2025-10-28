@@ -102,7 +102,7 @@ export async function flaunchCreatorToken({
             functionName: "flaunch",
             args: [
                 flaunchParams._flaunchParams,
-                // flaunchParams._trustedFeeSigner,
+                flaunchParams._trustedFeeSigner,
                 flaunchParams._premineSwapHookData,
                 flaunchParams._whitelistParams,
                 flaunchParams._airdropParams,
