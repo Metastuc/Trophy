@@ -1,19 +1,20 @@
 import { Address, createPublicClient, createWalletClient, custom, http, parseAbi, PublicClient } from "viem";
+import { base } from "viem/chains";
 
 import { log } from "#~/utils/logger.ts";
 
-import { CLIENT_CONSTANTS, CLIENT_ENV } from "./constants";
+import { CLIENT_ENV } from "./constants";
 import { formatEtherToToken } from "./utils";
 
 export const publicClient = createPublicClient({
-    chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
+    chain: base,
     transport: http(CLIENT_ENV.VITE_ALCHEMY_RPC),
 }) as PublicClient;
 
 export function getWalletClient({ address, provider }: GetWalletClient) {
     return createWalletClient({
         account: address,
-        chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
+        chain: base,
         transport: custom(provider),
     });
 }

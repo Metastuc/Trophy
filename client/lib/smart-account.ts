@@ -4,8 +4,9 @@ import { createKernelAccount, createKernelAccountClient, createZeroDevPaymasterC
 import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { Signer } from "@zerodev/sdk/types";
 import { http } from "viem";
+import { base } from "viem/chains";
 
-import { CLIENT_CONSTANTS, CLIENT_ENV } from "./constants";
+import { CLIENT_ENV } from "./constants";
 import { publicClient } from "./viem";
 
 export async function initSmartAccount(provider: EIP1193Provider) {
@@ -26,7 +27,7 @@ export async function initSmartAccount(provider: EIP1193Provider) {
             }),
             bundlerTransport: http(CLIENT_ENV.VITE_ZERODEV_RPC),
 
-            chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
+            chain: base,
 
             client: publicClient,
 
@@ -34,7 +35,7 @@ export async function initSmartAccount(provider: EIP1193Provider) {
                 getPaymasterData(parameters) {
                     return createZeroDevPaymasterClient({
                         transport: http(CLIENT_ENV.VITE_ZERODEV_RPC),
-                        chain: CLIENT_CONSTANTS.CURRENT_NETWORK,
+                        chain: base,
                     }).sponsorUserOperation({ userOperation: parameters });
                 },
             },
