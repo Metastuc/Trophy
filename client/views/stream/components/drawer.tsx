@@ -18,6 +18,7 @@ import { getTokens } from "@/components/ui/tokens";
 import { getEthereumRequiredForCreatorTokenAllocation } from "@/lib/flaunch";
 import { formatUSD, tokenInputField } from "@/lib/utils";
 import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { toTime } from "#~/utils/time.ts";
 
 export function CreateStreamDrawer({
     isOpen,
@@ -56,28 +57,31 @@ export function CreateStreamDrawer({
 
             if (debounceRef.current) clearTimeout(debounceRef.current);
 
-            debounceRef.current = setTimeout(async function () {
-                try {
-                    if (abortRef.current) abortRef.current.abort();
-                    const controller = new AbortController();
-                    abortRef.current = controller;
+            debounceRef.current = setTimeout(
+                async function () {
+                    try {
+                        if (abortRef.current) abortRef.current.abort();
+                        const controller = new AbortController();
+                        abortRef.current = controller;
 
-                    const { ethereumAmountRequired, tokensCreatorWillReceieve } =
-                        await getEthereumRequiredForCreatorTokenAllocation(percentage);
+                        const { ethereumAmountRequired, tokensCreatorWillReceieve } =
+                            await getEthereumRequiredForCreatorTokenAllocation(percentage);
 
-                    if (!controller.signal.aborted) {
-                        const ether = formatEther(ethereumAmountRequired);
-                        const usdPrice = tokenPrices?.usdPrice || 0;
-                        const approximateAmountInUSD = (parseFloat(ether) * usdPrice).toString();
+                        if (!controller.signal.aborted) {
+                            const ether = formatEther(ethereumAmountRequired);
+                            const usdPrice = tokenPrices?.usdPrice || 0;
+                            const approximateAmountInUSD = (parseFloat(ether) * usdPrice).toString();
 
-                        setFormState({ approximateAmountInUSD, ethereumAmountRequired, tokensCreatorWillReceieve });
+                            setFormState({ approximateAmountInUSD, ethereumAmountRequired, tokensCreatorWillReceieve });
+                        }
+                    } catch (error) {
+                        if ((error as Error).name !== "AbortError") {
+                            console.error("Preview fetch failed", error);
+                        }
                     }
-                } catch (error) {
-                    if ((error as Error).name !== "AbortError") {
-                        console.error("Preview fetch failed", error);
-                    }
-                }
-            }, 750);
+                },
+                toTime({ unit: "seconds", value: 0.75, output: "milliseconds" }),
+            );
 
             return function () {
                 if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -121,13 +125,13 @@ export function CreateStreamDrawer({
                                                 width: `${formState.allocationInPercentage.length || 1}ch`,
                                                 color: formState?.allocationInPercentage ? "black" : "gray",
                                             }}
-                                            className="max-w-[7.5rem] outline-none"
+                                            className="max-w-30 outline-none"
                                             placeholder="1"
                                         />
                                         <span>%</span>
                                     </div>
 
-                                    <span className="text-base text-[#060606]/50">
+                                    <span className="text-black100/50 text-base">
                                         ~{formatUSD(formState.approximateAmountInUSD || "0")}
                                     </span>
                                 </aside>
