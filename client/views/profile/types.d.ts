@@ -8,7 +8,7 @@ declare global {
     type RecieverTabState = {
         amountInToken: string;
         percentage: string | null;
-        receiver: string;
+        reciever: string;
     };
 
     type StreamSelection = "scheduled" | "recorded";

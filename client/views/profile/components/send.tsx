@@ -1,10 +1,14 @@
+import { useWallets } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "motion/react";
 import { ChangeEvent, useState } from "react";
+import { toast } from "sonner";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { tipEther } from "@/lib/tip";
 import { cn, formatUSD, tokenInputField } from "@/lib/utils";
 
 import { useUserProfileDrawerStore } from "../store";
@@ -18,11 +22,14 @@ export function UserProfileSend() {
         })),
     );
 
+    const { wallets } = useWallets();
+    const wallet = wallets[0];
+
     const { data: tokenPrices } = useTokenPrice(tokenAddress);
     const usdPrice = tokenPrices ? Number(tokenPrices.usdPrice) : 0;
 
     const [recieverTabState, setRecieverTabState] = useState<RecieverTabState>(() => ({
-        receiver: "",
+        reciever: "",
         amountInToken: "",
         percentage: null,
     }));
@@ -51,13 +58,33 @@ export function UserProfileSend() {
         }));
     }
 
+    const handleSend = async () => {
+        const toastId = toast.loading("Creating creator token...");
+
+        const { amountInToken, reciever } = recieverTabState;
+        const regex = /^0x[a-fA-F0-9]{40}$/;
+    
+        if (!regex.test(reciever)) {
+            toast.error("You can't send tokens to basenames yet!", { id: toastId });
+            return;
+        }
+
+        await wallet.switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
+        const provider = await wallet.getEthereumProvider();
+
+        const hash = await tipEther({ amount: amountInToken, recipientAddress: reciever as Address, provider, senderAddress: wallet.address as Address });
+        
+        console.log({ hash });
+        toast.success("Withdrawal successful", { id: toastId });
+    }
+
     return (
         <section className="p-4">
             <div>
                 <input
                     type="text"
-                    value={recieverTabState.receiver}
-                    onChange={(event) => setRecieverTabState((state) => ({ ...state, receiver: event.target.value }))}
+                    value={recieverTabState.reciever}
+                    onChange={(event) => setRecieverTabState((state) => ({ ...state, reciever: event.target.value }))}
                     placeholder="Enter a username or Base address"
                     className="bg-blue100 w-full rounded-lg p-2 text-sm font-light text-white/70 placeholder:text-white/50"
                 />
@@ -115,7 +142,7 @@ export function UserProfileSend() {
                 </div>
             </section>
 
-            <Button className="bg-blue100 mt-5 h-13.5 w-full">
+            <Button onClick={handleSend} className="bg-blue100 mt-5 h-13.5 w-full">
                 <span className="text-xl">Send</span>
             </Button>
         </section>
