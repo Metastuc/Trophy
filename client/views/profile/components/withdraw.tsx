@@ -28,7 +28,7 @@ export function Withdraw() {
     const [recieverTabState, setRecieverTabState] = useState<UserProfileWithdrawState>(() => ({
         amountInToken: "",
         percentage: null,
-        receiver: "",
+        reciever: "",
         token: TOKENS[0].value,
     }));
 
@@ -71,7 +71,7 @@ export function Withdraw() {
             <div>
                 <input
                     type="text"
-                    value={recieverTabState.receiver}
+                    value={recieverTabState.reciever}
                     onChange={(event) => setRecieverTabState((state) => ({ ...state, receiver: event.target.value }))}
                     placeholder="Enter a username or Base address"
                     className="bg-blue100 w-full rounded-lg p-2 text-sm font-light text-white/70 placeholder:text-white/50"
