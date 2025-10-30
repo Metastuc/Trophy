@@ -56,7 +56,7 @@ export const API_ENDPOINTS = {
 
     TRANSACTIONS: {
         STORE_TIP: "/transactions/tip",
-        STORE_TOKEN_PURCHASE: "/transactions/token/purchase",
+        STORE_TOKEN_PURCHASE: "/transactions/purchase",
     },
 
     TOKEN: {
