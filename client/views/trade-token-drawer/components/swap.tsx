@@ -174,7 +174,7 @@ export function Swap() {
 
                             <SelectContent>
                                 {TOKENS.map((token, index) => (
-                                    <SelectItem key={index} value={token.value}>
+                                    <SelectItem key={index} value={token.address}>
                                         {token.render}
                                     </SelectItem>
                                 ))}
@@ -250,7 +250,7 @@ export function Swap() {
 
                             <SelectContent>
                                 {TOKENS.map((token, index) => (
-                                    <SelectItem key={index} value={token.value}>
+                                    <SelectItem key={index} value={token.address}>
                                         {token.render}
                                     </SelectItem>
                                 ))}
