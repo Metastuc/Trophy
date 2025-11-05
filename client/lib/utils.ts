@@ -2,6 +2,7 @@ import { useLocation } from "@tanstack/react-router";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatEther } from "viem";
+
 import { CLIENT_CONSTANTS } from "./constants";
 
 export function cn(...inputs: ClassValue[]): string {
