@@ -2,7 +2,6 @@ import { getAccessToken, usePrivy, useWallets } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { sleep } from "#~/utils/sleep.ts";
 import { authenticateUser } from "@/api/authenticate-user";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import {
@@ -10,6 +9,7 @@ import {
     useAuthenticationDrawerNavigationStore,
     useAuthenticationDrawerStateStore,
 } from "@/views/authentication-drawer/store";
+import { sleep } from "#~/utils/sleep.ts";
 
 export function AuthenticationProvider({ children }: { children: ReactNode }) {
     const { authenticated, ready, user: privyUser } = usePrivy();
