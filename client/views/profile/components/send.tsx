@@ -1,48 +1,55 @@
-import { useWallets } from "@privy-io/react-auth";
+import { EIP1193Provider } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "motion/react";
-import { ChangeEvent, useState } from "react";
-import { toast } from "sonner";
+import { ChangeEvent } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
-import { CLIENT_CONSTANTS } from "@/lib/constants";
-import { tipEther } from "@/lib/tip";
-import { cn, formatUSD, tokenInputField } from "@/lib/utils";
+import { cn, formatUSD, getPriceInQuantity, tokenInputField } from "@/lib/utils";
 
+import { Loading } from "@/components/ui/loading";
+import { useAuthenticationStore } from "@/hooks/authentication";
+import { useTransactionStore } from "@/hooks/transaction";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { toast } from "sonner";
 import { useUserProfileDrawerStore } from "../store";
 
 export function UserProfileSend() {
-    const { balanceInToken, token, tokenAddress } = useUserProfileDrawerStore(
+    const { address, provider } = useAuthenticationStore(
         useShallow((state) => ({
-            token: state.payload?.token,
+            address: state.user?.wallet?.address as Address,
+            provider: state.user?.provider as EIP1193Provider,
+        })),
+    );
+
+    const { balanceInToken, closeDrawer, token, tokenAddress } = useUserProfileDrawerStore(
+        useShallow((state) => ({
             balanceInToken: state.payload?.balanceInToken,
+            closeDrawer: state.closeDrawer,
+            token: state.payload?.token,
             tokenAddress: state.payload?.tokenAddress as Address,
         })),
     );
 
-    const { wallets } = useWallets();
-    const wallet = wallets[0];
+    const { amount, percentage, recipientAddress, setField, transfer, isPending } = useTransactionStore(
+        useShallow((state) => ({
+            amount: state.amount || "",
+            isPending: state.isLoading,
+            percentage: state.percentage,
+            recipientAddress: state.recipientAddress,
+            setField: state.setField,
+            transfer: state.transfer,
+        })),
+    );
 
     const { data: tokenPrices } = useTokenPrice(tokenAddress);
     const usdPrice = tokenPrices ? Number(tokenPrices.usdPrice) : 0;
+    const amountInUsd = String(Number(amount) * usdPrice);
 
-    const [recieverTabState, setRecieverTabState] = useState<RecieverTabState>(() => ({
-        reciever: "",
-        amountInToken: "",
-        percentage: null,
-    }));
-
-    const amountInUsd = String(Number(recieverTabState.amountInToken) * usdPrice);
     function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
-        const inputValue = tokenInputField(event.target.value);
-
-        setRecieverTabState((state) => ({
-            ...state,
-            amountInToken: inputValue,
-            percentage: null,
-        }));
+        setField({ key: "amount", value: tokenInputField(event.target.value) });
+        setField({ key: "percentage", value: undefined });
     }
 
     function handleTipPercentage(value: string) {
@@ -51,45 +58,20 @@ export function UserProfileSend() {
         const percent = Number(value.replace("%", "")) / 100;
         const balance = Number(balanceInToken) || 0;
 
-        setRecieverTabState((state) => ({
-            ...state,
-            amountInToken: (balance * percent).toFixed(6),
-            percentage: value,
-        }));
-    }
-
-    const handleSend = async () => {
-        const toastId = toast.loading("Creating creator token...");
-
-        const { amountInToken, reciever } = recieverTabState;
-        const regex = /^0x[a-fA-F0-9]{40}$/;
-
-        if (!regex.test(reciever)) {
-            toast.error("You can't send tokens to basenames yet!", { id: toastId });
-            return;
-        }
-
-        await wallet.switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
-        const provider = await wallet.getEthereumProvider();
-
-        const hash = await tipEther({
-            amount: amountInToken,
-            recipientAddress: reciever as Address,
-            provider,
-            senderAddress: wallet.address as Address,
+        setField({
+            key: "amount",
+            value: getPriceInQuantity({ price: `${balance}`, quantity: `${percent}` }).toFixed(6),
         });
-
-        console.log({ hash });
-        toast.success("Withdrawal successful", { id: toastId });
-    };
+        setField({ key: "percentage", value });
+    }
 
     return (
         <section className="p-4">
             <div>
                 <input
                     type="text"
-                    value={recieverTabState.reciever}
-                    onChange={(event) => setRecieverTabState((state) => ({ ...state, reciever: event.target.value }))}
+                    value={recipientAddress}
+                    onChange={(event) => setField({ key: "recipientAddress", value: event.target.value })}
                     placeholder="Enter a username or Base address"
                     className="bg-blue100 w-full rounded-lg p-2 text-sm font-light text-white/70 placeholder:text-white/50"
                 />
@@ -103,12 +85,12 @@ export function UserProfileSend() {
                         <input
                             type="text"
                             onChange={handleAmountInTokenChange}
-                            value={recieverTabState.amountInToken}
+                            value={amount}
                             placeholder="0.00"
                             className="max-w-30 focus:outline-none"
                             style={{
-                                width: `${recieverTabState.amountInToken.length || 1}ch`,
-                                color: recieverTabState.amountInToken ? "black" : "gray",
+                                width: `${amount.length || 1}ch`,
+                                color: amount ? "black" : "gray",
                             }}
                         />
                         <span> {token}</span>
@@ -123,7 +105,7 @@ export function UserProfileSend() {
                             onClick={() => handleTipPercentage(value)}
                             className={cn(
                                 "border-blue100 relative overflow-hidden rounded-xs border px-4 py-1 text-sm font-light transition",
-                                recieverTabState.percentage === value ? "text-white" : "hover:bg-blue100/10 text-black",
+                                percentage === value ? "text-white" : "hover:bg-blue100/10 text-black",
                             )}
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.15 }}
@@ -131,7 +113,7 @@ export function UserProfileSend() {
                             {value}
 
                             <AnimatePresence>
-                                {recieverTabState.percentage === value ? (
+                                {percentage === value ? (
                                     <motion.span
                                         layoutId="activePercentageHighlight"
                                         initial={{ opacity: 0, scale: 0.8 }}
@@ -147,8 +129,37 @@ export function UserProfileSend() {
                 </div>
             </section>
 
-            <Button onClick={handleSend} className="bg-blue100 mt-5 h-13.5 w-full">
-                <span className="text-xl">Send</span>
+            <Button
+                onClick={async () => {
+                    const promise = (async () => {
+                        const hash = await transfer({ address, provider });
+                        closeDrawer();
+                        return hash;
+                    })();
+
+                    toast.promise(promise, {
+                        loading: "Sending...",
+                        success: (hash) => (
+                            <div>
+                                <p>Send successful!</p>
+                                <Button variant="link" className="text-blue-500 underline">
+                                    <a
+                                        href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as Address)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        View on BaseScan
+                                    </a>
+                                </Button>
+                            </div>
+                        ),
+                        error: (error) => error?.message || "Send failed",
+                    });
+                }}
+                className="bg-blue100 mt-5 h-13.5 w-full"
+                disabled={isPending}
+            >
+                {isPending ? <Loading styles={{ icon: "text-white" }} /> : <span className="text-xl">Send</span>}
             </Button>
         </section>
     );
