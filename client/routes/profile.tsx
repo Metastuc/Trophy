@@ -53,10 +53,10 @@ function RouteComponent() {
                                     {activeTab === "wallet" ? (
                                         <motion.div
                                             key="wallet"
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ duration: 0.15 }}
+                                            initial={{ filter: "blur(0.25rem)", opacity: 0, x: 15 }}
+                                            animate={{ filter: "blur(0rem)", opacity: 1, x: 0 }}
+                                            exit={{ filter: "blur(0.25rem)", opacity: 0, x: -15 }}
+                                            transition={{ duration: 0.025 }}
                                         >
                                             <UserWallet />
                                         </motion.div>
@@ -65,10 +65,10 @@ function RouteComponent() {
                                     {activeTab === "streams" ? (
                                         <motion.div
                                             key="streams"
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ duration: 0.15 }}
+                                            initial={{ filter: "blur(0.25rem)", opacity: 0, x: 15 }}
+                                            animate={{ filter: "blur(0rem)", opacity: 1, x: 0 }}
+                                            exit={{ filter: "blur(0.25rem)", opacity: 0, x: -15 }}
+                                            transition={{ duration: 0.025 }}
                                         >
                                             <Streams />
                                         </motion.div>
