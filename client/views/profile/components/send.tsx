@@ -1,18 +1,18 @@
 import { EIP1193Provider } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "motion/react";
 import { ChangeEvent } from "react";
+import { toast } from "sonner";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
-import { cn, formatUSD, getPriceInQuantity, tokenInputField } from "@/lib/utils";
-
 import { Loading } from "@/components/ui/loading";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { useTransactionStore } from "@/hooks/transaction";
 import { CLIENT_CONSTANTS } from "@/lib/constants";
-import { toast } from "sonner";
+import { cn, formatUSD, getPriceInQuantity, tokenInputField } from "@/lib/utils";
+
 import { useUserProfileDrawerStore } from "../store";
 
 export function UserProfileSend() {

@@ -4,13 +4,13 @@ import { ChangeEvent } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
-import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { useTransactionStore } from "@/hooks/transaction";
 import { cn, formatUSD, getPriceInQuantity } from "@/lib/utils";
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 export function Withdraw() {
     const { isAuthenticated, walletAddress } = useAuthenticationStore(
