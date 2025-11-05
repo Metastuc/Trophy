@@ -15,11 +15,17 @@ import {
 } from "@/components/ui/drawer";
 import { cn, formatUSD } from "@/lib/utils";
 
+import { Loading } from "@/components/ui/loading";
+import { useAuthenticationStore } from "@/hooks/authentication";
+import { useTransactionStore } from "@/hooks/transaction";
+import { CLIENT_CONSTANTS } from "@/lib/constants";
+import { EIP1193Provider } from "@privy-io/react-auth";
+import { toast } from "sonner";
+import { Address } from "viem";
 import { useUserProfileDrawerStore } from "../store";
 import { Add } from "./add";
 import { EditProfile } from "./edit";
 import { Withdraw } from "./withdraw";
-
 export function UserProfileDrawer() {
     const { drawerView, closeDrawer } = useUserProfileDrawerStore(
         useShallow((state) => ({
@@ -149,7 +155,26 @@ function UserProfileDrawerMain() {
     }
 }
 function UserProfileDrawerFooter() {
-    const drawerView = useUserProfileDrawerStore((state) => state.drawerView);
+    const { closeDrawer, drawerView } = useUserProfileDrawerStore(
+        useShallow((state) => ({
+            closeDrawer: state.closeDrawer,
+            drawerView: state.drawerView,
+        })),
+    );
+
+    const { address, provider } = useAuthenticationStore(
+        useShallow((state) => ({
+            address: state.user?.wallet?.address as Address,
+            provider: state.user?.provider as EIP1193Provider,
+        })),
+    );
+
+    const { transfer, isPending } = useTransactionStore(
+        useShallow((state) => ({
+            transfer: state.transfer,
+            isPending: state.isLoading,
+        })),
+    );
 
     switch (drawerView) {
         case "earned":
@@ -157,8 +182,42 @@ function UserProfileDrawerFooter() {
 
         case "withdraw":
             return (
-                <Button variant="outline" className="bg-blue100 mt-5 h-13.5 w-full">
-                    <span className="text-white">Withdraw</span>
+                <Button
+                    variant="outline"
+                    className="bg-blue100 mt-5 h-13.5 w-full"
+                    disabled={isPending}
+                    onClick={() => {
+                        const promise = (async () => {
+                            const hash = await transfer({ address, provider });
+                            closeDrawer();
+                            return hash;
+                        })();
+
+                        toast.promise(promise, {
+                            loading: "Withdrawing...",
+                            success: (hash) => (
+                                <div>
+                                    <p>Withdrawal successful!</p>
+                                    <Button variant="link" className="text-blue-500 underline">
+                                        <a
+                                            href={CLIENT_CONSTANTS.TX_SCAN_URL(hash as Address)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            View on BaseScan
+                                        </a>
+                                    </Button>
+                                </div>
+                            ),
+                            error: (error) => error?.message || "Withdrawal failed",
+                        });
+                    }}
+                >
+                    {isPending ? (
+                        <Loading styles={{ icon: "text-white" }} />
+                    ) : (
+                        <span className="text-white">Withdraw</span>
+                    )}
                 </Button>
             );
 

@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
 import { useAuthenticationStore } from "@/hooks/authentication";
-import { cn, formatUSD } from "@/lib/utils";
-import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { useTransactionStore } from "@/hooks/transaction";
+import { cn, formatUSD, getPriceInQuantity } from "@/lib/utils";
 
 export function Withdraw() {
     const { isAuthenticated, walletAddress } = useAuthenticationStore(
@@ -19,23 +20,24 @@ export function Withdraw() {
         })),
     );
 
+    const { amount, percentage, recipientAddress, setField, token } = useTransactionStore(
+        useShallow((state) => ({
+            amount: state.amount,
+            percentage: state.percentage,
+            recipientAddress: state.recipientAddress,
+            setField: state.setField,
+            token: state.token || "ETH",
+        })),
+    );
+
     const { data } = useQuery({
         queryKey: ["user", "user-wallet-token-balances", walletAddress],
         queryFn: async () => await getUserWalletTokenBalances({ walletAddress }),
         enabled: !!isAuthenticated,
     });
 
-    const [recieverTabState, setRecieverTabState] = useState<UserProfileWithdrawState>(() => ({
-        amountInToken: "",
-        percentage: null,
-        reciever: "",
-        token: TOKENS[0].value,
-    }));
-
     const selectedToken = data?.find(
-        (token) =>
-            token.symbol === recieverTabState.token ||
-            token.address === TOKEN_CONFIG[recieverTabState.token as keyof typeof TOKEN_CONFIG].address,
+        (index) => index.symbol === token || index.address === TOKEN_CONFIG[token as keyof typeof TOKEN_CONFIG].address,
     );
 
     const usdPrice =
@@ -43,14 +45,17 @@ export function Withdraw() {
             ? Number(selectedToken.usd_value) / Number(selectedToken.balance)
             : 0;
 
-    const balanceInUsd = Number(recieverTabState.amountInToken || "0") * usdPrice;
+    const balanceInUsd = getPriceInQuantity({ price: `${usdPrice}`, quantity: `${amount || 0}` });
 
     function handleAmountChange(event: ChangeEvent<HTMLInputElement>) {
-        setRecieverTabState((state) => ({
-            ...state,
-            amountInToken: event.target.value,
-            percentage: null,
-        }));
+        setField({ key: "amount", value: event.target.value });
+        setField({ key: "percentage", value: undefined });
+    }
+
+    function handleTokenChange(value: string) {
+        setField({ key: "percentage", value: undefined });
+        setField({ key: "token", value: value as TokenSymbols });
+        setField({ key: "tokenAddress", value: TOKEN_CONFIG[value as TokenSymbols].address });
     }
 
     function handleTipPercentage(value: string) {
@@ -59,11 +64,11 @@ export function Withdraw() {
         const percent = Number(value.replace("%", "")) / 100;
         const balance = Number(selectedToken.balance) || 0;
 
-        setRecieverTabState((state) => ({
-            ...state,
-            amountInToken: (balance * percent).toFixed(6),
-            percentage: value,
-        }));
+        setField({
+            key: "amount",
+            value: getPriceInQuantity({ price: `${balance}`, quantity: `${percent}` }).toFixed(6),
+        });
+        setField({ key: "percentage", value });
     }
 
     return (
@@ -71,8 +76,10 @@ export function Withdraw() {
             <div>
                 <input
                     type="text"
-                    value={recieverTabState.reciever}
-                    onChange={(event) => setRecieverTabState((state) => ({ ...state, receiver: event.target.value }))}
+                    value={recipientAddress}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                        setField({ key: "recipientAddress", value: event.target.value })
+                    }
                     placeholder="Enter a username or Base address"
                     className="bg-blue100 w-full rounded-lg p-2 text-sm font-light text-white/70 placeholder:text-white/50"
                 />
@@ -86,37 +93,25 @@ export function Withdraw() {
                         <aside className="flex flex-col items-start justify-center">
                             <div className="flex items-center justify-center gap-1 text-2xl">
                                 <input
-                                    value={recieverTabState.amountInToken}
+                                    value={amount}
                                     onChange={handleAmountChange}
                                     style={{
-                                        width: `${recieverTabState.amountInToken.length || 1}ch`,
-                                        color: recieverTabState.amountInToken ? "black" : "gray",
+                                        width: `${amount?.length || 1}ch`,
+                                        color: amount ? "black" : "gray",
                                     }}
                                     className="max-w-30 outline-none"
                                     placeholder="0.00"
                                 />
-                                <span>{recieverTabState.token}</span>
+                                <span>{token}</span>
                             </div>
 
                             <span className="text-base text-black/50">{formatUSD(balanceInUsd.toString())}</span>
                         </aside>
 
                         <aside className="flex flex-col items-center justify-center">
-                            <Select
-                                value={recieverTabState.token}
-                                onValueChange={(value) =>
-                                    setRecieverTabState((state) => ({
-                                        ...state,
-                                        amountInToken: "",
-                                        percentage: null,
-                                        token: value,
-                                    }))
-                                }
-                            >
+                            <Select value={token} onValueChange={handleTokenChange}>
                                 <SelectTrigger className="border-blue100 h-10.5! min-w-28 rounded-lg bg-[#1B1B1B] p-0 px-2">
-                                    <SelectValue>
-                                        {TOKENS.find((token) => token.value === recieverTabState.token)?.title}
-                                    </SelectValue>
+                                    <SelectValue>{TOKENS.find((index) => index.value === token)?.title}</SelectValue>
                                 </SelectTrigger>
 
                                 <SelectContent>
@@ -142,7 +137,7 @@ export function Withdraw() {
                             onClick={() => handleTipPercentage(value)}
                             className={cn(
                                 "border-blue100 relative overflow-hidden rounded-xs border px-4 py-1 text-sm font-light transition",
-                                recieverTabState.percentage === value ? "text-white" : "hover:bg-blue100/10 text-black",
+                                percentage === value ? "text-white" : "hover:bg-blue100/10 text-black",
                             )}
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.15 }}
@@ -150,7 +145,7 @@ export function Withdraw() {
                             {value}
 
                             <AnimatePresence>
-                                {recieverTabState.percentage === value ? (
+                                {percentage === value ? (
                                     <motion.span
                                         layoutId="activePercentageHighlight"
                                         initial={{ opacity: 0, scale: 0.8 }}
