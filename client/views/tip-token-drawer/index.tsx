@@ -1,7 +1,6 @@
 import { CircleDollarSign } from "lucide-react";
 import { ChangeEvent, useMemo } from "react";
 
-import { SUPPORTED_TOKENS, TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +16,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { TOKENS } from "@/components/ui/tokens";
 import { formatToken, formatUSD, tokenInputField } from "@/lib/utils";
-
+import { SUPPORTED_TOKENS, TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 import { log } from "#~/utils/logger.ts";
+
 import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
 
