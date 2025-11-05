@@ -1,4 +1,4 @@
-import { getAccessToken, usePrivy } from "@privy-io/react-auth";
+import { getAccessToken, usePrivy, useWallets } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -13,6 +13,7 @@ import { sleep } from "#~/utils/sleep.ts";
 
 export function AuthenticationProvider({ children }: { children: ReactNode }) {
     const { authenticated, ready, user: privyUser } = usePrivy();
+    const { wallets } = useWallets();
 
     const lastFetchedUserIdRef = useRef<string | null>(null);
 
@@ -43,6 +44,12 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
             if (!privyUser.wallet?.address) {
                 console.warn("User has no wallet yet, skipping auth bootstrap...");
+                return;
+            }
+
+            if (wallets.length === 0) {
+                console.warn("Wallets array is empty, cannot get provider. Retrying on next update...");
+                setIsLoading(false);
                 return;
             }
 
@@ -88,13 +95,18 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
                     openDrawer();
                 }
 
-                setUser({ ...privyUser, backendUserData: response.data });
+                setUser({
+                    ...privyUser,
+                    backendUserData: response.data,
+                    provider: ready && (await wallets[0].getEthereumProvider()),
+                });
             })();
         },
         [
             authenticated,
             privyUser,
             ready,
+            wallets,
             goToFinish,
             openDrawer,
             setFormField,

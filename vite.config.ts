@@ -8,6 +8,7 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
+        nodePolyfills(),
         tanstackRouter({
             autoCodeSplitting: true,
             generatedRouteTree: "client/routeTree.gen.ts",
@@ -21,7 +22,6 @@ export default defineConfig({
             },
         }),
         tailwindcss(),
-        nodePolyfills(),
     ],
     resolve: {
         alias: {

@@ -1,11 +1,13 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
 
+import { useTransactionStore } from "@/hooks/transaction";
 import { formatUSD } from "@/lib/utils";
 
 export const useUserProfileDrawerStore: UseBoundStore<StoreApi<UserProfileDrawerStore>> =
     create<UserProfileDrawerStore>()((set) => ({
         closeDrawer() {
-            set({ drawerView: null, addViewCurentTab: undefined, payload: undefined });
+            useTransactionStore.getState().reset();
+            set({ drawerView: undefined, addViewCurentTab: undefined, payload: undefined });
         },
 
         openDrawer({ payload, tab, view }) {
@@ -24,7 +26,7 @@ export const useUserProfileDrawerStore: UseBoundStore<StoreApi<UserProfileDrawer
             set({ totalUsdBalance: formatUSD(balance) });
         },
 
-        drawerView: null,
+        drawerView: undefined,
 
         addViewCurentTab: "receive",
 
