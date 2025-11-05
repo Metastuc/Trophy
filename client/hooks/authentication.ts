@@ -1,4 +1,4 @@
-import { getAccessToken, User } from "@privy-io/react-auth";
+import { getAccessToken, User, useWallets } from "@privy-io/react-auth";
 import { create, StoreApi, UseBoundStore } from "zustand";
 
 import { authenticateUser } from "@/api/authenticate-user";
@@ -32,15 +32,17 @@ export const useAuthenticationStore: UseBoundStore<StoreApi<AuthenticationState>
         },
 
         async refreshAuthenticatedUser(privyUser: User) {
-            const accessToken = await getAccessToken();
-            set({ token: accessToken as string });
+            set({ token: (await getAccessToken()) as string });
 
+            const { wallets } = useWallets();
             const response = await authenticateUser();
+
             if (response) {
                 set({
                     user: {
                         ...privyUser,
                         backendUserData: response.data,
+                        provider: await wallets[0].getEthereumProvider(),
                     },
                 });
             }
