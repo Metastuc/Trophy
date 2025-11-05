@@ -4,16 +4,16 @@ import { toast } from "sonner";
 import { Address } from "viem";
 import { useChainId } from "wagmi";
 
+import { SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
+import { makeRequest } from "#~/utils/axios.ts";
+import { log } from "#~/utils/logger.ts";
+import { sleep } from "#~/utils/sleep.ts";
 import { useTokenPrice } from "@/api/get-token-price";
 import { Button } from "@/components/ui/button";
 import { TOKENS } from "@/components/ui/tokens";
 import { API_ENDPOINTS, CLIENT_CONSTANTS } from "@/lib/constants";
 import { tipERC20, tipEther } from "@/lib/tip";
 import { getWalletBalance } from "@/lib/viem";
-import { SUPPORTED_TOKENS } from "#~/store/supported-tokens.ts";
-import { makeRequest } from "#~/utils/axios.ts";
-import { log } from "#~/utils/logger.ts";
-import { sleep } from "#~/utils/sleep.ts";
 
 import { TipDrawerContext } from "./hooks";
 
@@ -84,7 +84,8 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                         provider: userWalletState.provider,
                         recipientAddress: streamer?.walletAddress as Address,
                         senderAddress: userWalletState.address as Address,
-                        token: tipDrawerState.token,
+                        token: tipDrawerState.token as TokenSymbols,
+                        tokenAddress: tipDrawerState.tokenAddress,
                     });
                 }
 
