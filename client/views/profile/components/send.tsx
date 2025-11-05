@@ -63,7 +63,7 @@ export function UserProfileSend() {
 
         const { amountInToken, reciever } = recieverTabState;
         const regex = /^0x[a-fA-F0-9]{40}$/;
-    
+
         if (!regex.test(reciever)) {
             toast.error("You can't send tokens to basenames yet!", { id: toastId });
             return;
@@ -72,11 +72,16 @@ export function UserProfileSend() {
         await wallet.switchChain(CLIENT_CONSTANTS.CURRENT_NETWORK.id);
         const provider = await wallet.getEthereumProvider();
 
-        const hash = await tipEther({ amount: amountInToken, recipientAddress: reciever as Address, provider, senderAddress: wallet.address as Address });
-        
+        const hash = await tipEther({
+            amount: amountInToken,
+            recipientAddress: reciever as Address,
+            provider,
+            senderAddress: wallet.address as Address,
+        });
+
         console.log({ hash });
         toast.success("Withdrawal successful", { id: toastId });
-    }
+    };
 
     return (
         <section className="p-4">

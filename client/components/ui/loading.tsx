@@ -1,6 +1,7 @@
-import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import { HtmlHTMLAttributes } from "react";
+
+import { cn } from "@/lib/utils";
 
 export function Loading({ styles }: { styles?: Record<string, HtmlHTMLAttributes<string>["className"]> }) {
     return (

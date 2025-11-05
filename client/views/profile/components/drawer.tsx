@@ -1,5 +1,8 @@
+import { EIP1193Provider } from "@privy-io/react-auth";
 import { X } from "lucide-react";
 import { Fragment } from "react";
+import { toast } from "sonner";
+import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
 import { ARROW_DOWN_FILLED } from "@/assets/icons";
@@ -13,15 +16,12 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer";
-import { cn, formatUSD } from "@/lib/utils";
-
 import { Loading } from "@/components/ui/loading";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { useTransactionStore } from "@/hooks/transaction";
 import { CLIENT_CONSTANTS } from "@/lib/constants";
-import { EIP1193Provider } from "@privy-io/react-auth";
-import { toast } from "sonner";
-import { Address } from "viem";
+import { cn, formatUSD } from "@/lib/utils";
+
 import { useUserProfileDrawerStore } from "../store";
 import { Add } from "./add";
 import { EditProfile } from "./edit";
