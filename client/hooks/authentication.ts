@@ -32,16 +32,13 @@ export const useAuthenticationStore: UseBoundStore<StoreApi<AuthenticationState>
         },
 
         async refreshAuthenticatedUser(privyUser: User) {
-            const accessToken = await getAccessToken();
-            set({ token: accessToken as string });
+            set({ token: (await getAccessToken()) as string });
 
             const response = await authenticateUser();
+
             if (response) {
                 set({
-                    user: {
-                        ...privyUser,
-                        backendUserData: response.data,
-                    },
+                    user: { ...privyUser, backendUserData: response.data },
                 });
             }
         },

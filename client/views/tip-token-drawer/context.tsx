@@ -84,7 +84,8 @@ export function TipDrawerContextProvider({ children, streamer }: TipDrawerContex
                         provider: userWalletState.provider,
                         recipientAddress: streamer?.walletAddress as Address,
                         senderAddress: userWalletState.address as Address,
-                        token: tipDrawerState.token,
+                        token: tipDrawerState.token as TokenSymbols,
+                        tokenAddress: tipDrawerState.tokenAddress,
                     });
                 }
 

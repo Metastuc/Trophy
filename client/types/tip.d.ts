@@ -10,8 +10,9 @@ declare global {
     }
 
     interface TipERC extends TipETH {
-        token: TokenAddresses;
+        token: TokenSymbols | string;
         senderAddress: Address;
+        tokenAddress: Address;
         // wallet: string;
     }
 
