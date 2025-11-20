@@ -32,13 +32,14 @@ export function UserProfileSend() {
         })),
     );
 
-    const { amount, percentage, recipientAddress, setField, transfer, isPending } = useTransactionStore(
+    const { amount, percentage, recipientAddress, setField, setFields, transfer, isPending } = useTransactionStore(
         useShallow((state) => ({
-            amount: state.amount || "",
+            amount: state.amount ?? "",
             isPending: state.isLoading,
             percentage: state.percentage,
-            recipientAddress: state.recipientAddress,
+            recipientAddress: state.recipientAddress ?? "",
             setField: state.setField,
+            setFields: state.setMultipleStoreValues,
             transfer: state.transfer,
         })),
     );
@@ -47,22 +48,16 @@ export function UserProfileSend() {
     const usdPrice = tokenPrices ? Number(tokenPrices.usdPrice) : 0;
     const amountInUsd = String(Number(amount) * usdPrice);
 
-    function handleAmountInTokenChange(event: ChangeEvent<HTMLInputElement>) {
-        setField({ key: "amount", value: tokenInputField(event.target.value) });
-        setField({ key: "percentage", value: undefined });
-    }
-
     function handleTipPercentage(value: string) {
         if (!tokenPrices) return;
 
-        const percent = Number(value.replace("%", "")) / 100;
-        const balance = Number(balanceInToken) || 0;
-
-        setField({
-            key: "amount",
-            value: getPriceInQuantity({ price: `${balance}`, quantity: `${percent}` }).toFixed(6),
+        setFields({
+            amount: getPriceInQuantity({
+                price: `${Number(balanceInToken) || 0}`,
+                quantity: `${Number(value.replace("%", "")) / 100}`,
+            }).toFixed(6),
+            percentage: value,
         });
-        setField({ key: "percentage", value });
     }
 
     return (
@@ -84,7 +79,9 @@ export function UserProfileSend() {
                     <div className="space-x-px text-2xl">
                         <input
                             type="text"
-                            onChange={handleAmountInTokenChange}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                                setFields({ amount: tokenInputField(event.target.value), percentage: undefined })
+                            }
                             value={amount}
                             placeholder="0.00"
                             className="max-w-30 focus:outline-none"

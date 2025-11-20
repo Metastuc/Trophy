@@ -26,6 +26,7 @@ declare global {
 
         reset: () => void;
         setField: <K extends keyof TransactionStateInner>({ key, value }: SetFieldParams<K>) => void;
+        setMultipleStoreValues: (values: Partial<TransactionStateInner>) => void;
         transfer: ({
             address,
             provider,
