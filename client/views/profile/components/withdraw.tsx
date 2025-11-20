@@ -4,13 +4,13 @@ import { ChangeEvent } from "react";
 import { Address } from "viem";
 import { useShallow } from "zustand/shallow";
 
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 import { getUserWalletTokenBalances } from "@/api/get-user";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TOKENS } from "@/components/ui/tokens";
 import { useAuthenticationStore } from "@/hooks/authentication";
 import { useTransactionStore } from "@/hooks/transaction";
-import { cn, formatUSD, getPriceInQuantity } from "@/lib/utils";
-import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { cn, formatUSD, getPriceInQuantity, tokenInputField } from "@/lib/utils";
 
 export function Withdraw() {
     const { isAuthenticated, walletAddress } = useAuthenticationStore(
@@ -20,13 +20,14 @@ export function Withdraw() {
         })),
     );
 
-    const { amount, percentage, recipientAddress, setField, token } = useTransactionStore(
+    const { amount, percentage, recipientAddress, setField, setFields, token } = useTransactionStore(
         useShallow((state) => ({
-            amount: state.amount || "",
+            amount: state.amount ?? "",
             percentage: state.percentage,
-            recipientAddress: state.recipientAddress,
+            recipientAddress: state.recipientAddress ?? "",
             setField: state.setField,
-            token: state.token || "ETH",
+            setFields: state.setMultipleStoreValues,
+            token: state.token ?? "ETH",
         })),
     );
 
@@ -47,28 +48,16 @@ export function Withdraw() {
 
     const balanceInUsd = getPriceInQuantity({ price: `${usdPrice}`, quantity: `${amount || 0}` });
 
-    function handleAmountChange(event: ChangeEvent<HTMLInputElement>) {
-        setField({ key: "amount", value: event.target.value });
-        setField({ key: "percentage", value: undefined });
-    }
-
-    function handleTokenChange(value: string) {
-        setField({ key: "percentage", value: undefined });
-        setField({ key: "token", value: value as TokenSymbols });
-        setField({ key: "tokenAddress", value: TOKEN_CONFIG[value as TokenSymbols].address });
-    }
-
     function handleTipPercentage(value: string) {
         if (!selectedToken) return;
 
-        const percent = Number(value.replace("%", "")) / 100;
-        const balance = Number(selectedToken.balance) || 0;
-
-        setField({
-            key: "amount",
-            value: getPriceInQuantity({ price: `${balance}`, quantity: `${percent}` }).toFixed(6),
+        setFields({
+            amount: getPriceInQuantity({
+                price: `${Number(selectedToken.balance) || 0}`,
+                quantity: `${Number(value.replace("%", "")) / 100}`,
+            }).toFixed(6),
+            percentage: value,
         });
-        setField({ key: "percentage", value });
     }
 
     return (
@@ -94,9 +83,14 @@ export function Withdraw() {
                             <div className="flex items-center justify-center gap-1 text-2xl">
                                 <input
                                     value={amount}
-                                    onChange={handleAmountChange}
+                                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                                        setFields({
+                                            amount: tokenInputField(event.target.value),
+                                            percentage: undefined,
+                                        })
+                                    }
                                     style={{
-                                        width: `${amount?.length || 1}ch`,
+                                        width: `${amount.length || 1}ch`,
                                         color: amount ? "black" : "gray",
                                     }}
                                     className="max-w-30 outline-none"
@@ -109,7 +103,16 @@ export function Withdraw() {
                         </aside>
 
                         <aside className="flex flex-col items-center justify-center">
-                            <Select value={token} onValueChange={handleTokenChange}>
+                            <Select
+                                value={token}
+                                onValueChange={(value: string) => {
+                                    setFields({
+                                        percentage: undefined,
+                                        token: value as TokenSymbols,
+                                        tokenAddress: TOKEN_CONFIG[value as TokenSymbols].address,
+                                    });
+                                }}
+                            >
                                 <SelectTrigger className="border-blue100 h-10.5! min-w-28 rounded-lg bg-[#1B1B1B] p-0 px-2">
                                     <SelectValue>{TOKENS.find((index) => index.value === token)?.title}</SelectValue>
                                 </SelectTrigger>
