@@ -2,9 +2,9 @@ import { Address, isAddress } from "viem";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
+import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 import { tipERC20, tipEther } from "@/lib/tip";
 import { getBaseName } from "@/lib/viem";
-import { TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
 
 export const useTransactionStore = create<TransactionState>()(
     immer((set, get) => ({
@@ -35,6 +35,12 @@ export const useTransactionStore = create<TransactionState>()(
         setField({ key, value }) {
             set(function (state: TransactionStateInner) {
                 state[key] = value;
+            });
+        },
+
+        setMultipleStoreValues(values: Partial<TransactionStateInner>) {
+            set((state: TransactionStateInner) => {
+                Object.assign(state, values);
             });
         },
 
