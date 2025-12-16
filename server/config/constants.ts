@@ -45,10 +45,10 @@ export const SERVER_ENV = z
         PRIVY_APP_ID: z.string(),
         PRIVY_APP_SECRET: z.string(),
         PRIVY_KEY: z.string().transform((value) => value.replace(/\\n/g, "\n")),
-        REDIS_PASSWORD: z.string(),
+        REDIS_PASSWORD: z.string().optional(),
         REDIS_PORT: z.coerce.number().int().positive(),
         REDIS_URI: z.string().refine((value) => isValidHost(value), { message: "Invalid host" }),
-        REDIS_USERNAME: z.string(),
+        REDIS_USERNAME: z.string().optional(),
         VITE_DEFAULT_IMAGE: z.url(),
     })
     .parse(process.env);
