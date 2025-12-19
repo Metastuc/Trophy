@@ -17,6 +17,7 @@ import { StreamerPFP } from "@/components/ui/streamer-pfp";
 import { TOKENS } from "@/components/ui/tokens";
 import { formatToken, formatUSD, tokenInputField } from "@/lib/utils";
 import { SUPPORTED_TOKENS, TOKEN_CONFIG } from "#~/store/supported-tokens.ts";
+import { log } from "#~/utils/logger.ts";
 
 import { TipDrawerContextProvider } from "./context";
 import { useTipDrawerContext } from "./hooks";
@@ -69,6 +70,10 @@ function TipDrawerInner({ trigger }: TipDrawerProps) {
     function handleTipPercentage(value: string) {
         console.log(value);
     }
+
+    log({ data: tipDrawerState, module: "TipDrawerInner", msg: "tipDrawerState", tag: "TIP-DRAWER" });
+    // useEffect(() => {
+    // }, [tipDrawerState]);
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={(isOpen) => (isOpen ? openDrawer() : closeDrawer())}>

@@ -1,4 +1,5 @@
 import { Address, createPublicClient, createWalletClient, custom, http, parseAbi, PublicClient } from "viem";
+import { normalize } from "viem/ens";
 
 import { log } from "#~/utils/logger.ts";
 
@@ -48,5 +49,11 @@ export async function getWalletBalance({
             functionName: "balanceOf",
             address: tokenAddress,
         }),
+    });
+}
+
+export async function getBaseName({ name }: { name: string }) {
+    return await publicClient.getEnsAddress({
+        name: normalize(name),
     });
 }

@@ -56,7 +56,7 @@ export const API_ENDPOINTS = {
 
     TRANSACTIONS: {
         STORE_TIP: "/transactions/tip",
-        STORE_TOKEN_PURCHASE: "/transactions/token/purchase",
+        STORE_TOKEN_PURCHASE: "/transactions/purchase",
     },
 
     TOKEN: {
@@ -76,10 +76,10 @@ export const CLIENT_CONSTANTS = {
     CURRENT_NETWORK: CLIENT_ENV.VITE_ENVIRONMENT === "production" ? base : baseSepolia,
     FILE_UPLOAD_MAX_SIZE: 5 * 1024 * 1024,
     FILE_UPLOAD_SUPPORTED_TYPES: ["image/jpeg", "image/png"],
-    IS_ERUDA_ENABLED: false,
+    IS_ERUDA_ENABLED: true,
     MAX_TIP_AMOUNT_USD: 10000,
     TOTAL_CO_HOSTS_ALLOWED: 4,
-    USERNAME_REGEX: /^[a-zA-Z_][a-zA-Z0-9_]{0,14}$/,
+    BASE_NAME_REGEX: /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]\.base\.eth$/i,
 
     TX_SCAN_URL: (hash: string) =>
         CLIENT_ENV.VITE_ENVIRONMENT === "production"

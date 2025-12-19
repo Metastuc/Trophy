@@ -167,6 +167,7 @@ export async function buyCreatorToken({
 }: TokenSwapParams) {
     let signature: Address | undefined = undefined;
     let permitSingle: PermitSingle | undefined = undefined;
+    let poolKey: PoolKey | undefined = undefined;
 
     const flaunch = getFlaunchClient({ address, provider }) as ReadWriteFlaunchSDK;
     const isUSDC = isAddress(token) && CONTRACT_ADDRESSES.USDC.toLowerCase() === token.toLowerCase();
@@ -175,39 +176,47 @@ export async function buyCreatorToken({
     const amountInUnits = parseUnits(amount, isUSDC ? 6 : 18);
 
     if (token !== "ETH") {
-        const tokenAllowance = (await flaunch.getERC20AllowanceToPermit2(token)) as bigint;
-        const { allowance: permitAllowance } = await flaunch.getPermit2AllowanceAndNonce(token);
-
+        const tokenAllowance = await flaunch.getERC20AllowanceToPermit2(token);
         if (tokenAllowance < amountInUnits) {
             await flaunch.setERC20AllowanceToPermit2(token, maxUint256);
         }
 
-        if (permitAllowance < amountInUnits) {
-            const { permitSingle: typedPermit, typedData } = await flaunch.getPermit2TypedData(token);
-            signature = (await signTypedData(typedData, { address })).signature as Address;
+        const { allowance: tokenPermitAllowance } = await flaunch.getPermit2AllowanceAndNonce(token);
+
+        if (tokenPermitAllowance < amountInUnits) {
+            const { typedData, permitSingle: typedPermit } = await flaunch.getPermit2TypedData(token);
+
+            typedData.message.details.amount = typedData.message.details.amount.toString();
+            typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
+
+            const { signature: typedSignature } = await signTypedData(typedData, { address });
+
+            signature = typedSignature as Address;
             permitSingle = typedPermit;
         }
+
+        poolKey = {
+            currency0: zeroAddress,
+            currency1: token,
+            fee: 500,
+            tickSpacing: 10,
+            hooks: zeroAddress,
+            hookData: "0x",
+        };
     }
 
     return await verifyTransaction(
-        (await flaunch?.buyCoin(
+        (await flaunch.buyCoin(
             {
                 coinAddress,
                 slippagePercent: 4,
                 swapType: "EXACT_IN",
                 amountIn: amountInUnits,
-                intermediatePoolKey: {
-                    currency0: zeroAddress,
-                    currency1: token,
-                    fee: 500,
-                    tickSpacing: 10,
-                    hooks: zeroAddress,
-                    hookData: "0x",
-                },
+                intermediatePoolKey: poolKey,
                 signature,
                 permitSingle,
             },
-            "V1_1",
+            "V1_2",
         )) as Address,
     );
 }
@@ -226,45 +235,51 @@ export async function sellCreatorToken({
     const amountInUnits = parseEther(amount.replace(/,/g, ""));
     const { allowance } = await flaunch.getPermit2AllowanceAndNonce(coinAddress);
 
-    if (token !== "ETH")
+    if (token !== "ETH") {
         poolkey = {
             currency0: zeroAddress,
-            currency1: CONTRACT_ADDRESSES[token],
+            currency1: token,
             fee: 500,
             tickSpacing: 10,
             hooks: zeroAddress,
             hookData: "0x",
         };
+    }
+
+    let hash: Address;
 
     if (allowance < amountInUnits) {
         const { permitSingle, typedData } = await flaunch.getPermit2TypedData(coinAddress);
+
+        typedData.message.details.amount = typedData.message.details.amount.toString();
+        typedData.message.sigDeadline = typedData.message.sigDeadline.toString();
+
         const { signature } = await signTypedData(typedData, { address });
 
-        return await verifyTransaction(
-            await flaunch.sellCoin(
-                {
-                    amountIn: amountInUnits,
-                    coinAddress,
-                    intermediatePoolKey: poolkey,
-                    permitSingle,
-                    signature: signature as Address,
-                    slippagePercent: 4,
-                },
-                "V1_1",
-            ),
+        hash = await flaunch.sellCoin(
+            {
+                amountIn: amountInUnits,
+                coinAddress,
+                intermediatePoolKey: poolkey,
+                permitSingle,
+                signature: signature as Address,
+                slippagePercent: 4,
+            },
+            "V1_2",
         );
-    } else
-        return await verifyTransaction(
-            await flaunch.sellCoin(
-                {
-                    amountIn: amountInUnits,
-                    coinAddress,
-                    intermediatePoolKey: poolkey,
-                    slippagePercent: 4,
-                },
-                "V1_1",
-            ),
+    } else {
+        hash = await flaunch.sellCoin(
+            {
+                amountIn: amountInUnits,
+                coinAddress,
+                intermediatePoolKey: poolkey,
+                slippagePercent: 4,
+            },
+            "V1_2",
         );
+    }
+
+    return verifyTransaction(hash);
 }
 
 async function verifyTransaction(hash: Address): Promise<Address> {

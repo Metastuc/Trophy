@@ -3,10 +3,12 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import babel from "vite-plugin-babel";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
+        nodePolyfills(),
         tanstackRouter({
             autoCodeSplitting: true,
             generatedRouteTree: "client/routeTree.gen.ts",

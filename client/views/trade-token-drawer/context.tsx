@@ -46,7 +46,7 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                 const provider: EIP1193Provider = await wallets[0].getEthereumProvider();
 
                 let hash: `0x${string}`;
-                const token = "ETH";
+                // const token = "ETH";
 
                 if (drawerData.from.type === "native") {
                     hash = await buyCreatorToken({
@@ -77,21 +77,21 @@ export function TradeDrawerContextProvider({ children, streamer }: TradeDrawerCo
                         amount: drawerData.from.amount,
                         provider,
                         signTypedData,
-                        token,
+                        token: drawerData.to.token,
                         address: wallets[0].address as Address,
                     });
                 }
 
-                await makeRequest({
-                    method: "POST",
-                    url: "/save-volume",
-                    data: {
-                        amount:
-                            drawerData.from.type === "native"
-                                ? Number(drawerData.from.amount)
-                                : Number(drawerData.to.amount),
-                    },
-                });
+                // await makeRequest({
+                //     method: "POST",
+                //     url: "/save-volume",
+                //     data: {
+                //         amount:
+                //             drawerData.from.type === "native"
+                //                 ? Number(drawerData.from.amount)
+                //                 : Number(drawerData.to.amount),
+                //     },
+                // });
 
                 toast.success("Token swapped successfully!", {
                     duration: 5000,

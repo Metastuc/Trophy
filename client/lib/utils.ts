@@ -3,6 +3,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatEther } from "viem";
 
+import { CLIENT_CONSTANTS } from "./constants";
+
 export function cn(...inputs: ClassValue[]): string {
     return twMerge(clsx(inputs));
 }
@@ -62,6 +64,15 @@ export function formatEtherToToken({
     return Number(format).toLocaleString();
 }
 
-export function getPriceInQuantity({ price, quantity }: { price: string; quantity: string }): number {
+export function getPriceInQuantity({ price = "0", quantity = "0" }: { price: string; quantity: string }): number {
     return parseFloat(price) * parseFloat(quantity);
+}
+
+export function validateBaseName(name: string) {
+    if (!CLIENT_CONSTANTS.BASE_NAME_REGEX.test(name)) return { valid: false, reason: "Invalid format" };
+
+    const label = name.split(".base.eth")[0];
+    if (label.length < 3) return { valid: false, reason: "Name too short" };
+
+    return { valid: true, reason: "Valid Base Name" };
 }

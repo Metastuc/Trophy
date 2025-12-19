@@ -1,5 +1,11 @@
 import { Address } from "viem";
 
+type OpenDrawerParams = {
+    payload?: UserProfileDrawerPayload;
+    tab?: AddDrawerTab;
+    view?: UserProfileDrawerView;
+};
+
 declare global {
     type AddDrawerTab = "receive" | "send";
 
@@ -8,7 +14,7 @@ declare global {
     type RecieverTabState = {
         amountInToken: string;
         percentage: string | null;
-        receiver: string;
+        reciever: string;
     };
 
     type StreamSelection = "scheduled" | "recorded";
@@ -17,7 +23,7 @@ declare global {
 
     type UserProfileDrawerStore = UserProfileDrawerValues & UserProfileDrawerActions;
 
-    type UserProfileDrawerView = "add" | "earned" | "edit" | "withdraw" | null;
+    type UserProfileDrawerView = "add" | "earned" | "edit" | "withdraw" | undefined;
 
     type UserProfileScheduledStream = UserProfileResponse["data"]["scheduledStreams"][number];
 
@@ -38,24 +44,16 @@ declare global {
 
     interface UserProfileDrawerActions {
         closeDrawer: () => void;
-        openDrawer: ({
-            payload,
-            tab,
-            view,
-        }: {
-            payload?: UserProfileDrawerPayload;
-            tab?: AddDrawerTab;
-            view: Exclude<UserProfileDrawerView, null>;
-        }) => void;
+        openDrawer: ({ payload, tab, view }: OpenDrawerParams) => void;
         setAddViewCurentTab: (tab: AddDrawerTab) => void;
         setTotalUsdBalance: (balance: string) => void;
     }
 
     interface UserProfileDrawerValues {
-        drawerView: UserProfileDrawerView;
-        totalUsdBalance: string;
         addViewCurentTab?: AddDrawerTab;
+        drawerView: UserProfileDrawerView;
         payload?: UserProfileDrawerPayload;
+        totalUsdBalance: string;
     }
 
     interface UserProfileDrawerPayload {

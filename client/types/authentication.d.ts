@@ -1,8 +1,9 @@
-import { type User as PrivyUser } from "@privy-io/react-auth";
+import { EIP1193Provider, type User as PrivyUser } from "@privy-io/react-auth";
 
 declare global {
     type AuthenticatedUser = PrivyUser & {
         backendUserData: AuthenticateUserResponse["data"];
+        provider?: EIP1193Provider;
     };
 
     type AuthenticationState = {
